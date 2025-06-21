@@ -1,1 +1,182 @@
-<p>skeleton works!</p>
+<nav class="navbar navbar-white bg-dark fixed-top">
+  <div class="container-fluid">
+    
+    <a class="navbar-brand" href="javascript:void(0)">
+      <img src="/assets/img/icono80.png" alt="LISAH" width="40"/> 
+      {{acronym}} - {{costumer}}
+    </a>
+
+    <div>
+      
+      <button class="navbar-toggler border0 " type="button" data-bs-toggle="offcanvas" data-bs-target="#offProfile" aria-controls="offProfile" aria-label="Toggle navigation">
+        <i class="fas fa-user fa-fw"></i> <span class="badge text-bg-secondary">0</span>
+      </button>
+
+      <button  class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+    </div>
+
+    <!-- MENU -->
+    
+    <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">{{acronym}} - {{costumer}}</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body ">
+        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="#">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Administracion
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark">
+              <li><a class="dropdown-item" href="#">Action</a></li>
+              <li><a class="dropdown-item" href="#">Another action</a></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li><a class="dropdown-item" href="#">Something else here</a></li>
+            </ul>
+          </li>
+        </ul>
+   
+      </div>
+    </div>
+
+    <!-- SLIDE DE OPCIONES -->
+
+    <div class="offcanvas offcanvas-end text-bg-blue" tabindex="-1" id="offProfile" aria-labelledby="offProfileLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offProfileLabel">{{acronym}} - Opciones de Usuario</h5>
+        <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body ">
+        <ul class="navbar-nav ">
+          <li class="nav-item bg-opciones-fondo">
+            <i class="fas fa-user fa-fw t30 mt-2 mr-2"></i> 
+            <div>
+              {{usuario_nombre}} <br>
+              <small>ADMINISTRADOR</small>
+            </div>
+            <div class="text-center p-1">
+              <button class="btn btn-link">
+                <i class="far fa-edit text-black t20"></i>
+              </button>
+              <button class="btn btn-link" (click)="closeSession()">
+                <i class="fas fa-power-off text-danger t20"></i>
+              </button>
+            </div>
+          </li>
+          <li class="mt-3">
+            <h6>Notificaciones</h6>
+          </li>
+          <li>
+            <table class="table table-striped">
+              <tbody>
+                @if(lstNotificaciones.length>0){
+                  @for (item of lstNotificaciones; track $index) {
+                    <tr>
+                      <td>
+                        <i class="far fa-bell"></i> {{item.label}} <br>
+                        <small>10/12/2026</small>
+
+                      </td>
+                      <td>
+                        <select class="form-control" name="" id="" >
+                          <option value="">-Accion-</option>
+                          <option value="{{item.id}}">Ver</option>
+                          <option value="{{item.id}}">Marcar Leido</option>
+                        </select>
+                      </td>
+                    </tr>
+                  }
+                }
+                @else {
+                  <tr>
+                    <li><i class="far fa-bell-slash"></i> <small>Sin Notificaciones</small> </li>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </li>
+            
+          <li class="bg-opciones-fondo ">
+            asd
+          </li>
+        </ul>
+   
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- 
+
+<nav class="sb-topnav navbar navbar-expand bg-dark">
+  <a class="navbar-brand ps-3" href="javascript:void(0)">
+    <img src="/assets/img/icono80.png" alt="LISAH" width="40"/> 
+    {{acronym}} - {{costumer}}
+  </a>
+  <button type="button" class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" (click)="barra_menu=!barra_menu">
+    <i class="fas fa-bars"></i>
+  </button>
+  <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0" >
+  </form>
+  <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+    <li class="nav-item dropdown">
+      <a
+        class="nav-link dropdown-toggle"
+        id="navbarDropdownNotif"
+        href="#"
+        role="button"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+        >
+        <i class="fas fa-bell"></i> <span class="badge badge-warning">{{lstNotificaciones.length}}</span>
+      </a>
+
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownNotif" >
+        @if(lstNotificaciones.length>0){
+          @for (item of lstNotificaciones; track $index) {
+            <li><a class="dropdown-item" href="#!"> <i class="far fa-bell"></i> {{item.nombre}} </a></li>
+          }
+        }
+        @else {
+          <li><a class="dropdown-item" href="#!"> <i class="far fa-bell-slash"></i> <small>Sin Notificaciones</small> </a></li>
+        }
+      </ul>
+    </li>
+  </ul>
+  <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+    <li class="nav-item dropdown">
+      <a
+        class="nav-link dropdown-toggle"
+        id="navbarDropdown"
+        href="#"
+        role="button"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+        >
+        {{usuario_nombre}} <i class="fas fa-user fa-fw"></i> 
+      </a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" >
+        <li><a class="dropdown-item" href="#!"> <i class="fas fa-user-edit text-secondary"></i> Perfil</a></li>
+        <li><hr class="dropdown-divider" /></li>
+        <li><a class="dropdown-item" href="javascript:void(0)" (click)="closeSession()">
+          <i class="fas fa-power-off text-danger"></i>
+          Cerrar Sesión
+        </a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+ -->
+

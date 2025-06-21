@@ -1,10 +1,13 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-resetpass',
-  imports: [],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './resetpass.html',
-  styleUrl: './resetpass.scss'
+  styleUrl: './resetpass.scss',
+  standalone: true
 })
 export class Resetpass {
 

@@ -1,0 +1,76 @@
+<div id="layoutAuthentication">
+  <div id="layoutAuthentication_content">
+    <main>
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-5">
+            <div class="card shadow-lg border-0 rounded-lg mt-5">
+              <div class="card-header">
+                <h3 class="text-center font-weight-light my-4">
+                  <img src="/assets/img/lisah80.png" alt="LISAH" width="80" />
+                  <br />
+                  {{costumer}}
+                </h3>
+              </div>
+              <div class="card-body">
+                <h6 class="text-center font-weight-light">
+                  Ingrese el Código de Verificación
+                </h6>
+                <form>
+                  <div class="d-flex align-items-center justify-content-between mt-4 mb-0" >
+                    <input
+                      class="form-control mr-1 t30 text-center"
+                      id="codigo"
+                      name="codigo"
+                      type="text"
+                      placeholder="000000"
+                    />
+                  </div>
+                  <div class="text-end">
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-shadow m-1"
+                      (click)="funcSubmit()"
+                    >
+                      <i class="far fa-check-circle"></i>
+                      Verificar
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-danger btn-shadow m-1"
+                      (click)="funcBack()"
+                    >
+                      <i class="fas fa-undo-alt"></i>
+                      Retornar
+                    </button>
+                  </div>
+                  <sub> Tiempo restante {{tiempo_restante}} </sub>
+                </form>
+              </div>
+              <div class="card-footer text-center py-3">
+                <div class="small">{{acronym}} - {{product}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <div id="layoutAuthentication_footer">
+    <footer class="py-4 bg-light mt-auto">
+      <div class="container-fluid px-4">
+        <div class="d-flex align-items-center justify-content-between small">
+          <div class="text-muted">
+            Copyright &copy; {{costumer}}, {{current_year}}
+          </div>
+          <div>
+            <a href="#">Privacy Policy</a>
+            &middot;
+            <a href="#">Terms &amp; Conditions</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+</div>
+
