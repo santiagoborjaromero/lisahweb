@@ -1,6 +1,7 @@
 export var Global = {
     costumer: "SERCOP",
     acronym: "LISAH",
+    appversion: "v1.0.0-A",
     product: "Software para Administración y Aseguramiento de Servidores Linux ",
     secret: "7PToGGTJ71knRd86WF39wfj619qewnbZ",
     secret_iv: "cAbBrz3Lzy4Ucwhx",

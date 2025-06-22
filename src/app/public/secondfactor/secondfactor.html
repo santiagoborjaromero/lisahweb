@@ -24,27 +24,23 @@
                       name="codigo"
                       type="text"
                       placeholder="000000"
+                      [(ngModel)]="codigo"
                     />
                   </div>
                   <div class="text-end">
-                    <button
-                      type="button"
-                      class="btn btn-primary btn-shadow m-1"
-                      (click)="funcSubmit()"
-                    >
+                    <button class="btn btn-link m-1 t12" type="button" (click)="funcRegenerarCodigo()">
+                      Volver a generar el código
+                    </button>
+                    <button type="button" class="btn btn-primary btn-shadow m-1 " (click)="funcSubmit()">
                       <i class="far fa-check-circle"></i>
                       Verificar
                     </button>
-                    <button
-                      type="button"
-                      class="btn btn-danger btn-shadow m-1"
-                      (click)="funcBack()"
-                    >
+                    <button type="button" class="btn btn-danger btn-shadow m-1" (click)="funcBack()">
                       <i class="fas fa-undo-alt"></i>
                       Retornar
                     </button>
                   </div>
-                  <sub> Tiempo restante {{tiempo_restante}} </sub>
+                  <sub> Tiempo restante <strong class="t16">{{elapsed}}</strong> </sub>
                 </form>
               </div>
               <div class="card-footer text-center py-3">

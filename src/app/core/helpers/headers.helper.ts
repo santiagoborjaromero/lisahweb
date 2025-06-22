@@ -9,6 +9,7 @@ export class Headers {
   constructor(private encryp: Encryption, private sessions: Sessions) { }
   getWithToken = () => {
     let token = this.sessions.get("token");
+    
     return {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',

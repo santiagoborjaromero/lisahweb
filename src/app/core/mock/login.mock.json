@@ -1,0 +1,122 @@
+{
+    "idusuario": 6,
+    "idrol": 4,
+    "idcliente": 1,
+    "idgrupo_usuario": 1,
+    "nombre": "Santiago Borja",
+    "usuario": "santiago.borja",
+    "clave_expiracion": "2026-06-18 22:40:55",
+    "ultimo_logueo": "2025-06-21 17:38:06",
+    "numero_logueos": 35,
+    "numero_deslogueos": 0,
+    "token": "WTBGaVFuSjZNMHg2ZVRSVlkzZG9lTjNwa0dxaDFmWUFyVThWcm5YWkQwb0gvY2J0S1BmYUw3ekpEZmRJc2poZnl4MjVFZEV6aWZKZkVhSWtBbDl5M0sxekpCSlFwTklhVHJBd05uV0loM2M9",
+    "keygen": null,
+    "email": null,
+    "email_confirmado": 0,
+    "ntfy_identificador": "santiago_borja",
+    "estado": 1,
+    "created_at": "2025-06-18T04:21:25.000000Z",
+    "updated_at": "2025-06-21T22:36:22.000000Z",
+    "deleted_at": null,
+    "cliente": {
+        "idcliente": 1,
+        "nombre": "Servicio Nacional de Contratación Pública",
+        "identificacion": "0000000000000",
+        "direccion": null,
+        "telefono": null,
+        "created_at": "2025-06-11T09:15:07.000000Z",
+        "updated_at": "2025-06-11T09:16:14.000000Z",
+        "deleted_at": null
+    },
+    "roles": {
+        "idrol": 4,
+        "nombre": "Especialistas",
+        "permisos_crud": "RWD",
+        "estado": 1,
+        "created_at": "2025-06-10T13:10:01.000000Z",
+        "updated_at": "2025-06-10T13:10:13.000000Z",
+        "deleted_at": null,
+        "menu": [
+            {
+                "idmenu": 1,
+                "orden": "01",
+                "nombre": "Dashboards",
+                "icono": "fas fa-chart-bar",
+                "ruta": null,
+                "es_submenu": 1,
+                "estado": 1,
+                "created_at": "2025-06-10T13:11:56.000000Z",
+                "updated_at": "2025-06-10T13:13:19.000000Z",
+                "deleted_at": null,
+                "pivot": {
+                    "idrol": 4,
+                    "idmenu": 1
+                }
+            },
+            {
+                "idmenu": 2,
+                "orden": "01.01",
+                "nombre": "Dashboard General",
+                "icono": "fas fa-chart-bar",
+                "ruta": "dashgeneral",
+                "es_submenu": 0,
+                "estado": 1,
+                "created_at": "2025-06-10T13:11:56.000000Z",
+                "updated_at": "2025-06-10T13:13:19.000000Z",
+                "deleted_at": null,
+                "pivot": {
+                    "idrol": 4,
+                    "idmenu": 2
+                }
+            },
+            {
+                "idmenu": 3,
+                "orden": "02",
+                "nombre": "Administración",
+                "icono": "fa fa-cog",
+                "ruta": null,
+                "es_submenu": 1,
+                "estado": 1,
+                "created_at": "2025-06-10T13:12:53.000000Z",
+                "updated_at": "2025-06-10T13:12:53.000000Z",
+                "deleted_at": null,
+                "pivot": {
+                    "idrol": 4,
+                    "idmenu": 3
+                }
+            },
+            {
+                "idmenu": 4,
+                "orden": "02.01",
+                "nombre": "Usuarios",
+                "icono": "fas fa-user",
+                "ruta": "users",
+                "es_submenu": 0,
+                "estado": 1,
+                "created_at": "2025-06-10T13:12:53.000000Z",
+                "updated_at": "2025-06-10T13:12:53.000000Z",
+                "deleted_at": null,
+                "pivot": {
+                    "idrol": 4,
+                    "idmenu": 4
+                }
+            },
+            {
+                "idmenu": 8,
+                "orden": "02.05",
+                "nombre": "Configuracion General",
+                "icono": "fa fa-cog",
+                "ruta": "config",
+                "es_submenu": 0,
+                "estado": 1,
+                "created_at": "2025-06-10T13:12:53.000000Z",
+                "updated_at": "2025-06-17T23:21:26.000000Z",
+                "deleted_at": null,
+                "pivot": {
+                    "idrol": 4,
+                    "idmenu": 8
+                }
+            }
+        ]
+    }
+}

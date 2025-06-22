@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
 import { Auth } from '../services/auth';
+import { Global } from '../config/global.config';
 
 @Injectable({
   providedIn: 'root',
@@ -189,7 +190,7 @@ export class Functions {
       title: title,
       html: msg,
       icon: type,
-      footer: environment.appName,
+      footer: Global.acronym + " " + Global.appversion,
       showClass: { backdrop: 'swal2-noanimation', popup: '' },
       hideClass: { popup: '' },
     });
@@ -208,7 +209,7 @@ export class Functions {
       text: 'Espere un momento',
       timer: time > 0 ? time * 1000 : 0,
       timerProgressBar: true,
-      footer: environment.appName,
+      footer: Global.acronym + " " + Global.appversion,
       showClass: { backdrop: 'swal2-noanimation', popup: '' },
       hideClass: { popup: '' },
       didOpen: () => {

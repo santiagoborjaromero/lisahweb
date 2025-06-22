@@ -34,4 +34,12 @@ export class Auth {
     };
     return this.http.post(`${this.base_url}login`, data, options);
   }
+
+  verifyCode(codigo: any): Observable<any> {
+    this.headers = new HttpHeaders(this.headerHlp.getWithToken());
+    let options = {
+      headers: this.headers,
+    };
+    return this.http.post(`${this.base_url}codigoverificador/${codigo}`, null, options);
+  }
 }

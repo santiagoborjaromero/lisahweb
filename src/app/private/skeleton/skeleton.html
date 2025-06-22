@@ -27,7 +27,33 @@
       </div>
       <div class="offcanvas-body ">
         <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-          <li class="nav-item">
+          
+          @if(lstMenu.length>0){
+            @for (m of lstMenu; track $index) {
+              @if(m.es_submenu == 1){
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="{{m.icono}} mr-2"></i> <span>{{m.nombre}}</span>
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-dark">
+                    @for (c of m.child; track $index) {
+                      <li>
+                        <!-- <button class="dropdown-items" (click)="execRuta(c.ruta)" >
+                          <i class="{{c.icono}} mr-2"></i> <span>{{c.nombre}}</span> 
+                        </button> -->
+                        <a class="dropdown-item" href="javascript:void(0)" (click)="execRuta(c.ruta)">
+                          <i class="{{c.icono}} mr-2 itemmenu"></i> <span>{{c.nombre}}</span> 
+                        </a>
+                      </li>
+                    }
+                  </ul>
+                </li>
+              } @else {
+                <span>-- Sin Items en el menu --</span>
+              }
+            }
+          }
+          <!-- <li class="nav-item">
             <a class="nav-link" aria-current="page" href="#">Dashboard</a>
           </li>
           <li class="nav-item">
@@ -45,7 +71,7 @@
               </li>
               <li><a class="dropdown-item" href="#">Something else here</a></li>
             </ul>
-          </li>
+          </li> -->
         </ul>
    
       </div>
@@ -61,12 +87,12 @@
       <div class="offcanvas-body ">
         <ul class="navbar-nav ">
           <li class="nav-item bg-opciones-fondo">
-            <i class="fas fa-user fa-fw t30 mt-2 mr-2"></i> 
-            <div>
-              {{usuario_nombre}} <br>
-              <small>ADMINISTRADOR</small>
+            <i class="fas fa-user fa-fw t30 mt-2 mr-2 col1"></i> 
+            <div class="col2">
+              {{user.nombre}} <br>
+              <small>{{user.roles.nombre}}</small>
             </div>
-            <div class="text-center p-1">
+            <div class="text-center p-1 col1">
               <button class="btn btn-link">
                 <i class="far fa-edit text-black t20"></i>
               </button>
@@ -115,68 +141,9 @@
    
       </div>
     </div>
+
   </div>
 </nav>
-
-<!-- 
-
-<nav class="sb-topnav navbar navbar-expand bg-dark">
-  <a class="navbar-brand ps-3" href="javascript:void(0)">
-    <img src="/assets/img/icono80.png" alt="LISAH" width="40"/> 
-    {{acronym}} - {{costumer}}
-  </a>
-  <button type="button" class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" (click)="barra_menu=!barra_menu">
-    <i class="fas fa-bars"></i>
-  </button>
-  <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0" >
-  </form>
-  <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-    <li class="nav-item dropdown">
-      <a
-        class="nav-link dropdown-toggle"
-        id="navbarDropdownNotif"
-        href="#"
-        role="button"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
-        >
-        <i class="fas fa-bell"></i> <span class="badge badge-warning">{{lstNotificaciones.length}}</span>
-      </a>
-
-      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownNotif" >
-        @if(lstNotificaciones.length>0){
-          @for (item of lstNotificaciones; track $index) {
-            <li><a class="dropdown-item" href="#!"> <i class="far fa-bell"></i> {{item.nombre}} </a></li>
-          }
-        }
-        @else {
-          <li><a class="dropdown-item" href="#!"> <i class="far fa-bell-slash"></i> <small>Sin Notificaciones</small> </a></li>
-        }
-      </ul>
-    </li>
-  </ul>
-  <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-    <li class="nav-item dropdown">
-      <a
-        class="nav-link dropdown-toggle"
-        id="navbarDropdown"
-        href="#"
-        role="button"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
-        >
-        {{usuario_nombre}} <i class="fas fa-user fa-fw"></i> 
-      </a>
-      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" >
-        <li><a class="dropdown-item" href="#!"> <i class="fas fa-user-edit text-secondary"></i> Perfil</a></li>
-        <li><hr class="dropdown-divider" /></li>
-        <li><a class="dropdown-item" href="javascript:void(0)" (click)="closeSession()">
-          <i class="fas fa-power-off text-danger"></i>
-          Cerrar Sesión
-        </a></li>
-      </ul>
-    </li>
-  </ul>
-</nav>
- -->
-
+<div class="body-content">
+  <router-outlet />
+</div>  
