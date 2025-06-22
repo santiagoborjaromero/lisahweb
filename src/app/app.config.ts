@@ -6,7 +6,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { HttpClientModule, provideHttpClient, withFetch } from '@angular/common/http';
+import { HttpClientModule, provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { errorInterceptor } from '../app/interceptors/error-interceptor-interceptor'
+
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,8 +21,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(
-      withFetch(),
-    ), provideAnimationsAsync()
+    provideHttpClient( withFetch(), ), provideAnimationsAsync(),
+    provideHttpClient(withInterceptors([errorInterceptor])),
   ]
 };
