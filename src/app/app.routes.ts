@@ -17,6 +17,12 @@ export const routes: Routes = [
         canActivate: [authGuard],
         children:[
             {path:"dashboard", loadComponent: () => import('./private/dashboard/dashboard').then((c)=> c.Dashboard)},
+            {path:"usuarios", loadComponent: () => import('./private/usuarios/usuarios').then((c)=> c.Usuarios)},
+            {path:"config", loadComponent: () => import('./private/config/config').then((c)=> c.Config)},
+            {path:"menu", loadComponent: () => import('./private/menu/menu').then((c)=> c.Menu)},
+            {path:"roles", loadComponent: () => import('./private/roles/roles').then((c)=> c.Roles)},
+            {path:"audit", loadComponent: () => import('./private/audit/audit').then((c)=> c.Audit)},
+            {path:"grupo", loadComponent: () => import('./private/grupousuarios/grupousuarios').then((c)=> c.Grupousuarios)},
             {path:"", redirectTo: "dashboard", pathMatch: "full"},
             {path:"**", redirectTo: "dashboard"},
         ]
