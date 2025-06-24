@@ -17,12 +17,24 @@ export const routes: Routes = [
         canActivate: [authGuard],
         children:[
             {path:"dashboard", loadComponent: () => import('./private/dashboard/dashboard').then((c)=> c.Dashboard)},
-            {path:"usuarios", loadComponent: () => import('./private/usuarios/usuarios').then((c)=> c.Usuarios)},
-            {path:"config", loadComponent: () => import('./private/config/config').then((c)=> c.Config)},
+            
+            /** Eclusivos Owner */
             {path:"menu", loadComponent: () => import('./private/menu/menu').then((c)=> c.Menu)},
             {path:"roles", loadComponent: () => import('./private/roles/roles').then((c)=> c.Roles)},
+            {path:"variables", loadComponent: () => import('./private/variables/variables').then((c)=> c.Variables)},
+            {path:"clientes", loadComponent: () => import('./private/clientes/clientes').then((c)=> c.Clientes)},
+            {path:"generalidades", loadComponent: () => import('./private/generalidades/generalidades').then((c)=> c.Generalidades)},
+
+            /** Para clientes */
+            {path:"config", loadComponent: () => import('./private/config/config').then((c)=> c.Config)},
+            {path:"usuarios", loadComponent: () => import('./private/usuarios/usuarios').then((c)=> c.Usuarios)},
+            {path:"grupousuarios", loadComponent: () => import('./private/grupousuarios/grupousuarios').then((c)=> c.Grupousuarios)},
+            {path:"servidores", loadComponent: () => import('./private/servidores/servidores').then((c)=> c.Servidores)},
+            {path:"templates", loadComponent: () => import('./private/templates/templates').then((c)=> c.Templates)},
+            {path:"scripts", loadComponent: () => import('./private/scripts/scripts').then((c)=> c.Scripts)},
+            {path:"procesos", loadComponent: () => import('./private/procesos/procesos').then((c)=> c.Procesos)},
+            {path:"logs", loadComponent: () => import('./private/logs/logs').then((c)=> c.Logs)},
             {path:"audit", loadComponent: () => import('./private/audit/audit').then((c)=> c.Audit)},
-            {path:"grupo", loadComponent: () => import('./private/grupousuarios/grupousuarios').then((c)=> c.Grupousuarios)},
             {path:"", redirectTo: "dashboard", pathMatch: "full"},
             {path:"**", redirectTo: "dashboard"},
         ]

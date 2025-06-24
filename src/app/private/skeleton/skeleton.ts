@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { Functions } from '../../core/helpers/functions.helper';
 import { Sessions } from '../../core/helpers/session.helper';
 import { CommonModule } from '@angular/common';
@@ -15,6 +15,10 @@ import Swal from 'sweetalert2';
   standalone: true
 })
 export class Skeleton {
+  @ViewChild('btnClose') btnClose: ElementRef | undefined
+  // @ViewChild('offcanvasDarkNavbar') offcanvasDarkNavbar: ElementRef | undefined
+  // @ViewChild('offProfile') offProfile: ElementRef | undefined
+
   private readonly func = inject(Functions)
   private readonly sessions = inject(Sessions)
 
@@ -93,6 +97,7 @@ closeSession(confirmed = false){
 
   execRuta(ruta: string){
     console.log(ruta)
+    this.btnClose?.nativeElement.click();
     this.func.goRoute(`admin/${ruta}`);
   }
 
