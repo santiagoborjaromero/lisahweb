@@ -1,3 +1,15 @@
+:root{
+    /* Grid */
+    // --color-datagrid-bg-header: #9fdee2;
+    --color-datagrid-bg-header: #9fcde2;
+    --color-datagrid-bg-header-hover: #ffffff9d;
+    --color-datagrid-bg-header-bg-hover: #ffffff1a;
+    --color-datagrid-header-font-color: #ffffff;
+    --color-datagrid-row-impar: #d1d1d1;
+    --color-datagrid-row-impar-border: #f5f5f5;
+    --color-datagrid-font-color: rgb(0, 0, 0);
+}
+
 /* MIOS **/
 .t10{font-size: 10px;}
 .t11{font-size: 11px;}
@@ -26,6 +38,12 @@
 .t95{font-size: 95px;}
 .t100{font-size: 100px;}
 
+.ml-1{ margin-left: 4px;}
+.ml-2{ margin-left: 8px;}
+.ml-3{ margin-left: 12px;}
+.ml-4{ margin-left: 16px;}
+.ml-5{ margin-left: 32px;}
+
 .mr-1{ margin-right: 4px;}
 .mr-2{ margin-right: 8px;}
 .mr-3{ margin-right: 12px;}
@@ -37,6 +55,12 @@
 .mt-3{ margin-top: 12px !important;}
 .mt-4{ margin-top: 16px !important;}
 .mt-5{ margin-top: 32px !important;}
+
+.mb-1{ margin-bottom: 4px !important; }
+.mb-2{ margin-bottom: 8px !important; }
+.mb-3{ margin-bottom: 12px !important;}
+.mb-4{ margin-bottom: 16px !important;}
+.mb-5{ margin-bottom: 32px !important;}
 
 .pr-1{ padding-right: 4px;}
 .pr-2{ padding-right: 8px;}
@@ -76,4 +100,9 @@
 
 .itemmenu{
     min-width: 25px !important;
+}
+
+
+.text-white{
+    color: #fff !important;
 }

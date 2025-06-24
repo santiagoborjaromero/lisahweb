@@ -1,1 +1,19 @@
-<p>menu works!</p>
+<app-header [title]="title"/>
+<app-breadcrums [lstRutas]="rutas" />
+
+<div class="buttons-grup mb-2 text-end">
+    <button class="btn btn-primary btn-sm ml-1"><i class="fas fa-plus"></i> Nuevo</button>
+    <button class="btn btn-primary btn-sm ml-1"><i class="far fa-edit"></i> Editar</button>
+    <button class="btn btn-danger btn-sm ml-1"><i class="far fa-trash-alt"></i> Eliminar</button>
+    <button (click)="getData()" class="btn btn-white btn-sm ml-1"><i class="fas fa-sync-alt"></i></button>
+</div>
+
+<!-- <div class="card">
+  <div class="card-body">
+    <h5 class="card-title flex">
+    </h5>
+    <div class="card-text"> -->
+      <div #myGrid id="myGrid" class="ag-theme-quartz" style="height: 600px; min-height: 600px"></div>
+    <!-- </div>
+  </div>
+</div> -->

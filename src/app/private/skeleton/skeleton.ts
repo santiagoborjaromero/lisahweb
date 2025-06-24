@@ -63,7 +63,7 @@ ngOnInit(): void {
       }
     })
 
-    console.log(this.lstMenu)
+    // console.log(this.lstMenu)
 
   }
 

@@ -7,10 +7,10 @@ import { Observable, throwError } from 'rxjs';
 import { Headers } from '../helpers/headers.helper';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
-export class Auth {
-  public base_url: string;
+export class Menuservice {
+public base_url: string;
   public headers: any;
   public token: any;
 
@@ -25,19 +25,13 @@ export class Auth {
     this.base_url = this.addr.getapiUrl();
   }
 
-  login(data: any): Observable<any> {
-    this.headers = new HttpHeaders(this.headerHlp.get());
-    let options = {
-      headers: this.headers,
-    };
-    return this.http.post(`${this.base_url}login`, data, options);
-  }
-
-  verifyCode(codigo: any): Observable<any> {
+  all(): Observable<any> {
     this.headers = new HttpHeaders(this.headerHlp.getWithToken());
     let options = {
       headers: this.headers,
     };
-    return this.http.post(`${this.base_url}codigoverificador/${codigo}`, null, options);
+    return this.http.get(`${this.base_url}menu`, options);
   }
+
+ 
 }
