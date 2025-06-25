@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Header } from '../shared/header/header';
 import { Breadcrums } from '../shared/breadcrums/breadcrums';
+import { Sessions } from '../../core/helpers/session.helper';
 
 @Component({
   selector: 'app-dashboard',
@@ -12,6 +13,5 @@ import { Breadcrums } from '../shared/breadcrums/breadcrums';
   standalone: true
 })
 export class Dashboard {
-  title = "Dashboard";
-  rutas: Array<any> =["Dashboards", "Dashboard"]
+  
 }

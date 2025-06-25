@@ -96,9 +96,10 @@ closeSession(confirmed = false){
   }
 
   execRuta(ruta: string){
-    console.log(ruta)
+    let obj = ruta.split("|");
+    this.sessions.set("ruta", ruta)
     this.btnClose?.nativeElement.click();
-    this.func.goRoute(`admin/${ruta}`);
+    this.func.goRoute(`admin/${obj[3]}`);
   }
 
 

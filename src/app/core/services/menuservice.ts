@@ -30,7 +30,15 @@ public base_url: string;
     let options = {
       headers: this.headers,
     };
-    return this.http.get(`${this.base_url}menu`, options);
+    return this.http.get(`${this.base_url}menus`, options);
+  }
+
+  one(id=""): Observable<any> {
+    this.headers = new HttpHeaders(this.headerHlp.getWithToken());
+    let options = {
+      headers: this.headers,
+    };
+    return this.http.get(`${this.base_url}menus/${id}`, options);
   }
 
  
