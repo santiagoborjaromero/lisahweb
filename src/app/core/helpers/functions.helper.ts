@@ -237,7 +237,17 @@ export class Functions {
     });
   }
 
-  async goRoute(ruta: string = '') {
+  async goRoute(ruta: string = '', isedit = false, isreturn=false) {
+    if (isedit){
+      this.sessions.set("ruta_old", this.sessions.get("ruta"));
+      let obj = this.sessions.get("ruta") + "|Edit";
+      this.sessions.set("ruta", obj);
+    }
+    if (isreturn){
+      this.sessions.set("ruta", this.sessions.get("ruta_old"));
+      this.sessions.set("ruta_old", "");
+    }
+
     this.router.navigate([`/${ruta}`], {
       replaceUrl: true,
       skipLocationChange: false,

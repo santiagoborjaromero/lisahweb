@@ -20,8 +20,13 @@ export class Header {
     if (!obj){
       obj="Dasboards|Dashboard General|fas fa-chart-bar";
     }
-    this.nombre = obj.split("|")[1];
-    this.icono = obj.split("|")[2];
+    let o = obj.split("|")
+    if (o.length==5){
+      this.nombre = o[1] + " - " + o[4];
+    }else{
+      this.nombre = o[1];
+    }
+    this.icono = o[2];
     
   }
 }

@@ -90,6 +90,7 @@ closeSession(confirmed = false){
     }).then(res => {
       if (res.isConfirmed) {
         this.sessions.set("statusLogged", "false")
+        this.sessions.set("ruta", "")
         this.func.goRoute("login");
       }
     });
@@ -99,7 +100,7 @@ closeSession(confirmed = false){
     let obj = ruta.split("|");
     this.sessions.set("ruta", ruta)
     this.btnClose?.nativeElement.click();
-    this.func.goRoute(`admin/${obj[3]}`);
+    this.func.goRoute(`/admin/${obj[3]}`, false, false);
   }
 
 

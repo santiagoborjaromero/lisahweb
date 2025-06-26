@@ -20,8 +20,7 @@ export const routes: Routes = [
             
             /** Eclusivos Owner */
             {path:"menus", loadComponent: () => import('./private/menu/menu').then((c)=> c.Menu)},
-            {path:"menu", loadComponent: () => import('./private/menu/edit/edit').then((c)=> c.Edit)},
-            {path:"menu:id", loadComponent: () => import('./private/menu/edit/edit').then((c)=> c.Edit)},
+            {path:"menu/:id", loadComponent: () => import('./private/menu/edit/edit').then((c)=> c.Edit)},
 
             {path:"roles", loadComponent: () => import('./private/roles/roles').then((c)=> c.Roles)},
             {path:"variables", loadComponent: () => import('./private/variables/variables').then((c)=> c.Variables)},

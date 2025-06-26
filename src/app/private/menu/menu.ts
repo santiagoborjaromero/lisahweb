@@ -1,28 +1,13 @@
 import { CommonModule, formatNumber } from '@angular/common';
-import {
-  Component,
-  ElementRef,
-  inject,
-  Inject,
-  ViewChild,
-} from '@angular/core';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Header } from '../shared/header/header';
 import { Breadcrums } from '../shared/breadcrums/breadcrums';
-import {
-  themeBalham,
-  ModuleRegistry,
-  AllCommunityModule,
-  createGrid,
-  GridApi,
-  GridOptions,
-  ICellRendererParams,
-  ValueFormatterParams,
-  provideGlobalGridOptions,
-} from 'ag-grid-community';
+import { themeBalham, ModuleRegistry, AllCommunityModule, createGrid, GridApi, GridOptions, ICellRendererParams, ValueFormatterParams, provideGlobalGridOptions} from 'ag-grid-community';
 import { Global } from '../../core/config/global.config';
 import { Menuservice } from '../../core/services/menuservice';
 import { Functions } from '../../core/helpers/functions.helper';
+import { Sessions } from '../../core/helpers/session.helper';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -37,6 +22,7 @@ export class Menu {
 
   private readonly menuSvc = inject(Menuservice);
   private readonly func = inject(Functions);
+  private readonly sessions = inject(Sessions);
 
   title = 'Menu de Opciones';
   rutas: Array<any> = ['Creadores', 'Menú de Opciones'];
@@ -79,6 +65,12 @@ export class Menu {
     });
   }
 
+  funcEdit(id:any=null){
+    this.func.goRoute(`admin/menu/${id ?  id : this.id_selected}`, true)
+  }
+  funcDelete(){}
+
+
   dataGridStruct() {
     let that = this;
     this.gridOptions = {
@@ -99,7 +91,7 @@ export class Menu {
         sortable: true,
       },
       onRowClicked: (event: any) => {
-        this.id_selected = event.data.idactivo;
+        this.id_selected = event.data.idmenu;
         // this.selectCuenta();
       },
       columnDefs: [
