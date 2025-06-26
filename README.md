@@ -57,3 +57,9 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+
+
+```bash
+ldapsearch -h ldap.example.com -p 389 -b "dc=example,dc=com" -D "cn=admin,dc=example,dc=com" -w password "cn=testuser"
+```

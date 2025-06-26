@@ -1,4 +1,249 @@
 <app-breadcrums />
 <div class="content">
   <app-header/>
+
+  <div class="buttons-grup mb-2 text-end">
+      <button *ngIf="!accionEditar"  (click)="accionEditar=!accionEditar" class="btn btn-primary btn-sm ml-1"><i class="far fa-edit"></i> Editar</button>
+      <button *ngIf="accionEditar" (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1"><i class="fas fa-save"></i> Guardar</button>
+      <button class="btn btn-info btn-sm ml-1"><i class="fas fa-sync-alt"></i></button>
+  </div>
+  
+  <div class="container-fluid">
+    <div class="row contenido">
+      <div class="col">
+        <div class="row titulo">
+          <div class="col-12 d-flex justify-content-between">
+            <span>
+              Información Empresarial
+            </span>
+            <i class="far fa-question-circle text-primary"></i>
+          </div>
+        </div>
+
+        <div class="row ">
+
+          <div class="col-4 col-md-1 th text-end">
+            Razón Social
+          </div>
+          <div class="col-8  col-md-3 td d-flex justify-content-around">
+            <input [disabled]="!accionEditar" type="text" name="" id="" class="form-control" placeholder="Razón Social">
+          </div>
+
+
+          <div class="col-4 col-md-1 th text-end">
+            R.U.C.
+          </div>
+          <div class="col-8  col-md-3 td d-flex justify-content-around">
+            <input [disabled]="!accionEditar" type="text" name="" id="" class="form-control" placeholder="0000000000000">
+           
+          </div>
+
+
+          <div class="col-4 col-md-1 th text-end">
+            Teléfono
+          </div>
+          <div class="col-8  col-md-3 td d-flex justify-content-around">
+            <input [disabled]="!accionEditar" type="text" name="" id="" class="form-control" placeholder="Número teléfono, extensión">
+           
+          </div>
+
+
+          <div class="col-4 col-md-1 th text-end">
+            Dirección
+          </div>
+          <div class="col-8  col-md-11 td d-flex justify-content-around">
+            <input  [disabled]="!accionEditar"  type="text" name="" id="" class="form-control" placeholder="Dirección oficinas">
+          </div>
+        </div>
+
+        
+        <div class="row titulo">
+          <div class="col-12 d-flex justify-content-between">
+            <span>
+              LDAP
+            </span>
+            <i class="far fa-question-circle text-primary"></i>
+          </div>
+        </div>
+
+        <div class="row ">
+
+          <div class="col-4 col-md-1 th text-end">
+            Host
+          </div>
+          <div class="col-8  col-md-3 td d-flex justify-content-around">
+            <input [disabled]="!accionEditar"  type="text" name="" id="" class="form-control" placeholder="https://ldap.example.com">
+           
+          </div>
+
+
+          <div class="col-4 col-md-1 th text-end">
+            Puerto
+          </div>
+          <div class="col-8  col-md-3 td d-flex justify-content-around">
+            <input [disabled]="!accionEditar" type="text" name="" id="" class="form-control" placeholder="389">
+           
+          </div>
+
+
+          <div class="col-4 col-md-1 th text-end">
+            Base DN
+          </div>
+          <div class="col-8  col-md-3 td d-flex justify-content-around">
+            <input [disabled]="!accionEditar" type="text" name="" id="" class="form-control" placeholder="cn=admin,dc=example,dc=com">
+           
+          </div>
+
+
+          <div class="col-4 col-md-1 th text-end">
+            Usuario
+          </div>
+          <div class="col-8  col-md-3 td d-flex justify-content-around">
+            <input [disabled]="!accionEditar" type="text" name="" id="" class="form-control" placeholder="usuario">
+           
+          </div>
+
+
+          <div class="col-4 col-md-1 th text-end">
+            Contraseña
+          </div>
+          <div class="col-8  col-md-3 td d-flex justify-content-around">
+            <input [disabled]="!accionEditar" type="text" name="" id="" class="form-control" placeholder="*******">
+           
+          </div>
+
+        </div>
+
+
+        <div class="row titulo">
+          <div class="col-12 d-flex justify-content-between">
+            <span>
+              Factor de Autenticación
+            </span>
+            <i class="far fa-question-circle text-primary"></i>
+          </div>
+        </div>
+
+        <div class="row ">
+          <div class="col-4 col-md-1 th text-end">
+            Estado
+          </div>
+          <div class="col-8  col-md-3 td d-flex justify-content-around">
+            <select [disabled]="!accionEditar" name="" id="" class="form-control">
+              @if(lstEstado.length>0){
+                @for (item of lstEstado; track $index) {
+                  <option value="{{item.id}}">{{item.nombre}}</option>
+                }
+              }@else {
+                <option value="-"> -- No hay métodos definidos --</option>
+              }
+            </select>
+           
+          </div>
+
+          <div class="col-4 col-md-1 th text-end">
+            Método
+          </div>
+          <div class="col-8  col-md-3 td d-flex justify-content-around">
+             <select [disabled]="!accionEditar" name="" id="" class="form-control">
+              @if(lstMetodos.length>0){
+                @for (item of lstMetodos; track $index) {
+                  <option value="{{item.id}}">{{item.nombre}}</option>
+                }
+              }@else {
+                <option value="-"> -- No hay métodos definidos --</option>
+              }
+            </select>
+          </div>
+        </div>
+
+
+        <div class="row titulo">
+          <div class="col-12 d-flex justify-content-between">
+            <span>
+              Scripts asignados por acción
+            </span>
+            <i class="far fa-question-circle text-primary"></i>
+          </div>
+        </div>
+
+        <div class="row ">
+          <div class="col-6 col-md-2 th text-end">
+            Se crea un grupo de usuarios
+          </div>
+          <div class="col-6  col-md-3 td d-flex justify-content-around">
+            <select [disabled]="!accionEditar" name="" id="" class="form-control">
+              @if(lstScriptCreacionUsuarios.length>0){
+                @for (item of lstScriptCreacionUsuarios; track $index) {
+                  <option value="{{item.idscript}}">{{item.nombre}}</option>
+                }
+              }@else {
+                <option value="-"> -- No hay scripts definidos --</option>
+              }
+            </select>
+          </div>
+
+          <div class="col-4 col-md-2 th text-end">
+            Se crea un usuario
+          </div>
+          <div class="col-8  col-md-3 td d-flex justify-content-around">
+             <select [disabled]="!accionEditar" name="" id="" class="form-control">
+              @if(lstScriptCreacionUsuarios.length>0){
+                @for (item of lstScriptCreacionUsuarios; track $index) {
+                  <option value="{{item.idscript}}">{{item.nombre}}</option>
+                }
+              }@else {
+                <option value="-"> -- No hay scripts definidos --</option>
+              }
+            </select>
+          </div>
+        </div>
+
+
+        <div class="row titulo">
+          <div class="col-12 d-flex justify-content-between">
+            <span>
+              Tiempos
+            </span>
+            <i class="far fa-question-circle text-primary"></i>
+          </div>
+        </div>
+
+        <div class="row ">
+          <div class="col-6 col-md-3 th text-end">
+            Refresco para dashboard y notificaciones <small class="text-danger">[seg]</small>
+          </div>
+          <div class="col-6  col-md-1 td d-flex justify-content-around">
+            <input  [disabled]="!accionEditar" type="text" name="" id="" class="form-control" placeholder="0">
+          </div>
+
+          <div class="col-4 col-md-3 th text-end">
+            Caducidad de contraseñas <small class="text-danger">[días]</small>
+          </div>
+          <div class="col-8  col-md-1 td d-flex justify-content-around">
+             <input  [disabled]="!accionEditar" type="text" name="" id="" class="form-control" placeholder="0">
+          </div>
+
+          <div class="col-4 col-md-3 th text-end">
+            Caducidad de token para usuarios <small class="text-danger">[días]</small>
+          </div>
+          <div class="col-8  col-md-1 td d-flex justify-content-around">
+             <input  [disabled]="!accionEditar" type="text" name="" id="" class="form-control" placeholder="0">
+          </div>
+
+          <div class="col-4 col-md-3 th text-end">
+            Caducidad de token para agentes  <small class="text-danger">[días]</small>
+          </div>
+          <div class="col-8  col-md-1 td d-flex justify-content-around">
+             <input [disabled]="!accionEditar"  type="text" name="" id="" class="form-control" placeholder="0">
+          </div>
+
+        </div>
+
+
+
+
+      </div>
+    </div>
+  </div>
 </div>

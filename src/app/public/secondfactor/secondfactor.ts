@@ -36,7 +36,7 @@ export class Secondfactor {
   }
 
   ngOnDestroy(): void {
-    
+    clearInterval(this.timer);
   }
 
   funcSubmit(){
@@ -67,6 +67,7 @@ export class Secondfactor {
             this.func.showMessage("error", "Verificación", resp.message);
             this.sessions.set('statusLogged', 'false');
             if (resp.message == "El código de verificación ha expirado"){
+              clearInterval(this.timer);
               this.func.goRoute("login");
             }
           }
@@ -85,6 +86,7 @@ export class Secondfactor {
   }
 
   funcBack(){
+    clearInterval(this.timer);
     this.func.goRoute("login");
   }
 
