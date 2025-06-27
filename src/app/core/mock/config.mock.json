@@ -1,0 +1,30 @@
+{
+    "idconfiguracion": 1,
+    "idcliente": 1,
+    "ldap_servidor": null,
+    "ldap_puerto": null,
+    "ldap_usuario": null,
+    "ldap_clave": null,
+    "ldap_base_dn": null,
+    "segundo_factor_activo": 1,
+    "segundo_factor_metodo": "ntfy",
+    "idscript_creacion_grupo_usuarios": 1,
+    "idscript_creacion_usuario": null,
+    "tiempo_refresco": 0,
+    "tiempo_caducidad_claves": 365,
+    "tiempo_caducidad_token_usuarios": 0,
+    "tiempo_caducidad_token_agente": null,
+    "created_at": "2025-06-17T10:06:15.000000Z",
+    "updated_at": "2025-06-18T04:22:17.000000Z",
+    "deleted_at": null,
+    "cliente": {
+        "idcliente": 1,
+        "nombre": "Servicio Nacional de Contratación Pública",
+        "identificacion": "0000000000000",
+        "direccion": null,
+        "telefono": null,
+        "created_at": "2025-06-11T09:15:07.000000Z",
+        "updated_at": "2025-06-11T09:16:14.000000Z",
+        "deleted_at": null
+    }
+}

@@ -63,3 +63,34 @@ For more information on using the Angular CLI, including detailed command refere
 ```bash
 ldapsearch -h ldap.example.com -p 389 -b "dc=example,dc=com" -D "cn=admin,dc=example,dc=com" -w password "cn=testuser"
 ```
+
+
+```bash
+https://www.jsdelivr.com/package/npm/ecuador-validator
+
+import validator from 'ecuador-validator';
+
+validator.ci(ci: string): boolean;
+validator.ruc(ruc: string): boolean;
+validator.cellphone(cellphone: string, type?: 'simple' | 'code'): boolean;
+validator.telephone(telephone: string, type?: 'simple' | 'code' | 'international'): boolean;
+validator.placaCar(placa: string): boolean;
+validator.placaMoto(placa: string): boolean;
+
+
+validator.cedula('1723456789'); // true
+validator.ruc('1723456789001'); // true
+validator.cellphone('0991234567'); // true, type is simple by default
+validator.cellphone('0991234567', 'code'); // false
+validator.cellphone('+593991234567', 'code'); // true
+validator.cellphone('593991234567', 'code'); // true
+validator.telephone('2123456'); // true, type is simple by default
+validator.telephone('022123456', 'code'); // true
+validator.telephone('+59322123456', 'international'); // true
+validator.telephone('59322123456', 'international'); // true
+validator.placaCar('ABC-123'); // false
+validator.placaCar('ABC0123'); // true
+validator.placaMoto('AA012E'); // true
+
+
+```
