@@ -24,23 +24,26 @@ export class Menu {
   private readonly func = inject(Functions);
   private readonly sessions = inject(Sessions);
 
-  title = 'Menu de Opciones';
-  rutas: Array<any> = ['Creadores', 'Menú de Opciones'];
+  // title = 'Menu de Opciones';
+  // rutas: Array<any> = ['Creadores', 'Menú de Opciones'];
 
   public dtOptions: any = {};
   public gridOptions: GridOptions<any> = {};
   public gridApi?: GridApi<any>;
   public id_selected: string = '';
-  myTheme = themeBalham.withParams({ accentColor: 'red' });
+  // myTheme = themeBalham.withParams({ accentColor: 'red' });
   lstData = [];
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.dataGridStruct();
-    }, Global.times[0]);
+  }
+  
+  ngAfterViewInit(): void {
+    this.dataGridStruct();
+
     setTimeout(() => {
       this.getData();
-    }, Global.times[1]);
+    }, Global.times[0]);
+    
   }
 
   ngOnDestroy(): void {}

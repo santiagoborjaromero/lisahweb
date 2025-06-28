@@ -30,6 +30,7 @@ export const routes: Routes = [
             /** Para clientes */
             {path:"configs", loadComponent: () => import('./private/config/config').then((c)=> c.Config)},
             {path:"usuarios", loadComponent: () => import('./private/usuarios/usuarios').then((c)=> c.Usuarios)},
+            {path:"usuario/:id", loadComponent: () => import('./private/usuarios/edit/edit').then((c)=> c.Edit)},
             {path:"grupousuarios", loadComponent: () => import('./private/grupousuarios/grupousuarios').then((c)=> c.Grupousuarios)},
             {path:"servidores", loadComponent: () => import('./private/servidores/servidores').then((c)=> c.Servidores)},
             {path:"templates", loadComponent: () => import('./private/templates/templates').then((c)=> c.Templates)},

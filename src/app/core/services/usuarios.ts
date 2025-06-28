@@ -5,11 +5,14 @@ import { Address } from '../helpers/address.helper';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { Headers } from '../helpers/headers.helper';
+import { Functions } from '../helpers/functions.helper';
 
 @Injectable({
   providedIn: 'root',
 })
-export class Auth {
+export class UsuarioService {
+  private readonly func = inject(Functions);
+
   public base_url: string;
   public headers: any;
   public token: any;
@@ -25,27 +28,41 @@ export class Auth {
     this.base_url = this.addr.getapiUrl();
   }
 
-  login(data: any): Observable<any> {
-    this.headers = new HttpHeaders(this.headerHlp.get());
-    let options = {
-      headers: this.headers,
-    };
-    return this.http.post(`${this.base_url}login`, data, options);
-  }
-
-  verifyCode(codigo: any): Observable<any> {
+  getAll(): Observable<any> {
     this.headers = new HttpHeaders(this.headerHlp.getWithToken());
     let options = {
       headers: this.headers,
     };
-    return this.http.post(`${this.base_url}codigoverificador/${codigo}`, null, options);
+    return this.http.get(`${this.base_url}usuarios`, options);
   }
 
-  regenerateCode(): Observable<any> {
+  getOne(id: any): Observable<any> {
     this.headers = new HttpHeaders(this.headerHlp.getWithToken());
     let options = {
       headers: this.headers,
     };
-    return this.http.post(`${this.base_url}regenerarcodigo`, null, options);
+    return this.http.get(`${this.base_url}usuarios/${id}`, options);
   }
+
+  save(data: any, id=""): Observable<any> {
+    this.headers = new HttpHeaders(this.headerHlp.getWithToken());
+    let options = {
+      headers: this.headers,
+    };
+    if (id == ""){
+      return this.http.post(`${this.base_url}usuario`, data, options);
+    } else {
+      return this.http.put(`${this.base_url}usuario/${id}`, data, options);
+    }
+  }
+
+  delete(id: any): Observable<any> {
+    this.headers = new HttpHeaders(this.headerHlp.getWithToken());
+    let options = {
+      headers: this.headers,
+    };
+    return this.http.delete(`${this.base_url}usuario/${id}`, options);
+  }
+
+ 
 }

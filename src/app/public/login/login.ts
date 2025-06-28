@@ -114,7 +114,14 @@ export class Login {
               // this.sessions.set('statusLogged', 'false');
               this.sessions.set('token', data.token);
               this.sessions.set('form', JSON.stringify(this.formData));
-              this.func.goRoute("secondfactor")
+
+              if (data.config && data.config.segundo_factor_activo == 1){
+                this.func.goRoute("secondfactor")
+              }else{
+                this.sessions.set("statusLogged", "true")
+                this.func.goRoute("admin");
+              }
+
             } else {
               this.func.showMessage("error", "Login", "El usuario no se encuentra activo.");
               this.sessions.set('statusLogged', 'false');

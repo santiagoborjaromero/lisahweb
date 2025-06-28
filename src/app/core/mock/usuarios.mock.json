@@ -1,0 +1,1057 @@
+{
+    "status": true,
+    "data": [
+        {
+            "idusuario": 1,
+            "idrol": 1,
+            "idcliente": null,
+            "idgrupo_usuario": null,
+            "nombre": "Soft8",
+            "usuario": "soft8",
+            "clave_expiracion": "2026-06-22 02:18:07",
+            "ultimo_logueo": "2025-06-27 20:46:44",
+            "numero_logueos": 21,
+            "numero_deslogueos": 0,
+            "token": "WTBGaVFuSjZNMHg2ZVRSVlkzZG9lS1pKa0hQb3pmOHppQjNiS0V2dU9ySDF4V1VhbjFINnZOSDVRZEozOExDM1VmVkpYRHVrNUdGN1JzYnYwdHlTRzNQbk1ISXZ6MDdadUUvQ3hZS0ZScVRqQ2NFUDJHSFg4VzMzMVVvZDYzV0Y=",
+            "keygen": null,
+            "email": null,
+            "email_confirmado": 0,
+            "ntfy_identificador": "soft8",
+            "estado": 1,
+            "created_at": "2025-06-10T13:15:05.000000Z",
+            "updated_at": "2025-06-28T01:46:45.000000Z",
+            "deleted_at": null,
+            "cliente": null,
+            "roles": {
+                "idrol": 1,
+                "nombre": "Owner",
+                "permisos_crud": "RWD",
+                "estado": 1,
+                "created_at": "2025-06-10T13:09:30.000000Z",
+                "updated_at": "2025-06-10T13:09:30.000000Z",
+                "deleted_at": null,
+                "menu": [
+                    {
+                        "idmenu": 1,
+                        "orden": "01",
+                        "nombre": "Dashboards",
+                        "icono": "fas fa-chart-bar",
+                        "ruta": null,
+                        "es_submenu": 1,
+                        "estado": 1,
+                        "created_at": "2025-06-10T13:11:56.000000Z",
+                        "updated_at": "2025-06-10T13:13:19.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 1,
+                            "idmenu": 1
+                        }
+                    },
+                    {
+                        "idmenu": 2,
+                        "orden": "01.01",
+                        "nombre": "Dashboard General",
+                        "icono": "fas fa-chart-bar",
+                        "ruta": "dashboard",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-10T13:11:56.000000Z",
+                        "updated_at": "2025-06-22T10:30:09.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 1,
+                            "idmenu": 2
+                        }
+                    },
+                    {
+                        "idmenu": 3,
+                        "orden": "02",
+                        "nombre": "Creadores",
+                        "icono": "fa fa-cog",
+                        "ruta": null,
+                        "es_submenu": 1,
+                        "estado": 1,
+                        "created_at": "2025-06-10T13:12:53.000000Z",
+                        "updated_at": "2025-06-22T11:43:15.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 1,
+                            "idmenu": 3
+                        }
+                    },
+                    {
+                        "idmenu": 4,
+                        "orden": "03.02",
+                        "nombre": "Usuarios",
+                        "icono": "fas fa-user",
+                        "ruta": "usuarios",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-10T13:12:53.000000Z",
+                        "updated_at": "2025-06-22T12:26:36.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 1,
+                            "idmenu": 4
+                        }
+                    },
+                    {
+                        "idmenu": 5,
+                        "orden": "02.01",
+                        "nombre": "Menú de Opciones",
+                        "icono": "fas fa-prescription-bottle",
+                        "ruta": "menus",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-10T13:12:53.000000Z",
+                        "updated_at": "2025-06-25T08:44:16.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 1,
+                            "idmenu": 5
+                        }
+                    },
+                    {
+                        "idmenu": 6,
+                        "orden": "02.03",
+                        "nombre": "Roles",
+                        "icono": "fas fa-shield-alt",
+                        "ruta": "roles",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-10T13:12:53.000000Z",
+                        "updated_at": "2025-06-10T13:12:53.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 1,
+                            "idmenu": 6
+                        }
+                    },
+                    {
+                        "idmenu": 7,
+                        "orden": "03.99",
+                        "nombre": "Auditoría Usuarios",
+                        "icono": "fas fa-user-secret",
+                        "ruta": "audits",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-10T13:12:53.000000Z",
+                        "updated_at": "2025-06-25T08:44:20.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 1,
+                            "idmenu": 7
+                        }
+                    },
+                    {
+                        "idmenu": 8,
+                        "orden": "03.01",
+                        "nombre": "Configuracion General",
+                        "icono": "fa fa-cog",
+                        "ruta": "configs",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-10T13:12:53.000000Z",
+                        "updated_at": "2025-06-25T08:44:22.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 1,
+                            "idmenu": 8
+                        }
+                    },
+                    {
+                        "idmenu": 9,
+                        "orden": "03.03",
+                        "nombre": "Grupo de Usuarios",
+                        "icono": "fas fa-users",
+                        "ruta": "grupousuarios",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-22T11:22:14.000000Z",
+                        "updated_at": "2025-06-24T08:40:10.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 1,
+                            "idmenu": 9
+                        }
+                    },
+                    {
+                        "idmenu": 10,
+                        "orden": "03",
+                        "nombre": "Administración Servidores",
+                        "icono": "fa fa-cog",
+                        "ruta": null,
+                        "es_submenu": 1,
+                        "estado": 1,
+                        "created_at": "2025-06-22T11:27:02.000000Z",
+                        "updated_at": "2025-06-22T11:43:59.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 1,
+                            "idmenu": 10
+                        }
+                    },
+                    {
+                        "idmenu": 11,
+                        "orden": "02.03",
+                        "nombre": "Variables",
+                        "icono": "fas fa-superscript",
+                        "ruta": "variables",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-22T11:34:34.000000Z",
+                        "updated_at": "2025-06-22T11:34:34.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 1,
+                            "idmenu": 11
+                        }
+                    },
+                    {
+                        "idmenu": 12,
+                        "orden": "02.04",
+                        "nombre": "Clientes",
+                        "icono": "fas fa-briefcase",
+                        "ruta": "clientes",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-22T11:35:20.000000Z",
+                        "updated_at": "2025-06-22T11:35:20.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 1,
+                            "idmenu": 12
+                        }
+                    },
+                    {
+                        "idmenu": 13,
+                        "orden": "03.05",
+                        "nombre": "Templates de Comandos",
+                        "icono": "fas fa-terminal",
+                        "ruta": "templates",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-22T11:36:06.000000Z",
+                        "updated_at": "2025-06-22T11:38:25.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 1,
+                            "idmenu": 13
+                        }
+                    },
+                    {
+                        "idmenu": 14,
+                        "orden": "03.06",
+                        "nombre": "Scripts",
+                        "icono": "fas fa-superscript",
+                        "ruta": "scripts",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-22T11:37:54.000000Z",
+                        "updated_at": "2025-06-22T11:38:23.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 1,
+                            "idmenu": 14
+                        }
+                    },
+                    {
+                        "idmenu": 15,
+                        "orden": "03.04",
+                        "nombre": "Servidores",
+                        "icono": "fas fa-server",
+                        "ruta": "servidores",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-22T11:38:19.000000Z",
+                        "updated_at": "2025-06-22T12:26:42.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 1,
+                            "idmenu": 15
+                        }
+                    },
+                    {
+                        "idmenu": 16,
+                        "orden": "03.07",
+                        "nombre": "Procesos Pendientes",
+                        "icono": "fas fa-project-diagram",
+                        "ruta": "procesos",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-22T11:39:40.000000Z",
+                        "updated_at": "2025-06-22T11:40:08.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 1,
+                            "idmenu": 16
+                        }
+                    },
+                    {
+                        "idmenu": 17,
+                        "orden": "03.98",
+                        "nombre": "Auditoria Logs",
+                        "icono": "fas fa-traffic-light",
+                        "ruta": "logs",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-22T12:02:00.000000Z",
+                        "updated_at": "2025-06-22T12:02:00.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 1,
+                            "idmenu": 17
+                        }
+                    },
+                    {
+                        "idmenu": 18,
+                        "orden": "02.05",
+                        "nombre": "Generalidades",
+                        "icono": "fa fa-cog",
+                        "ruta": "generalidades",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-24T08:42:21.000000Z",
+                        "updated_at": "2025-06-24T08:42:29.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 1,
+                            "idmenu": 18
+                        }
+                    }
+                ]
+            },
+            "grupo": null
+        },
+        {
+            "idusuario": 2,
+            "idrol": 3,
+            "idcliente": 1,
+            "idgrupo_usuario": 1,
+            "nombre": "Servicio Nacional de Contratación Pública",
+            "usuario": "sncp",
+            "clave_expiracion": null,
+            "ultimo_logueo": null,
+            "numero_logueos": 0,
+            "numero_deslogueos": 0,
+            "token": null,
+            "keygen": null,
+            "email": null,
+            "email_confirmado": 0,
+            "ntfy_identificador": "",
+            "estado": 1,
+            "created_at": "2025-06-11T09:19:04.000000Z",
+            "updated_at": "2025-06-18T04:57:32.000000Z",
+            "deleted_at": null,
+            "cliente": {
+                "idcliente": 1,
+                "nombre": "SERCOP",
+                "identificacion": "1712030368001",
+                "direccion": "Plataforma Gubernamental Financiera, Avenida Amazonas, y, Quito 170506",
+                "telefono": "022440050",
+                "created_at": "2025-06-11T09:15:07.000000Z",
+                "updated_at": "2025-06-27T16:29:07.000000Z",
+                "deleted_at": null
+            },
+            "roles": {
+                "idrol": 3,
+                "nombre": "Clientes",
+                "permisos_crud": "RWD",
+                "estado": 1,
+                "created_at": "2025-06-10T13:09:57.000000Z",
+                "updated_at": "2025-06-10T13:09:57.000000Z",
+                "deleted_at": null,
+                "menu": [
+                    {
+                        "idmenu": 1,
+                        "orden": "01",
+                        "nombre": "Dashboards",
+                        "icono": "fas fa-chart-bar",
+                        "ruta": null,
+                        "es_submenu": 1,
+                        "estado": 1,
+                        "created_at": "2025-06-10T13:11:56.000000Z",
+                        "updated_at": "2025-06-10T13:13:19.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 1
+                        }
+                    },
+                    {
+                        "idmenu": 2,
+                        "orden": "01.01",
+                        "nombre": "Dashboard General",
+                        "icono": "fas fa-chart-bar",
+                        "ruta": "dashboard",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-10T13:11:56.000000Z",
+                        "updated_at": "2025-06-22T10:30:09.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 2
+                        }
+                    },
+                    {
+                        "idmenu": 4,
+                        "orden": "03.02",
+                        "nombre": "Usuarios",
+                        "icono": "fas fa-user",
+                        "ruta": "usuarios",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-10T13:12:53.000000Z",
+                        "updated_at": "2025-06-22T12:26:36.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 4
+                        }
+                    },
+                    {
+                        "idmenu": 7,
+                        "orden": "03.99",
+                        "nombre": "Auditoría Usuarios",
+                        "icono": "fas fa-user-secret",
+                        "ruta": "audits",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-10T13:12:53.000000Z",
+                        "updated_at": "2025-06-25T08:44:20.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 7
+                        }
+                    },
+                    {
+                        "idmenu": 8,
+                        "orden": "03.01",
+                        "nombre": "Configuracion General",
+                        "icono": "fa fa-cog",
+                        "ruta": "configs",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-10T13:12:53.000000Z",
+                        "updated_at": "2025-06-25T08:44:22.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 8
+                        }
+                    },
+                    {
+                        "idmenu": 9,
+                        "orden": "03.03",
+                        "nombre": "Grupo de Usuarios",
+                        "icono": "fas fa-users",
+                        "ruta": "grupousuarios",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-22T11:22:14.000000Z",
+                        "updated_at": "2025-06-24T08:40:10.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 9
+                        }
+                    },
+                    {
+                        "idmenu": 10,
+                        "orden": "03",
+                        "nombre": "Administración Servidores",
+                        "icono": "fa fa-cog",
+                        "ruta": null,
+                        "es_submenu": 1,
+                        "estado": 1,
+                        "created_at": "2025-06-22T11:27:02.000000Z",
+                        "updated_at": "2025-06-22T11:43:59.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 10
+                        }
+                    },
+                    {
+                        "idmenu": 13,
+                        "orden": "03.05",
+                        "nombre": "Templates de Comandos",
+                        "icono": "fas fa-terminal",
+                        "ruta": "templates",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-22T11:36:06.000000Z",
+                        "updated_at": "2025-06-22T11:38:25.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 13
+                        }
+                    },
+                    {
+                        "idmenu": 14,
+                        "orden": "03.06",
+                        "nombre": "Scripts",
+                        "icono": "fas fa-superscript",
+                        "ruta": "scripts",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-22T11:37:54.000000Z",
+                        "updated_at": "2025-06-22T11:38:23.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 14
+                        }
+                    },
+                    {
+                        "idmenu": 15,
+                        "orden": "03.04",
+                        "nombre": "Servidores",
+                        "icono": "fas fa-server",
+                        "ruta": "servidores",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-22T11:38:19.000000Z",
+                        "updated_at": "2025-06-22T12:26:42.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 15
+                        }
+                    },
+                    {
+                        "idmenu": 16,
+                        "orden": "03.07",
+                        "nombre": "Procesos Pendientes",
+                        "icono": "fas fa-project-diagram",
+                        "ruta": "procesos",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-22T11:39:40.000000Z",
+                        "updated_at": "2025-06-22T11:40:08.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 16
+                        }
+                    },
+                    {
+                        "idmenu": 17,
+                        "orden": "03.98",
+                        "nombre": "Auditoria Logs",
+                        "icono": "fas fa-traffic-light",
+                        "ruta": "logs",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-22T12:02:00.000000Z",
+                        "updated_at": "2025-06-22T12:02:00.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 17
+                        }
+                    }
+                ]
+            },
+            "grupo": {
+                "idgrupo_usuario": 1,
+                "idcliente": 1,
+                "nombre": "administradores",
+                "idgrupo": 580,
+                "created_at": "2025-06-11T09:16:44.000000Z",
+                "updated_at": "2025-06-11T09:48:48.000000Z",
+                "deleted_at": null
+            }
+        },
+        {
+            "idusuario": 3,
+            "idrol": 3,
+            "idcliente": 1,
+            "idgrupo_usuario": 1,
+            "nombre": "Hugo Herrera",
+            "usuario": "hugo.herrera",
+            "clave_expiracion": "2026-06-17 21:40:52",
+            "ultimo_logueo": "2025-06-17 22:27:19",
+            "numero_logueos": 17,
+            "numero_deslogueos": 0,
+            "token": null,
+            "keygen": null,
+            "email": null,
+            "email_confirmado": 0,
+            "ntfy_identificador": "",
+            "estado": 1,
+            "created_at": "2025-06-14T07:14:40.000000Z",
+            "updated_at": "2025-06-22T11:53:55.000000Z",
+            "deleted_at": null,
+            "cliente": {
+                "idcliente": 1,
+                "nombre": "SERCOP",
+                "identificacion": "1712030368001",
+                "direccion": "Plataforma Gubernamental Financiera, Avenida Amazonas, y, Quito 170506",
+                "telefono": "022440050",
+                "created_at": "2025-06-11T09:15:07.000000Z",
+                "updated_at": "2025-06-27T16:29:07.000000Z",
+                "deleted_at": null
+            },
+            "roles": {
+                "idrol": 3,
+                "nombre": "Clientes",
+                "permisos_crud": "RWD",
+                "estado": 1,
+                "created_at": "2025-06-10T13:09:57.000000Z",
+                "updated_at": "2025-06-10T13:09:57.000000Z",
+                "deleted_at": null,
+                "menu": [
+                    {
+                        "idmenu": 1,
+                        "orden": "01",
+                        "nombre": "Dashboards",
+                        "icono": "fas fa-chart-bar",
+                        "ruta": null,
+                        "es_submenu": 1,
+                        "estado": 1,
+                        "created_at": "2025-06-10T13:11:56.000000Z",
+                        "updated_at": "2025-06-10T13:13:19.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 1
+                        }
+                    },
+                    {
+                        "idmenu": 2,
+                        "orden": "01.01",
+                        "nombre": "Dashboard General",
+                        "icono": "fas fa-chart-bar",
+                        "ruta": "dashboard",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-10T13:11:56.000000Z",
+                        "updated_at": "2025-06-22T10:30:09.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 2
+                        }
+                    },
+                    {
+                        "idmenu": 4,
+                        "orden": "03.02",
+                        "nombre": "Usuarios",
+                        "icono": "fas fa-user",
+                        "ruta": "usuarios",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-10T13:12:53.000000Z",
+                        "updated_at": "2025-06-22T12:26:36.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 4
+                        }
+                    },
+                    {
+                        "idmenu": 7,
+                        "orden": "03.99",
+                        "nombre": "Auditoría Usuarios",
+                        "icono": "fas fa-user-secret",
+                        "ruta": "audits",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-10T13:12:53.000000Z",
+                        "updated_at": "2025-06-25T08:44:20.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 7
+                        }
+                    },
+                    {
+                        "idmenu": 8,
+                        "orden": "03.01",
+                        "nombre": "Configuracion General",
+                        "icono": "fa fa-cog",
+                        "ruta": "configs",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-10T13:12:53.000000Z",
+                        "updated_at": "2025-06-25T08:44:22.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 8
+                        }
+                    },
+                    {
+                        "idmenu": 9,
+                        "orden": "03.03",
+                        "nombre": "Grupo de Usuarios",
+                        "icono": "fas fa-users",
+                        "ruta": "grupousuarios",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-22T11:22:14.000000Z",
+                        "updated_at": "2025-06-24T08:40:10.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 9
+                        }
+                    },
+                    {
+                        "idmenu": 10,
+                        "orden": "03",
+                        "nombre": "Administración Servidores",
+                        "icono": "fa fa-cog",
+                        "ruta": null,
+                        "es_submenu": 1,
+                        "estado": 1,
+                        "created_at": "2025-06-22T11:27:02.000000Z",
+                        "updated_at": "2025-06-22T11:43:59.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 10
+                        }
+                    },
+                    {
+                        "idmenu": 13,
+                        "orden": "03.05",
+                        "nombre": "Templates de Comandos",
+                        "icono": "fas fa-terminal",
+                        "ruta": "templates",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-22T11:36:06.000000Z",
+                        "updated_at": "2025-06-22T11:38:25.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 13
+                        }
+                    },
+                    {
+                        "idmenu": 14,
+                        "orden": "03.06",
+                        "nombre": "Scripts",
+                        "icono": "fas fa-superscript",
+                        "ruta": "scripts",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-22T11:37:54.000000Z",
+                        "updated_at": "2025-06-22T11:38:23.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 14
+                        }
+                    },
+                    {
+                        "idmenu": 15,
+                        "orden": "03.04",
+                        "nombre": "Servidores",
+                        "icono": "fas fa-server",
+                        "ruta": "servidores",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-22T11:38:19.000000Z",
+                        "updated_at": "2025-06-22T12:26:42.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 15
+                        }
+                    },
+                    {
+                        "idmenu": 16,
+                        "orden": "03.07",
+                        "nombre": "Procesos Pendientes",
+                        "icono": "fas fa-project-diagram",
+                        "ruta": "procesos",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-22T11:39:40.000000Z",
+                        "updated_at": "2025-06-22T11:40:08.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 16
+                        }
+                    },
+                    {
+                        "idmenu": 17,
+                        "orden": "03.98",
+                        "nombre": "Auditoria Logs",
+                        "icono": "fas fa-traffic-light",
+                        "ruta": "logs",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-22T12:02:00.000000Z",
+                        "updated_at": "2025-06-22T12:02:00.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 17
+                        }
+                    }
+                ]
+            },
+            "grupo": {
+                "idgrupo_usuario": 1,
+                "idcliente": 1,
+                "nombre": "administradores",
+                "idgrupo": 580,
+                "created_at": "2025-06-11T09:16:44.000000Z",
+                "updated_at": "2025-06-11T09:48:48.000000Z",
+                "deleted_at": null
+            }
+        },
+        {
+            "idusuario": 6,
+            "idrol": 3,
+            "idcliente": 1,
+            "idgrupo_usuario": 1,
+            "nombre": "Santiago Borja",
+            "usuario": "santiago.borja",
+            "clave_expiracion": "2026-06-18 22:40:55",
+            "ultimo_logueo": "2025-06-27 20:07:20",
+            "numero_logueos": 61,
+            "numero_deslogueos": 0,
+            "token": null,
+            "keygen": null,
+            "email": null,
+            "email_confirmado": 0,
+            "ntfy_identificador": "santiago_borja",
+            "estado": 1,
+            "created_at": "2025-06-18T04:21:25.000000Z",
+            "updated_at": "2025-06-28T06:37:31.000000Z",
+            "deleted_at": null,
+            "cliente": {
+                "idcliente": 1,
+                "nombre": "SERCOP",
+                "identificacion": "1712030368001",
+                "direccion": "Plataforma Gubernamental Financiera, Avenida Amazonas, y, Quito 170506",
+                "telefono": "022440050",
+                "created_at": "2025-06-11T09:15:07.000000Z",
+                "updated_at": "2025-06-27T16:29:07.000000Z",
+                "deleted_at": null
+            },
+            "roles": {
+                "idrol": 3,
+                "nombre": "Clientes",
+                "permisos_crud": "RWD",
+                "estado": 1,
+                "created_at": "2025-06-10T13:09:57.000000Z",
+                "updated_at": "2025-06-10T13:09:57.000000Z",
+                "deleted_at": null,
+                "menu": [
+                    {
+                        "idmenu": 1,
+                        "orden": "01",
+                        "nombre": "Dashboards",
+                        "icono": "fas fa-chart-bar",
+                        "ruta": null,
+                        "es_submenu": 1,
+                        "estado": 1,
+                        "created_at": "2025-06-10T13:11:56.000000Z",
+                        "updated_at": "2025-06-10T13:13:19.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 1
+                        }
+                    },
+                    {
+                        "idmenu": 2,
+                        "orden": "01.01",
+                        "nombre": "Dashboard General",
+                        "icono": "fas fa-chart-bar",
+                        "ruta": "dashboard",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-10T13:11:56.000000Z",
+                        "updated_at": "2025-06-22T10:30:09.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 2
+                        }
+                    },
+                    {
+                        "idmenu": 4,
+                        "orden": "03.02",
+                        "nombre": "Usuarios",
+                        "icono": "fas fa-user",
+                        "ruta": "usuarios",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-10T13:12:53.000000Z",
+                        "updated_at": "2025-06-22T12:26:36.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 4
+                        }
+                    },
+                    {
+                        "idmenu": 7,
+                        "orden": "03.99",
+                        "nombre": "Auditoría Usuarios",
+                        "icono": "fas fa-user-secret",
+                        "ruta": "audits",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-10T13:12:53.000000Z",
+                        "updated_at": "2025-06-25T08:44:20.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 7
+                        }
+                    },
+                    {
+                        "idmenu": 8,
+                        "orden": "03.01",
+                        "nombre": "Configuracion General",
+                        "icono": "fa fa-cog",
+                        "ruta": "configs",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-10T13:12:53.000000Z",
+                        "updated_at": "2025-06-25T08:44:22.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 8
+                        }
+                    },
+                    {
+                        "idmenu": 9,
+                        "orden": "03.03",
+                        "nombre": "Grupo de Usuarios",
+                        "icono": "fas fa-users",
+                        "ruta": "grupousuarios",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-22T11:22:14.000000Z",
+                        "updated_at": "2025-06-24T08:40:10.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 9
+                        }
+                    },
+                    {
+                        "idmenu": 10,
+                        "orden": "03",
+                        "nombre": "Administración Servidores",
+                        "icono": "fa fa-cog",
+                        "ruta": null,
+                        "es_submenu": 1,
+                        "estado": 1,
+                        "created_at": "2025-06-22T11:27:02.000000Z",
+                        "updated_at": "2025-06-22T11:43:59.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 10
+                        }
+                    },
+                    {
+                        "idmenu": 13,
+                        "orden": "03.05",
+                        "nombre": "Templates de Comandos",
+                        "icono": "fas fa-terminal",
+                        "ruta": "templates",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-22T11:36:06.000000Z",
+                        "updated_at": "2025-06-22T11:38:25.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 13
+                        }
+                    },
+                    {
+                        "idmenu": 14,
+                        "orden": "03.06",
+                        "nombre": "Scripts",
+                        "icono": "fas fa-superscript",
+                        "ruta": "scripts",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-22T11:37:54.000000Z",
+                        "updated_at": "2025-06-22T11:38:23.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 14
+                        }
+                    },
+                    {
+                        "idmenu": 15,
+                        "orden": "03.04",
+                        "nombre": "Servidores",
+                        "icono": "fas fa-server",
+                        "ruta": "servidores",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-22T11:38:19.000000Z",
+                        "updated_at": "2025-06-22T12:26:42.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 15
+                        }
+                    },
+                    {
+                        "idmenu": 16,
+                        "orden": "03.07",
+                        "nombre": "Procesos Pendientes",
+                        "icono": "fas fa-project-diagram",
+                        "ruta": "procesos",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-22T11:39:40.000000Z",
+                        "updated_at": "2025-06-22T11:40:08.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 16
+                        }
+                    },
+                    {
+                        "idmenu": 17,
+                        "orden": "03.98",
+                        "nombre": "Auditoria Logs",
+                        "icono": "fas fa-traffic-light",
+                        "ruta": "logs",
+                        "es_submenu": 0,
+                        "estado": 1,
+                        "created_at": "2025-06-22T12:02:00.000000Z",
+                        "updated_at": "2025-06-22T12:02:00.000000Z",
+                        "deleted_at": null,
+                        "pivot": {
+                            "idrol": 3,
+                            "idmenu": 17
+                        }
+                    }
+                ]
+            },
+            "grupo": {
+                "idgrupo_usuario": 1,
+                "idcliente": 1,
+                "nombre": "administradores",
+                "idgrupo": 580,
+                "created_at": "2025-06-11T09:16:44.000000Z",
+                "updated_at": "2025-06-11T09:48:48.000000Z",
+                "deleted_at": null
+            }
+        }
+    ],
+    "message": ""
+}

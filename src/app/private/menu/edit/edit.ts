@@ -17,8 +17,8 @@ export class Edit {
   private readonly menuSvc = inject(Menuservice);
   private readonly func = inject(Functions);
 
-  title = 'Menu de Opciones';
-  rutas: Array<any> = ['Creadores', 'Menú de Opciones', "Edicion"];
+  // title = 'Menu de Opciones';
+  // rutas: Array<any> = ['Creadores', 'Menú de Opciones', "Edicion"];
 
   idmenu: string = "";
   rstData: any;

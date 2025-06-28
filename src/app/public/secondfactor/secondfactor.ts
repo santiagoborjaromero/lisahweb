@@ -77,8 +77,7 @@ export class Secondfactor {
           this.sessions.set('statusLogged', 'false');
           this.notiSvc.showError(err);
         }
-    })
-
+      })
     }catch(err){
       // console.log("█", err)
     }
@@ -116,6 +115,28 @@ export class Secondfactor {
   funcRegenerarCodigo(){
     clearInterval(this.timer)
     this.onTime();
+
+    //regenerarcodigo
+    this.func.showLoading("Regenerando Código");
+
+    try{
+      this.authSvc.regenerateCode().subscribe({
+        next: (resp:any) => {
+          this.func.closeSwal();
+          if (resp.status){
+          } else {
+            this.func.showMessage("error", "Verificación", resp.message);
+          }
+        },
+        error: (err:any) => {
+          this.func.closeSwal();
+          this.sessions.set('statusLogged', 'false');
+          this.notiSvc.showError(err);
+        }
+      })
+    }catch(err){
+      // console.log("█", err)
+    }
   }
 
 }
