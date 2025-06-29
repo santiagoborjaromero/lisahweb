@@ -1,0 +1,45 @@
+<app-breadcrums />
+<div class="content">
+  <app-header />
+
+  <div class="row barra-menu ">
+    <div class="col">
+      <!-- <strong >Filtro </strong> -->
+      <div class="col btn-group" role="group" aria-label="Basic">
+      </div>
+    </div>
+    <div class="col text-end">
+      <button (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1"><i class="fas fa-save"></i> Guardar</button>
+      <button (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1"><i class="fas fa-reply"></i> Cancelar</button>
+    </div>
+  </div>
+
+
+  <div class="container-fluid">
+    <div class="row contenido">
+      <div class="col">
+
+        <div class="row titulo">
+          <div class="col-12 d-flex justify-content-between">
+            <span> Información General </span>
+            <i class="far fa-question-circle text-primary"></i>
+          </div>
+        </div>
+
+        <div class="row">
+          
+					<div class="col-4 col-md-2 th text-end">Nombre Grupo</div>
+          <div class="col-8 col-md-4 td d-flex justify-content-around">
+            <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre grupo"/>
+          </div>
+
+          <div class="col-4 col-md-2 th text-end">IDGrupo en Servidor</div>
+          <div class="col-8 col-md-4 td d-flex justify-content-around">
+            <input type="text" name="nombre" id="nombre" class="form-control" placeholder="000"/>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

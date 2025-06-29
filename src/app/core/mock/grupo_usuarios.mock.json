@@ -1,0 +1,593 @@
+{
+    "status": true,
+    "data": [
+        {
+            "idgrupo_usuario": 1,
+            "idcliente": 1,
+            "nombre": "administradores",
+            "idgrupo": 580,
+            "created_at": "2025-06-11T09:16:44.000000Z",
+            "updated_at": "2025-06-11T09:48:48.000000Z",
+            "deleted_at": null,
+            "cliente": {
+                "idcliente": 1,
+                "nombre": "SERCOP",
+                "identificacion": "1712030368001",
+                "direccion": "Plataforma Gubernamental Financiera, Avenida Amazonas, y, Quito 170506",
+                "telefono": "022440050",
+                "created_at": "2025-06-11T09:15:07.000000Z",
+                "updated_at": "2025-06-27T16:29:07.000000Z",
+                "deleted_at": null
+            },
+            "usuarios": [
+                {
+                    "idusuario": 3,
+                    "idrol": 3,
+                    "idcliente": 1,
+                    "idgrupo_usuario": 1,
+                    "nombre": "Hugo Herrera",
+                    "usuario": "hugo.herrera",
+                    "clave_expiracion": "2026-06-17 21:40:52",
+                    "ultimo_logueo": "2025-06-17 22:27:19",
+                    "numero_logueos": 17,
+                    "numero_deslogueos": 0,
+                    "token": null,
+                    "keygen": null,
+                    "email": null,
+                    "email_confirmado": 0,
+                    "ntfy_identificador": null,
+                    "estado": 1,
+                    "created_at": "2025-06-14T07:14:40.000000Z",
+                    "updated_at": "2025-06-28T12:35:24.000000Z",
+                    "deleted_at": null
+                },
+                {
+                    "idusuario": 6,
+                    "idrol": 3,
+                    "idcliente": 1,
+                    "idgrupo_usuario": 1,
+                    "nombre": "Santiago Borja",
+                    "usuario": "santiago.borja",
+                    "clave_expiracion": "2026-06-18 22:40:55",
+                    "ultimo_logueo": "2025-06-28 21:36:53",
+                    "numero_logueos": 64,
+                    "numero_deslogueos": 0,
+                    "token": "WTBGaVFuSjZNMHg2ZVRSVlkzZG9lUDZVRUgyOWNSbHhGUDluQzNOSGphYnd0a2R5ekxOSit5M2FYTHo1cUE1anErNjN6Sk1qTC82YXZoaEtCNE12U3RrTXhubXFTU1p3OHNKU25IWmlEVHphTVNieERNQ1gxbzhTQjhQMG5KdGk=",
+                    "keygen": null,
+                    "email": "santiago.borja@gmail.com",
+                    "email_confirmado": 0,
+                    "ntfy_identificador": "santiago_borja",
+                    "estado": 1,
+                    "created_at": "2025-06-18T04:21:25.000000Z",
+                    "updated_at": "2025-06-29T02:36:53.000000Z",
+                    "deleted_at": null
+                },
+                {
+                    "idusuario": 18,
+                    "idrol": 3,
+                    "idcliente": 1,
+                    "idgrupo_usuario": 1,
+                    "nombre": "Jorge Lopez",
+                    "usuario": "jorge.lopez",
+                    "clave_expiracion": "2026-06-28 21:04:11",
+                    "ultimo_logueo": null,
+                    "numero_logueos": 0,
+                    "numero_deslogueos": 0,
+                    "token": null,
+                    "keygen": null,
+                    "email": "jorge.lopez@gmail.com",
+                    "email_confirmado": 0,
+                    "ntfy_identificador": null,
+                    "estado": 1,
+                    "created_at": "2025-06-29T02:04:11.000000Z",
+                    "updated_at": "2025-06-29T02:04:11.000000Z",
+                    "deleted_at": null
+                }
+            ],
+            "rolmenugrupos": [
+                {
+                    "idrolmenu_grupos": 1,
+                    "idgrupo_usuario": 1,
+                    "idrol_menu": 34,
+                    "scope": "RWD",
+                    "created_at": "2025-06-29T10:21:18.000000Z",
+                    "updated_at": "2025-06-29T10:21:18.000000Z",
+                    "deleted_at": null,
+                    "rolmenu": [
+                        {
+                            "idrol_menu": 34,
+                            "idrol": 3,
+                            "idmenu": 1,
+                            "created_at": "2025-06-22T11:58:37.000000Z",
+                            "updated_at": "2025-06-22T11:58:37.000000Z",
+                            "deleted_at": null,
+                            "menu": [
+                                {
+                                    "idmenu": 1,
+                                    "orden": "01",
+                                    "nombre": "Dashboards",
+                                    "icono": "fas fa-chart-bar",
+                                    "ruta": null,
+                                    "es_submenu": 1,
+                                    "estado": 1,
+                                    "created_at": "2025-06-10T13:11:56.000000Z",
+                                    "updated_at": "2025-06-10T13:13:19.000000Z",
+                                    "deleted_at": null
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "idrolmenu_grupos": 2,
+                    "idgrupo_usuario": 1,
+                    "idrol_menu": 35,
+                    "scope": "RWD",
+                    "created_at": "2025-06-29T10:21:18.000000Z",
+                    "updated_at": "2025-06-29T10:21:18.000000Z",
+                    "deleted_at": null,
+                    "rolmenu": [
+                        {
+                            "idrol_menu": 35,
+                            "idrol": 3,
+                            "idmenu": 2,
+                            "created_at": "2025-06-22T11:58:37.000000Z",
+                            "updated_at": "2025-06-22T11:58:37.000000Z",
+                            "deleted_at": null,
+                            "menu": [
+                                {
+                                    "idmenu": 2,
+                                    "orden": "01.01",
+                                    "nombre": "Dashboard General",
+                                    "icono": "fas fa-chart-bar",
+                                    "ruta": "dashboard",
+                                    "es_submenu": 0,
+                                    "estado": 1,
+                                    "created_at": "2025-06-10T13:11:56.000000Z",
+                                    "updated_at": "2025-06-22T10:30:09.000000Z",
+                                    "deleted_at": null
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "idrolmenu_grupos": 3,
+                    "idgrupo_usuario": 1,
+                    "idrol_menu": 36,
+                    "scope": "RWD",
+                    "created_at": "2025-06-29T10:21:18.000000Z",
+                    "updated_at": "2025-06-29T10:21:18.000000Z",
+                    "deleted_at": null,
+                    "rolmenu": [
+                        {
+                            "idrol_menu": 36,
+                            "idrol": 3,
+                            "idmenu": 4,
+                            "created_at": "2025-06-22T11:58:37.000000Z",
+                            "updated_at": "2025-06-26T08:40:04.000000Z",
+                            "deleted_at": null,
+                            "menu": [
+                                {
+                                    "idmenu": 4,
+                                    "orden": "03.03",
+                                    "nombre": "Usuarios",
+                                    "icono": "fas fa-user",
+                                    "ruta": "usuarios",
+                                    "es_submenu": 0,
+                                    "estado": 1,
+                                    "created_at": "2025-06-10T13:12:53.000000Z",
+                                    "updated_at": "2025-06-29T07:36:29.000000Z",
+                                    "deleted_at": null
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "idrolmenu_grupos": 4,
+                    "idgrupo_usuario": 1,
+                    "idrol_menu": 45,
+                    "scope": "RWD",
+                    "created_at": "2025-06-29T10:21:18.000000Z",
+                    "updated_at": "2025-06-29T10:21:18.000000Z",
+                    "deleted_at": null,
+                    "rolmenu": [
+                        {
+                            "idrol_menu": 45,
+                            "idrol": 3,
+                            "idmenu": 7,
+                            "created_at": "2025-06-22T11:58:37.000000Z",
+                            "updated_at": "2025-06-26T08:40:04.000000Z",
+                            "deleted_at": null,
+                            "menu": [
+                                {
+                                    "idmenu": 7,
+                                    "orden": "03.99",
+                                    "nombre": "Auditoría Usuarios",
+                                    "icono": "fas fa-user-secret",
+                                    "ruta": "audits",
+                                    "es_submenu": 0,
+                                    "estado": 1,
+                                    "created_at": "2025-06-10T13:12:53.000000Z",
+                                    "updated_at": "2025-06-25T08:44:20.000000Z",
+                                    "deleted_at": null
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "idrolmenu_grupos": 5,
+                    "idgrupo_usuario": 1,
+                    "idrol_menu": 37,
+                    "scope": "RWD",
+                    "created_at": "2025-06-29T10:21:18.000000Z",
+                    "updated_at": "2025-06-29T10:21:18.000000Z",
+                    "deleted_at": null,
+                    "rolmenu": [
+                        {
+                            "idrol_menu": 37,
+                            "idrol": 3,
+                            "idmenu": 8,
+                            "created_at": "2025-06-22T11:58:37.000000Z",
+                            "updated_at": "2025-06-26T08:40:04.000000Z",
+                            "deleted_at": null,
+                            "menu": [
+                                {
+                                    "idmenu": 8,
+                                    "orden": "03.01",
+                                    "nombre": "Configuracion General",
+                                    "icono": "fa fa-cog",
+                                    "ruta": "configs",
+                                    "es_submenu": 0,
+                                    "estado": 1,
+                                    "created_at": "2025-06-10T13:12:53.000000Z",
+                                    "updated_at": "2025-06-25T08:44:22.000000Z",
+                                    "deleted_at": null
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "idrolmenu_grupos": 6,
+                    "idgrupo_usuario": 1,
+                    "idrol_menu": 38,
+                    "scope": "RWD",
+                    "created_at": "2025-06-29T10:21:18.000000Z",
+                    "updated_at": "2025-06-29T10:21:18.000000Z",
+                    "deleted_at": null,
+                    "rolmenu": [
+                        {
+                            "idrol_menu": 38,
+                            "idrol": 3,
+                            "idmenu": 9,
+                            "created_at": "2025-06-22T11:58:37.000000Z",
+                            "updated_at": "2025-06-26T08:40:04.000000Z",
+                            "deleted_at": null,
+                            "menu": [
+                                {
+                                    "idmenu": 9,
+                                    "orden": "03.02",
+                                    "nombre": "Grupo de Usuarios",
+                                    "icono": "fas fa-users",
+                                    "ruta": "grupousuarios",
+                                    "es_submenu": 0,
+                                    "estado": 1,
+                                    "created_at": "2025-06-22T11:22:14.000000Z",
+                                    "updated_at": "2025-06-29T07:36:30.000000Z",
+                                    "deleted_at": null
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "idrolmenu_grupos": 7,
+                    "idgrupo_usuario": 1,
+                    "idrol_menu": 49,
+                    "scope": "RWD",
+                    "created_at": "2025-06-29T10:21:18.000000Z",
+                    "updated_at": "2025-06-29T10:21:18.000000Z",
+                    "deleted_at": null,
+                    "rolmenu": [
+                        {
+                            "idrol_menu": 49,
+                            "idrol": 3,
+                            "idmenu": 10,
+                            "created_at": "2025-06-22T11:58:37.000000Z",
+                            "updated_at": "2025-06-26T08:40:04.000000Z",
+                            "deleted_at": null,
+                            "menu": [
+                                {
+                                    "idmenu": 10,
+                                    "orden": "03",
+                                    "nombre": "Administración Servidores",
+                                    "icono": "fa fa-cog",
+                                    "ruta": null,
+                                    "es_submenu": 1,
+                                    "estado": 1,
+                                    "created_at": "2025-06-22T11:27:02.000000Z",
+                                    "updated_at": "2025-06-22T11:43:59.000000Z",
+                                    "deleted_at": null
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "idrolmenu_grupos": 8,
+                    "idgrupo_usuario": 1,
+                    "idrol_menu": 42,
+                    "scope": "RWD",
+                    "created_at": "2025-06-29T10:21:18.000000Z",
+                    "updated_at": "2025-06-29T10:21:18.000000Z",
+                    "deleted_at": null,
+                    "rolmenu": [
+                        {
+                            "idrol_menu": 42,
+                            "idrol": 3,
+                            "idmenu": 13,
+                            "created_at": "2025-06-22T11:58:37.000000Z",
+                            "updated_at": "2025-06-26T08:40:04.000000Z",
+                            "deleted_at": null,
+                            "menu": [
+                                {
+                                    "idmenu": 13,
+                                    "orden": "03.05",
+                                    "nombre": "Templates de Comandos",
+                                    "icono": "fas fa-terminal",
+                                    "ruta": "templates",
+                                    "es_submenu": 0,
+                                    "estado": 1,
+                                    "created_at": "2025-06-22T11:36:06.000000Z",
+                                    "updated_at": "2025-06-22T11:38:25.000000Z",
+                                    "deleted_at": null
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "idrolmenu_grupos": 9,
+                    "idgrupo_usuario": 1,
+                    "idrol_menu": 44,
+                    "scope": "RWD",
+                    "created_at": "2025-06-29T10:21:18.000000Z",
+                    "updated_at": "2025-06-29T10:21:18.000000Z",
+                    "deleted_at": null,
+                    "rolmenu": [
+                        {
+                            "idrol_menu": 44,
+                            "idrol": 3,
+                            "idmenu": 14,
+                            "created_at": "2025-06-22T11:58:37.000000Z",
+                            "updated_at": "2025-06-26T08:40:04.000000Z",
+                            "deleted_at": null,
+                            "menu": [
+                                {
+                                    "idmenu": 14,
+                                    "orden": "03.06",
+                                    "nombre": "Scripts",
+                                    "icono": "fas fa-superscript",
+                                    "ruta": "scripts",
+                                    "es_submenu": 0,
+                                    "estado": 1,
+                                    "created_at": "2025-06-22T11:37:54.000000Z",
+                                    "updated_at": "2025-06-22T11:38:23.000000Z",
+                                    "deleted_at": null
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "idrolmenu_grupos": 10,
+                    "idgrupo_usuario": 1,
+                    "idrol_menu": 41,
+                    "scope": "RWD",
+                    "created_at": "2025-06-29T10:21:18.000000Z",
+                    "updated_at": "2025-06-29T10:21:18.000000Z",
+                    "deleted_at": null,
+                    "rolmenu": [
+                        {
+                            "idrol_menu": 41,
+                            "idrol": 3,
+                            "idmenu": 15,
+                            "created_at": "2025-06-22T11:58:37.000000Z",
+                            "updated_at": "2025-06-26T08:40:04.000000Z",
+                            "deleted_at": null,
+                            "menu": [
+                                {
+                                    "idmenu": 15,
+                                    "orden": "03.04",
+                                    "nombre": "Servidores",
+                                    "icono": "fas fa-server",
+                                    "ruta": "servidores",
+                                    "es_submenu": 0,
+                                    "estado": 1,
+                                    "created_at": "2025-06-22T11:38:19.000000Z",
+                                    "updated_at": "2025-06-22T12:26:42.000000Z",
+                                    "deleted_at": null
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "idrolmenu_grupos": 11,
+                    "idgrupo_usuario": 1,
+                    "idrol_menu": 39,
+                    "scope": "RWD",
+                    "created_at": "2025-06-29T10:21:18.000000Z",
+                    "updated_at": "2025-06-29T10:21:18.000000Z",
+                    "deleted_at": null,
+                    "rolmenu": [
+                        {
+                            "idrol_menu": 39,
+                            "idrol": 3,
+                            "idmenu": 16,
+                            "created_at": "2025-06-22T11:58:37.000000Z",
+                            "updated_at": "2025-06-26T08:40:04.000000Z",
+                            "deleted_at": null,
+                            "menu": [
+                                {
+                                    "idmenu": 16,
+                                    "orden": "03.07",
+                                    "nombre": "Procesos Pendientes",
+                                    "icono": "fas fa-project-diagram",
+                                    "ruta": "procesos",
+                                    "es_submenu": 0,
+                                    "estado": 1,
+                                    "created_at": "2025-06-22T11:39:40.000000Z",
+                                    "updated_at": "2025-06-22T11:40:08.000000Z",
+                                    "deleted_at": null
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "idrolmenu_grupos": 12,
+                    "idgrupo_usuario": 1,
+                    "idrol_menu": 40,
+                    "scope": "RWD",
+                    "created_at": "2025-06-29T10:21:18.000000Z",
+                    "updated_at": "2025-06-29T10:21:18.000000Z",
+                    "deleted_at": null,
+                    "rolmenu": [
+                        {
+                            "idrol_menu": 40,
+                            "idrol": 3,
+                            "idmenu": 17,
+                            "created_at": "2025-06-22T11:58:37.000000Z",
+                            "updated_at": "2025-06-26T08:40:04.000000Z",
+                            "deleted_at": null,
+                            "menu": [
+                                {
+                                    "idmenu": 17,
+                                    "orden": "03.98",
+                                    "nombre": "Auditoria Logs",
+                                    "icono": "fas fa-traffic-light",
+                                    "ruta": "logs",
+                                    "es_submenu": 0,
+                                    "estado": 1,
+                                    "created_at": "2025-06-22T12:02:00.000000Z",
+                                    "updated_at": "2025-06-22T12:02:00.000000Z",
+                                    "deleted_at": null
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "idgrupo_usuario": 2,
+            "idcliente": 1,
+            "nombre": "operacionesti",
+            "idgrupo": 852,
+            "created_at": "2025-06-11T09:16:56.000000Z",
+            "updated_at": "2025-06-11T09:48:50.000000Z",
+            "deleted_at": null,
+            "cliente": {
+                "idcliente": 1,
+                "nombre": "SERCOP",
+                "identificacion": "1712030368001",
+                "direccion": "Plataforma Gubernamental Financiera, Avenida Amazonas, y, Quito 170506",
+                "telefono": "022440050",
+                "created_at": "2025-06-11T09:15:07.000000Z",
+                "updated_at": "2025-06-27T16:29:07.000000Z",
+                "deleted_at": null
+            },
+            "usuarios": [],
+            "rolmenugrupos": []
+        },
+        {
+            "idgrupo_usuario": 3,
+            "idcliente": 1,
+            "nombre": "seguridad",
+            "idgrupo": 910,
+            "created_at": "2025-06-11T09:17:06.000000Z",
+            "updated_at": "2025-06-11T09:48:56.000000Z",
+            "deleted_at": null,
+            "cliente": {
+                "idcliente": 1,
+                "nombre": "SERCOP",
+                "identificacion": "1712030368001",
+                "direccion": "Plataforma Gubernamental Financiera, Avenida Amazonas, y, Quito 170506",
+                "telefono": "022440050",
+                "created_at": "2025-06-11T09:15:07.000000Z",
+                "updated_at": "2025-06-27T16:29:07.000000Z",
+                "deleted_at": null
+            },
+            "usuarios": [],
+            "rolmenugrupos": []
+        },
+        {
+            "idgrupo_usuario": 4,
+            "idcliente": 1,
+            "nombre": "desarrollo",
+            "idgrupo": 853,
+            "created_at": "2025-06-11T09:29:26.000000Z",
+            "updated_at": "2025-06-11T09:48:57.000000Z",
+            "deleted_at": null,
+            "cliente": {
+                "idcliente": 1,
+                "nombre": "SERCOP",
+                "identificacion": "1712030368001",
+                "direccion": "Plataforma Gubernamental Financiera, Avenida Amazonas, y, Quito 170506",
+                "telefono": "022440050",
+                "created_at": "2025-06-11T09:15:07.000000Z",
+                "updated_at": "2025-06-27T16:29:07.000000Z",
+                "deleted_at": null
+            },
+            "usuarios": [],
+            "rolmenugrupos": []
+        },
+        {
+            "idgrupo_usuario": 5,
+            "idcliente": 1,
+            "nombre": "gestion",
+            "idgrupo": 854,
+            "created_at": "2025-06-11T09:29:36.000000Z",
+            "updated_at": "2025-06-11T09:49:02.000000Z",
+            "deleted_at": null,
+            "cliente": {
+                "idcliente": 1,
+                "nombre": "SERCOP",
+                "identificacion": "1712030368001",
+                "direccion": "Plataforma Gubernamental Financiera, Avenida Amazonas, y, Quito 170506",
+                "telefono": "022440050",
+                "created_at": "2025-06-11T09:15:07.000000Z",
+                "updated_at": "2025-06-27T16:29:07.000000Z",
+                "deleted_at": null
+            },
+            "usuarios": [],
+            "rolmenugrupos": []
+        },
+        {
+            "idgrupo_usuario": 6,
+            "idcliente": 1,
+            "nombre": "analisislog",
+            "idgrupo": 855,
+            "created_at": "2025-06-11T09:46:19.000000Z",
+            "updated_at": "2025-06-11T09:49:06.000000Z",
+            "deleted_at": null,
+            "cliente": {
+                "idcliente": 1,
+                "nombre": "SERCOP",
+                "identificacion": "1712030368001",
+                "direccion": "Plataforma Gubernamental Financiera, Avenida Amazonas, y, Quito 170506",
+                "telefono": "022440050",
+                "created_at": "2025-06-11T09:15:07.000000Z",
+                "updated_at": "2025-06-27T16:29:07.000000Z",
+                "deleted_at": null
+            },
+            "usuarios": [],
+            "rolmenugrupos": []
+        }
+    ],
+    "message": ""
+}

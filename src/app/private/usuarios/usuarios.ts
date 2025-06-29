@@ -47,7 +47,7 @@ export class Usuarios {
 
   ngOnInit(): void {
     this.user = JSON.parse(this.sessions.get('user'));
-    console.log(this.user)
+    // console.log(this.user)
 
     if (this.user.idrol > 1) {
       let scope = this.user.roles.permisos_crud.split("");

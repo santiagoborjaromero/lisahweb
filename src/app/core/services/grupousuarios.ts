@@ -36,6 +36,14 @@ export class GrupoUsuarioService {
     return this.http.get(`${this.base_url}grupousuarios`, options);
   }
 
+  getAllFilters(accion:any=""): Observable<any> {
+    this.headers = new HttpHeaders(this.headerHlp.getWithToken());
+    let options = {
+      headers: this.headers,
+    };
+    return this.http.get(`${this.base_url}grupousuarios_filter/${accion}`, options);
+  }
+
   getAllFromClient(idcliente:any): Observable<any> {
     this.headers = new HttpHeaders(this.headerHlp.getWithToken());
     let options = {
