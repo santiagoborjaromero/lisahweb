@@ -34,6 +34,14 @@ export class UsuarioService {
       headers: this.headers,
     };
     return this.http.get(`${this.base_url}usuarios`, options);
+
+  }
+  getAllFilters(accion:string = ""): Observable<any> {
+    this.headers = new HttpHeaders(this.headerHlp.getWithToken());
+    let options = {
+      headers: this.headers,
+    };
+    return this.http.get(`${this.base_url}usuarios_filter/${accion}`, options);
   }
 
   getOne(id: any): Observable<any> {

@@ -2,9 +2,16 @@
 <div class="content">
   <app-header />
 
-  <div class="buttons-grup mb-2 text-end">
-    <button (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1"><i class="fas fa-save"></i> Guardar</button>
-    <button (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1"><i class="fas fa-reply"></i> Cancelar</button>
+  <div class="row barra-menu ">
+    <div class="col">
+      <!-- <strong >Filtro </strong> -->
+      <div class="col btn-group" role="group" aria-label="Basic">
+      </div>
+    </div>
+    <div class="col text-end">
+      <button (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1"><i class="fas fa-save"></i> Guardar</button>
+      <button (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1"><i class="fas fa-reply"></i> Cancelar</button>
+    </div>
   </div>
 
 

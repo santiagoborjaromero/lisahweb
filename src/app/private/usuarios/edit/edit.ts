@@ -66,15 +66,17 @@ export class Edit {
 
     if (this.user.idrol == 1){
       this.getClientes();
-      
     } else{
       this.formData.idrol = this.user.idrol;
       this.formData.idcliente = this.user.idcliente;
     }
+
+    this.getGrupoUsuarios();
   }
 
   getData(){
     this.rstData = null;
+
     this.func.showLoading('Cargando');
 
     this.userSvc.getOne(this.idusuario).subscribe({

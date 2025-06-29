@@ -37,7 +37,13 @@ export class Usuarios {
   public id_selected: string = '';
   public is_deleted: any = null;
 
+  public canR: boolean =  false;
+  public canW: boolean =  false;
+  public canD: boolean =  false;
+
   lstData: Array<any> = [];
+
+  accion:string = "activos";
 
   ngOnInit(): void {
     this.user = JSON.parse(this.sessions.get('user'));
@@ -45,6 +51,13 @@ export class Usuarios {
 
     if (this.user.idrol > 1) {
       let scope = this.user.roles.permisos_crud.split("");
+      this.canR = scope[0] == "R" ? true : false ;
+      this.canW = scope[1] == "W" ? true : false ;
+      this.canD = scope[2] == "D" ? true : false ;
+
+      if (!this.canR){
+        this.func.showMessage("info", "Usuarios", "No tiene permisos para leer");
+      }
     }
 
   }
@@ -60,8 +73,10 @@ export class Usuarios {
   getData() {
     this.lstData = [];
     this.func.showLoading('Cargando');
+    this.id_selected = "";
+    this.is_deleted = "";
 
-    this.userSvc.getAll().subscribe({
+    this.userSvc.getAllFilters(this.accion).subscribe({
       next: (resp: any) => {
         // console.log(resp);
         this.func.closeSwal();
@@ -111,6 +126,7 @@ export class Usuarios {
       hide: true,
     });
 
+
     if (this.user.idrol != 3) {
       this.gridOptions.columnDefs?.push({
         headerName: 'Cliente',
@@ -122,7 +138,7 @@ export class Usuarios {
       });
     }
 
-    if (this.user.idrol != 3) {
+    if (this.user.idrol == 3) {
       this.gridOptions.columnDefs?.push(
         {
           headerName: 'Grupo',
@@ -217,6 +233,8 @@ export class Usuarios {
         },
       );
     }
+
+    
 
     that.gridApi = createGrid(
       document.querySelector<HTMLElement>('#myGrid')!,

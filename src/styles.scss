@@ -248,9 +248,19 @@ ul.menu{
 }
 
 
+.barra-menu{
+    background-color: #dbdbdb;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-top: 1px solid #b9b9b9;
+    border-bottom: 1px solid #b9b9b9;
+    margin-bottom: 5px;
+}
+
 
 @media (max-width:400px){
     .bg-barra{
         background-color: #ffffff;
     }
 }
+
