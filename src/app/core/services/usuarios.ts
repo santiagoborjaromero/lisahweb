@@ -72,5 +72,13 @@ export class UsuarioService {
     return this.http.delete(`${this.base_url}usuario/${id}`, options);
   }
 
+  recovery(id: any): Observable<any> {
+    this.headers = new HttpHeaders(this.headerHlp.getWithToken());
+    let options = {
+      headers: this.headers,
+    };
+    return this.http.put(`${this.base_url}usuario_recuperar/${id}`, null, options);
+  }
+
  
 }

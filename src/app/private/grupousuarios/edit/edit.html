@@ -2,23 +2,24 @@
 <div class="content">
   <app-header />
 
-  <div class="row barra-menu ">
+  <div class="row barra-menu">
     <div class="col">
       <!-- <strong >Filtro </strong> -->
-      <div class="col btn-group" role="group" aria-label="Basic">
-      </div>
+      <div class="col btn-group" role="group" aria-label="Basic"></div>
     </div>
     <div class="col text-end">
-      <button (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1"><i class="fas fa-save"></i> Guardar</button>
-      <button (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1"><i class="fas fa-reply"></i> Cancelar</button>
+      <button (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1">
+        <i class="fas fa-save"></i> Guardar
+      </button>
+      <button (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1">
+        <i class="fas fa-reply"></i> Cancelar
+      </button>
     </div>
   </div>
-
 
   <div class="container-fluid">
     <div class="row contenido">
       <div class="col">
-
         <div class="row titulo">
           <div class="col-12 d-flex justify-content-between">
             <span> Información General </span>
@@ -27,17 +28,101 @@
         </div>
 
         <div class="row">
-          
-					<div class="col-4 col-md-2 th text-end">Nombre Grupo</div>
+          <div class="col-4 col-md-2 th text-end">Nombre Grupo</div>
           <div class="col-8 col-md-4 td d-flex justify-content-around">
-            <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre grupo"/>
+            <input
+              type="text"
+              name="nombre"
+              id="nombre"
+              class="form-control"
+              placeholder="Nombre grupo"
+              [(ngModel)]="formData.nombre"
+            />
           </div>
 
           <div class="col-4 col-md-2 th text-end">IDGrupo en Servidor</div>
           <div class="col-8 col-md-4 td d-flex justify-content-around">
-            <input type="text" name="nombre" id="nombre" class="form-control" placeholder="000"/>
+            <input
+              type="text"
+              name="nombre"
+              id="nombre"
+              class="form-control"
+              placeholder="000"
+              [(ngModel)]="formData.idgrupo"
+            />
           </div>
+        </div>
 
+        <div class="row titulo">
+          <div class="col-12 d-flex justify-content-between">
+            <span> Opciones de Menú</span>
+            <i class="far fa-question-circle text-primary"></i>
+          </div>
+        </div>
+
+        <div class="row">
+          <!-- <div class="col-4 col-md-2 th text-end">
+            <input class="form-check-input t20" type="checkbox" role="switch" id="switchCheckChecked" [checked]="item.check">
+          </div> -->
+
+          <!-- <div class="col-8 col-md-12  text-start"> -->
+            <table class="table table-striped table-hover ">
+              <thead class="th">
+                <tr>
+                  <th width="5% text-start"><input class="form-check-input t18" [checked]="selectall" (click)="selectAll()" type="checkbox"></th>
+                  <th width="5% text-start">Lectura</th>
+                  <th width="5% text-start">Escritura</th>
+                  <th width="5% text-start">Borrado</th>
+                  <th>Opcion</th>
+                </tr>
+              </thead>
+              <tbody class="td">
+                @for (item of lstMenu; track $index) {
+                  <tr class="td">
+                    <td class="td">
+                      <div class="form-checkXXX form-switchXXX">
+                        <input class="form-check-input t18" type="checkbox" [(ngModel)]="item.check" [checked]="item.check" role="switch" id="menu{{item.idrol_menu}}">
+                      </div>
+                    </td>
+                    <td class="td">
+                      <div class="form-checkXXX form-switchXXX">
+                        <input class="form-check-input t18" type="checkbox" [(ngModel)]="item.r" [checked]="item.r" role="switch" id="menu{{item.idrol_menu}}">
+                      </div>
+                    </td>
+                    <td class="td">
+                      <div class="form-checkXXX form-switchXXX">
+                        <input class="form-check-input t18" type="checkbox" [(ngModel)]="item.w" [checked]="item.w" role="switch" id="menu{{item.idrol_menu}}">
+                      </div>
+                    </td>
+                    <td class="td">
+                      <div class="form-checkXXX form-switchXXX">
+                        <input class="form-check-input t18" type="checkbox" [(ngModel)]="item.d" [checked]="item.d" role="switch" id="menu{{item.idrol_menu}}">
+                      </div>
+                    </td>
+                    <td>
+                      @if(item.es_submenu == 1){
+                        <strong class="">{{item.nombre}}</strong>
+                      }@else {
+                        <strong class="text-dark"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong>
+                        <span class="">{{item.nombre}}</span>
+                      }
+                      <!-- <kbd class="bg-white text-dark mr-2">{{item.orden}}</kbd> -->
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+
+            <!-- 
+              <div class="form-check form-switch">
+                <input class="form-check-input t20" type="checkbox" role="switch" id="switchCheckChecked" [checked]="item.check">
+                <label class="form-check-label" for="switchCheckChecked">
+                  <span class="text-secondary">{{item.es_submenu == 1 ? '' : ' └─── '}}</span>
+                  <kbd class="bg-success text-white mr-2">{{item.orden}}</kbd>
+                  <span class="text-primary">{{item.nombre}}</span>
+                </label>
+              </div> -->
+          <!-- </div> -->
         </div>
       </div>
     </div>

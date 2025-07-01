@@ -83,12 +83,15 @@ export class Grupousuarios {
     this.id_selected = '';
     this.is_deleted = '';
 
+    console.log(this.accion)
+
     this.grupoSvc.getAllFilters(this.accion).subscribe({
       next: (resp: any) => {
         console.log(resp);
         this.func.closeSwal();
         if (resp.status) {
           this.lstData = resp.data;
+
           this.refreshAll();
         } else {
           this.func;
@@ -186,7 +189,7 @@ export class Grupousuarios {
     this.func.goRoute(`admin/grupousuario/${id ? id : this.id_selected}`, true);
   }
 
-  funcDelete(action = '', keyword = 'delete') {
+  procesoEspecial(action = '', keyword = 'delete') {
     if (this.id_selected == '') {
       this.func.showMessage(
         'error',
@@ -222,9 +225,11 @@ export class Grupousuarios {
       },
     }).then((res) => {
       if (res.isConfirmed) {
-        console.log('action', keyword);
+        // console.log('action', keyword);
         if (keyword == 'eliminar') {
           this.procesoDelete();
+        }else if(keyword == "recuperar"){
+          this.procesoRestore();
         }
       }
     });
@@ -233,12 +238,14 @@ export class Grupousuarios {
   procesoDelete() {
     this.func.showLoading('Eliminando');
 
-    this.userSvc.delete(this.id_selected).subscribe({
+    this.grupoSvc.delete(this.id_selected).subscribe({
       next: (resp: any) => {
-        // console.log(resp);
+        // console.log("DELETE", resp);
         this.func.closeSwal();
         if (resp.status) {
-          this.getData();
+          setTimeout(()=>{
+            this.getData();
+          },500)
         } else {
           this.func;
         }
@@ -249,5 +256,23 @@ export class Grupousuarios {
     });
   }
 
-  funcRestore() {}
+  procesoRestore() {
+    this.func.showLoading('Recuperando');
+
+    this.grupoSvc.recovery(this.id_selected).subscribe({
+      next: (resp: any) => {
+        this.func.closeSwal();
+        if (resp.status) {
+          setTimeout(()=>{
+            this.getData();
+          },500)
+        } else {
+          this.func;
+        }
+      },
+      error: (err: any) => {
+        this.func.closeSwal();
+      },
+    });
+  }
 }

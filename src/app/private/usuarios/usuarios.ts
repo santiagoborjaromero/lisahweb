@@ -37,29 +37,32 @@ export class Usuarios {
   public id_selected: string = '';
   public is_deleted: any = null;
 
-  public canR: boolean =  false;
-  public canW: boolean =  false;
-  public canD: boolean =  false;
+  public canR: boolean = false;
+  public canW: boolean = false;
+  public canD: boolean = false;
 
   lstData: Array<any> = [];
 
-  accion:string = "activos";
+  accion: string = 'activos';
 
   ngOnInit(): void {
     this.user = JSON.parse(this.sessions.get('user'));
     // console.log(this.user)
 
     if (this.user.idrol > 1) {
-      let scope = this.user.roles.permisos_crud.split("");
-      this.canR = scope[0] == "R" ? true : false ;
-      this.canW = scope[1] == "W" ? true : false ;
-      this.canD = scope[2] == "D" ? true : false ;
+      let scope = this.user.roles.permisos_crud.split('');
+      this.canR = scope[0] == 'R' ? true : false;
+      this.canW = scope[1] == 'W' ? true : false;
+      this.canD = scope[2] == 'D' ? true : false;
 
-      if (!this.canR){
-        this.func.showMessage("info", "Usuarios", "No tiene permisos para leer");
+      if (!this.canR) {
+        this.func.showMessage(
+          'info',
+          'Usuarios',
+          'No tiene permisos para leer'
+        );
       }
     }
-
   }
 
   ngAfterViewInit(): void {
@@ -73,8 +76,8 @@ export class Usuarios {
   getData() {
     this.lstData = [];
     this.func.showLoading('Cargando');
-    this.id_selected = "";
-    this.is_deleted = "";
+    this.id_selected = '';
+    this.is_deleted = '';
 
     this.userSvc.getAllFilters(this.accion).subscribe({
       next: (resp: any) => {
@@ -126,14 +129,13 @@ export class Usuarios {
       hide: true,
     });
 
-
     if (this.user.idrol != 3) {
       this.gridOptions.columnDefs?.push({
         headerName: 'Cliente',
         field: 'cliente.nombre',
         filter: false,
         hide: false,
-        sortIndex: 1, 
+        sortIndex: 1,
         sort: 'asc',
       });
     }
@@ -144,16 +146,16 @@ export class Usuarios {
           headerName: 'Grupo',
           field: 'grupo.nombre',
           cellClass: 'text-start',
-          sortIndex: 2, 
+          sortIndex: 2,
           sort: 'asc',
         },
         {
           headerName: 'Nombre',
           field: 'nombre',
           cellClass: 'text-start',
-          sortIndex: 3, 
+          sortIndex: 3,
           sort: 'asc',
-          flex:2, 
+          flex: 2,
         },
         {
           headerName: 'Usuario',
@@ -228,13 +230,11 @@ export class Usuarios {
           headerName: 'Eliminado',
           field: 'deleted_at',
           cellClass: 'text-end',
-          sortIndex: 0, 
-          sort: "asc"
-        },
+          sortIndex: 0,
+          sort: 'asc',
+        }
       );
     }
-
-    
 
     that.gridApi = createGrid(
       document.querySelector<HTMLElement>('#myGrid')!,
@@ -255,10 +255,14 @@ export class Usuarios {
     this.func.goRoute(`admin/usuario/${id ? id : this.id_selected}`, true);
   }
 
-  funcDelete(action="", keyword="delete"){
+  procesoEspecial(action = '', keyword = 'delete') {
     if (this.id_selected == '') {
-      this.func.showMessage("error", "Eliminar", "Debe seleccionar una fila para eliminar")
-      return
+      this.func.showMessage(
+        'error',
+        'Eliminar',
+        'Debe seleccionar una fila para eliminar'
+      );
+      return;
     }
 
     Swal.fire({
@@ -276,22 +280,22 @@ export class Usuarios {
       cancelButtonText: 'Cancelar',
       showClass: { backdrop: 'swal2-noanimation', popup: '' },
       hideClass: { popup: '' },
-      inputValidator: text => {
-        return new Promise(resolve => {
-          if (text.trim() !== '' && text.trim() ==  keyword) {
+      inputValidator: (text) => {
+        return new Promise((resolve) => {
+          if (text.trim() !== '' && text.trim() == keyword) {
             resolve('');
           } else {
-            resolve(
-              `Para ${action}, debe ingresar ${keyword}.`
-            );
+            resolve(`Para ${action}, debe ingresar ${keyword}.`);
           }
         });
-      }
-    }).then(res => {
+      },
+    }).then((res) => {
       if (res.isConfirmed) {
-        console.log("action", keyword)
-        if (keyword=='eliminar'){
+        // console.log('action', keyword);
+        if (keyword == 'eliminar') {
           this.procesoDelete();
+        } else if (keyword == 'recuperar') {
+          this.procesoRestore();
         }
       }
     });
@@ -316,5 +320,23 @@ export class Usuarios {
     });
   }
 
-  funcRestore(){}
+  procesoRestore() {
+    this.func.showLoading('Recuperando');
+
+    this.userSvc.recovery(this.id_selected).subscribe({
+      next: (resp: any) => {
+        this.func.closeSwal();
+        if (resp.status) {
+          setTimeout(() => {
+            this.getData();
+          }, 500);
+        } else {
+          this.func;
+        }
+      },
+      error: (err: any) => {
+        this.func.closeSwal();
+      },
+    });
+  }
 }

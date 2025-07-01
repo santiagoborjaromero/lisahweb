@@ -149,7 +149,12 @@ export class Edit {
     
     if (!this.formData.nombre){
       error = true;
-      errMsg = "Debe ingresar el nombre del usuario";
+      errMsg = "Debe ingresar el nombre completo del usuario";
+    }
+
+    if (!this.formData.usuario){
+      error = true;
+      errMsg = "Debe ingresar el usuario para login";
     }
 
     if (!error && !this.formData.email){

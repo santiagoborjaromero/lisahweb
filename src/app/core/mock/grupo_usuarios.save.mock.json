@@ -1,0 +1,61 @@
+{
+    "nombre": "operacionesti",
+    "idgrupo": 852,
+    "rolmenugrupos": [
+        {
+            "idrol_menu": 34,
+            "idgrupo_usuario": "2",
+            "scope": "RWD"
+        },
+        {
+            "idrol_menu": 35,
+            "idgrupo_usuario": "2",
+            "scope": "RWD"
+        },
+        {
+            "idrol_menu": 49,
+            "idgrupo_usuario": "2",
+            "scope": "RWD"
+        },
+        {
+            "idrol_menu": 38,
+            "idgrupo_usuario": "2",
+            "scope": "R"
+        },
+        {
+            "idrol_menu": 36,
+            "idgrupo_usuario": "2",
+            "scope": "R"
+        },
+        {
+            "idrol_menu": 41,
+            "idgrupo_usuario": "2",
+            "scope": "RWD"
+        },
+        {
+            "idrol_menu": 42,
+            "idgrupo_usuario": "2",
+            "scope": "RWD"
+        },
+        {
+            "idrol_menu": 44,
+            "idgrupo_usuario": "2",
+            "scope": "RWD"
+        },
+        {
+            "idrol_menu": 39,
+            "idgrupo_usuario": "2",
+            "scope": "RW"
+        },
+        {
+            "idrol_menu": 40,
+            "idgrupo_usuario": "2",
+            "scope": "R"
+        },
+        {
+            "idrol_menu": 45,
+            "idgrupo_usuario": "2",
+            "scope": "R"
+        }
+    ]
+}

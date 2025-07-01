@@ -60,5 +60,33 @@ export class GrupoUsuarioService {
     return this.http.get(`${this.base_url}grupousuarios/${id}`, options);
   }
 
+  save(id: any = "", data:any = null): Observable<any> {
+    this.headers = new HttpHeaders(this.headerHlp.getWithToken());
+    let options = {
+      headers: this.headers,
+    };
+    if (id == ""){
+      return this.http.post(`${this.base_url}grupousuario`, data, options);
+    }else{
+      return this.http.put(`${this.base_url}grupousuario/${id}`, data, options);
+    }
+  }
+
+  delete(id: any): Observable<any> {
+    this.headers = new HttpHeaders(this.headerHlp.getWithToken());
+    let options = {
+      headers: this.headers,
+    };
+    return this.http.delete(`${this.base_url}grupousuario/${id}`, options);
+  }
+
+  recovery(id: any): Observable<any> {
+    this.headers = new HttpHeaders(this.headerHlp.getWithToken());
+    let options = {
+      headers: this.headers,
+    };
+    return this.http.put(`${this.base_url}grupousuario_recuperar/${id}`, null, options);
+  }
+
  
 }
