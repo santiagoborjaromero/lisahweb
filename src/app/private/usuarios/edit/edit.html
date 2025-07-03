@@ -46,7 +46,7 @@
           </div>
           }
 
-          <div class="col-4 col-md-2 th text-end">Grupo</div>
+          <div class="col-4 col-md-2 th text-end">Grupo <sup><i class="fas fa-asterisk text-secondary t10"></i></sup> </div>
           <div class="col-8 col-md-4 td d-flex justify-content-around">
             <select [(ngModel)]="formData.idgrupo_usuario" name="idgrupo_usuario" id="idgrupo_usuario" class="form-control" >
               @if(lstGrupoUsuarios.length>0){ @for (item of lstGrupoUsuarios;
@@ -58,7 +58,7 @@
             </select>
           </div>
 
-          <div class="col-4 col-md-2 th text-end">Nombre Completo</div>
+          <div class="col-4 col-md-2 th text-end">Nombre Completo </div>
           <div class="col-8 col-md-4 td d-flex justify-content-around">
             <input [(ngModel)]="formData.nombre" type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre del usuario"/>
           </div>

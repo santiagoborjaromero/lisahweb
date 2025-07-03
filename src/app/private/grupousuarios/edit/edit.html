@@ -3,128 +3,212 @@
   <app-header />
 
   <div class="row barra-menu">
-    <div class="col">
-      <!-- <strong >Filtro </strong> -->
-      <div class="col btn-group" role="group" aria-label="Basic"></div>
-    </div>
     <div class="col text-end">
       <button (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1">
-        <i class="fas fa-save"></i> Guardar
-      </button>
+          <i class="fas fa-save mr-1"></i> Guardar
+        </button>
       <button (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1">
-        <i class="fas fa-reply"></i> Cancelar
+        <i class="fas fa-reply mr-1"></i> Cancelar
       </button>
     </div>
   </div>
-
-  <div class="container-fluid">
-    <div class="row contenido">
-      <div class="col">
-        <div class="row titulo">
-          <div class="col-12 d-flex justify-content-between">
+    <div class="row">
+      <div class="col col-md-6">
+        <div class="card mt-3">
+          <div class="card-header th d-flex justify-content-between">
             <span> Información General </span>
             <i class="far fa-question-circle text-primary"></i>
           </div>
-        </div>
-
-        <div class="row">
-          <div class="col-4 col-md-2 th text-end">Nombre Grupo</div>
-          <div class="col-8 col-md-4 td d-flex justify-content-around">
-            <input
-              type="text"
-              name="nombre"
-              id="nombre"
-              class="form-control"
-              placeholder="Nombre grupo"
-              [(ngModel)]="formData.nombre"
-            />
+  
+          <div class="p-1 row">
+            <div class="col-4 col-md-3 td2 text-end">
+              Nombre Grupo <small><i class="text-danger">*</i></small>
+              <br />
+              <small
+                ><i class="text-secondary">alfanumérico - requerido</i></small
+              >
+            </div>
+            <div class="col-8 col-md-9 td2">
+              <input
+                type="text"
+                name="formDataNombre"
+                id="nombre"
+                class="form-control"
+                placeholder="Nombre grupo"
+                [(ngModel)]="formData.nombre"
+              />
+              <sup>
+                <i class="text-secondary">
+                  El nombre del grupo tiene dos funciones operativas en LISAH y en los servidores.
+                  <span class="info" title="{{patrones.nombre.mensaje}}">
+                    [Validación]
+                  </span>
+                </i>
+              </sup>
+            </div>
           </div>
-
-          <div class="col-4 col-md-2 th text-end">IDGrupo en Servidor</div>
-          <div class="col-8 col-md-4 td d-flex justify-content-around">
-            <input
-              type="text"
-              name="nombre"
-              id="nombre"
-              class="form-control"
-              placeholder="000"
-              [(ngModel)]="formData.idgrupo"
-            />
+  
+          <div class="p-1 row">
+            <div class="col-4 col-md-3 td2 text-end">
+              IDGrupo en Servidor
+              <br />
+              <small><i class="text-secondary">numérico - opcional</i></small>
+            </div>
+            <div class="col-8 col-md-9 td2">
+              <input
+                type="number"
+                name="idgrupo"
+                id="idgrupo"
+                class="form-control"
+                placeholder="000"
+                [(ngModel)]="formData.idgrupo"
+              />
+              <sup
+                ><i class="text-secondary"
+                  >Es número del identificación del grupo para los servidores</i
+                ></sup
+              >
+            </div>
+          </div>
+  
+          <div class="p-1 row">
+            <div class="col-4 col-md-3 td2 text-end">
+              Permisos de Acceso
+              <br />
+              <small><i class="text-secondary">opcional</i></small>
+            </div>
+            <div class="col-8 col-md-9 td2">
+              <input
+                type="checkbox"
+                name="lectura"
+                id="lectura"
+                class="form-check-input t16"
+              />
+              Lectura &nbsp;&nbsp;&nbsp;
+              <input
+                type="checkbox"
+                name="escritura"
+                id="escritura"
+                class="form-check-input t16"
+              />
+              Escritura &nbsp;&nbsp;&nbsp;
+              <input
+                type="checkbox"
+                name="ejecucion"
+                id="ejecucion"
+                class="form-check-input t16"
+              />
+              Ejecución &nbsp;&nbsp;&nbsp;
+              <br />
+              <sup
+                ><i class="text-secondary"
+                  >Es el permiso que tienen los usuarios para operar dentro de los
+                  servidores</i
+                ></sup
+              >
+            </div>
           </div>
         </div>
-
-        <div class="row titulo">
-          <div class="col-12 d-flex justify-content-between">
-            <span> Opciones de Menú</span>
+      </div>
+      <div class="col col-md-6">
+        <div class="card mt-3">
+          <div class="card-header th d-flex justify-content-between">
+            <span> Opcion del Menú </span>
             <i class="far fa-question-circle text-primary"></i>
           </div>
-        </div>
-
-        <div class="row">
-          <!-- <div class="col-4 col-md-2 th text-end">
-            <input class="form-check-input t20" type="checkbox" role="switch" id="switchCheckChecked" [checked]="item.check">
-          </div> -->
-
-          <!-- <div class="col-8 col-md-12  text-start"> -->
-            <table class="table table-striped table-hover ">
-              <thead class="th">
+          <div class="p-3 row">
+            <p>
+              Habilita el acceso y da permisos de lectura<sup class="text-info"
+                ><strong>R</strong></sup
+              >, escritura<sup class="text-primary"><strong>W</strong></sup> y
+              borrado<sup class="text-danger"><strong>D</strong></sup> a cada item
+              del menú de opciones.
+            </p>
+            <table class="table table-striped table-hover">
+              <thead>
                 <tr>
-                  <th width="5% text-start"><input class="form-check-input t18" [checked]="selectall" (click)="selectAll()" type="checkbox"></th>
-                  <th width="5% text-start">Lectura</th>
-                  <th width="5% text-start">Escritura</th>
-                  <th width="5% text-start">Borrado</th>
+                  <th width="2% text-start">
+                    <input
+                      class="form-check-input t16"
+                      [checked]="selectall"
+                      (click)="selectAll()"
+                      type="checkbox"
+                    />
+                  </th>
+                  <th width="2% text-start">R</th>
+                  <th width="2% text-start">W</th>
+                  <th width="2% text-start">D</th>
                   <th>Opcion</th>
                 </tr>
               </thead>
               <tbody class="td">
                 @for (item of lstMenu; track $index) {
-                  <tr class="td">
-                    <td class="td">
-                      <div class="form-checkXXX form-switchXXX">
-                        <input class="form-check-input t18" type="checkbox" [(ngModel)]="item.check" [checked]="item.check" role="switch" id="menu{{item.idrol_menu}}">
-                      </div>
-                    </td>
-                    <td class="td">
-                      <div class="form-checkXXX form-switchXXX">
-                        <input class="form-check-input t18" type="checkbox" [(ngModel)]="item.r" [checked]="item.r" role="switch" id="menu{{item.idrol_menu}}">
-                      </div>
-                    </td>
-                    <td class="td">
-                      <div class="form-checkXXX form-switchXXX">
-                        <input class="form-check-input t18" type="checkbox" [(ngModel)]="item.w" [checked]="item.w" role="switch" id="menu{{item.idrol_menu}}">
-                      </div>
-                    </td>
-                    <td class="td">
-                      <div class="form-checkXXX form-switchXXX">
-                        <input class="form-check-input t18" type="checkbox" [(ngModel)]="item.d" [checked]="item.d" role="switch" id="menu{{item.idrol_menu}}">
-                      </div>
-                    </td>
-                    <td>
-                      @if(item.es_submenu == 1){
-                        <strong class="">{{item.nombre}}</strong>
-                      }@else {
-                        <strong class="text-dark"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong>
-                        <span class="">{{item.nombre}}</span>
-                      }
-                      <!-- <kbd class="bg-white text-dark mr-2">{{item.orden}}</kbd> -->
-                    </td>
-                  </tr>
+                <tr class="td">
+                  <td class="td">
+                    <div class="form-checkXXX form-switchXXX">
+                      <input
+                        class="form-check-input t16"
+                        type="checkbox"
+                        [(ngModel)]="item.check"
+                        [checked]="item.check"
+                        role="switch"
+                        id="menu{{item.idrol_menu}}"
+                      />
+                    </div>
+                  </td>
+                  <td class="td">
+                    <div class="form-checkXXX form-switchXXX">
+                      <input
+                        class="form-check-input t16"
+                        type="checkbox"
+                        [(ngModel)]="item.r"
+                        [checked]="item.r"
+                        role="switch"
+                        id="menu{{item.idrol_menu}}"
+                      />
+                    </div>
+                  </td>
+                  <td class="td">
+                    <div class="form-checkXXX form-switchXXX">
+                      <input
+                        class="form-check-input t16"
+                        type="checkbox"
+                        [(ngModel)]="item.w"
+                        [checked]="item.w"
+                        role="switch"
+                        id="menu{{item.idrol_menu}}"
+                      />
+                    </div>
+                  </td>
+                  <td class="td">
+                    <div class="form-checkXXX form-switchXXX">
+                      <input
+                        class="form-check-input t16"
+                        type="checkbox"
+                        [(ngModel)]="item.d"
+                        [checked]="item.d"
+                        role="switch"
+                        id="menu{{item.idrol_menu}}"
+                      />
+                    </div>
+                  </td>
+                  <td>
+                    @if(item.es_submenu == 1){
+                    <strong class="">{{item.nombre}}</strong>
+                    }@else {
+                    <strong class="text-dark">
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </strong>
+                    <span class="">{{item.nombre}}</span>
+                    }
+                    <!-- <kbd class="bg-white text-dark mr-2">{{item.orden}}</kbd> -->
+                  </td>
+                </tr>
                 }
               </tbody>
             </table>
-
-            <!-- 
-              <div class="form-check form-switch">
-                <input class="form-check-input t20" type="checkbox" role="switch" id="switchCheckChecked" [checked]="item.check">
-                <label class="form-check-label" for="switchCheckChecked">
-                  <span class="text-secondary">{{item.es_submenu == 1 ? '' : ' └─── '}}</span>
-                  <kbd class="bg-success text-white mr-2">{{item.orden}}</kbd>
-                  <span class="text-primary">{{item.nombre}}</span>
-                </label>
-              </div> -->
-          <!-- </div> -->
+          </div>
         </div>
       </div>
     </div>
-  </div>
 </div>

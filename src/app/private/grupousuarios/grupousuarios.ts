@@ -83,11 +83,11 @@ export class Grupousuarios {
     this.id_selected = '';
     this.is_deleted = '';
 
-    console.log(this.accion)
+    // console.log(this.accion)
 
     this.grupoSvc.getAllFilters(this.accion).subscribe({
       next: (resp: any) => {
-        console.log(resp);
+        // console.log(resp);
         this.func.closeSwal();
         if (resp.status) {
           this.lstData = resp.data;

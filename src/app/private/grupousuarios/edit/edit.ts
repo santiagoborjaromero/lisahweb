@@ -14,7 +14,8 @@ import { RolMenuService } from '../../../core/services/rolmenu';
   selector: 'app-edit',
   imports: [Header, Breadcrums, FormsModule, CommonModule],
   templateUrl: './edit.html',
-  styleUrl: './edit.scss'
+  styleUrl: './edit.scss',
+  standalone: true
 })
 export class Edit {
 
@@ -33,6 +34,10 @@ export class Edit {
     nombre: "",
     idgrupo: 0,
     rolmenugrupos: []
+  }
+
+  patrones = {
+    nombre: {pattern: /^[a-zA-Z0-9._-]+$/, mensaje: "A-Z, a-z, 0-9, Guión bajo o medio, punto, no espacios."} 
   }
 
   lstMenu:Array<any> = [];
@@ -145,15 +150,16 @@ export class Edit {
     let errMsg = "";
     let error = false;
     
-    if (!this.formData.nombre){
+    if (this.formData.nombre == ""){
       error = true;
       errMsg = "Debe ingresar el nombre del grupo";
     }
 
-    // if (!error && !this.formData.idgrupo){
-    //   error = true;
-    //   errMsg = "Debe ingresar un correo electrónico";
-    // }
+    if (!error && !this.patrones.nombre.pattern.exec(this.formData.nombre)){
+      error = true;
+      errMsg = this.patrones.nombre.mensaje;
+    }
+
 
     let count_menu = 0;
     this.lstMenu.forEach(e=>{
@@ -169,10 +175,6 @@ export class Edit {
       }
     })
 
-    // if (!error && count_menu==0){
-    //   error = true;
-    //   errMsg = "Debe seleccionar opciones de menú";
-    // }
 
     if (error){
       this.func.showMessage("error", "Grupo de Usuarios Edit", errMsg);
