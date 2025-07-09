@@ -3,90 +3,240 @@
   <app-header />
 
   <div class="row barra-menu ">
-    <div class="col">
-      <!-- <strong >Filtro </strong> -->
-      <div class="col btn-group" role="group" aria-label="Basic">
-      </div>
-    </div>
     <div class="col text-end">
       <button (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1"><i class="fas fa-save"></i> Guardar</button>
       <button (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1"><i class="fas fa-reply"></i> Cancelar</button>
     </div>
   </div>
-
-
-  <div class="container-fluid">
-    <div class="row contenido">
-      <div class="col">
-        <div class="row titulo">
-          <div class="col-12 d-flex justify-content-between">
-            <span> Información General </span>
-            <i class="far fa-question-circle text-primary"></i>
-          </div>
+  
+  <div class="row">
+    <div class="col col-md-6">
+      <div class="card mt-3">
+        <div class="card-header th d-flex justify-content-between">
+          <span> Información General </span>
+          <!-- <i class="far fa-question-circle text-primary"></i> -->
         </div>
-
-        <div class="row">
+        <div class="p-1 row">
           @if (user.idrol == 1){
-          <div class="col-4 col-md-2 th text-end">Rol</div>
-          <div class="col-8 col-md-4 td d-flex justify-content-around">
-            <select [(ngModel)]="formData.idrol" name="idrol" id="idrol" class="form-control">
-              <option value="1">Owner</option>
-              <option value="2">Creadores</option>
-              <option value="3">Clientes</option>
-            </select>
-          </div>
-
-          <div class="col-4 col-md-2 th text-end">Cliente</div>
-          <div class="col-8 col-md-4 td d-flex justify-content-around">
-            <select [(ngModel)]="formData.idcliente" (click)="getGrupoUsuarios()" name="idcliente" id="idcliente" class="form-control">
-              @for (item of lstClientes; track $index) {
-              <option value="{{item.idcliente}}">{{item.nombre}}</option>
-              }
-            </select>
-          </div>
+            <div class="col-4 col-md-3 td2 text-end">
+              Rol de Usuario <small *ngIf="validador.idrol.requerido"><i class="text-danger">*</i></small>
+              <br />
+              <small><i class="text-secondary">Selección</i></small>
+            </div>
+            <div class="col-8 col-md-9 td2">
+              <select [(ngModel)]="idrol" name="idrol" id="idrol" class="form-control">
+                <option value="1">Owner</option>
+                <option value="2">Creadores</option>
+                <option value="3">Clientes</option>
+              </select>
+            </div>
+  
+            <div class="col-4 col-md-3 td2 text-end">
+              Cliente <small *ngIf="validador.idcliente.requerido"><i class="text-danger">*</i></small>
+              <br />
+              <small><i class="text-secondary">Selección</i></small>
+            </div>
+            <div class="col-8 col-md-9 td2">
+              <select [(ngModel)]="idcliente" (click)="getGrupoUsuarios()" name="idcliente" id="idcliente" class="form-control">
+                @for (item of lstClientes; track $index) {
+                  <option value="{{item.idcliente}}">{{item.nombre}}</option>
+                }
+              </select>
+            </div>
           }
 
-          <div class="col-4 col-md-2 th text-end">Grupo <sup><i class="fas fa-asterisk text-secondary t10"></i></sup> </div>
-          <div class="col-8 col-md-4 td d-flex justify-content-around">
-            <select [(ngModel)]="formData.idgrupo_usuario" name="idgrupo_usuario" id="idgrupo_usuario" class="form-control" >
-              @if(lstGrupoUsuarios.length>0){ @for (item of lstGrupoUsuarios;
-              track $index) {
-              <option value="{{item.idgrupo_usuario}}">{{item.nombre}}</option>
-              } } @else{
-              <option value="">-- No existen grupos definidos --</option>
+
+          <div class="col-4 col-md-3 td2 text-end">
+            Grupo <small *ngIf="validador.idgrupo_usuario.requerido"><i class="text-danger">*</i></small>
+            <br />
+            <small><i class="text-secondary">{{validador.idgrupo_usuario.etiqueta}}</i></small>
+          </div>
+          <div class="col-8 col-md-9 td2">
+            <select [(ngModel)]="idgrupo_usuario"  name="idcliente" id="idcliente" class="form-control">
+              @if(lstGrupoUsuarios.length>0){ 
+                @for (item of lstGrupoUsuarios; track $index) {
+                  <option value="{{item.idgrupo_usuario}}">{{item.nombre}}</option>
+                } 
+              } @else{
+                <option value="">-- No existen grupos definidos --</option>
               }
             </select>
+             <sup>
+              <i class=" {{validador.idgrupo_usuario.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+                {{validador.idgrupo_usuario.validacion.resultado == '' ? validador.idgrupo_usuario.descripcion : validador.idgrupo_usuario.validacion.resultado}}
+              </i>
+            </sup>
+          </div>
+          
+          <div class="col-4 col-md-3 td2 text-end">
+            Nombre Completo <small *ngIf="validador.nombre.requerido"><i class="text-danger">*</i></small>
+            <br />
+            <small><i class="text-secondary">{{validador.nombre.etiqueta}}</i></small>
+          </div>
+          <div class="col-8 col-md-9 td2">
+            <input
+              type="text"
+              name="nombre"
+              id="nombre"
+              class="form-control {{validador.nombre.validacion.resultado == '' ? '' : 'input-danger'}}"
+              [(ngModel)]="nombre"
+            />
+            <sup>
+              <i class=" {{validador.nombre.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+                {{validador.nombre.validacion.resultado == '' ? validador.nombre.descripcion : validador.nombre.validacion.resultado}}
+              </i>
+            </sup>
           </div>
 
-          <div class="col-4 col-md-2 th text-end">Nombre Completo </div>
-          <div class="col-8 col-md-4 td d-flex justify-content-around">
-            <input [(ngModel)]="formData.nombre" type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre del usuario"/>
+
+          <div class="col-4 col-md-3 td2 text-end">
+            Usuario (login) <small *ngIf="validador.usuario.requerido"><i class="text-danger">*</i></small>
+            <br />
+            <small><i class="text-secondary">{{validador.usuario.etiqueta}}</i></small>
+          </div>
+          <div class="col-8 col-md-9 td2">
+            <input
+              type="text"
+              name="usuario"
+              id="usuario"
+              class="form-control {{validador.usuario.validacion.resultado == '' ? '' : 'input-danger'}}"
+              [(ngModel)]="usuario"
+            />
+            <sup>
+              <i class=" {{validador.usuario.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+                {{validador.usuario.validacion.resultado == '' ? validador.usuario.descripcion : validador.usuario.validacion.resultado}}
+              </i>
+            </sup>
           </div>
 
-          <div class="col-4 col-md-2 th text-end">Usuario (login)</div>
-          <div class="col-8 col-md-4 td d-flex justify-content-around">
-            <input [(ngModel)]="formData.usuario" type="text" name="nombre" id="nombre" class="form-control" placeholder="Usuario"/>
+
+          <div class="col-4 col-md-3 td2 text-end">
+            Email <small *ngIf="validador.email.requerido"><i class="text-danger">*</i></small>
+            <br />
+            <small><i class="text-secondary">{{validador.email.etiqueta}}</i></small>
+          </div>
+          <div class="col-8 col-md-9 td2">
+            <input
+              type="email"
+              name="email"
+              id="email"
+              class="form-control {{validador.email.validacion.resultado == '' ? '' : 'input-danger'}}"
+              [(ngModel)]="email"
+            />
+            <sup>
+              <i class=" {{validador.email.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+                {{validador.email.validacion.resultado == '' ? validador.email.descripcion : validador.email.validacion.resultado}}
+              </i>
+            </sup>
+          </div>
+          @if (idusuario!=""){
+            <div class="col-4 col-md-3 td2 text-end">
+              Identificador NTFY <small *ngIf="validador.ntfy_identificador.requerido"><i class="text-danger">*</i></small>
+              <br />
+              <small><i class="text-secondary">{{validador.ntfy_identificador.etiqueta}}</i></small>
+            </div>
+            <div class="col-8 col-md-9 td2">
+              <input
+                type="ntfy_identificador"
+                name="ntfy_identificador"
+                id="ntfy_identificador"
+                class="form-control {{validador.ntfy_identificador.validacion.resultado == '' ? '' : 'input-danger'}}"
+                [(ngModel)]="ntfy_identificador"
+              />
+              <sup>
+                <i class=" {{validador.ntfy_identificador.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+                  {{validador.ntfy_identificador.validacion.resultado == '' ? validador.ntfy_identificador.descripcion : validador.ntfy_identificador.validacion.resultado}}
+                </i>
+              </sup>
+            </div>
+          }
+
+          <div class="col-4 col-md-3 td2 text-end">
+            Estado <small *ngIf="validador.estado.requerido"><i class="text-danger">*</i></small>
+            <br />
+            <small><i class="text-secondary">{{validador.estado.etiqueta}}</i></small>
+          </div>
+          <div class="col-8 col-md-9 td2">
+            <select [(ngModel)]="estado" name="idrol" id="idrol" class="form-control">
+                <option value="1">Activo</option>
+                <option value="0">Inactivo</option>
+              </select>
+            <sup>
+              <i class=" {{validador.estado.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+                {{validador.estado.validacion.resultado == '' ? validador.estado.descripcion : validador.estado.validacion.resultado}}
+              </i>
+            </sup>
           </div>
 
-          <div class="col-4 col-md-2 th text-end">Email</div>
-          <div class="col-8 col-md-4 td d-flex justify-content-around">
-            <input [(ngModel)]="formData.email" type="email" name="email" id="email" class="form-control" placeholder="nombre@empresa.com"/>
-          </div>
 
-          <div class="col-4 col-md-2 th text-end">Identificador NTFY</div>
-          <div class="col-8 col-md-4 td d-flex justify-content-around">
-            <input [(ngModel)]="formData.ntfy_identificador" type="text" name="ntfy_identificador" id="ntfy_identificador" class="form-control" placeholder=""/>
-          </div>
 
-          <div class="col-4 col-md-2 th text-end">Estado</div>
-          <div class="col-8 col-md-4 td d-flex justify-content-around">
-            <select [(ngModel)]="formData.estado" name="estado" id="estado" class="form-control">
-              <option value="1">Activo</option>
-              <option value="0">Inactivo</option>
-            </select>
-          </div>
+
+
+
         </div>
       </div>
+
+    </div>
+    <div class="col col-md-6">
+      <div class="card mt-3">
+        <div class="card-header th d-flex justify-content-between">
+          <span> Asignación de Servidores </span>
+          <!-- <i class="far fa-question-circle text-primary"></i> -->
+        </div>
+        <div class="p-3 row">
+          <p>
+            Habilita el acceso a los servidores señalados.
+          </p>
+          <div class="row align-items-center">
+            <div class="col-auto">
+              <input type="password" id="buscaSrv" class="form-control" aria-describedby="passwordHelpInline">
+              <small><i>Filtro</i></small>
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-primary">Buscar</button>
+            </div>
+          </div>
+          <table class="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th width="2% text-start">
+                  <input
+                    class="form-check-input t16"
+                    [checked]="selectall"
+                    (click)="selectAll()"
+                    type="checkbox"
+                  />
+                </th>
+                <th width="text-start">Localización</th>
+                <th width="text-start">Servidor</th>
+                <th width="text-start">Host</th>
+              </tr>
+            </thead>
+            <tbody class="td">
+              @for (item of lstServidores; track $index) {
+              <tr class="td">
+                <td class="td">
+                  <div class="form-check form-switch">
+                    <input
+                      class="form-check-input t16"
+                      type="checkbox"
+                      [(ngModel)]="item.check"
+                      [checked]="item.check"
+                      role="switch"
+                      id="srv{{item.idservidor}}"
+                    />
+                  </div>
+                </td>
+                <td>{{item.localizacion}}</td>
+                <td>{{item.nombre}}</td>
+                <td>{{item.host}}</td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
     </div>
   </div>
+
+  
 </div>

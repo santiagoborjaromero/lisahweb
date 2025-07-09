@@ -186,6 +186,11 @@
     //min-height: 45px;
 }
 
+.th2{
+    background-color: #7eb9d448;
+    align-content: center;
+}
+
 .td{
     // background-color: #e4e4e4; 
     // border: 2px solid #f5f5f5;
@@ -212,6 +217,10 @@
 .iconomenu{
     min-width: 25px !important;
     color: #790b0b;
+}
+
+ul.lista{
+    list-style-type: none;
 }
 
 ul.menu{
@@ -274,5 +283,7 @@ ul.menu{
     color: #da3908;
 }
 
-
+.input-danger{
+    border: 2px solid #ff0000;
+}
 

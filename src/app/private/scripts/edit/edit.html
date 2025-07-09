@@ -1,0 +1,61 @@
+<app-breadcrums />
+<div class="content">
+  <app-header />
+
+  <div class="row barra-menu">
+    <div class="col text-end">
+      <button (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1"><i class="fas fa-save mr-1"></i> Guardar</button>
+      <button (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1"><i class="fas fa-reply mr-1"></i> Cancelar</button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col col-md-12">
+      <div class="card mt-3">
+        <div class="card-header th d-flex justify-content-between">
+          <span> Información General </span>
+        </div>
+
+        <div class="p-1 row">
+          <div class="col-4 col-md-2 td2 text-end">
+            Nombre del Script
+            <small *ngIf="validador.nombre.requerido"><i class="text-danger">*</i></small>
+            <br />
+            <small><i class="text-secondary">{{validador.nombre.etiqueta}}</i></small>
+          </div>
+          <div class="col-8 col-md-4 td2">
+            <input
+              type="text"
+              name="nombre"
+              id="nombre"
+              class="form-control {{validador.nombre.validacion.resultado == '' ? '' : 'input-danger'}}"
+              [(ngModel)]="nombre"
+            />
+            <sup>
+              <i class=" {{validador.nombre.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+                {{validador.nombre.validacion.resultado == '' ?
+                validador.nombre.descripcion :
+                validador.nombre.validacion.resultado}}
+              </i>
+            </sup>
+          </div>
+        </div>
+
+        <div class="p-1 row">
+          <div class="col-4 col-md-2 td2 text-end">
+            Linea de comandos
+            <br />
+            <small><i class="text-secondary">Selección</i></small>
+          </div>
+          <div class="col-4 col-md-4 td2">
+            <button class="btn btn-primary btn-sm m-1"><i class="fas fa-plus"></i> Añadir</button> 
+            <br>
+            <sup><i class="text-secondary">Seleccione una línea de comandos definido en template de comandos</i></sup>
+          </div>
+        </div>
+
+        <div #myGrid id="myGrid" class="ag-theme-quartz" style="height: 600px; min-height: 600px"></div>
+      </div>
+    </div>
+  </div>
+</div>

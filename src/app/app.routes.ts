@@ -36,6 +36,7 @@ export const routes: Routes = [
             {path:"servidores", loadComponent: () => import('./private/servidores/servidores').then((c)=> c.Servidores)},
             {path:"templates", loadComponent: () => import('./private/templates/templates').then((c)=> c.Templates)},
             {path:"scripts", loadComponent: () => import('./private/scripts/scripts').then((c)=> c.Scripts)},
+            {path:"script/:id", loadComponent: () => import('./private/scripts/edit/edit').then((c)=> c.Edit)},
             {path:"procesos", loadComponent: () => import('./private/procesos/procesos').then((c)=> c.Procesos)},
             {path:"logs", loadComponent: () => import('./private/logs/logs').then((c)=> c.Logs)},
             {path:"audits", loadComponent: () => import('./private/audit/audit').then((c)=> c.Audit)},

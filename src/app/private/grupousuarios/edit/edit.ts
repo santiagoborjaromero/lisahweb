@@ -31,17 +31,32 @@ export class Edit {
   rstData: any;
 
   formData: any = {
-    nombre: "",
-    idgrupo: 0,
-    rolmenugrupos: []
-  }
-
-  patrones = {
-    nombre: {pattern: /^[a-zA-Z0-9._-]+$/, mensaje: "A-Z, a-z, 0-9, Guión bajo o medio, punto, no espacios."} 
+    nombre: {
+      requerido:true,
+      valor: "",
+      descripcion: "El nombre del grupo puede tener dos funciones operativas en LISAH y en los servidores.",
+      validacion:{
+        pattern: /^[a-zA-Z0-9._-]+$/,
+        patron_descripcion: "Debe ingresar un nombre válido entre mayúsculas, minúsculas, números, guión bajo o medio, punto, no espacios.",
+        resultado: "",
+      }
+    },
+    idscript_creacion: {
+      requerido:false,
+      valor: "",
+      descripcion: "Script asignado para ejecutar cuando se crea un grupo de usuarios",
+      validacion:{
+        pattern: /^[0-9]\/s+$/,
+        patron: "",
+        resultado: "",
+      }
+    },
   }
 
   lstMenu:Array<any> = [];
   selectall: boolean = false;
+
+  lstScripts: Array<any> = [];
 
 
   ngOnInit(): void {
@@ -90,20 +105,32 @@ export class Edit {
   }
 
   populateData(){
-    this.formData.nombre = this.rstData.nombre;
-    this.formData.idgrupo = this.rstData.idgrupo;
+    this.formData.nombre.valor = this.rstData.nombre;
+    this.formData.idscript_creacion.valor = this.rstData.idscript_creacion ?? "";
 
     let found = false;
-    this.rstData.rolmenugrupos.forEach((e:any)=>{
-      let scope:any = e.scope.split("");
-      this.lstMenu.forEach(m=>{
-        if (m.idrol_menu = e.idrol_menu){
-          m.check = true;
-          m.r = scope.includes("R");
-          m.w = scope.includes("W");
-          m.d = scope.includes("D");
+    let scope:any = [];
+    let cont1= 0;
+    let cont2= 0;
+
+    this.lstMenu.forEach((m, idx)=>{
+      m.check = false;
+      scope = [];
+      found = false;
+
+      this.rstData.rolmenugrupos.forEach((e:any)=>{
+        if (m.idrol_menu == e.idrol_menu){
+          scope = e.scope.split("");
+          found = true;
         } 
       })
+      
+      m.r = scope.includes("R");
+      m.w = scope.includes("W");
+      m.d = scope.includes("D");
+      if (found){
+        m.check = found;
+      }
     })
   }
 
@@ -144,22 +171,38 @@ export class Edit {
     });
   }
 
+  validacionCampos(que = ''){
+    let error = false;
+    let danger = 0;
+    let warning = 0;
 
+    if (["", "nombre"].includes(que)){
+      this.formData.nombre.validacion.resultado = "";
+      if (!this.formData.nombre.validacion.pattern.exec(this.formData.nombre.valor)){
+        error = true;
+        if (this.formData.nombre.requerido){
+          danger++;
+        }else{
+          warning++;
+        }
+        this.formData.nombre.validacion.resultado = this.formData.nombre.validacion.patron_descripcion;
+      }
+    }
+
+    return [error, danger, warning]
+  }
 
   funcSubmit(){
-    let errMsg = "";
-    let error = false;
-    
-    if (this.formData.nombre == ""){
-      error = true;
-      errMsg = "Debe ingresar el nombre del grupo";
+
+    if (this.validacionCampos()[0]){
+      return
     }
 
-    if (!error && !this.patrones.nombre.pattern.exec(this.formData.nombre)){
-      error = true;
-      errMsg = this.patrones.nombre.mensaje;
+    let param:any = {
+      nombre: this.formData.nombre.valor,
+      idscript_creacion: this.formData.idscript_creacion.valor,
+      rolmenugrupos: [],
     }
-
 
     let count_menu = 0;
     this.lstMenu.forEach(e=>{
@@ -167,7 +210,7 @@ export class Edit {
         let scope = e.r ? "R" : "";
         scope += e.w ? "W" : "";
         scope += e.d ? "D" : "";
-        this.formData.rolmenugrupos.push({
+        param.rolmenugrupos.push({
           idrol_menu: e.idrol_menu,
           idgrupo_usuario: this.idgrupo_usuario,
           scope: scope
@@ -175,15 +218,9 @@ export class Edit {
       }
     })
 
-
-    if (error){
-      this.func.showMessage("error", "Grupo de Usuarios Edit", errMsg);
-      return
-    }
-
     this.func.showLoading('Guardando');
 
-    this.grupoSvc.save(this.idgrupo_usuario, this.formData).subscribe({
+    this.grupoSvc.save(this.idgrupo_usuario, param).subscribe({
       next: (resp: any) => {
         // console.log(resp)
         this.func.closeSwal();

@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { ConfigService } from '../../core/services/config'
 import { Functions } from '../../core/helpers/functions.helper';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import validator from 'ecuador-validator';
+import { verificarRuc } from 'udv-ec';
 
 @Component({
   selector: 'app-config',
@@ -54,6 +54,8 @@ export class Config {
   tiempo_caducidad_token_usuarios: number = 0;
   tiempo_caducidad_token_agente: number = 0;
   
+  validaNombre: string = "";
+  validaRUC: string = "";
 
   ngOnInit(): void {
     setTimeout(()=>{
@@ -114,29 +116,62 @@ export class Config {
     this.populateData();
   }
 
-  funcSubmit(){
-    let errMsg = "";
+  validacionCampos(que = ''){
     let error = false;
+    let errMsg = "";
+
+    if (["", "nombre"].includes(que)){
+      this.validaNombre = "";
+      if (this.cliente_nombre.trim() == ""){
+        error = true;
+        errMsg = "Debe ingresar la Razon Social";
+        this.validaNombre = errMsg;
+      }
+    }
+
+    if (["", "ruc"].includes(que)){
+      this.validaRUC = "";
+      if(!verificarRuc(this.cliente_identificacion.toString())){
+        errMsg = "Debe ingresar una identificacion valida";
+        this.validaRUC = errMsg;
+        if (!error) error = true;
+      }
+    }
+
+
+    return error
+
+  }
+
+  funcSubmit(){
+    // let errMsg = "";
+    // let error = false;
     
-    if (this.cliente_nombre == ""){
-      error = true;
-      errMsg = "Debe ingresar la Razon Social";
-    }
+    // if (this.cliente_nombre == ""){
+    //   error = true;
+    //   errMsg = "Debe ingresar la Razon Social";
+    // }
 
-    if (!error && this.cliente_identificacion == ""){
-      error = true;
-      errMsg = "Debe ingresar la identificacion";
-    }
+    // if (!error && this.cliente_identificacion == ""){
+    //   error = true;
+    //   errMsg = "Debe ingresar la identificacion";
+    // }
 
-    if (!error && !validator.ruc(this.cliente_identificacion)){
-      error = true;
-      errMsg = "Debe ingresar la identificacion";
-    }
+    // if (!error && !verificarRuc(this.cliente_identificacion)){
+    //   error = true;
+    //   errMsg = "Debe ingresar una identificacion valida";
+    // }
 
-    if (error){
-      this.func.showMessage("error", "Configuración", errMsg);
+    // if (error){
+    //   this.func.showMessage("error", "Configuración", errMsg);
+    //   return
+    // }
+
+    if (this.validacionCampos()){
       return
     }
+
+
 
     this.accionEditar = !this.accionEditar;
     

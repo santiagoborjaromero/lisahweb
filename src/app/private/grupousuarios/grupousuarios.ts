@@ -138,6 +138,7 @@ export class Grupousuarios {
           field: 'nombre',
           cellClass: 'text-start',
           filter: true,
+          flex: 3
         },
         {
           headerName: 'No. Usuarios',
@@ -146,7 +147,7 @@ export class Grupousuarios {
           filter: true,
         },
         {
-          headerName: 'Items Menu',
+          headerName: 'No. Items Menu',
           field: 'rolmenugrupos.length',
           cellClass: 'text-start',
           filter: true,
