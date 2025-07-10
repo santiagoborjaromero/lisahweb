@@ -43,18 +43,112 @@
 
         <div class="p-1 row">
           <div class="col-4 col-md-2 td2 text-end">
+            Estado
+            <small *ngIf="validador.estado.requerido"><i class="text-danger">*</i></small>
+            <br />
+            <small><i class="text-secondary">{{validador.estado.etiqueta}}</i></small>
+          </div>
+          <div class="col-8 col-md-4 td2">
+            <div class="form-check form-switch">
+              <input
+                class="form-check-input t16"
+                type="checkbox"
+                [(ngModel)]="estado"
+                role="switch"
+                id="estado"
+              />
+            </div>
+            <sup>
+              <i class=" {{validador.estado.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+                {{validador.estado.validacion.resultado == '' ?
+                validador.estado.descripcion :
+                validador.estado.validacion.resultado}}
+              </i>
+            </sup>
+          </div>
+        </div>
+
+        <div class="p-1 row">
+          <div class="col-4 col-md-2 td2 text-end">
             Linea de comandos
+             <small *ngIf="validador.cmds.requerido"><i class="text-danger">*</i></small>
             <br />
             <small><i class="text-secondary">Selección</i></small>
           </div>
           <div class="col-4 col-md-4 td2">
-            <button class="btn btn-primary btn-sm m-1"><i class="fas fa-plus"></i> Añadir</button> 
+            <button  class="btn btn-primary btn-sm m-1"
+              data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fas fa-plus"></i> Añadir</button> 
             <br>
-            <sup><i class="text-secondary">Seleccione una línea de comandos definido en template de comandos</i></sup>
+            <sup>
+              <i class=" {{validador.cmds.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+                {{validador.cmds.validacion.resultado == '' ?
+                validador.cmds.descripcion :
+                validador.cmds.validacion.resultado}}
+              </i>
+            </sup>
           </div>
         </div>
 
         <div #myGrid id="myGrid" class="ag-theme-quartz" style="height: 600px; min-height: 600px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div #modal class="modal modal-xl" id="exampleModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Lista de Comandos</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="p-1 row">
+          <div class="col-4 col-md-2 td2 text-end">
+            Linea de comandos
+            <br />
+            <small><i class="text-secondary">Alfanumérico</i></small>
+          </div>
+          <div class="col-8 col-md-4 td2">
+            <input
+              type="text"
+              name="buscar"
+              id="buscar"
+              class="form-control"
+              [(ngModel)]="buscar"
+              (keyup)="filtrar()"
+            />
+            <sup><i class="text-secondary">Ingrese el texo a buscar</i></sup>
+          </div>
+          <div class="col-8 col-md-1 td2">
+            <button class="btn btn-link" title="Buscar"><i class="fas fa-search"></i></button>
+            <br>
+            <sup>&nbsp;</sup>
+          </div>
+        </div>
+        <div class="p-3 row h400">
+          <table class="table table-strip ">
+            <thead>
+              <tr>
+                <th>Comando</th>
+                <th width="5%">Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of lstTemplate; track $index) {
+                <tr>
+                  <td>{{item.linea_comando}}</td>
+                  <td><button (click)="addItem(item.idtemplate_comando)" class="btn btn-link"><i class="fas fa-plus"></i></button></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
       </div>
     </div>
   </div>

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { Breadcrums } from '../../shared/breadcrums/breadcrums';
 import { Header } from '../../shared/header/header';
 import { CommonModule } from '@angular/common';
@@ -11,6 +11,8 @@ import { TemplateService } from '../../../core/services/template';
 import { ScriptsService } from '../../../core/services/script';
 import { AllCommunityModule, createGrid, GridApi, GridOptions, ICellRendererParams, ModuleRegistry, RowDragModule } from 'ag-grid-community';
 import { Global } from '../../../core/config/global.config';
+import Swal from 'sweetalert2';
+
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -18,9 +20,11 @@ ModuleRegistry.registerModules([AllCommunityModule]);
   selector: 'app-edit',
   imports: [Breadcrums, Header, CommonModule, FormsModule],
   templateUrl: './edit.html',
-  styleUrl: './edit.scss'
+  styleUrl: './edit.scss',
+  standalone: true
 })
 export class Edit {
+  @ViewChild("modal") modal?: ElementRef;
 
   private readonly route = inject(ActivatedRoute);
   private readonly func = inject(Functions);
@@ -35,8 +39,10 @@ export class Edit {
 
   nombre: string = "";
   linea: string = "";
-  activeTemplate: boolean = true;
+  buscar: string = "";
+  estado: boolean = true;
 
+  lstTemplate_Original: Array<any> = [];
   lstTemplate: Array<any> = [];
   lstCmds: Array<any> = [];
 
@@ -53,6 +59,7 @@ export class Edit {
 
   ngOnInit(): void {
     this.user = JSON.parse(this.sessions.get('user'));
+
 
     let uIDUser = this.route.snapshot.paramMap.get('id');
 
@@ -116,12 +123,14 @@ export class Edit {
 
   getTemplates(){
     this.lstTemplate = [];
+    this.lstTemplate_Original = [];
 
     this.tempSvc.getAll().subscribe({
       next: (resp: any) => {
-        console.log(resp);
+        // console.log(resp);
         if (resp.status) {
           this.lstTemplate = resp.data;
+          this.lstTemplate_Original = Array.from(this.lstTemplate);
         } else {
           this.func.showMessage("error", "Templates", resp.message);
         }
@@ -132,9 +141,96 @@ export class Edit {
     });
   }
 
+  filtrar(){
+    this.lstTemplate = [];
+    if (this.buscar == ""){
+      this.lstTemplate = Array.from(this.lstTemplate_Original);
+    }else{
+      this.lstTemplate_Original.forEach(e => {
+         if ( e.linea_comando.toLowerCase().indexOf(this.buscar.toLowerCase())>-1 ){
+          this.lstTemplate.push(e)
+        }
+      });
+    }
+  }
 
-  funcSubmit(){}
-  funcCancelar(){}
+  addItem(idtemplate_comando:any){
+    this.lstTemplate_Original.forEach(e=>{
+      if (e.idtemplate_comando == idtemplate_comando){
+        this.lstCmds.push(e);
+      }
+    })
+    this.refreshAll();
+  }
+
+  validacionCampos(que = ''){
+    let error = false;
+    let danger = 0;
+    let warning = 0;
+
+    if (["", "nombre"].includes(que)){
+      this.validador.nombre.validacion.resultado = "";
+      if (!this.validador.nombre.validacion.pattern.exec(this.nombre)){
+        error = true;
+        if (this.validador.nombre.requerido){
+          danger++;
+        }else{
+          warning++;
+        }
+        this.validador.nombre.validacion.resultado = this.validador.nombre.validacion.patron_descripcion;
+      }
+    }
+
+    if (["", "cmds"].includes(que)){
+      this.validador.cmds.validacion.resultado = "";
+      if (this.lstCmds.length == 0){
+        error = true;
+        if (this.validador.cmds.requerido){
+          danger++;
+        }else{
+          warning++;
+        }
+        this.validador.cmds.validacion.resultado = this.validador.cmds.validacion.patron_descripcion;
+      }
+    }
+
+    return error
+  }
+
+  funcSubmit(){
+    if (this.validacionCampos()){
+      return
+    }
+
+    let params = {
+      data:{
+        nombre: this.nombre,
+        estado: this.estado,
+        cmds: this.lstCmds
+      }
+    }
+
+    this.func.showLoading('Guardando');
+
+    this.scriptSvc.save(params,this.idscript).subscribe({
+      next: (resp: any) => {
+        this.func.closeSwal();
+        if (resp.status) {
+          this.funcCancelar();
+        } else {
+          this.func.showMessage("error", "Scripts", resp.message);
+        }
+      },
+      error: (err: any) => {
+        this.func.closeSwal();
+      },
+    });
+  }
+  
+    
+  funcCancelar(){
+    this.func.goRoute(`admin/scripts`, false, true);
+  }
 
   dataGridStruct() {
       let that = this;
@@ -158,13 +254,14 @@ export class Edit {
         },
         onRowClicked: (event: any) => {
           this.id_selected = event.data.idtemplate_comando;
-          this.is_deleted = event.data.deleted_at;
         },
         onRowDragEnd: (event) => {
-          // console.log(this.lstCmds)
-          // const rowData:any = [];
-          // this.gridApi.forEachNode((node:any) => rowData.push(node.data));
-          // this.gridApi.setRowData(rowData);
+          // console.log(event)
+          let data = event.node.data;
+          let from = event.node.id;
+          let to = event.node.sourceRowIndex;
+          // console.log("from", from, "to", to )
+          this.reordenarCmds(from, to);
         },
         rowDragManaged: true,
         columnDefs: [
@@ -182,6 +279,14 @@ export class Edit {
           flex: 11,
           rowDrag: true
         },
+        {
+          headerName: 'Accion',
+          field: 'idtemplate_comando',
+          cellClass: 'text-start',
+          cellRenderer: this.renderAccion.bind(this),
+          autoHeight: true,
+          filter: false,
+        },
       ],
       };
 
@@ -189,15 +294,135 @@ export class Edit {
         document.querySelector<HTMLElement>('#myGrid')!,
         this.gridOptions
       );
-    }
+  }
 
-    refreshAll() {
-      var params = {
-        force: true,
-        suppressFlash: true,
-      };
-      this.gridApi!.refreshCells(params);
-      this.gridApi!.setGridOption('rowData', this.lstCmds);
+  renderAccion(params: ICellRendererParams) {
+    const button = document.createElement('button');
+    button.className = 'btn btn-link text-danger';
+    button.innerHTML = '<i class="far fa-trash-alt"></i>';
+    button.addEventListener('click', () => {
+      this.quitar(params.data.idtemplate_comando);
+    });
+    return button;
+  }
+
+  quitar(idtemplate_comando:any){
+    let index = -1;
+    let found = false;
+    this.lstCmds.forEach( (e,idx)=>{
+      if (e.idtemplate_comando == idtemplate_comando){
+        index = idx;
+        found = true;
+      }
+    })
+    if (found){
+      this.lstCmds.splice(index,1);
+      this.refreshAll();
+    }
+  }
+
+  refreshAll() {
+    var params = {
+      force: true,
+      suppressFlash: true,
+    };
+    this.gridApi!.refreshCells(params);
+    this.gridApi!.setGridOption('rowData', this.lstCmds);
+  }
+
+  reordenarCmds(from:any, to:any){
+    let data = this.lstCmds[from];
+    this.lstCmds.splice(from,1);
+    this.lstCmds.splice(to,0,data);
+    this.refreshAll();
+  }
+
+
+  procesoEspecial(action = '', keyword = 'delete') {
+      if (this.id_selected == '') {
+        this.func.showMessage(
+          'error',
+          'Eliminar',
+          'Debe seleccionar una fila para eliminar'
+        );
+        return;
+      }
+  
+      Swal.fire({
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        title: 'Pregunta',
+        text: `Para ${action}, debe escribir la palabra ${keyword}.`,
+        icon: 'question',
+        input: 'text',
+        inputPlaceholder: keyword,
+        showCancelButton: true,
+        confirmButtonColor: '#33a0d6',
+        confirmButtonText: 'Confirmar',
+        cancelButtonColor: '#f63c3a',
+        cancelButtonText: 'Cancelar',
+        showClass: { backdrop: 'swal2-noanimation', popup: '' },
+        hideClass: { popup: '' },
+        inputValidator: (text) => {
+          return new Promise((resolve) => {
+            if (text.trim() !== '' && text.trim() == keyword) {
+              resolve('');
+            } else {
+              resolve(`Para ${action}, debe ingresar ${keyword}.`);
+            }
+          });
+        },
+      }).then((res) => {
+        if (res.isConfirmed) {
+          // console.log('action', keyword);
+          if (keyword == 'eliminar') {
+            this.procesoDelete();
+          }else if(keyword == "recuperar"){
+            this.procesoRestore();
+          }
+        }
+      });
+    }
+  
+    procesoDelete() {
+      this.func.showLoading('Eliminando');
+  
+      this.scriptSvc.delete(this.id_selected).subscribe({
+        next: (resp: any) => {
+          // console.log("DELETE", resp);
+          this.func.closeSwal();
+          if (resp.status) {
+            setTimeout(()=>{
+              this.getData();
+            },500)
+          } else {
+            this.func;
+          }
+        },
+        error: (err: any) => {
+          this.func.closeSwal();
+        },
+      });
+    }
+  
+    procesoRestore() {
+      this.func.showLoading('Recuperando');
+  
+      this.scriptSvc.recovery(this.id_selected).subscribe({
+        next: (resp: any) => {
+          this.func.closeSwal();
+          if (resp.status) {
+            setTimeout(()=>{
+              this.getData();
+            },500)
+          } else {
+            this.func;
+          }
+        },
+        error: (err: any) => {
+          this.func.closeSwal();
+        },
+      });
     }
 
 }

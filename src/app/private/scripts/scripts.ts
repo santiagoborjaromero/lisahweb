@@ -67,7 +67,6 @@ export class Scripts {
 
   ngAfterViewInit(): void {
     this.dataGridStruct();
-    // this.dataGridStructCmds();
 
     setTimeout(() => {
       this.getData();
@@ -82,7 +81,7 @@ export class Scripts {
 
     this.scriptSvc.getAllFilters(this.accion).subscribe({
       next: (resp: any) => {
-        console.log(resp);
+        // console.log(resp);
         this.func.closeSwal();
         if (resp.status) {
           this.lstData = resp.data;
@@ -121,7 +120,6 @@ export class Scripts {
         this.nombre_selected = event.data.nombre;
         this.is_deleted = event.data.deleted_at;
         this.lstCmds = event.data.cmds;
-        this.refreshAllCmds();
       },
       columnDefs: [
         {
@@ -159,10 +157,10 @@ export class Scripts {
           cellClass: 'text-start',
           cellRenderer: (params: ICellRendererParams) => {
             let data = params.data;
-            let status = data.deleted_at;
+            let status = data.estado;
             let text = 'Inactivo';
             let color = 'bg-danger';
-            if (status == null) {
+            if (status == 1) {
               color = 'bg-success';
               text = 'Activo';
             }
@@ -185,62 +183,6 @@ export class Scripts {
     };
     this.gridApi!.refreshCells(params);
     this.gridApi!.setGridOption('rowData', this.lstData);
-  }
-
-  dataGridStructCmds() {
-    let that = this;
-    this.gridOptionsCmds = {
-      rowData: [],
-      pagination: true,
-      paginationPageSize: 50,
-      paginationPageSizeSelector: [5, 10, 50, 100, 200, 300, 1000],
-      // rowSelection: {
-      //   mode: 'singleRow',
-      // },
-      rowHeight: 50,
-      defaultColDef: {
-        flex: 1,
-        minWidth: 100,
-        filter: true,
-        enableCellChangeFlash: true,
-        headerClass: 'bold',
-        floatingFilter: true,
-        resizable: false,
-        sortable: true,
-        editable: false
-      },
-      onRowClicked: (event: any) => {
-        this.id_selected_cmds = event.data.idtemplate_comando;
-      },
-      columnDefs: [
-        {
-          headerName: 'ID',
-          field: 'idtemplate_comando',
-          filter: false,
-          hide: true,
-        },
-        {
-          headerName: `Linea de Comando`,
-          field: 'linea_comando',
-          cellClass: 'text-start',
-          
-        },
-      ],
-    };
-
-    that.gridApiCmds = createGrid(
-      document.querySelector<HTMLElement>('#myCmds')!,
-      this.gridOptionsCmds
-    );
-  }
-
-  refreshAllCmds() {
-    var params = {
-      force: true,
-      suppressFlash: true,
-    };
-    this.gridApiCmds!.refreshCells(params);
-    this.gridApiCmds!.setGridOption('rowData', this.lstCmds);
   }
 
   funcEdit(id: any = null) {
