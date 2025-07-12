@@ -1,0 +1,147 @@
+<app-breadcrums />
+<div class="content">
+  <app-header />
+
+  <div class="row barra-menu">
+    <div class="col text-end">
+      <button (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1">
+        <i class="fas fa-save"></i> Guardar
+      </button>
+      <button (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1">
+        <i class="fas fa-reply"></i> Cancelar
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-md-12">
+      <div class="card mt-3 h500">
+        <div class="card-header th d-flex justify-content-between">
+          <span> Información General </span>
+        </div>
+
+        <div class="p-1 row">
+          <div class="col-4 col-md-2 td2 text-end">
+            Nombre <small *ngIf="validador.nombre.requerido"><i class="text-danger">*</i></small>
+            <br />
+            <small><i class="text-secondary">{{validador.nombre.etiqueta}}</i></small>
+          </div>
+          <div class="col-8 col-md-4 td2">
+            <input type="text" name="nombre" id="nombre" class="form-control {{validador.nombre.validacion.resultado == '' ? '' : 'input-danger'}}" 
+              [(ngModel)]="nombre"
+            />
+            <sup>
+              <i class=" {{validador.nombre.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
+                {{validador.nombre.validacion.resultado == '' ? validador.nombre.descripcion : validador.nombre.validacion.resultado}} </i>
+            </sup>
+          </div>
+
+
+          <div class="col-4 col-md-2 td2 text-end">
+            Localizacion <small *ngIf="validador.localizacion.requerido"><i class="text-danger">*</i></small>
+            <br />
+            <small><i class="text-secondary">{{validador.localizacion.etiqueta}}</i></small>
+          </div>
+          <div class="col-8 col-md-4 td2">
+            <input type="text" name="localizacion" id="localizacion" class="form-control {{validador.localizacion.validacion.resultado == '' ? '' : 'input-danger'}}" 
+              [(ngModel)]="localizacion"
+            />
+            <sup>
+              <i class=" {{validador.localizacion.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
+                {{validador.localizacion.validacion.resultado == '' ? validador.localizacion.descripcion : validador.localizacion.validacion.resultado}} </i>
+            </sup>
+          </div>
+
+
+          <div class="col-4 col-md-2 td2 text-end">
+            Host <small *ngIf="validador.host.requerido"><i class="text-danger">*</i></small>
+            <br />
+            <small><i class="text-secondary">{{validador.host.etiqueta}}</i></small>
+          </div>
+          <div class="col-8 col-md-4 td2">
+            <input type="text" name="host" id="host" class="form-control {{validador.host.validacion.resultado == '' ? '' : 'input-danger'}}" 
+              [(ngModel)]="host"
+            />
+            <sup>
+              <i class=" {{validador.host.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
+                {{validador.host.validacion.resultado == '' ? validador.host.descripcion : validador.host.validacion.resultado}} </i>
+            </sup>
+          </div>
+
+
+          <div class="col-4 col-md-2 td2 text-end">
+            Puerto <small *ngIf="validador.puerto.requerido"><i class="text-danger">*</i></small>
+            <br />
+            <small><i class="text-secondary">{{validador.puerto.etiqueta}}</i></small>
+          </div>
+          <div class="col-8 col-md-4 td2">
+            <input type="text" name="puerto" id="puerto" class="form-control {{validador.puerto.validacion.resultado == '' ? '' : 'input-danger'}}" 
+              [(ngModel)]="puerto"
+            />
+            <sup>
+              <i class=" {{validador.puerto.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
+                {{validador.puerto.validacion.resultado == '' ? validador.puerto.descripcion : validador.puerto.validacion.resultado}} </i>
+            </sup>
+          </div>
+
+
+          <div class="col-4 col-md-2 td2 text-end">
+            Script Nuevo <small *ngIf="validador.idscript_nuevo.requerido"><i class="text-danger">*</i></small>
+            <br />
+            <small><i class="text-secondary">{{validador.idscript_nuevo.etiqueta}}</i></small>
+          </div>
+          <div class="col-8 col-md-4 td2">
+            <select [(ngModel)]="idscript_nuevo" name="idscript_nuevo" id="idscript_nuevo" 
+              class="form-control {{validador.idscript_nuevo.validacion.resultado == '' ? '' : 'input-danger'}}">
+              @if(lstScripts.length>0){
+                @for (item of lstScripts; track $index) {
+                  <option value="{{item.idscript}}">{{item.nombre}}</option>
+                }
+              }@else {
+                <option value=""> -- No hay scripts asignados --</option>
+              }
+            </select>
+            <sup>
+              <i class=" {{validador.idscript_nuevo.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
+                {{validador.idscript_nuevo.validacion.resultado == '' ? validador.idscript_nuevo.descripcion : validador.idscript_nuevo.validacion.resultado}} </i>
+            </sup>
+          </div>
+
+
+          <div class="col-4 col-md-2 td2 text-end">
+            Estado <small *ngIf="validador.estado.requerido"><i class="text-danger">*</i></small>
+            <br />
+            <small><i class="text-secondary">{{validador.estado.etiqueta}}</i></small>
+          </div>
+          <div class="col-8 col-md-4 td2">
+            <select [(ngModel)]="estado" name="idrol" id="idrol" class="form-control">
+                <option value="1">Activo</option>
+                <option value="0">Inactivo</option>
+              </select>
+            <sup>
+              <i class=" {{validador.estado.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+                {{validador.estado.validacion.resultado == '' ? validador.estado.descripcion : validador.estado.validacion.resultado}}
+              </i>
+            </sup>
+          </div>
+
+          <div class="col-4 col-md-2 td2 text-end">
+            Test SSH <small *ngIf="validador.test.requerido"><i class="text-danger">*</i></small>
+            <br />
+            <small><i class="text-secondary">{{validador.test.etiqueta}}</i></small>
+          </div>
+          <div class="col-8 col-md-4 td2">
+            <button class="btn btn-primary" type="button" (click)="testSSH()">
+              Iniciar Test
+            </button> <span [innerHTML]="resultadoTest"></span>
+            <br>
+            <sup>
+              <i class=" {{validador.test.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+                {{validador.test.validacion.resultado == '' ? validador.test.descripcion : validador.test.validacion.resultado}}
+              </i>
+            </sup>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

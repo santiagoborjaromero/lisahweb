@@ -221,7 +221,8 @@ export class Edit {
 
         if (this.validador[key].requerido){
           this.validador[key].validacion.resultado = "";
-          if (!this.validador[key].validacion.pattern.exec(eval(`this.${key}`))){
+          // if (!this.validador[key].validacion.pattern.exec(eval(`this.${key}`))){
+          if (!this.validador[key].validacion.pattern.exec((0,eval)(key))){
             error = true;
             this.validador[key].validacion.resultado = this.validador[key].validacion.patron_descripcion;
           }
@@ -237,36 +238,6 @@ export class Edit {
     if (this.validacionCampos()){
       return;
     }
-
-    // let errMsg = "";
-    // let error = false;
-    
-    // if (!this.nombre){
-    //   error = true;
-    //   errMsg = "Debe ingresar el nombre completo del usuario";
-    // }
-
-    // if (!this.usuario){
-    //   error = true;
-    //   errMsg = "Debe ingresar el usuario para login";
-    // }
-
-    // if (!error && !this.email){
-    //   error = true;
-    //   errMsg = "Debe ingresar un correo electrónico";
-    // }
-
-    // if (this.user.idrol != 1 ){
-    //   if (!error && this.idgrupo_usuario == ""){
-    //     error = true;
-    //     errMsg = "Debe seleccionar el grupo de usuario asignado";
-    //   }
-    // }
-
-    // if (error){
-    //   this.func.showMessage("error", "Usuarios Edit", errMsg);
-    //   return
-    // }
 
     let param = {
       data: {

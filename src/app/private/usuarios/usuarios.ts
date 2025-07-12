@@ -82,7 +82,7 @@ export class Usuarios {
 
     this.userSvc.getAllFilters(this.accion).subscribe({
       next: (resp: any) => {
-        console.log(resp);
+        // console.log(resp);
         this.func.closeSwal();
         if (resp.status) {
           this.lstData = resp.data;

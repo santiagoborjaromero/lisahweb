@@ -11,6 +11,7 @@ import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ServidorService } from '../../core/services/servidor';
+import moment from 'moment';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -76,8 +77,6 @@ export class Servidores {
     this.id_selected = '';
     this.is_deleted = '';
 
-    // console.log(this.accion)
-
     this.serverSvc.getAllFilters(this.accion).subscribe({
       next: (resp: any) => {
         // console.log(resp);
@@ -137,6 +136,7 @@ export class Servidores {
           field: 'host',
           cellClass: 'text-start',
           filter: true,
+          flex: 2,
         },
         {
           headerName: 'Puerto',
@@ -144,12 +144,12 @@ export class Servidores {
           cellClass: 'text-start',
           filter: true,
         },
-        {
-          headerName: 'No. Usuarios',
-          field: 'usuarios.length',
-          cellClass: 'text-start',
-          filter: true,
-        },
+        // {
+        //   headerName: 'No. Usuarios',
+        //   field: 'usuarios.length',
+        //   cellClass: 'text-start',
+        //   filter: true,
+        // },
         {
           headerName: 'Script Nuevo',
           field: 'idscript',
@@ -159,7 +159,7 @@ export class Servidores {
             let status = data.idscript_nuevo;
             let text = 'No asignado';
             let color = 'bg-danger';
-            if (status == null) {
+            if (status != null) {
               color = 'bg-success';
               text = 'Asignado';
             }
@@ -175,13 +175,30 @@ export class Servidores {
             let status = data.estado;
             let text = 'Inactivo';
             let color = 'bg-danger';
-            if (status == null) {
+            if (status == 1) {
               color = 'bg-success';
               text = 'Activo';
             }
             return `<kbd class="${color} text-white">${text}</kbd>`;
           },
         },
+        {
+          headerName: 'Eliminado',
+          field: 'deleted_at',
+          cellClass: 'text-end',
+          sortIndex: 0,
+          sort: 'asc',
+          maxWidth:120,
+          cellRenderer: (params: ICellRendererParams) => {
+            let data = params.data;
+            let fecha = data.deleted_at;
+            let text = "";
+            if (fecha){
+              text = moment(fecha).format("YYYY-MM-DD");
+            }
+            return text;
+          }
+        }
       ],
     };
 
@@ -201,7 +218,7 @@ export class Servidores {
   }
 
   funcEdit(id: any = null) {
-    this.func.goRoute(`admin/grupousuario/${id ? id : this.id_selected}`, true);
+    this.func.goRoute(`admin/servidor/${id ? id : this.id_selected}`, true);
   }
 
   procesoEspecial(action = '', keyword = 'delete') {

@@ -104,7 +104,7 @@ export class Edit {
 
     this.scriptSvc.getOne(this.idscript).subscribe({
       next: (resp: any) => {
-        console.log(resp);
+        // console.log(resp);
         this.func.closeSwal();
         if (resp.status) {
           this.rstData = resp.data[0];
