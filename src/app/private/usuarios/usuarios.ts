@@ -15,6 +15,7 @@ import { UsuarioService } from '../../core/services/usuarios';
 import { Sessions } from '../../core/helpers/session.helper';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
+import moment from 'moment';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -81,7 +82,7 @@ export class Usuarios {
 
     this.userSvc.getAllFilters(this.accion).subscribe({
       next: (resp: any) => {
-        // console.log(resp);
+        console.log(resp);
         this.func.closeSwal();
         if (resp.status) {
           this.lstData = resp.data;
@@ -179,41 +180,39 @@ export class Usuarios {
           cellRenderer: (params: ICellRendererParams) => {
             let data = params.data;
             let email = data.email;
+            let confirmado = data.email_confirmado;
+            let adicional = "";
+            if (confirmado){
+              adicional = "";
+            }else{
+              adicional = `<kbd class="bg-danger text-white">No confirmado</kbd>`;
+            }
+
             let text = `<i class="far fa-times-circle text-danger t20"></i>`;
             let color = 'bg-danger';
             if (email) {
               color = 'bg-success';
               text = '<i class="far fa-check-circle text-success t20"></i>';
             }
-            // return `<kbd class="${color} text-white">${text}</kbd>`;
-            return text;
+            return text + " " + adicional;
           },
         },
         // {
-        //   headerName: 'Email Confirmado',
-        //   field: 'email_confirmado',
+        //   headerName: 'NTFY ID',
+        //   field: 'ntfy_identificador',
         //   cellClass: 'text-start',
-        //   cellRenderer: (params: ICellRendererParams) => {
-        //     let data = params.data;
-        //     let status = data.email_confirmado;
-        //     let text = 'No';
-        //     let color = 'bg-danger';
-        //     if (status == 1) {
-        //       color = 'bg-success';
-        //       text = 'Si';
-        //     }
-        //     return `<kbd class="${color} text-white">${text}</kbd>`;
-        //   },
         // },
         {
-          headerName: 'NTFY ID',
-          field: 'ntfy_identificador',
+          headerName: 'Servidores',
+          field: 'servidores.length',
           cellClass: 'text-start',
+          maxWidth: 100,
         },
         {
           headerName: 'Estado',
           field: 'estado',
           cellClass: 'text-start',
+          maxWidth:100,
           cellRenderer: (params: ICellRendererParams) => {
             let data = params.data;
             let status = data.estado;
@@ -232,7 +231,18 @@ export class Usuarios {
           cellClass: 'text-end',
           sortIndex: 0,
           sort: 'asc',
+          maxWidth:120,
+          cellRenderer: (params: ICellRendererParams) => {
+            let data = params.data;
+            let fecha = data.deleted_at;
+            let text = "";
+            if (fecha){
+              text = moment(fecha).format("YYYY-MM-DD");
+            }
+            return text;
+          }
         }
+        
       );
     }
 

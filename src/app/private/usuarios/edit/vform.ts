@@ -24,9 +24,9 @@ export default  {
   idgrupo_usuario: {
     requerido: true,
     etiqueta: "Selección",
-    descripcion: 'Agrupación al que pertene el usuario',
+    descripcion: 'Agrupación al que pertenece el usuario',
     validacion: {
-      pattern: /^[0-9\/s]+$/,
+      pattern: /^[0-9]+$/,
       patron_descripcion: 'Debe seleccionar un grupo de usuario valido.',
       resultado: '',
     },
@@ -56,7 +56,7 @@ export default  {
     etiqueta: "Alfanumérico",
     descripcion: 'Correo electronico del usuario',
     validacion: {
-      pattern: /^[a-zA-Z0-9._@-]+$/,
+      pattern: /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/,
       patron_descripcion: 'Debe ingresar un correo electronico válido.',
       resultado: '',
     },
@@ -79,6 +79,16 @@ export default  {
       pattern: /^[a-zA-Z0-9._-]+$/,
       patron_descripcion:
         'Debe ingresar un nombre válido entre mayúsculas, minúsculas, números, guión bajo o medio, punto, no espacios.',
+      resultado: '',
+    },
+  },
+  servidores: {
+    requerido: false,
+    etiqueta: "Alfanumérico",
+    descripcion: 'Asigna servidores a usuarios',
+    validacion: {
+      pattern: /^[a-zA-Z0-9._-]+$/,
+      patron_descripcion: 'Debe seleccionar un servidore válido.',
       resultado: '',
     },
   },
