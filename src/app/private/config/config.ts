@@ -6,6 +6,7 @@ import { ConfigService } from '../../core/services/config'
 import { Functions } from '../../core/helpers/functions.helper';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { verificarRuc } from 'udv-ec';
+import { ScriptsService } from '../../core/services/script';
 
 @Component({
   selector: 'app-config',
@@ -16,6 +17,7 @@ import { verificarRuc } from 'udv-ec';
 export class Config {
   private readonly configSvc = inject(ConfigService);
   private readonly func = inject(Functions);
+  private readonly scriptSvc = inject(ScriptsService);
 
   rstConfig: any;
 
@@ -31,6 +33,7 @@ export class Config {
     {id: "ntfy", nombre: "NTFY"},
   ];
 
+  lstScripts: Array<any> = [];
   lstScriptCreacionUsuarios: Array<any> = [];
   lstScriptCreacionGrupoUsuarios: Array<any> = [];
 
@@ -61,6 +64,8 @@ export class Config {
     setTimeout(()=>{
       this.getData();
     },800)
+
+    this.getScripts();
   }
 
   ngOnDestroy(): void {
@@ -111,6 +116,20 @@ export class Config {
     this.tiempo_caducidad_token_agente = this.rstConfig.tiempo_caducidad_token_agente;
   }
 
+  getScripts(){
+    this.scriptSvc.getAll().subscribe({
+      next: (resp: any) => {
+        if (resp.status) {
+          this.lstScripts = resp.data;
+        } else {
+          this.func.showMessage("error", "Usuario", resp.message);
+        }
+      },
+      error: (err: any) => {
+      },
+    });
+  }
+
   funcCancelar(){
     this.accionEditar = !this.accionEditar;
     this.populateData();
@@ -138,40 +157,13 @@ export class Config {
       }
     }
 
-
     return error
-
   }
 
   funcSubmit(){
-    // let errMsg = "";
-    // let error = false;
-    
-    // if (this.cliente_nombre == ""){
-    //   error = true;
-    //   errMsg = "Debe ingresar la Razon Social";
-    // }
-
-    // if (!error && this.cliente_identificacion == ""){
-    //   error = true;
-    //   errMsg = "Debe ingresar la identificacion";
-    // }
-
-    // if (!error && !verificarRuc(this.cliente_identificacion)){
-    //   error = true;
-    //   errMsg = "Debe ingresar una identificacion valida";
-    // }
-
-    // if (error){
-    //   this.func.showMessage("error", "Configuración", errMsg);
-    //   return
-    // }
-
     if (this.validacionCampos()){
       return
     }
-
-
 
     this.accionEditar = !this.accionEditar;
     

@@ -213,45 +213,24 @@ export class Edit {
     });
   }
 
-  validacionCampos(que = ''){
-    let error = false;
-    let keys = Object.keys(this.validador);
-    keys.forEach(key=>{
-      if (que=="" || que == key){
-
-        if (this.validador[key].requerido){
-          this.validador[key].validacion.resultado = "";
-          // if (!this.validador[key].validacion.pattern.exec(eval(`this.${key}`))){
-          if (!this.validador[key].validacion.pattern.exec((0,eval)(key))){
-            error = true;
-            this.validador[key].validacion.resultado = this.validador[key].validacion.patron_descripcion;
-          }
-
-        }
-      }
-    });
-    return error
-  }
-
   funcSubmit(){
+    let data = {
+      idrol: this.idrol,
+      idgrupo_usuario: this.idgrupo_usuario,
+      idcliente: this.idcliente,
+      estado: this.estado,
+      nombre: this.nombre,
+      usuario: this.usuario,
+      ntfy_identificador: this.ntfy_identificador,
+      email: this.email,
+      servidores: this.lstSvrs
+    }
 
-    if (this.validacionCampos()){
+    if (this.func.validaCampos(this.validador, data)){
       return;
     }
 
-    let param = {
-      data: {
-        idrol: this.idrol,
-        idgrupo_usuario: this.idgrupo_usuario,
-        idcliente: this.idcliente,
-        estado: this.estado,
-        nombre: this.nombre,
-        usuario: this.usuario,
-        ntfy_identificador: this.ntfy_identificador,
-        email: this.email,
-        servidores: this.lstSvrs
-      }
-    }
+    let param = { data }
 
     this.func.showLoading('Guardando');
 

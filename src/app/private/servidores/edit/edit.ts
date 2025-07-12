@@ -109,8 +109,6 @@ export class Edit {
   }
 
   getScripts(){
-    this.rstData = null;
-
     this.scriptSvc.getAll().subscribe({
       next: (resp: any) => {
         if (resp.status) {

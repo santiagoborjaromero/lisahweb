@@ -273,8 +273,8 @@
           </div>
           <div class="col-8 col-md-4 td2">
             <select [disabled]="!accionEditar" [(ngModel)]="idscript_creacion_grupo_usuarios" name="idscript_creacion_grupo_usuarios" id="idscript_creacion_grupo_usuarios" class="form-control">
-              @if(lstScriptCreacionUsuarios.length>0){
-                @for (item of lstScriptCreacionUsuarios; track $index) {
+              @if(lstScripts.length>0){
+                @for (item of lstScripts; track $index) {
                   <option value="{{item.idscript}}">{{item.nombre}}</option>
                 }
               }@else {
@@ -292,8 +292,8 @@
           <div class="col-8 col-md-4 td2">
             <select [disabled]="!accionEditar" [(ngModel)]="idscript_creacion_usuario" 
               name="idscript_creacion_usuario" id="idscript_creacion_usuario" class="form-control">
-              @if(lstScriptCreacionUsuarios.length>0){
-                @for (item of lstScriptCreacionUsuarios; track $index) {
+              @if(lstScripts.length>0){
+                @for (item of lstScripts; track $index) {
                   <option value="{{item.idscript}}">{{item.nombre}}</option>
                 }
               }@else {
