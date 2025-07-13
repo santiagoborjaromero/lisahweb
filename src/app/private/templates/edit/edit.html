@@ -13,8 +13,8 @@
     </div>
   </div>
   <div class="row">
-    <div class="col col-md-10">
-      <div class="card mt-3 h500">
+    <div class="col-12 col-sm-12 col-md-8 col-lg-10">
+      <div class="card mt-3 ">
         <div class="card-header th d-flex justify-content-between">
           <span> Información General </span>
         </div>
@@ -41,12 +41,14 @@
             
           </div>
           <div class="col-8 col-md-9 td2">
-            Una variable entre llaves sera reemplazada con el contenido en el momento de ejecutar la linea de comando.
+            <button class="btn btn-link btnayudavisual" (click)="verAyuda=!verAyuda">{{verAyuda ? 'Ocultar ayuda visual' : 'Ver ayuda visual'}}</button>
+            <br><br>
+            <img *ngIf="verAyuda" src="/assets/img/template.gif" alt="Template" class="imgtemplate">
           </div>
         </div>
       </div>
     </div>
-    <div class="col col-md-2">
+    <div class="col-12 col-sm-12 col-md-4 col-lg-2">
       <div class="card mt-3 h500">
         <div class="card-header th d-flex justify-content-between">
           <span> Variables</span>

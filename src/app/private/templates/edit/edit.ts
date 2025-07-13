@@ -32,6 +32,7 @@ export class Edit {
 
   linea_comando:string = "";
   lstVariables:Array<any> = [];
+  verAyuda: boolean = false;
 
   validador:any = vForm; 
 
