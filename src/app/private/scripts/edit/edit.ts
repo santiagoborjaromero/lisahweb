@@ -97,6 +97,10 @@ export class Edit {
     this.getTemplates();
   }
 
+  ngOnDestroy(): void {
+    this.func.encerarCampos(this.validador);
+  }
+
   getData(){
     this.rstData = null;
 

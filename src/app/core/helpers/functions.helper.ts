@@ -258,13 +258,14 @@ export class Functions {
   validaCampos(objValida:Array<any> = [], campos:any = {}, que = ''){
     let error = false;
     let keys = Object.keys(objValida);
+    
     keys.forEach((key:any)=>{
       if (que=="" || que == key){
         if (objValida[key].requerido){
+
           objValida[key].validacion.resultado = "";
-          // console.log(campos[key])
+          
           if (!objValida[key].validacion.pattern.exec(campos[key])){
-            // console.log("entro")
             error = true;
             objValida[key].validacion.resultado = objValida[key].validacion.patron_descripcion;
           }
@@ -274,6 +275,15 @@ export class Functions {
     });
     // console.log(error)
     return error
+  }
+
+  
+  encerarCampos(objValida:Array<any> = []){
+    let keys = Object.keys(objValida);
+    keys.forEach((key:any)=>{
+      objValida[key].validacion.resultado = "";
+    });
+    return true
   }
 
 

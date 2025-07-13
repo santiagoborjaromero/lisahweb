@@ -75,12 +75,16 @@ export class Edit {
     }
   }
 
+  ngOnDestroy(): void {
+    this.func.encerarCampos(this.validador);
+  }
+
   getData(){
     this.rstData = null;
     this.func.showLoading('Cargando');
     this.tempSvc.getOne(this.idtemplate).subscribe({
       next: (resp: any) => {
-        console.log(resp);
+        // console.log(resp);
         this.func.closeSwal();
         if (resp.status) {
           this.rstData = resp.data[0];
@@ -99,7 +103,7 @@ export class Edit {
     this.rstData = null;
     this.varSvc.getAll().subscribe({
       next: (resp: any) => {
-        console.log(resp);
+        // console.log(resp);
         if (resp.status) {
           this.lstVariables = resp.data;
         } else {
@@ -127,7 +131,7 @@ export class Edit {
 
     this.tempSvc.save(param, this.idtemplate).subscribe({
       next: (resp: any) => {
-        console.log(resp)
+        // console.log(resp)
         this.func.closeSwal();
         if (resp.status) {
           this.funcCancelar();

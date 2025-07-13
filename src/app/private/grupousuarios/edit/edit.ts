@@ -83,6 +83,10 @@ export class Edit {
     }
   }
 
+  ngOnDestroy(): void {
+    this.func.encerarCampos(this.formData);
+  }
+
   getData() {
     this.func.showLoading('Cargando');
 

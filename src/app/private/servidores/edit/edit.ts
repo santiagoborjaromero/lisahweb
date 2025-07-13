@@ -83,6 +83,11 @@ export class Edit {
     this.getScripts();
   }
 
+  ngOnDestroy(): void {
+    this.func.encerarCampos(this.validador);
+  }
+
+
   getData(){
     this.rstData = null;
     this.func.showLoading('Cargando');

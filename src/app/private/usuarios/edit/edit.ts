@@ -116,6 +116,10 @@ export class Edit {
     this.getServidores();
   }
 
+  ngOnDestroy(): void {
+    this.func.encerarCampos(this.validador);
+  }
+
   getData(){
     this.rstData = null;
 
