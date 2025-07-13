@@ -1,0 +1,70 @@
+<app-breadcrums />
+<div class="content">
+  <app-header />
+
+  <div class="row barra-menu">
+    <div class="col text-end">
+      <button (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1">
+        <i class="fas fa-save"></i> Guardar
+      </button>
+      <button (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1">
+        <i class="fas fa-reply"></i> Cancelar
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-md-10">
+      <div class="card mt-3 h500">
+        <div class="card-header th d-flex justify-content-between">
+          <span> Información General </span>
+        </div>
+        <div class="p-1 row">
+          <div class="col-4 col-md-3 td2 text-end">
+            Limea de comando <small *ngIf="validador.linea_comando.requerido"><i class="text-danger">*</i></small>
+            <br />
+            <small><i class="text-secondary">{{validador.linea_comando.etiqueta}}</i></small>
+          </div>
+          <div class="col-8 col-md-9 td2">
+            <textarea name="linea_comando" id="linea_comando" rows="5"
+              class="form-control {{validador.linea_comando.validacion.resultado == '' ? '' : 'input-danger'}}"
+              [(ngModel)]="linea_comando"
+            ></textarea>
+            <sup>
+              <i class=" {{validador.linea_comando.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+                {{validador.linea_comando.validacion.resultado == '' ? validador.linea_comando.descripcion : validador.linea_comando.validacion.resultado}}
+              </i>
+            </sup>
+          </div>
+        </div>
+        <div class="p-1 row">
+          <div class="col-4 col-md-3 td2 text-end">
+            
+          </div>
+          <div class="col-8 col-md-9 td2">
+            Una variable entre llaves sera reemplazada con el contenido en el momento de ejecutar la linea de comando.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col col-md-2">
+      <div class="card mt-3 h500">
+        <div class="card-header th d-flex justify-content-between">
+          <span> Variables</span>
+        </div>
+        <div class="p-1 row">
+          <div class="list-group">
+            @for (item of lstVariables; track $index) {
+              <li class="list-group-item list-group-item-action"  >
+                <div class="d-flex w-100 justify-content-between">
+                  <strong class="mb-1">{{item.nombre}}</strong>
+                  <button (click)="addText(item.nombre)" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i></button>
+                </div>
+                <small>{{item.descripcion}}</small>
+              </li>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

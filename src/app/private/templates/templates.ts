@@ -174,7 +174,7 @@ private readonly tempSvc = inject(TemplateService);
   }
 
   funcEdit(id: any = null) {
-    this.func.goRoute(`admin/grupousuario/${id ? id : this.id_selected}`, true);
+    this.func.goRoute(`admin/template/${id ? id : this.id_selected}`, true);
   }
 
   procesoEspecial(action = '', keyword = 'delete') {
