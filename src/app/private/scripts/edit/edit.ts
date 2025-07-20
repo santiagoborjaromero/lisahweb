@@ -474,7 +474,7 @@ export class Edit {
     this.func.showLoading('Creando línea de comando');
     this.tempSvc.save(param, "").subscribe({
       next: (resp: any) => {
-        console.log(resp)
+        // console.log(resp)
         this.func.closeSwal();
         if (resp.status) {
           let data = resp.data;
