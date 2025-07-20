@@ -296,3 +296,11 @@ ul.menu{
 .h400 {height: 400px !important; overflow-y: visible !important; overflow-x: hidden;}
 .h500 {height: 500px !important; overflow-y: visible !important; overflow-x: hidden;}
 .h600 {height: 600px !important; overflow-y: visible !important; overflow-x: hidden;}
+
+.bold { font-weight: 600;}
+
+.link{
+    border-bottom: 1px dashed #15b8a2;
+    cursor: pointer;
+    color: #15b8a2;
+}
