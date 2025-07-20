@@ -19,7 +19,6 @@ import { ActivatedRoute } from '@angular/router';
   standalone: true
 })
 export class Edit {
-
   private readonly func = inject(Functions);
   private readonly sessions = inject(Sessions);
   private readonly route = inject(ActivatedRoute);
@@ -32,10 +31,12 @@ export class Edit {
   rstData: any;
 
   nombre: string = "";
-  localizacion: string = "";
+  ubicacion: string = "";
   host: string = "";
-  puerto: string = "";
+  ssh_puerto: string = "";
+  agente_puerto: string = "";
   idscript_nuevo: string = "";
+  comentarios: string = "";
   estado: number = 1;
 
   resultadoTest = "";
@@ -98,10 +99,12 @@ export class Edit {
         if (resp.status) {
           this.rstData = resp.data[0];
           this.nombre = this.rstData.nombre;
-          this.localizacion = this.rstData.localizacion;
+          this.ubicacion = this.rstData.ubicacion;
           this.host = this.rstData.host;
-          this.puerto = this.rstData.puerto;
-          this.idscript_nuevo = this.rstData.idscript_nuevo;
+          this.ssh_puerto = this.rstData.ssh_puerto;
+          this.agente_puerto = this.rstData.agente_puerto;
+          this.comentarios = this.rstData.comentarios;
+          // this.idscript_nuevo = this.rstData.idscript_nuevo;
           this.estado = this.rstData.estado;
         } else {
           this.func.showMessage("error", "Usuario", resp.message);
@@ -132,11 +135,13 @@ export class Edit {
   funcSubmit(){
     let data = {
       nombre: this.nombre,
-      localizacion: this.localizacion,
+      ubicacion: this.ubicacion,
       host: this.host,
-      puerto: this.puerto,
-      idscript_nuevo: this.idscript_nuevo,
+      ssh_puerto: this.ssh_puerto,
+      agente_puerto: this.agente_puerto,
+      // idscript_nuevo: this.idscript_nuevo,
       estado: this.estado,
+      comentarios: this.comentarios,
     };
 
     if (this.func.validaCampos(this.validador,data) ){
@@ -168,38 +173,36 @@ export class Edit {
   }
 
 
-  testSSH(){
-    if (this.func.validaCampos(this.validador, {host: this.host}, "host")){
-      return ;
-    }
-    if (this.func.validaCampos(this.validador, {puerto: this.puerto}, "puerto")){
-      return;
-    }
-    let param = {
-      data: {
-        host: this.host,
-        puerto: this.puerto
-      }
-    }
-    this.func.showLoading('Realizando Test');
-    this.srvSvc.testHealthy(param).subscribe({
-      next: (resp: any) => {
-        this.func.closeSwal();
-        if (resp.status) {
-          this.func.showMessage("success", "Servidor", resp.data);
-          this.resultadoTest = `<i class="text-success mt-4 ml-2 t12"><i class="fas fa-check-circle  t16"></i> Healthy</i>`;
-          this.validador.test.validacion.resultado = "";
-        } else {
-          this.func.showMessage("error", "Servidor", resp.message);
-          this.resultadoTest = `<i class="text-danger mt-4 ml-2 t12"><i class="fas fa-times-circle  t16"></i> No Healthy</i>`;
-          this.validador.test.validacion.resultado =  resp.message;
-        }
-      },
-      error: (err: any) => {
-        this.func.closeSwal();
-      },
-    });
-
-
-  }
+  // testSSH(){
+  //   if (this.func.validaCampos(this.validador, {host: this.host}, "host")){
+  //     return ;
+  //   }
+  //   if (this.func.validaCampos(this.validador, {puerto: this.puerto}, "puerto")){
+  //     return;
+  //   }
+  //   let param = {
+  //     data: {
+  //       host: this.host,
+  //       puerto: this.puerto
+  //     }
+  //   }
+  //   this.func.showLoading('Realizando Test');
+  //   this.srvSvc.testHealthy(param).subscribe({
+  //     next: (resp: any) => {
+  //       this.func.closeSwal();
+  //       if (resp.status) {
+  //         this.func.showMessage("success", "Servidor", resp.data);
+  //         this.resultadoTest = `<i class="text-success mt-4 ml-2 t12"><i class="fas fa-check-circle  t16"></i> Healthy</i>`;
+  //         this.validador.test.validacion.resultado = "";
+  //       } else {
+  //         this.func.showMessage("error", "Servidor", resp.message);
+  //         this.resultadoTest = `<i class="text-danger mt-4 ml-2 t12"><i class="fas fa-times-circle  t16"></i> No Healthy</i>`;
+  //         this.validador.test.validacion.resultado =  resp.message;
+  //       }
+  //     },
+  //     error: (err: any) => {
+  //       this.func.closeSwal();
+  //     },
+  //   });
+  // }
 }

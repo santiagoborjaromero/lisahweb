@@ -9,10 +9,10 @@ export default  {
       resultado: '',
     },
   },
-  localizacion: {
+  ubicacion: {
     requerido: true,
     etiqueta: "Alfanumérico",
-    descripcion: 'La localizacion es una referencia puede ser usada para diferencia departamentos o lugares ',
+    descripcion: 'La ubicacion es una referencia puede ser usada para diferencia departamentos o lugares ',
     validacion: {
       pattern: /^[a-zA-Z/\s]+$/,
       patron_descripcion: 'Debe ingresar un texto válido entre mayúsculas, minúsculas y espacios en blanco.',
@@ -29,7 +29,7 @@ export default  {
       resultado: '',
     },
   },
-  puerto: {
+  ssh_puerto: {
     requerido: true,
     etiqueta: "Numérico",
     descripcion: 'Número de puerto del servidor para acceso SSH',
@@ -39,22 +39,42 @@ export default  {
       resultado: '',
     },
   },
-  idscript_nuevo: {
-    requerido: false,
-    etiqueta: "Selección",
-    descripcion: 'Script que se ejecutará cuando se cree un nuevo servidor',
+  agente_puerto: {
+    requerido: true,
+    etiqueta: "Numérico",
+    descripcion: 'Número de puerto del servidor para acceso al agente',
     validacion: {
       pattern: /^[0-9]+$/,
-      patron_descripcion: 'Debe seleccionar un numero válido.',
+      patron_descripcion: 'Debe ingresar un numero válido.',
       resultado: '',
     },
   },
+  // idscript_nuevo: {
+  //   requerido: false,
+  //   etiqueta: "Selección",
+  //   descripcion: 'Script que se ejecutará cuando se cree un nuevo servidor',
+  //   validacion: {
+  //     pattern: /^[0-9]+$/,
+  //     patron_descripcion: 'Debe seleccionar un numero válido.',
+  //     resultado: '',
+  //   },
+  // },
   estado: {
     requerido: true,
     etiqueta: "Selección",
     descripcion: 'Estado de servidor activo o inactivo',
     validacion: {
       pattern: /^[0-9]+$/,
+      patron_descripcion: 'Debe seleccionar un estado válido.',
+      resultado: '',
+    },
+  },
+  comentarios: {
+    requerido: false,
+    etiqueta: "Todo texto",
+    descripcion: 'Observaciones sobre el servidor',
+    validacion: {
+      pattern: /^[A-Za-z0-9]+$/,
       patron_descripcion: 'Debe seleccionar un estado válido.',
       resultado: '',
     },

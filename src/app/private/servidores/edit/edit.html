@@ -14,7 +14,7 @@
   </div>
   <div class="row">
     <div class="col col-md-12">
-      <div class="card mt-3 h500">
+      <div class="card mt-3">
         <div class="card-header th d-flex justify-content-between">
           <span> Información General </span>
         </div>
@@ -37,17 +37,17 @@
 
 
           <div class="col-4 col-md-2 td2 text-end">
-            Localizacion <small *ngIf="validador.localizacion.requerido"><i class="text-danger">*</i></small>
+            Ubicación <small *ngIf="validador.ubicacion.requerido"><i class="text-danger">*</i></small>
             <br />
-            <small><i class="text-secondary">{{validador.localizacion.etiqueta}}</i></small>
+            <small><i class="text-secondary">{{validador.ubicacion.etiqueta}}</i></small>
           </div>
           <div class="col-8 col-md-4 td2">
-            <input type="text" name="localizacion" id="localizacion" class="form-control {{validador.localizacion.validacion.resultado == '' ? '' : 'input-danger'}}" 
-              [(ngModel)]="localizacion"
+            <input type="text" name="ubicacion" id="ubicacion" class="form-control {{validador.ubicacion.validacion.resultado == '' ? '' : 'input-danger'}}" 
+              [(ngModel)]="ubicacion"
             />
             <sup>
-              <i class=" {{validador.localizacion.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
-                {{validador.localizacion.validacion.resultado == '' ? validador.localizacion.descripcion : validador.localizacion.validacion.resultado}} </i>
+              <i class=" {{validador.ubicacion.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
+                {{validador.ubicacion.validacion.resultado == '' ? validador.ubicacion.descripcion : validador.ubicacion.validacion.resultado}} </i>
             </sup>
           </div>
 
@@ -69,22 +69,40 @@
 
 
           <div class="col-4 col-md-2 td2 text-end">
-            Puerto <small *ngIf="validador.puerto.requerido"><i class="text-danger">*</i></small>
+            Puerto SSH<small *ngIf="validador.ssh_puerto.requerido"><i class="text-danger">*</i></small>
             <br />
-            <small><i class="text-secondary">{{validador.puerto.etiqueta}}</i></small>
+            <small><i class="text-secondary">{{validador.ssh_puerto.etiqueta}}</i></small>
           </div>
           <div class="col-8 col-md-4 td2">
-            <input type="text" name="puerto" id="puerto" class="form-control {{validador.puerto.validacion.resultado == '' ? '' : 'input-danger'}}" 
-              [(ngModel)]="puerto"
+            <input type="text" name="ssh_puerto" id="ssh_puerto" class="form-control {{validador.ssh_puerto.validacion.resultado == '' ? '' : 'input-danger'}}" 
+              [(ngModel)]="ssh_puerto"
             />
             <sup>
-              <i class=" {{validador.puerto.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
-                {{validador.puerto.validacion.resultado == '' ? validador.puerto.descripcion : validador.puerto.validacion.resultado}} </i>
+              <i class=" {{validador.ssh_puerto.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
+                {{validador.ssh_puerto.validacion.resultado == '' ? validador.ssh_puerto.descripcion : validador.ssh_puerto.validacion.resultado}} </i>
+            </sup>
+          </div>
+
+          <div class="col-4 col-md-2 td2 text-end">
+            Puerto Agente<small *ngIf="validador.agente_puerto.requerido"><i class="text-danger">*</i></small>
+            <br />
+            <small><i class="text-secondary">{{validador.agente_puerto.etiqueta}}</i></small>
+          </div>
+          <div class="col-8 col-md-4 td2">
+            <input type="text" name="agente_puerto" id="agente_puerto" class="form-control {{validador.agente_puerto.validacion.resultado == '' ? '' : 'input-danger'}}" 
+              [(ngModel)]="agente_puerto"
+            />
+            <sup>
+              <i class=" {{validador.agente_puerto.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
+                {{validador.agente_puerto.validacion.resultado == '' ? validador.agente_puerto.descripcion : validador.agente_puerto.validacion.resultado}} </i>
             </sup>
           </div>
 
 
-          <div class="col-4 col-md-2 td2 text-end">
+          
+
+
+          <!-- <div class="col-4 col-md-2 td2 text-end">
             Script Nuevo <small *ngIf="validador.idscript_nuevo.requerido"><i class="text-danger">*</i></small>
             <br />
             <small><i class="text-secondary">{{validador.idscript_nuevo.etiqueta}}</i></small>
@@ -104,7 +122,7 @@
               <i class=" {{validador.idscript_nuevo.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
                 {{validador.idscript_nuevo.validacion.resultado == '' ? validador.idscript_nuevo.descripcion : validador.idscript_nuevo.validacion.resultado}} </i>
             </sup>
-          </div>
+          </div> -->
 
 
           <div class="col-4 col-md-2 td2 text-end">
@@ -124,7 +142,7 @@
             </sup>
           </div>
 
-          <div class="col-4 col-md-2 td2 text-end">
+          <!-- <div class="col-4 col-md-2 td2 text-end">
             Test SSH <small *ngIf="validador.test.requerido"><i class="text-danger">*</i></small>
             <br />
             <small><i class="text-secondary">{{validador.test.etiqueta}}</i></small>
@@ -139,7 +157,27 @@
                 {{validador.test.validacion.resultado == '' ? validador.test.descripcion : validador.test.validacion.resultado}}
               </i>
             </sup>
+          </div> -->
+
+          <div class="col-4 col-md-2 td2 text-end">
+            Observaciones<small *ngIf="validador.comentarios.requerido"><i class="text-danger">*</i></small>
+            <br />
+            <small><i class="text-secondary">{{validador.comentarios.etiqueta}}</i></small>
           </div>
+          <div class="col-8 col-md-10 td2">
+            <textarea name="comentarios" id="comentarios"
+              class="form-control"
+              [(ngModel)]="comentarios"
+              rows="5"
+            ></textarea>
+ 
+            <sup>
+              <i class=" {{validador.comentarios.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
+                {{validador.comentarios.validacion.resultado == '' ? validador.comentarios.descripcion : validador.comentarios.validacion.resultado}} </i>
+            </sup>
+          </div>
+
+
         </div>
       </div>
     </div>
