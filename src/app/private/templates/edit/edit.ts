@@ -137,7 +137,7 @@ export class Edit {
         if (resp.status) {
           this.funcCancelar();
         } else {
-          this.func.showMessage("error", "Usuario", resp.message);
+          this.func.showMessage("error", "Template de Comandos", resp.message);
         }
       },
       error: (err: any) => {

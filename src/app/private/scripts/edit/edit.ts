@@ -9,10 +9,17 @@ import { Functions } from '../../../core/helpers/functions.helper';
 import { Sessions } from '../../../core/helpers/session.helper';
 import { TemplateService } from '../../../core/services/template';
 import { ScriptsService } from '../../../core/services/script';
-import { AllCommunityModule, createGrid, GridApi, GridOptions, ICellRendererParams, ModuleRegistry, RowDragModule } from 'ag-grid-community';
+import {
+  AllCommunityModule,
+  createGrid,
+  GridApi,
+  GridOptions,
+  ICellRendererParams,
+  ModuleRegistry,
+  RowDragModule,
+} from 'ag-grid-community';
 import { Global } from '../../../core/config/global.config';
 import Swal from 'sweetalert2';
-
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -21,10 +28,10 @@ ModuleRegistry.registerModules([AllCommunityModule]);
   imports: [Breadcrums, Header, CommonModule, FormsModule],
   templateUrl: './edit.html',
   styleUrl: './edit.scss',
-  standalone: true
+  standalone: true,
 })
 export class Edit {
-  @ViewChild("modal") modal?: ElementRef;
+  @ViewChild('modal') modal?: ElementRef;
 
   private readonly route = inject(ActivatedRoute);
   private readonly func = inject(Functions);
@@ -33,13 +40,13 @@ export class Edit {
   private readonly scriptSvc = inject(ScriptsService);
 
   user: any = null;
-  idscript: string = "";
+  idscript: string = '';
   rstData: any;
-  validador:any = vForm;
+  validador: any = vForm;
 
-  nombre: string = "";
-  linea: string = "";
-  buscar: string = "";
+  nombre: string = '';
+  linea: string = '';
+  buscar: string = '';
   estado: boolean = true;
 
   lstTemplate_Original: Array<any> = [];
@@ -56,17 +63,15 @@ export class Edit {
   public canW: boolean = false;
   public canD: boolean = false;
 
-
   ngOnInit(): void {
     this.user = JSON.parse(this.sessions.get('user'));
-
 
     let uIDUser = this.route.snapshot.paramMap.get('id');
 
     if (uIDUser && uIDUser != '-1') {
       this.idscript = uIDUser;
-    }else{
-      this.idscript = "";
+    } else {
+      this.idscript = '';
     }
 
     if (this.user.idrol > 1) {
@@ -88,7 +93,7 @@ export class Edit {
   ngAfterViewInit(): void {
     this.dataGridStruct();
 
-    if (this.idscript != ""){
+    if (this.idscript != '') {
       setTimeout(() => {
         this.getData();
       }, Global.times[0]);
@@ -101,7 +106,7 @@ export class Edit {
     this.func.encerarCampos(this.validador);
   }
 
-  getData(){
+  getData() {
     this.rstData = null;
 
     this.func.showLoading('Cargando');
@@ -116,7 +121,7 @@ export class Edit {
           this.nombre = this.rstData.nombre;
           this.refreshAll();
         } else {
-          this.func.showMessage("error", "Usuario", resp.message);
+          this.func.showMessage('error', 'Usuario', resp.message);
         }
       },
       error: (err: any) => {
@@ -125,7 +130,7 @@ export class Edit {
     });
   }
 
-  getTemplates(){
+  getTemplates(idtemplate_comando="") {
     this.lstTemplate = [];
     this.lstTemplate_Original = [];
 
@@ -135,94 +140,99 @@ export class Edit {
         if (resp.status) {
           this.lstTemplate = resp.data;
           this.lstTemplate_Original = Array.from(this.lstTemplate);
+          if (idtemplate_comando!="") this.addItem(idtemplate_comando);
         } else {
-          this.func.showMessage("error", "Templates", resp.message);
+          this.func.showMessage('error', 'Templates', resp.message);
         }
       },
       error: (err: any) => {
-        this.func.showMessage("error", "Templates", err);
+        this.func.showMessage('error', 'Templates', err);
       },
     });
   }
 
-  filtrar(){
+  filtrar() {
     this.lstTemplate = [];
-    if (this.buscar == ""){
+    if (this.buscar == '') {
       this.lstTemplate = Array.from(this.lstTemplate_Original);
-    }else{
-      this.lstTemplate_Original.forEach(e => {
-         if ( e.linea_comando.toLowerCase().indexOf(this.buscar.toLowerCase())>-1 ){
-          this.lstTemplate.push(e)
+    } else {
+      this.lstTemplate_Original.forEach((e) => {
+        if (
+          e.linea_comando.toLowerCase().indexOf(this.buscar.toLowerCase()) > -1
+        ) {
+          this.lstTemplate.push(e);
         }
       });
     }
   }
 
-  addItem(idtemplate_comando:any){
-    this.lstTemplate_Original.forEach(e=>{
-      if (e.idtemplate_comando == idtemplate_comando){
+  addItem(idtemplate_comando: any) {
+    this.lstTemplate_Original.forEach((e) => {
+      if (e.idtemplate_comando == idtemplate_comando) {
         this.lstCmds.push(e);
       }
-    })
+    });
     this.refreshAll();
   }
 
-  validacionCampos(que = ''){
+  validacionCampos(que = '') {
     let error = false;
     let danger = 0;
     let warning = 0;
 
-    if (["", "nombre"].includes(que)){
-      this.validador.nombre.validacion.resultado = "";
-      if (!this.validador.nombre.validacion.pattern.exec(this.nombre)){
+    if (['', 'nombre'].includes(que)) {
+      this.validador.nombre.validacion.resultado = '';
+      if (!this.validador.nombre.validacion.pattern.exec(this.nombre)) {
         error = true;
-        if (this.validador.nombre.requerido){
+        if (this.validador.nombre.requerido) {
           danger++;
-        }else{
+        } else {
           warning++;
         }
-        this.validador.nombre.validacion.resultado = this.validador.nombre.validacion.patron_descripcion;
+        this.validador.nombre.validacion.resultado =
+          this.validador.nombre.validacion.patron_descripcion;
       }
     }
 
-    if (["", "cmds"].includes(que)){
-      this.validador.cmds.validacion.resultado = "";
-      if (this.lstCmds.length == 0){
+    if (['', 'cmds'].includes(que)) {
+      this.validador.cmds.validacion.resultado = '';
+      if (this.lstCmds.length == 0) {
         error = true;
-        if (this.validador.cmds.requerido){
+        if (this.validador.cmds.requerido) {
           danger++;
-        }else{
+        } else {
           warning++;
         }
-        this.validador.cmds.validacion.resultado = this.validador.cmds.validacion.patron_descripcion;
+        this.validador.cmds.validacion.resultado =
+          this.validador.cmds.validacion.patron_descripcion;
       }
     }
 
-    return error
+    return error;
   }
 
-  funcSubmit(){
-    if (this.validacionCampos()){
-      return
+  funcSubmit() {
+    if (this.validacionCampos()) {
+      return;
     }
 
     let params = {
-      data:{
+      data: {
         nombre: this.nombre,
         estado: this.estado,
-        cmds: this.lstCmds
-      }
-    }
+        cmds: this.lstCmds,
+      },
+    };
 
     this.func.showLoading('Guardando');
 
-    this.scriptSvc.save(params,this.idscript).subscribe({
+    this.scriptSvc.save(params, this.idscript).subscribe({
       next: (resp: any) => {
         this.func.closeSwal();
         if (resp.status) {
           this.funcCancelar();
         } else {
-          this.func.showMessage("error", "Scripts", resp.message);
+          this.func.showMessage('error', 'Scripts', resp.message);
         }
       },
       error: (err: any) => {
@@ -230,45 +240,44 @@ export class Edit {
       },
     });
   }
-  
-    
-  funcCancelar(){
+
+  funcCancelar() {
     this.func.goRoute(`admin/scripts`, false, true);
   }
 
   dataGridStruct() {
-      let that = this;
-      this.gridOptions = {
-        rowData: [],
-        pagination: false,
-        paginationPageSize: 50,
-        paginationPageSizeSelector: [5, 10, 50, 100, 200, 300, 1000],
-        // rowSelection: 'single',
-        rowHeight: 50,
-        rowDragEntireRow: true,
-        defaultColDef: {
-          flex: 1,
-          minWidth: 100,
-          filter: true,
-          // enableCellChangeFlash: true,
-          headerClass: 'bold',
-          floatingFilter: true,
-          resizable: false,
-          sortable: true,
-        },
-        onRowClicked: (event: any) => {
-          this.id_selected = event.data.idtemplate_comando;
-        },
-        onRowDragEnd: (event) => {
-          // console.log(event)
-          let data = event.node.data;
-          let from = event.node.id;
-          let to = event.node.sourceRowIndex;
-          // console.log("from", from, "to", to )
-          this.reordenarCmds(from, to);
-        },
-        rowDragManaged: true,
-        columnDefs: [
+    let that = this;
+    this.gridOptions = {
+      rowData: [],
+      pagination: false,
+      paginationPageSize: 50,
+      paginationPageSizeSelector: [5, 10, 50, 100, 200, 300, 1000],
+      // rowSelection: 'single',
+      rowHeight: 50,
+      rowDragEntireRow: true,
+      defaultColDef: {
+        flex: 1,
+        minWidth: 100,
+        filter: true,
+        // enableCellChangeFlash: true,
+        headerClass: 'bold',
+        floatingFilter: true,
+        resizable: false,
+        sortable: true,
+      },
+      onRowClicked: (event: any) => {
+        this.id_selected = event.data.idtemplate_comando;
+      },
+      onRowDragEnd: (event) => {
+        // console.log(event)
+        let data = event.node.data;
+        let from = event.node.id;
+        let to = event.node.sourceRowIndex;
+        // console.log("from", from, "to", to )
+        this.reordenarCmds(from, to);
+      },
+      rowDragManaged: true,
+      columnDefs: [
         {
           headerName: 'ID',
           field: 'idtemplate_comando',
@@ -281,7 +290,7 @@ export class Edit {
           cellClass: 'text-start',
           filter: true,
           flex: 11,
-          rowDrag: true
+          rowDrag: true,
         },
         {
           headerName: 'Accion',
@@ -292,12 +301,12 @@ export class Edit {
           filter: false,
         },
       ],
-      };
+    };
 
-      that.gridApi = createGrid(
-        document.querySelector<HTMLElement>('#myGrid')!,
-        this.gridOptions
-      );
+    that.gridApi = createGrid(
+      document.querySelector<HTMLElement>('#myGrid')!,
+      this.gridOptions
+    );
   }
 
   renderAccion(params: ICellRendererParams) {
@@ -310,17 +319,17 @@ export class Edit {
     return button;
   }
 
-  quitar(idtemplate_comando:any){
+  quitar(idtemplate_comando: any) {
     let index = -1;
     let found = false;
-    this.lstCmds.forEach( (e,idx)=>{
-      if (e.idtemplate_comando == idtemplate_comando){
+    this.lstCmds.forEach((e, idx) => {
+      if (e.idtemplate_comando == idtemplate_comando) {
         index = idx;
         found = true;
       }
-    })
-    if (found){
-      this.lstCmds.splice(index,1);
+    });
+    if (found) {
+      this.lstCmds.splice(index, 1);
       this.refreshAll();
     }
   }
@@ -334,99 +343,149 @@ export class Edit {
     this.gridApi!.setGridOption('rowData', this.lstCmds);
   }
 
-  reordenarCmds(from:any, to:any){
+  reordenarCmds(from: any, to: any) {
     let data = this.lstCmds[from];
-    this.lstCmds.splice(from,1);
-    this.lstCmds.splice(to,0,data);
+    this.lstCmds.splice(from, 1);
+    this.lstCmds.splice(to, 0, data);
     this.refreshAll();
   }
 
+  // procesoEspecial(action = '', keyword = 'delete') {
+  //   if (this.id_selected == '') {
+  //     this.func.showMessage(
+  //       'error',
+  //       'Eliminar',
+  //       'Debe seleccionar una fila para eliminar'
+  //     );
+  //     return;
+  //   }
 
-  procesoEspecial(action = '', keyword = 'delete') {
-      if (this.id_selected == '') {
-        this.func.showMessage(
-          'error',
-          'Eliminar',
-          'Debe seleccionar una fila para eliminar'
-        );
-        return;
+  //   Swal.fire({
+  //     allowOutsideClick: false,
+  //     allowEscapeKey: false,
+  //     title: 'Pregunta',
+  //     text: `Para ${action}, debe escribir la palabra ${keyword}.`,
+  //     icon: 'question',
+  //     input: 'text',
+  //     inputPlaceholder: keyword,
+  //     showCancelButton: true,
+  //     confirmButtonColor: '#33a0d6',
+  //     confirmButtonText: 'Confirmar',
+  //     cancelButtonColor: '#f63c3a',
+  //     cancelButtonText: 'Cancelar',
+  //     showClass: { backdrop: 'swal2-noanimation', popup: '' },
+  //     hideClass: { popup: '' },
+  //     inputValidator: (text) => {
+  //       return new Promise((resolve) => {
+  //         if (text.trim() !== '' && text.trim() == keyword) {
+  //           resolve('');
+  //         } else {
+  //           resolve(`Para ${action}, debe ingresar ${keyword}.`);
+  //         }
+  //       });
+  //     },
+  //   }).then((res) => {
+  //     if (res.isConfirmed) {
+  //       // console.log('action', keyword);
+  //       if (keyword == 'eliminar') {
+  //         this.procesoDelete();
+  //       } else if (keyword == 'recuperar') {
+  //         this.procesoRestore();
+  //       }
+  //     }
+  //   });
+  // }
+
+  // procesoDelete() {
+  //   this.func.showLoading('Eliminando');
+
+  //   this.scriptSvc.delete(this.id_selected).subscribe({
+  //     next: (resp: any) => {
+  //       // console.log("DELETE", resp);
+  //       this.func.closeSwal();
+  //       if (resp.status) {
+  //         setTimeout(() => {
+  //           this.getData();
+  //         }, 500);
+  //       } else {
+  //         this.func;
+  //       }
+  //     },
+  //     error: (err: any) => {
+  //       this.func.closeSwal();
+  //     },
+  //   });
+  // }
+
+  // procesoRestore() {
+  //   this.func.showLoading('Recuperando');
+  //   this.scriptSvc.recovery(this.id_selected).subscribe({
+  //     next: (resp: any) => {
+  //       this.func.closeSwal();
+  //       if (resp.status) {
+  //         setTimeout(() => {
+  //           this.getData();
+  //         }, 500);
+  //       } else {
+  //         this.func;
+  //       }
+  //     },
+  //     error: (err: any) => {
+  //       this.func.closeSwal();
+  //     },
+  //   });
+  // }
+
+  addCommand() {
+    Swal.fire({
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      title: 'Template de comandos',
+      text: `Ingrese la linea de comando`,
+      // icon: 'question',
+      input: 'text',
+      inputPlaceholder: "",
+      showCancelButton: true,
+      confirmButtonColor: '#33a0d6',
+      confirmButtonText: 'Confirmar',
+      cancelButtonColor: '#f63c3a',
+      cancelButtonText: 'Cancelar',
+      showClass: { backdrop: 'swal2-noanimation', popup: '' },
+      hideClass: { popup: '' },
+      inputValidator: (text) => {
+        return new Promise((resolve) => {
+          if (text.trim() !== '') {
+            resolve('');
+          } else {
+            resolve(`La linea de comandos no puede estar vacia.`);
+          }
+        });
+      },
+    }).then((res) => {
+      if (res.isConfirmed) {
+        this.procesoAddCommand(res.value);
       }
-  
-      Swal.fire({
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        title: 'Pregunta',
-        text: `Para ${action}, debe escribir la palabra ${keyword}.`,
-        icon: 'question',
-        input: 'text',
-        inputPlaceholder: keyword,
-        showCancelButton: true,
-        confirmButtonColor: '#33a0d6',
-        confirmButtonText: 'Confirmar',
-        cancelButtonColor: '#f63c3a',
-        cancelButtonText: 'Cancelar',
-        showClass: { backdrop: 'swal2-noanimation', popup: '' },
-        hideClass: { popup: '' },
-        inputValidator: (text) => {
-          return new Promise((resolve) => {
-            if (text.trim() !== '' && text.trim() == keyword) {
-              resolve('');
-            } else {
-              resolve(`Para ${action}, debe ingresar ${keyword}.`);
-            }
-          });
-        },
-      }).then((res) => {
-        if (res.isConfirmed) {
-          // console.log('action', keyword);
-          if (keyword == 'eliminar') {
-            this.procesoDelete();
-          }else if(keyword == "recuperar"){
-            this.procesoRestore();
-          }
-        }
-      });
-    }
-  
-    procesoDelete() {
-      this.func.showLoading('Eliminando');
-  
-      this.scriptSvc.delete(this.id_selected).subscribe({
-        next: (resp: any) => {
-          // console.log("DELETE", resp);
-          this.func.closeSwal();
-          if (resp.status) {
-            setTimeout(()=>{
-              this.getData();
-            },500)
-          } else {
-            this.func;
-          }
-        },
-        error: (err: any) => {
-          this.func.closeSwal();
-        },
-      });
-    }
-  
-    procesoRestore() {
-      this.func.showLoading('Recuperando');
-  
-      this.scriptSvc.recovery(this.id_selected).subscribe({
-        next: (resp: any) => {
-          this.func.closeSwal();
-          if (resp.status) {
-            setTimeout(()=>{
-              this.getData();
-            },500)
-          } else {
-            this.func;
-          }
-        },
-        error: (err: any) => {
-          this.func.closeSwal();
-        },
-      });
-    }
+    });
+  }
 
+
+  procesoAddCommand(linea_comando = ""){
+    let param = { data: {linea_comando} };
+    this.func.showLoading('Creando línea de comando');
+    this.tempSvc.save(param, "").subscribe({
+      next: (resp: any) => {
+        console.log(resp)
+        this.func.closeSwal();
+        if (resp.status) {
+          let data = resp.data;
+          this.getTemplates(data.idtemplate_comando);
+        } else {
+          this.func.showMessage("error", "Template de Comandos", resp.message);
+        }
+      },
+      error: (err: any) => {
+        this.func.closeSwal();
+      },
+    });
+  }
 }

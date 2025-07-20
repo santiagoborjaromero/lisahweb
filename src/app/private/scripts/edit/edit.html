@@ -4,8 +4,12 @@
 
   <div class="row barra-menu">
     <div class="col text-end">
-      <button (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1"><i class="fas fa-save mr-1"></i> Guardar</button>
-      <button (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1"><i class="fas fa-reply mr-1"></i> Cancelar</button>
+      <button (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1">
+        <i class="fas fa-save mr-1"></i> Guardar
+      </button>
+      <button (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1">
+        <i class="fas fa-reply mr-1"></i> Cancelar
+      </button>
     </div>
   </div>
 
@@ -19,9 +23,15 @@
         <div class="p-1 row">
           <div class="col-4 col-md-2 td2 text-end">
             Nombre del Script
-            <small *ngIf="validador.nombre.requerido"><i class="text-danger">*</i></small>
+            <small *ngIf="validador.nombre.requerido"
+              ><i class="text-danger">*</i></small
+            >
             <br />
-            <small><i class="text-secondary">{{validador.nombre.etiqueta}}</i></small>
+            <small
+              ><i class="text-secondary"
+                >{{validador.nombre.etiqueta}}</i
+              ></small
+            >
           </div>
           <div class="col-8 col-md-4 td2">
             <input
@@ -32,7 +42,9 @@
               [(ngModel)]="nombre"
             />
             <sup>
-              <i class=" {{validador.nombre.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+              <i
+                class=" {{validador.nombre.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}"
+              >
                 {{validador.nombre.validacion.resultado == '' ?
                 validador.nombre.descripcion :
                 validador.nombre.validacion.resultado}}
@@ -44,9 +56,15 @@
         <div class="p-1 row">
           <div class="col-4 col-md-2 td2 text-end">
             Estado
-            <small *ngIf="validador.estado.requerido"><i class="text-danger">*</i></small>
+            <small *ngIf="validador.estado.requerido"
+              ><i class="text-danger">*</i></small
+            >
             <br />
-            <small><i class="text-secondary">{{validador.estado.etiqueta}}</i></small>
+            <small
+              ><i class="text-secondary"
+                >{{validador.estado.etiqueta}}</i
+              ></small
+            >
           </div>
           <div class="col-8 col-md-4 td2">
             <div class="form-check form-switch">
@@ -59,7 +77,9 @@
               />
             </div>
             <sup>
-              <i class=" {{validador.estado.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+              <i
+                class=" {{validador.estado.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}"
+              >
                 {{validador.estado.validacion.resultado == '' ?
                 validador.estado.descripcion :
                 validador.estado.validacion.resultado}}
@@ -71,16 +91,32 @@
         <div class="p-1 row">
           <div class="col-4 col-md-2 td2 text-end">
             Linea de comandos
-             <small *ngIf="validador.cmds.requerido"><i class="text-danger">*</i></small>
+            <small *ngIf="validador.cmds.requerido"
+              ><i class="text-danger">*</i></small
+            >
             <br />
             <small><i class="text-secondary">Selección</i></small>
           </div>
           <div class="col-4 col-md-4 td2">
-            <button  class="btn btn-primary btn-sm m-1"
-              data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fas fa-plus"></i> Añadir</button> 
-            <br>
+            <button
+              class="btn btn-primary btn-sm m-1"
+              data-bs-toggle="modal"
+              data-bs-target="#exampleModal"
+            >
+              <i class="fas fa-search"></i> Buscar y seleccionar comandos
+            </button>
+            <button
+              class="btn btn-white"
+              title="Añadir comando nuevo"
+              (click)="addCommand()"
+            >
+              <i class="fab fa-wpforms"></i> Añadir comando nuevo
+            </button>
+            <br />
             <sup>
-              <i class=" {{validador.cmds.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+              <i
+                class=" {{validador.cmds.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}"
+              >
                 {{validador.cmds.validacion.resultado == '' ?
                 validador.cmds.descripcion :
                 validador.cmds.validacion.resultado}}
@@ -89,19 +125,35 @@
           </div>
         </div>
 
-        <div #myGrid id="myGrid" class="ag-theme-quartz" style="height: 600px; min-height: 600px"></div>
+        <div
+          #myGrid
+          id="myGrid"
+          class="ag-theme-quartz"
+          style="height: 600px; min-height: 600px"
+        ></div>
       </div>
     </div>
   </div>
 </div>
 
-
-<div #modal class="modal modal-xl" id="exampleModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+<div
+  #modal
+  class="modal modal-xl"
+  id="exampleModal"
+  tabindex="-1"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+>
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Lista de Comandos</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
       <div class="modal-body">
         <div class="p-1 row">
@@ -119,35 +171,53 @@
               [(ngModel)]="buscar"
               (keyup)="filtrar()"
             />
-            <sup><i class="text-secondary">Ingrese el texo a buscar</i></sup>
+            <sup><i class="text-secondary">Ingrese el texto a buscar</i></sup>
           </div>
-          <div class="col-8 col-md-1 td2">
-            <button class="btn btn-link" title="Buscar"><i class="fas fa-search"></i></button>
-            <br>
+          <div class="col-8 col-md-6 td2 text-end">
+            <button
+              class="btn btn-light"
+              title="Añadir comando"
+              (click)="addCommand()"
+            >
+              <i class="fab fa-wpforms"></i> Añadir Comando
+            </button>
+            <br />
             <sup>&nbsp;</sup>
           </div>
         </div>
         <div class="p-3 row h400">
-          <table class="table table-strip ">
-            <thead>
-              <tr>
-                <th>Comando</th>
-                <th width="5%">Acción</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (item of lstTemplate; track $index) {
+          <div class="col">
+            <table class="table table-strip">
+              <thead>
+                <tr>
+                  <th>Comando</th>
+                  <th width="5%">Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of lstTemplate; track $index) {
                 <tr>
                   <td>{{item.linea_comando}}</td>
-                  <td><button (click)="addItem(item.idtemplate_comando)" class="btn btn-link"><i class="fas fa-plus"></i></button></td>
+                  <td>
+                    <button
+                      (click)="addItem(item.idtemplate_comando)"
+                      class="btn btn-link"
+                      title="Añadir comando"
+                    >
+                      <i class="fas fa-plus-circle t20"></i>
+                    </button>
+                  </td>
                 </tr>
-              }
-            </tbody>
-          </table>
+                }
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
         <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
       </div>
     </div>
