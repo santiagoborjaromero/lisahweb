@@ -42,6 +42,7 @@ export const routes: Routes = [
             {path:"procesos", loadComponent: () => import('./private/procesos/procesos').then((c)=> c.Procesos)},
             {path:"logs", loadComponent: () => import('./private/logs/logs').then((c)=> c.Logs)},
             {path:"audits", loadComponent: () => import('./private/audit/audit').then((c)=> c.Audit)},
+            {path:"hardening", loadComponent: () => import('./private/hardening/hardening').then((c)=> c.Hardening)},
             {path:"", redirectTo: "dashboard", pathMatch: "full"},
             {path:"**", redirectTo: "dashboard"},
         ]
