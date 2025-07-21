@@ -176,7 +176,7 @@ export class Servidores {
         },
         {
           headerName: 'Ubicacion',
-          field: 'localizacion',
+          field: 'ubicacion',
           cellClass: 'text-start',
           filter: true,
           rowGroup: true
