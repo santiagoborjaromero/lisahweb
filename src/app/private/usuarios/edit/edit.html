@@ -316,11 +316,13 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Lista de Servidores</h5>
+        <h5 class="modal-title">Lista de Servidores sin asignar</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div class="p-1 row">
+        <div #myGrid2 id="myGrid2" class="ag-theme-quartz scrollx" style="height: 400px; min-height: 400px"></div>
+
+        <!-- <div class="p-1 row">
           <div class="col-4 col-md-2 td2 text-end">
             texto a buscar
             <br />
@@ -335,15 +337,15 @@
               [(ngModel)]="buscar"
               (keyup)="filtrar()"
             />
-            <sup><i class="text-secondary">Ingrese el texto a buscar por nombre, localizacion, host o puerto</i></sup>
+            <sup><i class="text-secondary">Ingrese el texto a buscar por nombre, ubicacion, host o puerto</i></sup>
           </div>
           <div class="col-8 col-md-1 td2">
             <button class="btn btn-link" title="Buscar"><i class="fas fa-search"></i></button>
             <br>
             <sup>&nbsp;</sup>
           </div>
-        </div>
-        <div class="p-3 row">
+        </div> -->
+        <!-- <div class="p-3 row">
           <div class="h400">
             <table class="table table-striped table-hover  ">
               <thead>
@@ -356,7 +358,7 @@
                 @for (item of lstServidores; track $index) {
                   @if(!item.check){
                     <tr>
-                      <td>{{item.nombre}} - <i>{{item.localizacion}}</i> -  <strong>{{item.host}}:{{item.puerto}}</strong></td>
+                      <td>{{item.nombre}} - <i>{{item.ubicacion}}</i> -  <strong>{{item.host}}:{{item.ssh_puerto}}:{{item.agente_puerto}}</strong></td>
                       <td><button (click)="addItem(item.idservidor)" class="btn btn-link"><i class="fas fa-plus"></i></button></td>
                     </tr>
                   }
@@ -365,7 +367,7 @@
             </table>
 
           </div>
-        </div>
+        </div> -->
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

@@ -11,12 +11,9 @@ import { ClienteService } from '../../../core/services/clientes';
 import { ActivatedRoute, Router } from '@angular/router';
 import vForm from './vform';
 import { ServidorService } from '../../../core/services/servidor';
-import { AllCommunityModule, createGrid, GridApi, GridOptions, ICellRendererParams, ModuleRegistry } from 'ag-grid-community';
-
+import { AllCommunityModule, createGrid, GridApi, GridOptions, ICellRendererParams, ModuleRegistry, InfiniteRowModelModule,IDatasource, IGetRowsParams   } from 'ag-grid-community';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
-
-
 
 @Component({
   selector: 'app-edit',
@@ -52,20 +49,29 @@ export class Edit {
   buscar: string = "";
 
   validador:any = vForm; 
+  paginacion = 10;
 
+  
   lstGrupoUsuarios:Array<any> = [];
   lstClientes:Array<any> = [];
   selectall: boolean = false;
   lstServidores_Original:Array<any> = [];
   lstServidores:Array<any> = [];
   lstSvrs:Array<any> = [];
+  lstSvrs_original:Array<any> = [];
   numero_servidores:number = 0;
-
+  
   public dtOptions: any = {};
   public gridOptions: GridOptions<any> = {};
   public gridApi?: GridApi<any>;
   public id_selected: string = '';
   public is_deleted: any = null;
+
+  public dtOptions2: any = {};
+  public gridOptions2: GridOptions<any> = {};
+  public gridApi2?: GridApi<any>;
+  public id_selected2: string = '';
+  public is_deleted2: any = null;
 
   public canR: boolean = false;
   public canW: boolean = false;
@@ -104,21 +110,31 @@ export class Edit {
 
   ngAfterViewInit(): void {
     this.dataGridStruct();
-     if (this.idusuario != ""){
-      this.getData();
-    }
-
+    this.dataGridStruct2();
+    
     if (this.user.idrol == 1){
       this.getClientes();
     }
 
     this.getGrupoUsuarios();
     this.getServidores();
+
+    if (this.idusuario != ""){
+      // setTimeout(()=>{
+        this.getData();
+      // },500)
+    }
   }
 
   ngOnDestroy(): void {
     this.func.encerarCampos(this.validador);
   }
+
+  pagination(startIndex=0, endIndex=this.paginacion){
+    this.lstSvrs = this.lstSvrs_original.slice(startIndex, endIndex);
+    this.refreshAll();
+  }
+
 
   getData(){
     this.rstData = null;
@@ -138,12 +154,33 @@ export class Edit {
           this.nombre = this.rstData.nombre;
           this.usuario = this.rstData.usuario;
           this.ntfy_identificador = this.rstData.ntfy_identificador;
+          this.numero_servidores = this.rstData.servidores.length;
           this.email = this.rstData.email;
-          this.lstSvrs = this.rstData.servidores;
-          this.numero_servidores = this.lstSvrs.length;
           this.grupo_usuario = this.rstData.grupo.nombre;
           this.ultimo_logueo = this.rstData.ultimo_logueo;
+
+          this.lstSvrs_original = this.rstData.servidores;
+          this.lstSvrs = Array.from(this.lstSvrs_original);
           this.refreshAll();
+          // this.pagination();
+          // setTimeout(()=>{
+          //   this.pagination(0,this.lstSvrs_original.length)
+          // },1000)
+
+          // this.myDataSource = {
+          //   getRows: (params: IGetRowsParams) => {
+          //     setTimeout(() => {
+          //       const rowsThisPage = this.lstSvrs.slice(params.startRow, params.endRow);
+          //       let lastRow = -1;
+          //       if (this.lstSvrs.length <= params.endRow) {
+          //         lastRow = this.lstSvrs.length;
+          //       }
+          //       params.successCallback(rowsThisPage, lastRow);
+          //     }, 500);
+          //   }
+          // }
+          // this.gridApi!.setGridOption("datasource", this.myDataSource);
+          
         } else {
           this.func.showMessage("error", "Usuario", resp.message);
         }
@@ -159,7 +196,6 @@ export class Edit {
 
     this.grupoSvc.getAllFromClient(this.idcliente).subscribe({
       next: (resp: any) => {
-        this.func.closeSwal();
         if (resp.status) {
           this.lstGrupoUsuarios = resp.data;
           this.idgrupo_usuario = this.lstGrupoUsuarios[0].idgrupo_usuario;
@@ -168,7 +204,6 @@ export class Edit {
         }
       },
       error: (err: any) => {
-        this.func.closeSwal();
       },
     });
   }
@@ -180,7 +215,6 @@ export class Edit {
     this.clientesSvc.getAll().subscribe({
       next: (resp: any) => {
         // console.log(resp)
-        this.func.closeSwal();
         if (resp.status) {
           this.lstClientes = resp.data;
           this.idcliente = this.lstClientes[0].idcliente;
@@ -190,7 +224,6 @@ export class Edit {
         }
       },
       error: (err: any) => {
-        this.func.closeSwal();
       },
     });
   }
@@ -200,19 +233,18 @@ export class Edit {
 
     this.servidoresSvc.getAll().subscribe({
       next: (resp: any) => {
-        this.func.closeSwal();
         if (resp.status) {
           resp.data.forEach((e:any) => {
             resp.check = false;
             this.lstServidores_Original.push(e);
           });
-          this.lstServidores = Array.from(this.lstServidores_Original);
+          // this.lstServidores = Array.from(this.lstServidores_Original);
+          // this.refreshAll2()
         } else {
           this.func.showMessage("error", "Servidores", resp.message);
         }
       },
       error: (err: any) => {
-        this.func.closeSwal();
       },
     });
   }
@@ -240,15 +272,20 @@ export class Edit {
 
     this.userSvc.save(param, this.idusuario).subscribe({
       next: (resp: any) => {
+        console.log(resp)
         this.func.closeSwal();
         if (resp.status) {
-          this.funcCancelar();
+          setTimeout(()=>{
+            this.funcCancelar();
+          },800)
         } else {
           this.func.showMessage("error", "Usuario", resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
+        this.func.showMessage("error", "Usuario", err);
+        console.log(err)
       },
     });
   }
@@ -273,8 +310,10 @@ export class Edit {
       this.lstServidores_Original.forEach(e => {
          if ( 
             e.nombre.toLowerCase().indexOf(this.buscar.toLowerCase())>-1 ||
+            e.ubicacion.toLowerCase().indexOf(this.buscar.toLowerCase())>-1 ||
             e.host.toLowerCase().indexOf(this.buscar.toLowerCase())>-1 ||
-            e.puerto.toLowerCase().indexOf(this.buscar.toLowerCase())>-1 
+            e.ssh_puerto.toString().indexOf(this.buscar.toLowerCase())>-1  ||
+            e.agente_puerto.toString().indexOf(this.buscar.toLowerCase())>-1 
           ){
           this.lstServidores.push(e)
         }
@@ -288,8 +327,8 @@ export class Edit {
     let that = this;
     this.gridOptions = {
       rowData: [],
-      pagination: false,
-      paginationPageSize: 50,
+      pagination: true,
+      paginationPageSize: this.paginacion,
       paginationPageSizeSelector: [5, 10, 50, 100, 200, 300, 1000],
       // rowSelection: 'single',
       rowHeight: 50,
@@ -321,6 +360,20 @@ export class Edit {
       },
       rowDragManaged: false,
       columnDefs: [
+        // {
+        //   headerName: "ID",
+        //   maxWidth: 100,
+        //   // it is important to have node.id here, so that when the id changes (which happens
+        //   // when the row is loaded) then the cell is refreshed.
+        //   valueGetter: "node.id",
+        //   cellRenderer: (params: ICellRendererParams) => {
+        //     if (params.value !== undefined) {
+        //       return params.value;
+        //     } else {
+        //       return '<img src="https://www.ag-grid.com/example-assets/loading.gif">';
+        //     }
+        //   },
+        // },
         {
           headerName: 'ID',
           field: 'idservidor',
@@ -334,14 +387,26 @@ export class Edit {
           filter: true,
         },
         {
+          headerName: 'Ubicacion',
+          field: 'ubicacion',
+          cellClass: 'text-start',
+          filter: true,
+        },
+        {
           headerName: 'Host',
           field: 'host',
           cellClass: 'text-start',
           filter: true,
         },
         {
-          headerName: 'Puerto',
-          field: 'puerto',
+          headerName: 'SSH',
+          field: 'ssh_puerto',
+          cellClass: 'text-start',
+          filter: true,
+        },
+        {
+          headerName: 'Agente',
+          field: 'agente_puerto',
           cellClass: 'text-start',
           filter: true,
         },
@@ -356,6 +421,25 @@ export class Edit {
         },
 
       ],
+      // rowBuffer: 0,
+      // // tell grid we want virtual row model type
+      // rowModelType: "infinite",
+      // // how big each page in our page cache will be, default is 100
+      // cacheBlockSize: 100,
+      // // how many extra blank rows to display to the user at the end of the dataset,
+      // // which sets the vertical scroll and then allows the grid to request viewing more rows of data.
+      // // default is 1, ie show 1 row.
+      // cacheOverflowSize: 2,
+      // // how many server side requests to send at a time. if user is scrolling lots, then the requests
+      // // are throttled down
+      // maxConcurrentDatasourceRequests: 1,
+      // // how many rows to initially show in the grid. having 1 shows a blank row, so it looks like
+      // // the grid is loading from the users perspective (as we have a spinner in the first col)
+      // infiniteInitialRowCount: 1000,
+      // // how many pages to store in cache. default is undefined, which allows an infinite sized cache,
+      // // pages are never purged. this should be set for large data to stop your browser from getting
+      // // full of data
+      // maxBlocksInCache: 10,
     };
 
     // this.gridOptions.autoSizeStrategy;
@@ -370,8 +454,96 @@ export class Edit {
       force: true,
       suppressFlash: true,
     };
-    this.gridApi!.refreshCells(params);
     this.gridApi!.setGridOption('rowData', this.lstSvrs);
+    this.gridApi!.refreshCells(params);
+    // this.gridOptions.autoSizeStrategy;
+  }
+
+  dataGridStruct2() {
+    let that = this;
+    this.gridOptions2 = {
+      rowData: [],
+      pagination: true,
+      paginationPageSize: this.paginacion,
+      paginationPageSizeSelector: [5, 10, 50, 100, 200, 300, 1000],
+      rowHeight: 50,
+      suppressAutoSize:true, 
+      defaultColDef: {
+        flex: 1,
+        minWidth: 100,
+        filter: true,
+        headerClass: 'bold',
+        floatingFilter: true,
+        resizable: false,
+        sortable: true,
+      },
+      onRowClicked: (event: any) => {
+        this.id_selected2 = event.data.idservidor;
+      },
+      rowDragManaged: false,
+      columnDefs: [
+
+        {
+          headerName: 'ID',
+          field: 'idservidor',
+          filter: false,
+          hide: true,
+        },
+        {
+          headerName: 'Nombre',
+          field: 'nombre',
+          cellClass: 'text-start',
+          filter: true,
+        },
+        {
+          headerName: 'Ubicacion',
+          field: 'ubicacion',
+          cellClass: 'text-start',
+          filter: true,
+        },
+        {
+          headerName: 'Host',
+          field: 'host',
+          cellClass: 'text-start',
+          filter: true,
+        },
+        {
+          headerName: 'SSH',
+          field: 'ssh_puerto',
+          cellClass: 'text-start',
+          filter: true,
+        },
+        {
+          headerName: 'Agente',
+          field: 'agente_puerto',
+          cellClass: 'text-start',
+          filter: true,
+        },
+        {
+          headerName: 'Accion',
+          field: 'idtemplate_comando',
+          cellClass: 'text-start',
+          cellRenderer: this.renderAccion2.bind(this),
+          autoHeight: true,
+          filter: false,
+          maxWidth:100,
+        },
+      ],
+    };
+
+    that.gridApi2 = createGrid(
+      document.querySelector<HTMLElement>('#myGrid2')!,
+      this.gridOptions2
+    );
+  }
+
+  refreshAll2() {
+    var params = {
+      force: true,
+      suppressFlash: true,
+    };
+    this.gridApi2!.setGridOption('rowData', this.lstServidores);
+    this.gridApi2!.refreshCells(params);
     // this.gridOptions.autoSizeStrategy;
   }
 
@@ -383,6 +555,20 @@ export class Edit {
       this.quitar(params.data.idservidor);
     });
     return button;
+  }
+
+  renderAccion2(params: ICellRendererParams) {
+    if (params.data.check){
+      return "<i>Asignado</i>";
+    }else{
+      const button = document.createElement('button');
+      button.className = 'btn btn-link text-primary';
+      button.innerHTML = '<i class="fas fa-plus-circle t20"></i>';
+      button.addEventListener('click', () => {
+        this.addItem(params.data.idservidor);
+      });
+      return button;
+    }
   }
 
   quitar(idservidor:any){
@@ -404,17 +590,19 @@ export class Edit {
     this.lstServidores_Original.forEach( (e, idx)=>{
       if (e.idservidor == idservidor){
         this.lstSvrs.push(e);
-        try{
-          this.lstServidores[idx].check = true;
-        }catch(ex){}
-        this.lstServidores_Original[idx].check = true;
+        // try{
+        //   this.lstServidores[idx].check = true;
+        // }catch(ex){}
+        // this.lstServidores_Original[idx].check = true;
       }
     })
     this.refreshAll();
+    this.actualizaServidores();
   }
 
   actualizaServidores(){
     let found = false;
+    this.lstServidores = [];
     this.lstServidores_Original.forEach(s=>{
       found = false;
       this.lstSvrs.forEach( (e,idx)=>{
@@ -422,9 +610,13 @@ export class Edit {
           found = true;
         }
       })
-      s.check = found;
+      // s.check = found;
+      if (!found){
+        this.lstServidores.push(s)
+      }
     })
-    this.lstServidores = Array.from(this.lstServidores_Original);
+    // this.lstServidores = Array.from(this.lstServidores_Original);
+    this.refreshAll2()
   }
 
 
