@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Breadcrums } from '../shared/breadcrums/breadcrums';
 import { Header } from '../shared/header/header';
 import { CommonModule } from '@angular/common';
@@ -8,10 +8,15 @@ import {
   createGrid,
   GridApi,
   GridOptions,
+  ICellRendererParams,
   ModuleRegistry,
 } from 'ag-grid-community';
 // import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { Observable } from 'rxjs';
+import { ServidorService } from '../../core/services/servidor';
+import { Functions } from '../../core/helpers/functions.helper';
+import { Sessions } from '../../core/helpers/session.helper';
+import { UsuarioService } from '../../core/services/usuarios';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -23,6 +28,12 @@ ModuleRegistry.registerModules([AllCommunityModule]);
   standalone: true,
 })
 export class Hardening {
+  private readonly userSvc = inject(UsuarioService);
+  private readonly serverSvc = inject(ServidorService);
+  private readonly func = inject(Functions);
+  private readonly sessions = inject(Sessions);
+
+
   user: any = null;
 
   accion: string = 'activos';
@@ -36,18 +47,112 @@ export class Hardening {
   public id_selected: string = '';
   public is_deleted: any = null;
 
-  lstData: Array<any> = [];
+  public dtOptions2: any = {};
+  public gridOptions2: GridOptions<any> = {};
+  public gridApi2?: GridApi<any>;
+  public id_selected2: string = '';
+  public is_deleted2: any = null;
+
+  lstServidores_Original: Array<any> = [];
+  lstServidores: Array<any> = [];
+  lstWork: Array<any> = [];
   lstEventsSent: Array<any> = [];
   wsConn: any = null;
 
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.user = JSON.parse(this.sessions.get('user'));
+    // console.log(this.user.token)
+
+    if (this.user.idrol > 1) {
+      let scope = this.user.roles.permisos_crud.split('');
+      this.canR = scope[0] == 'R' ? true : false;
+      this.canW = scope[1] == 'W' ? true : false;
+      this.canD = scope[2] == 'D' ? true : false;
+
+      if (!this.canR) {
+        this.func.showMessage(
+          'info',
+          'Usuarios',
+          'No tiene permisos para leer'
+        );
+      }
+    }
+  }
 
   ngAfterViewInit(): void {
-    // this.dataGridStruct();
-    this.connectWS();
+    this.dataGridStruct();
+    this.dataGridStruct2();
+    // this.getServidores();
+    this.getUsuario();
   }
+
+
+  getUsuario() {
+    this.lstServidores_Original = [];
+    this.func.showLoading('Cargando Servidores del Usuario');
+    this.id_selected = '';
+    this.is_deleted = '';
+
+    this.userSvc.getOne(this.user.idusuario).subscribe({
+      next: (resp: any) => {
+        this.func.closeSwal();
+        console.log(resp)
+        if (resp.status) {
+          if (resp.data[0].servidores && resp.data[0].servidores.length>0){
+            this.lstServidores_Original = resp.data[0].servidores;
+          }
+          // this.refreshAll();
+          this.actualizaServidores()
+          // if (resp.data.length>0){
+          //   resp.data.forEach((s:any)=>{
+          //     s.uptime = "";
+          //     s.healthy_ssh = -2;
+          //     s.healthy_agente = -2;
+          //     this.lstServidores.push(s);
+          //   })
+          // }
+        } else {
+          this.func;
+        }
+      },
+      error: (err: any) => {
+        this.func.closeSwal();
+      },
+    });
+  }
+
+  // getServidores() {
+  //   this.lstServidores = [];
+  //   this.func.showLoading('Cargando');
+  //   this.id_selected = '';
+  //   this.is_deleted = '';
+
+  //   this.serverSvc.getAll().subscribe({
+  //     next: (resp: any) => {
+  //       this.func.closeSwal();
+  //       if (resp.status) {
+  //         this.lstServidores = [];
+  //         if (resp.data.length>0){
+  //           resp.data.forEach((s:any)=>{
+  //             s.uptime = "";
+  //             s.healthy_ssh = -2;
+  //             s.healthy_agente = -2;
+  //             this.lstServidores.push(s);
+  //           })
+
+  //         }
+  //         this.lstServidores_Original = Array.from(this.lstServidores);
+  //       } else {
+  //         this.func;
+  //       }
+  //     },
+  //     error: (err: any) => {
+  //       this.func.closeSwal();
+  //     },
+  //   });
+  // }
 
   async connectWS() {
     let host = 'localhost';
@@ -184,18 +289,18 @@ export class Hardening {
     let that = this;
     this.gridOptions = {
       rowData: [],
-      pagination: true,
-      paginationPageSize: 50,
+      pagination: false,
+      paginationPageSize: 10,
       paginationPageSizeSelector: [5, 10, 50, 100, 200, 300, 1000],
       // rowSelection: 'single',
-      rowHeight: 50,
+      rowHeight: 40,
       defaultColDef: {
         flex: 1,
         minWidth: 100,
         filter: true,
         // enableCellChangeFlash: true,
         headerClass: 'bold',
-        floatingFilter: false,
+        floatingFilter: true,
         resizable: false,
         sortable: true,
       },
@@ -211,30 +316,21 @@ export class Hardening {
           hide: true,
         },
         {
-          headerName: 'Nombre',
+          headerName: 'Nombre Servidor',
           field: 'nombre',
           cellClass: 'text-start',
           filter: true,
         },
         {
-          headerName: 'Host',
-          field: 'host',
+          headerName: 'Accion',
+          field: 'idtemplate_comando',
           cellClass: 'text-start',
-          filter: true,
-          flex: 2,
+          cellRenderer: this.renderAccion.bind(this),
+          autoHeight: true,
+          filter: false,
+          maxWidth:100,
         },
-        {
-          headerName: 'Estado',
-          field: 'estado',
-          cellClass: 'text-start',
-          filter: true,
-        },
-        {
-          headerName: 'Alarmas',
-          field: 'alarmas',
-          cellClass: 'text-start',
-          filter: true,
-        },
+
       ],
     };
 
@@ -250,6 +346,123 @@ export class Hardening {
       suppressFlash: true,
     };
     this.gridApi!.refreshCells(params);
-    this.gridApi!.setGridOption('rowData', this.lstData);
+    this.gridApi!.setGridOption('rowData', this.lstServidores);
+  }
+
+  renderAccion(params: ICellRendererParams) {
+    const button = document.createElement('button');
+    button.className = 'btn btn-link text-primary';
+    button.innerHTML = '<i class="fas fa-plus-circle t20"></i>';
+    button.addEventListener('click', () => {
+      this.addserver(params.data);
+    });
+    return button;
+  }
+
+  dataGridStruct2() {
+    let that = this;
+    this.gridOptions2 = {
+      rowData: [],
+      pagination: false,
+      paginationPageSize: 10,
+      paginationPageSizeSelector: [5, 10, 50, 100, 200, 300, 1000],
+      // rowSelection: 'single',
+      rowHeight: 40,
+      defaultColDef: {
+        flex: 1,
+        minWidth: 100,
+        filter: true,
+        // enableCellChangeFlash: true,
+        headerClass: 'bold',
+        floatingFilter: true,
+        resizable: false,
+        sortable: true,
+      },
+      onRowClicked: (event: any) => {
+        this.id_selected2 = event.data.idservidor;
+        this.is_deleted2 = event.data.deleted_at;
+      },
+      columnDefs: [
+        {
+          headerName: 'ID',
+          field: 'idservidor',
+          filter: false,
+          hide: true,
+        },
+        {
+          headerName: 'Nombre Servidor',
+          field: 'nombre',
+          cellClass: 'text-start',
+          filter: true,
+        },
+        {
+          headerName: 'Accion',
+          field: 'idtemplate_comando',
+          cellClass: 'text-start',
+          cellRenderer: this.renderAccion2.bind(this),
+          autoHeight: true,
+          filter: false,
+          maxWidth:100,
+        },
+
+      ],
+    };
+
+    that.gridApi2 = createGrid(
+      document.querySelector<HTMLElement>('#myGrid2')!,
+      this.gridOptions2
+    );
+  }
+
+  refreshAll2() {
+    var params = {
+      force: true,
+      suppressFlash: true,
+    };
+    this.gridApi2!.refreshCells(params);
+    this.gridApi2!.setGridOption('rowData', this.lstWork);
+  }
+
+   renderAccion2(params: ICellRendererParams) {
+      const button = document.createElement('button');
+      button.className = 'btn btn-link text-danger';
+      button.innerHTML = '<i class="far fa-trash-alt"></i>';
+      button.addEventListener('click', () => {
+        this.removeServer(params.data.idservidor);
+      });
+      return button;
+   }
+
+   addserver(server:any){
+    this.lstWork.push(server);
+    this.actualizaServidores();
+   }
+
+   removeServer(idServidor:any){
+    this.lstWork.forEach((e,idx)=>{
+      if (e.idservidor == idServidor){
+        this.lstWork.splice(idx,1);
+      }
+    })
+    this.actualizaServidores();
+   }
+
+   actualizaServidores(){
+    let found = false;
+    this.lstServidores = [];
+    this.lstServidores_Original.forEach(s=>{
+      found = false;
+      this.lstWork.forEach( (e,idx)=>{
+        if (e.idservidor == s.idservidor){
+          found = true;
+        }
+      })
+      // s.check = found;
+      if (!found){
+        this.lstServidores.push(s);
+      }
+    })
+    this.refreshAll();
+    this.refreshAll2();
   }
 }

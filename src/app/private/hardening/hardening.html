@@ -1,27 +1,108 @@
 <app-breadcrums />
 <div class="content">
-  <app-header/>
+  <app-header />
 
-  
   <div class="row barra-menus shadow-smXXX">
     <div class="col">
-      <!-- <strong >Filtro </strong> -->
-      <div class="col btn-group" role="group" aria-label="Basic">
-      </div>
     </div>
-    <div class="col text-end">
-    </div>
+    <div class="col text-end"></div>
   </div>
 
   <div class="row">
-    <div class="col">
-      <button class="btn btn-primary mr-1" (click)="connectWS()">Connectar</button>
-      <button class="btn btn-primary mr-1" (click)="sendMessage()">Enviar Mensaje</button>
-        <!-- <div #myGrid id="myGrid" class="ag-theme-quartz" style="height: 400px; min-height: 400px"></div> -->
+    <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">
+            <span class="badge text-bg-primary">1</span>
+            Servidores Asignados
+          </h5>
+          <p class="card-text">
+            <i><small>Servidores asignados y habilitados para el trabajo del especialista.</small></i>
+          </p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <div #myGrid id="myGrid" class="ag-theme-quartz" style="height: 490px; min-height: 490px"></div>
+        </ul>
+
+      </div>
     </div>
+    <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title"><span class="badge text-bg-primary">2</span> Servidores Seleccionados</h5>
+          <p class="card-text">
+            <i><small>Lista de servidores con los que trabajará el especialista. </small></i>
+            <br>
+            <br>
+          </p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <div #myGrid id="myGrid2" class="ag-theme-quartz" style="height: 490px; min-height: 490px"></div>
+        </ul>
+
+      </div>
+    </div>
+    <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title"><span class="badge text-bg-primary">3</span> Herramientas de soporte</h5>
+          <p class="card-text">
+            <i><small>Opciones que presenta la pantalla de trabajo.</small></i>
+          <br><br></p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
+              <label class="form-check-label" for="switchCheckDefault">
+                Monitor 
+                <br><i><small>Memoria, espacio en disco, servicios activos.</small></i>
+              </label>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
+              <label class="form-check-label" for="switchCheckDefault">
+                Terminal
+                <br><i><small>Envío de comandos en tiempo real por servidor.</small></i>
+              </label>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
+              <label class="form-check-label" for="switchCheckDefault">
+                Diferido
+                <br><i><small>Envío de comandos en diferido a uno o varios servidores .</small></i>
+              </label>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+
+    <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title"><span class="badge text-bg-primary">4</span> Ejecución</h5>
+          <p class="card-text">
+            <i><small>Ejecución de las opciones seleccionadas para presentar una pantalla de trabajo. </small></i>
+          </p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <button class="btn btn-primary text-white btn-lg">
+              <i class="fas fa-toolbox t30"></i> <br>
+              Empezar !!
+            </button>   
+          </li>
+         
+        </ul>
+    
+      </div>
+    </div>
+
   </div>
-
-
-
-
 </div>
