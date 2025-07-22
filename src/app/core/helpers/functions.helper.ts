@@ -237,10 +237,14 @@ export class Functions {
     });
   }
 
-  async goRoute(ruta: string = '', isedit = false, isreturn=false) {
+  async goRoute(ruta: string = '', isedit = false, isreturn=false, isOther=false) {
     if (isedit){
+      let ruta_partes = ruta.split("/");
       this.sessions.set("ruta_old", this.sessions.get("ruta"));
       let obj = this.sessions.get("ruta") + "|Edit";
+      if (isOther){
+        obj =  this.sessions.get("ruta") + "|" + ruta_partes[ruta_partes.length-1];
+      }
       this.sessions.set("ruta", obj);
     }
     if (isreturn){

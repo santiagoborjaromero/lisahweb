@@ -190,6 +190,7 @@
             <table class="table table-strip">
               <thead>
                 <tr>
+                  <th>Alias</th>
                   <th>Comando</th>
                   <th width="5%">Acción</th>
                 </tr>
@@ -197,6 +198,7 @@
               <tbody>
                 @for (item of lstTemplate; track $index) {
                 <tr>
+                  <td>{{item.alias}}</td>
                   <td>{{item.linea_comando}}</td>
                   <td>
                     <button

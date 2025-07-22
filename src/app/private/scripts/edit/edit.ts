@@ -158,6 +158,7 @@ export class Edit {
     } else {
       this.lstTemplate_Original.forEach((e) => {
         if (
+          e.alias.toLowerCase().indexOf(this.buscar.toLowerCase()) > -1 ||
           e.linea_comando.toLowerCase().indexOf(this.buscar.toLowerCase()) > -1
         ) {
           this.lstTemplate.push(e);

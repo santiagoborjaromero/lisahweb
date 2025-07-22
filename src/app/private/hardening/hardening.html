@@ -2,13 +2,17 @@
 <div class="content">
   <app-header />
 
-  <div class="row barra-menus shadow-smXXX">
-    <div class="col">
+  <div class="row barra-menus shadow-smXX ">
+    <div class="col text-center bg-whiteXX">
+      <h5>
+        <i class="fas fa-cog"></i>
+        Definición de espacio de trabajo
+      </h5>
+      
     </div>
-    <div class="col text-end"></div>
   </div>
 
-  <div class="row">
+  <div class="row mt-2">
     <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3">
       <div class="card">
         <div class="card-body">
@@ -18,6 +22,7 @@
           </h5>
           <p class="card-text">
             <i><small>Servidores asignados y habilitados para el trabajo del especialista.</small></i>
+            <br><br>  
           </p>
         </div>
         <ul class="list-group list-group-flush">
@@ -53,26 +58,29 @@
         <ul class="list-group list-group-flush">
           <li class="list-group-item">
             <div class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
-              <label class="form-check-label" for="switchCheckDefault">
+              <input [disabled]="lstWork.length==0" class="form-check-input" type="checkbox" role="switch" id="chkMonitor"
+                [(ngModel)]="chkMonitor">
+              <label class="form-check-label" for="chkMonitor">
                 Monitor 
-                <br><i><small>Memoria, espacio en disco, servicios activos.</small></i>
+                <br><i><small>Ejecuta el script para monitoreo asignado al servidor seleccionado.</small></i>
               </label>
             </div>
           </li>
           <li class="list-group-item">
             <div class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
-              <label class="form-check-label" for="switchCheckDefault">
+              <input [disabled]="lstWork.length==0" class="form-check-input" type="checkbox" role="switch" id="chkTerminal"
+                [(ngModel)]="chkTerminal">
+              <label class="form-check-label" for="chkTerminal">
                 Terminal
-                <br><i><small>Envío de comandos en tiempo real por servidor.</small></i>
+                <br><i><small>Envío de comandos en tiempo real al servidor seleccionado.</small></i>
               </label>
             </div>
           </li>
           <li class="list-group-item">
             <div class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
-              <label class="form-check-label" for="switchCheckDefault">
+              <input [disabled]="lstWork.length==0"  class="form-check-input" type="checkbox" role="switch" id="chkDiferido"
+                [(ngModel)]="chkDiferido">
+              <label class="form-check-label" for="chkDiferido">
                 Diferido
                 <br><i><small>Envío de comandos en diferido a uno o varios servidores .</small></i>
               </label>
@@ -93,7 +101,7 @@
         </div>
         <ul class="list-group list-group-flush">
           <li class="list-group-item">
-            <button class="btn btn-primary text-white btn-lg">
+            <button [disabled]="lstWork.length==0"  class="btn btn-primary text-white btn-lg" (click)="goWork()">
               <i class="fas fa-toolbox t30"></i> <br>
               Empezar !!
             </button>   

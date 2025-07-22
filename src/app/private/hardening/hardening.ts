@@ -33,7 +33,6 @@ export class Hardening {
   private readonly func = inject(Functions);
   private readonly sessions = inject(Sessions);
 
-
   user: any = null;
 
   accion: string = 'activos';
@@ -58,6 +57,10 @@ export class Hardening {
   lstWork: Array<any> = [];
   lstEventsSent: Array<any> = [];
   wsConn: any = null;
+
+  chkMonitor: boolean = false;
+  chkTerminal: boolean = false;
+  chkDiferido: boolean = false;
 
   constructor() {}
 
@@ -464,5 +467,19 @@ export class Hardening {
     })
     this.refreshAll();
     this.refreshAll2();
+  }
+
+  goWork(){
+    let data = {
+      servidores: this.lstWork,
+      monitor: this.chkMonitor,
+      terminal: this.chkTerminal,
+      diferido: this.chkDiferido,
+    }
+
+    this.sessions.set("work", JSON.stringify(data));
+
+    this.func.goRoute(`admin/hardening/workspace`, true, false, true);
+
   }
 }

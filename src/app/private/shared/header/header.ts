@@ -22,7 +22,8 @@ export class Header {
     }
     let o = obj.split("|")
     if (o.length==5){
-      this.nombre = o[1] + " - " + o[4];
+      // this.nombre = o[1] + " - " + o[4];
+      this.nombre = o[1] + " - " + o[4].charAt(0).toUpperCase() + o[4].slice(1);
     }else{
       this.nombre = o[1];
     }

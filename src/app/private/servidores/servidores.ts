@@ -270,6 +270,24 @@ export class Servidores {
           },
         },
         {
+          headerName: 'Monitoreo',
+          field: 'idscript_monitoreo',
+          cellClass: 'text-start',
+          cellRenderer: (params: ICellRendererParams) => {
+            let data = params.data;
+            let dato = data.idscript_monitoreo;
+            let text = 'No asignado';
+            let icono = 'far fa-times-circle  t20';
+            let color = 'text-danger';
+            if (dato !== null) {
+              icono = 'far fa-check-circle  t20';
+              text = 'Asignado';
+              color = 'text-success';
+            }
+            return `<span class="${color}"><i class='${icono}'></i> ${text}</span>`;
+          },
+        },
+        {
           headerName: 'Tiempo Activo',
           field: 'uptime',
           cellClass: 'text-start',

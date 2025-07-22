@@ -35,7 +35,7 @@ export class Edit {
   host: string = "";
   ssh_puerto: string = "";
   agente_puerto: string = "";
-  idscript_nuevo: string = "";
+  idscript_monitoreo: string = "";
   comentarios: string = "";
   estado: number = 1;
 
@@ -104,7 +104,7 @@ export class Edit {
           this.ssh_puerto = this.rstData.ssh_puerto;
           this.agente_puerto = this.rstData.agente_puerto;
           this.comentarios = this.rstData.comentarios;
-          // this.idscript_nuevo = this.rstData.idscript_nuevo;
+          this.idscript_monitoreo = this.rstData.idscript_monitoreo;
           this.estado = this.rstData.estado;
         } else {
           this.func.showMessage("error", "Usuario", resp.message);
@@ -139,9 +139,9 @@ export class Edit {
       host: this.host,
       ssh_puerto: this.ssh_puerto,
       agente_puerto: this.agente_puerto,
-      // idscript_nuevo: this.idscript_nuevo,
       estado: this.estado,
       comentarios: this.comentarios,
+      idscript_monitoreo: parseInt(this.idscript_monitoreo),
     };
 
     if (this.func.validaCampos(this.validador,data) ){
@@ -149,6 +149,8 @@ export class Edit {
     }
 
     let param = {data};
+
+    // console.log(data)
 
     this.func.showLoading('Guardando');
 

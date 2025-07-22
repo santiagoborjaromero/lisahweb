@@ -1,0 +1,27 @@
+<div class="card col col-sm-12 col-md-6 col-lg-3">
+  <div class="card-body">
+    <h5 class="card-title">{{servidor.nombre}}</h5>
+    <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p> -->
+  </div>
+  <ul class="list-group list-group-flush">
+    @if (lstServicios.length>0) {
+      @for (item of lstServicios; track $index) {
+        @if(item.respuesta == ""){
+          <li class="list-group-item t11">
+            {{item.linea_comando}}<br>
+            <span class="text-secondary">
+              <i class="fas fa-spinner fa-spin"></i> Cargando
+            </span>
+          </li>
+        }@else {
+          <li class="list-group-item t11">
+            <strong>{{item.linea_comando}}</strong><br>
+            <div [innerHTML]="item.respuesta"></div>
+          </li>
+        }
+      }
+    }@else {
+      <li class="list-group-item"><i class="fas fa-spinner fa-spin"></i> Cargando</li>
+    }
+  </ul>
+</div>

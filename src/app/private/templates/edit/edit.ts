@@ -30,6 +30,7 @@ export class Edit {
   idtemplate: string = "";
   rstData: any;
 
+  alias:string = "";
   linea_comando:string = "";
   lstVariables:Array<any> = [];
   verAyuda: boolean = false;
@@ -121,7 +122,10 @@ export class Edit {
   }
 
   funcSubmit(){
-    let data = {linea_comando: this.linea_comando};
+    let data = {
+      alias: this.alias,
+      linea_comando: this.linea_comando
+    };
     if(this.func.validaCampos(this.validador, data)){
       return;
     }

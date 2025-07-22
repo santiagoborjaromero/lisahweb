@@ -97,19 +97,17 @@
                 {{validador.agente_puerto.validacion.resultado == '' ? validador.agente_puerto.descripcion : validador.agente_puerto.validacion.resultado}} </i>
             </sup>
           </div>
-
-
           
 
 
-          <!-- <div class="col-4 col-md-2 td2 text-end">
-            Script Nuevo <small *ngIf="validador.idscript_nuevo.requerido"><i class="text-danger">*</i></small>
+          <div class="col-4 col-md-2 td2 text-end">
+            Script Monitoreo <small *ngIf="validador.idscript_monitoreo.requerido"><i class="text-danger">*</i></small>
             <br />
-            <small><i class="text-secondary">{{validador.idscript_nuevo.etiqueta}}</i></small>
+            <small><i class="text-secondary">{{validador.idscript_monitoreo.etiqueta}}</i></small>
           </div>
           <div class="col-8 col-md-4 td2">
-            <select [(ngModel)]="idscript_nuevo" name="idscript_nuevo" id="idscript_nuevo" 
-              class="form-control {{validador.idscript_nuevo.validacion.resultado == '' ? '' : 'input-danger'}}">
+            <select [(ngModel)]="idscript_monitoreo" name="idscript_monitoreo" id="idscript_monitoreo" 
+              class="form-control {{validador.idscript_monitoreo.validacion.resultado == '' ? '' : 'input-danger'}}">
               @if(lstScripts.length>0){
                 @for (item of lstScripts; track $index) {
                   <option value="{{item.idscript}}">{{item.nombre}}</option>
@@ -119,10 +117,10 @@
               }
             </select>
             <sup>
-              <i class=" {{validador.idscript_nuevo.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
-                {{validador.idscript_nuevo.validacion.resultado == '' ? validador.idscript_nuevo.descripcion : validador.idscript_nuevo.validacion.resultado}} </i>
+              <i class=" {{validador.idscript_monitoreo.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
+                {{validador.idscript_monitoreo.validacion.resultado == '' ? validador.idscript_monitoreo.descripcion : validador.idscript_monitoreo.validacion.resultado}} </i>
             </sup>
-          </div> -->
+          </div>
 
 
           <div class="col-4 col-md-2 td2 text-end">
@@ -158,13 +156,14 @@
               </i>
             </sup>
           </div> -->
-
+        </div>
+        <div class="p-1 row">
           <div class="col-4 col-md-2 td2 text-end">
             Observaciones<small *ngIf="validador.comentarios.requerido"><i class="text-danger">*</i></small>
             <br />
             <small><i class="text-secondary">{{validador.comentarios.etiqueta}}</i></small>
           </div>
-          <div class="col-8 col-md-10 td2">
+          <div class="col-8 col-md-4 td2">
             <textarea name="comentarios" id="comentarios"
               class="form-control"
               [(ngModel)]="comentarios"

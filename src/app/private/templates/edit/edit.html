@@ -18,6 +18,27 @@
         <div class="card-header th d-flex justify-content-between">
           <span> Información General </span>
         </div>
+
+
+        <div class="p-1 row">
+          <div class="col-4 col-md-3 td2 text-end">
+            Alias <small *ngIf="validador.alias.requerido"><i class="text-danger">*</i></small>
+            <br />
+            <small><i class="text-secondary">{{validador.alias.etiqueta}}</i></small>
+          </div>
+          <div class="col-8 col-md-9 td2">
+            <input type="text" name="alias" id="alias"
+              class="form-control {{validador.alias.validacion.resultado == '' ? '' : 'input-danger'}}"
+              [(ngModel)]="alias"
+            />
+            <sup>
+              <i class=" {{validador.alias.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+                {{validador.alias.validacion.resultado == '' ? validador.alias.descripcion : validador.alias.validacion.resultado}}
+              </i>
+            </sup>
+          </div>
+        </div>
+
         <div class="p-1 row">
           <div class="col-4 col-md-3 td2 text-end">
             Limea de comando <small *ngIf="validador.linea_comando.requerido"><i class="text-danger">*</i></small>

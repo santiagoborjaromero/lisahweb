@@ -9,4 +9,14 @@ export default  {
       resultado: '',
     },
   },
+  alias: {
+    requerido: true,
+    etiqueta: "Alfabético",
+    descripcion: 'Es una referencia de asociación del comando. Ej: Espacio en Disco',
+    validacion: {
+      pattern: /^.+$/,
+      patron_descripcion: 'Debe ingresar un texto válido no puede dejar en blanco.',
+      resultado: '',
+    },
+  },
 };
