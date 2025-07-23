@@ -3,14 +3,14 @@ import { Header } from '../../shared/header/header';
 import { Breadcrums } from '../../shared/breadcrums/breadcrums';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { UsuarioService } from '../../../core/services/usuarios';
+import { UsuarioService } from '../../../core/services/usuarios.service';
 import { Functions } from '../../../core/helpers/functions.helper';
 import { Sessions } from '../../../core/helpers/session.helper';
-import { GrupoUsuarioService } from '../../../core/services/grupousuarios';
-import { ClienteService } from '../../../core/services/clientes';
+import { GrupoUsuarioService } from '../../../core/services/grupousuarios.service';
+import { ClienteService } from '../../../core/services/clientes.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import vForm from './vform';
-import { ServidorService } from '../../../core/services/servidor';
+import { ServidorService } from '../../../core/services/servidor.service';
 import { AllCommunityModule, createGrid, GridApi, GridOptions, ICellRendererParams, ModuleRegistry, InfiniteRowModelModule,IDatasource, IGetRowsParams   } from 'ag-grid-community';
 
 ModuleRegistry.registerModules([AllCommunityModule]);

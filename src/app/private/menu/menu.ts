@@ -5,7 +5,7 @@ import { Header } from '../shared/header/header';
 import { Breadcrums } from '../shared/breadcrums/breadcrums';
 import { themeBalham, ModuleRegistry, AllCommunityModule, createGrid, GridApi, GridOptions, ICellRendererParams, ValueFormatterParams, provideGlobalGridOptions} from 'ag-grid-community';
 import { Global } from '../../core/config/global.config';
-import { Menuservice } from '../../core/services/menuservice';
+import { Menuservice } from '../../core/services/menuservice.service';
 import { Functions } from '../../core/helpers/functions.helper';
 import { Sessions } from '../../core/helpers/session.helper';
 

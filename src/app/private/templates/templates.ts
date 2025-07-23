@@ -8,8 +8,8 @@ import { Global } from '../../core/config/global.config';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ServidorService } from '../../core/services/servidor';
-import { TemplateService } from '../../core/services/template';
+import { ServidorService } from '../../core/services/servidor.service';
+import { TemplateService } from '../../core/services/template.service';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 

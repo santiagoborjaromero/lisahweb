@@ -1,16 +1,15 @@
-import { Component, effect, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Breadcrums } from '../shared/breadcrums/breadcrums';
 import { Header } from '../shared/header/header';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AllCommunityModule, ColumnAutosizeService, createGrid, GridApi, GridOptions, ICellRendererParams, ModuleRegistry} from 'ag-grid-community';
-import { ServidorService } from '../../core/services/servidor.service';
+import { ServidorService } from '../../core/services/servidor';
 import { Functions } from '../../core/helpers/functions.helper';
 import { Sessions } from '../../core/helpers/session.helper';
-import { UsuarioService } from '../../core/services/usuarios.service';
+import { UsuarioService } from '../../core/services/usuarios';
 import moment from 'moment';
-
-import { WSService } from '../../core/services/ws.service';
+import WSError from '../../core/data/wserror.data'
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -26,19 +25,12 @@ export class Hardening {
   private readonly serverSvc = inject(ServidorService);
   private readonly func = inject(Functions);
   private readonly sessions = inject(Sessions);
-  private readonly wsSvc = inject(WSService);
-
-  aqui: any | undefined;
-
-  // private webSockets = new Map<number, WebSocket>();
-  private server = new Map<number, any>();
 
   user: any = null;
   canR: boolean = true;
   canW: boolean = true;
   canD: boolean = true;
 
-  conteo:number = 0;
   public dtOptions: any = {};
   public gridOptions: GridOptions<any> = {};
   public gridApi?: GridApi<any>;
@@ -52,12 +44,8 @@ export class Hardening {
   funcionaAgente:boolean=false;
   tiempo_refresco:number = 0;
 
-  constructor() {
-    // effect(() => {
-    //   console.log("█", this.aqui)
-    // });
-  }
 
+  constructor() {}
 
   ngOnInit(): void {
     this.user = JSON.parse(this.sessions.get('user'));
@@ -85,8 +73,6 @@ export class Hardening {
     this.dataGridStruct();
     this.getUsuario();  
   }
-  
-
 
   getUsuario() {
     this.lstServidores = [];
@@ -110,11 +96,8 @@ export class Hardening {
               s["servicio_httpd"]= "-";
               s["servicio_ssh"]= "-";
               this.lstServidores.push(s)
-              this.server.set(s.idservidor, s);
             })
           }
-
-          
         } else {
           this.func.showMessage("error", "Usuario", resp.message);
         }
@@ -213,26 +196,26 @@ export class Hardening {
                 let dato = params.value;
                 let host = data.host;
                 let puerto = data.agente_puerto  ?? "Sin Asignar";
-                let text = '';
-                let icono = 'far fa-times-circle  t16';
+                let text = 'No responde';
+                let icono = 'far fa-times-circle  t20';
                 let color = 'text-danger';
-
-                if (!["","-","1","x"].includes(dato)) {
+                
+                if (!["","-","1"].includes(dato)) {
                   let d = dato.split("|");
                   if (d[0]=="OK") {
                     color = 'text-success';
-                    icono = 'far fa-check-circle t16';
                   }else{
                     color = 'text-danger';
-                    icono = 'far fa-times-circle t16';
                   }
+                  icono = 'far fa-check-circle  t20';
                   text = "";
+                  color = 'text-success';
                 } else if (dato == "1") {
                   icono = 'fas fa-spinner fa-spin ';
                   text = 'Revisando';
                   color = 'text-primary';
                 } else if (dato == "-") {
-                  icono = 'fas fa-minus-circle t16';
+                  icono = 'fas fa-minus-circle t20';
                   text = '';
                   color = 'text-secondary';
                 }
@@ -250,10 +233,10 @@ export class Hardening {
                 let dato = params.value;
                 let host = data.host;
                 let puerto = data.ssh_puerto ?? "Sin Asignar";
-                let text = '';
-                let icono = 'far fa-times-circle t16';
+                let text = 'No responde';
+                let icono = 'far fa-times-circle t20';
                 let color = 'text-danger';
-                if (!["","-","1","x"].includes(dato)) {
+                if (!["","-","1"].includes(dato)) {
                   let d = dato.split("|");
                   if (d[0]=="OK") {
                     color = 'text-success';
@@ -261,14 +244,14 @@ export class Hardening {
                     color = 'text-danger';
                   }
                   text = "";
-                  icono = 'far fa-check-circle t16';
+                  icono = 'far fa-check-circle t20';
                   color = 'text-success';
                 } else if (dato == "1") {
                   icono = 'fas fa-spinner fa-spin';
                   text = 'Revisando';
                   color = 'text-primary';
                 } else if (dato == "-") {
-                  icono = 'fas fa-minus-circle t16';
+                  icono = 'fas fa-minus-circle t20';
                   text = '';
                   color = 'text-secondary';
                 }
@@ -285,10 +268,10 @@ export class Hardening {
           cellClass: 'text-start',
           cellRenderer: (params: ICellRendererParams) => {
             let dato = params.value;
-            let text = '';
-            let icono = 'far fa-times-circle t16';
+            let text = 'No responde';
+            let icono = 'far fa-times-circle t20';
             let color = 'text-danger';
-            if (!["","-","1","x"].includes(dato)) {
+            if (!["","-","1"].includes(dato)) {
               let d = dato.split("|");
               if (d[0]=="OK") {
                 color = '';
@@ -297,14 +280,14 @@ export class Hardening {
               }
               let st = d[1].trim().split(":");
               text = `${st[0]}d ${st[1]}h${st[2]}m${st[3]}s`;
-              // icono = 'far fa-clock t16';
+              // icono = 'far fa-clock t20';
               icono = '';
             } else if (dato == "1") {
               icono = 'fas fa-spinner fa-spin';
               text = 'Revisando';
               color = 'text-primary';
             } else if (dato == "-") {
-              icono = 'fas fa-minus-circle t16';
+              icono = 'fas fa-minus-circle t20';
               text = '';
               color = 'text-secondary';
             }
@@ -324,17 +307,17 @@ export class Hardening {
               cellClass: 'text-start',
               cellRenderer: (params: ICellRendererParams) => {
                 let dato = params.data.disco;
-                let text = '';
-                let icono = 'far fa-times-circle t16';
+                let text = 'No responde';
+                let icono = 'far fa-times-circle t20';
                 let color = 'text-danger';
-                if (!["","-","1","x"].includes(dato)) {
+                if (!["","-","1"].includes(dato)) {
                   let d = dato.split("|");
                   if (d[0]=="OK") {
                     color = '';
                   }else{
                     color = 'text-danger';
                   }
-                  // icono = 'fas fa-sd-card t16';
+                  // icono = 'fas fa-sd-card t20';
                   icono = '';
                   text = d[1].replace("/", "");
                   text = text.replace("/", "-");
@@ -345,7 +328,7 @@ export class Hardening {
                   text = 'Revisando';
                   color = 'text-primary';
                 } else if (dato == "-") {
-                  icono = 'fas fa-minus-circle t16';
+                  icono = 'fas fa-minus-circle t20';
                   text = '';
                   color = 'text-secondary';
                 }
@@ -359,17 +342,17 @@ export class Hardening {
               cellClass: 'text-start',
               cellRenderer: (params: ICellRendererParams) => {
                 let dato = params.data.disco;
-                let text = '';
-                let icono = 'far fa-times-circle t16';
+                let text = 'No responde';
+                let icono = 'far fa-times-circle t20';
                 let color = 'text-danger';
-                if (!["","-","1","x"].includes(dato)) {
+                if (!["","-","1"].includes(dato)) {
                   let d = dato.split("|");
                   if (d[0]=="OK") {
                     color = '';
                   }else{
                     color = 'text-danger';
                   }
-                  // icono = 'fas fa-sd-card t16';
+                  // icono = 'fas fa-sd-card t20';
                   icono = '';
                   text = d[1].replace("/", "");
                   text = text.replace("/", "-");
@@ -380,7 +363,7 @@ export class Hardening {
                   text = 'Revisando';
                   color = 'text-primary';
                 } else if (dato == "-") {
-                  icono = 'fas fa-minus-circle t16';
+                  icono = 'fas fa-minus-circle t20';
                   text = '';
                   color = 'text-secondary';
                 }
@@ -394,17 +377,17 @@ export class Hardening {
               cellClass: 'text-start',
               cellRenderer: (params: ICellRendererParams) => {
                 let dato = params.data.disco;
-                let text = '';
-                let icono = 'far fa-times-circle t16';
+                let text = 'No responde';
+                let icono = 'far fa-times-circle t20';
                 let color = 'text-danger';
-                if (!["","-","1","x"].includes(dato)) {
+                if (!["","-","1"].includes(dato)) {
                   let d = dato.split("|");
                   if (d[0]=="OK") {
                     color = '';
                   }else{
                     color = 'text-danger';
                   }
-                  // icono = 'fas fa-sd-card t16';
+                  // icono = 'fas fa-sd-card t20';
                   icono = '';
                   text = d[1].replace("/", "");
                   text = text.replace("/", "-");
@@ -415,7 +398,7 @@ export class Hardening {
                   text = 'Revisando';
                   color = 'text-primary';
                 } else if (dato == "-") {
-                  icono = 'fas fa-minus-circle t16';
+                  icono = 'fas fa-minus-circle t20';
                   text = '';
                   color = 'text-secondary';
                 }
@@ -437,17 +420,17 @@ export class Hardening {
               cellClass: 'text-start',
               cellRenderer: (params: ICellRendererParams) => {
                 let dato = params.value;
-                let text = '';
-                let icono = 'far fa-times-circle t16';
+                let text = 'No responde';
+                let icono = 'far fa-times-circle t20';
                 let color = 'text-danger';
-                if (!["","-","1","x"].includes(dato)) {
+                if (!["","-","1"].includes(dato)) {
                   let d = dato.split("|");
                   if (d[0]=="OK") {
                     color = '';
                   }else{
                     color = 'text-danger';
                   }
-                  // icono = 'fas fa-microchip t16';
+                  // icono = 'fas fa-microchip t20';
                   icono = '';
                   text = d[1].split(" ")[0];
                 } else if (dato == "1") {
@@ -455,7 +438,7 @@ export class Hardening {
                   text = 'Revisando';
                   color = 'text-primary';
                 } else if (dato == "-") {
-                  icono = 'fas fa-minus-circle t16';
+                  icono = 'fas fa-minus-circle t20';
                   text = '';
                   color = 'text-secondary';
                 }
@@ -470,17 +453,17 @@ export class Hardening {
               cellClass: 'text-start',
               cellRenderer: (params: ICellRendererParams) => {
                 let dato = params.value;
-                let text = '';
-                let icono = 'far fa-times-circle t16';
+                let text = 'No responde';
+                let icono = 'far fa-times-circle t20';
                 let color = 'text-danger';
-                if (!["","-","1","x"].includes(dato)) {
+                if (!["","-","1"].includes(dato)) {
                   let d = dato.split("|");
                   if (d[0]=="OK") {
                     color = '';
                   }else{
                     color = 'text-danger';
                   }
-                  // icono = 'fas fa-microchip t16';
+                  // icono = 'fas fa-microchip t20';
                   icono = '';
                   text = d[1].split(" ")[1];
                 } else if (dato == "1") {
@@ -488,7 +471,7 @@ export class Hardening {
                   text = 'Revisando';
                   color = 'text-primary';
                 } else if (dato == "-") {
-                  icono = 'fas fa-minus-circle t16';
+                  icono = 'fas fa-minus-circle t20';
                   text = '';
                   color = 'text-secondary';
                 }
@@ -502,17 +485,17 @@ export class Hardening {
               cellClass: 'text-start',
               cellRenderer: (params: ICellRendererParams) => {
                 let dato = params.value;
-                let text = '';
-                let icono = 'far fa-times-circle t16';
+                let text = 'No responde';
+                let icono = 'far fa-times-circle t20';
                 let color = 'text-danger';
-                if (!["","-","1","x"].includes(dato)) {
+                if (!["","-","1"].includes(dato)) {
                   let d = dato.split("|");
                   if (d[0]=="OK") {
                     color = '';
                   }else{
                     color = 'text-danger';
                   }
-                  // icono = 'fas fa-microchip t16';
+                  // icono = 'fas fa-microchip t20';
                   icono = '';
                   text = d[1].split(" ")[2];
                 } else if (dato == "1") {
@@ -520,7 +503,7 @@ export class Hardening {
                   text = 'Revisando';
                   color = 'text-primary';
                 } else if (dato == "-") {
-                  icono = 'fas fa-minus-circle t16';
+                  icono = 'fas fa-minus-circle t20';
                   text = '';
                   color = 'text-secondary';
                 }
@@ -541,17 +524,17 @@ export class Hardening {
               cellClass: 'text-start',
               cellRenderer: (params: ICellRendererParams) => {
                 let dato = params.value;
-                let text = '';
-                let icono = 'far fa-times-circle t16';
+                let text = 'No responde';
+                let icono = 'far fa-times-circle t20';
                 let color = 'text-danger';
-                if (!["","-","1","x"].includes(dato)) {
+                if (!["","-","1"].includes(dato)) {
                   let d = dato.split("|");
                   if (d[0]=="OK") {
                     color = '';
                   }else{
                     color = 'text-danger';
                   }
-                  // icono = 'fas fa-memory t16';
+                  // icono = 'fas fa-memory t20';
                   icono = '';
                   text = d[1].split(" ")[0];
                 } else if (dato == "1") {
@@ -559,7 +542,7 @@ export class Hardening {
                   text = 'Revisando';
                   color = 'text-primary';
                 } else if (dato == "-") {
-                  icono = 'fas fa-minus-circle t16';
+                  icono = 'fas fa-minus-circle t20';
                   text = '';
                   color = 'text-secondary';
                 }
@@ -573,17 +556,17 @@ export class Hardening {
               cellClass: 'text-start',
               cellRenderer: (params: ICellRendererParams) => {
                 let dato = params.value;
-                let text = '';
-                let icono = 'far fa-times-circle t16';
+                let text = 'No responde';
+                let icono = 'far fa-times-circle t20';
                 let color = 'text-danger';
-                if (!["","-","1","x"].includes(dato)) {
+                if (!["","-","1"].includes(dato)) {
                   let d = dato.split("|");
                   if (d[0]=="OK") {
                     color = '';
                   }else{
                     color = 'text-danger';
                   }
-                  // icono = 'fas fa-memory t16';
+                  // icono = 'fas fa-memory t20';
                   icono = '';
                   text = d[1].split(" ")[1];
                 } else if (dato == "1") {
@@ -591,7 +574,7 @@ export class Hardening {
                   text = 'Revisando';
                   color = 'text-primary';
                 } else if (dato == "-") {
-                  icono = 'fas fa-minus-circle t16';
+                  icono = 'fas fa-minus-circle t20';
                   text = '';
                   color = 'text-secondary';
                 }
@@ -605,17 +588,17 @@ export class Hardening {
               cellClass: 'text-start',
               cellRenderer: (params: ICellRendererParams) => {
                 let dato = params.value;
-                let text = '';
-                let icono = 'far fa-times-circle t16';
+                let text = 'No responde';
+                let icono = 'far fa-times-circle t20';
                 let color = 'text-danger';
-                if (!["","-","1","x"].includes(dato)) {
+                if (!["","-","1"].includes(dato)) {
                   let d = dato.split("|");
                   if (d[0]=="OK") {
                     color = '';
                   }else{
                     color = 'text-danger';
                   }
-                  // icono = 'fas fa-memory t16';
+                  // icono = 'fas fa-memory t20';
                   icono = '';
                   text = d[1].split(" ")[2];
                 } else if (dato == "1") {
@@ -623,7 +606,7 @@ export class Hardening {
                   text = 'Revisando';
                   color = 'text-primary';
                 } else if (dato == "-") {
-                  icono = 'fas fa-minus-circle t16';
+                  icono = 'fas fa-minus-circle t20';
                   text = '';
                   color = 'text-secondary';
                 }
@@ -645,17 +628,17 @@ export class Hardening {
               minWidth: 100,
               cellRenderer: (params: ICellRendererParams) => {
                 let dato = params.value
-                let text = '';
-                let icono = 'far fa-times-circle t16';
+                let text = 'No responde';
+                let icono = 'far fa-times-circle t20';
                 let color = 'text-danger';
-                if (!["","-","1","x"].includes(dato)) {
+                if (!["","-","1"].includes(dato)) {
                   let d = dato.split("|");
                   if (d[0]=="OK") {
                     color = 'text-success';
-                    icono = 'far fa-check-circle t16';
+                    icono = 'far fa-check-circle t20';
                   }else{
                     color = 'text-danger';
-                    icono = 'far fa-times-circle t16';
+                    icono = 'far fa-times-circle t20';
                   }
                   text = d[1];
                 } else if (dato == "1") {
@@ -663,7 +646,7 @@ export class Hardening {
                   text = 'Revisando';
                   color = 'text-primary';
                 } else if (dato == "-") {
-                  icono = 'fas fa-minus-circle t16';
+                  icono = 'fas fa-minus-circle t20';
                   text = '';
                   color = 'text-secondary';
                 }
@@ -678,16 +661,16 @@ export class Hardening {
               minWidth: 100,
               cellRenderer: (params: ICellRendererParams) => {
                 let dato = params.value;
-                let text = '';
-                let icono = 'far fa-times-circle t16';
+                let text = 'No responde';
+                let icono = 'far fa-times-circle t20';
                 let color = 'text-danger';
-                if (!["","-","1","x"].includes(dato)) {
+                if (!["","-","1"].includes(dato)) {
                   let d = dato.split("|");
                   if (d[0]=="OK") {
                     color = 'text-success';
-                    icono = 'far fa-check-circle t16';
+                    icono = 'far fa-check-circle t20';
                   }else{
-                    icono = 'far fa-times-circle t16';
+                    icono = 'far fa-times-circle t20';
                     color = 'text-danger';
                   }
                   text = d[1];
@@ -696,7 +679,7 @@ export class Hardening {
                   text = 'Revisando';
                   color = 'text-primary';
                 } else if (dato == "-") {
-                  icono = 'fas fa-minus-circle t16';
+                  icono = 'fas fa-minus-circle t20';
                   text = '';
                   color = 'text-secondary';
                 }
@@ -746,77 +729,110 @@ export class Hardening {
   sendMonitor(){}
 
   enviarStats(){
-    this.lstServidores.forEach(server => {
-      server.healthy_agente = "1";
-      server.uptime = "1";
-      server.cpu= "1";
-      server.memoria= "1";
-      server.disco= "1";
-      server.servicio_httpd= "1";
-      server.servicio_ssh= "1";
-      this.refreshAll();
-      this.enviaSSH(server);
+    if (this.lstServidores.length == 0){
+      return
+    }
+    console.log("Inicio")
+    this.lstServidores.forEach(s=>{
+      s.healthy_ssh ="1";
+      s.healthy_agente = "1";
+      s.uptime ="1";
+      s.cpu ="1";
+      s.memoria ="1";
+      s.disco ="1";
+      s.servicio_httpd ="1";
+      s.servicio_ssh ="1";
+      this.testAgente(s);
+      this.testSSH(s);
+      // this.testAgente(e);
+    });
+    console.log("Fin")
+    this.refreshAll()
+  }
 
-      this.wsSvc.connect(server).subscribe({
-        next: (resp:any) => {
-          if (resp.idservidor){
-             this.verificaServer(resp);
+  testSSH(record:any){
+    let param = { data: { host: record.host, puerto: record.ssh_puerto } }
+    this.serverSvc.testHealthy(param).subscribe({
+      next: (resp: any) => {
+        //this.func.closeSwal();
+        let msg = "";
+        if (resp.status) {
+          msg = "OK|Conectado";
+          // this.putResults(record.idservidor, [1, resp.data], "ssh")
+        } else {
+          msg = "FAIL|No Conectado";
+          // this.putResults(record.idservidor, [0,""], "ssh")
+        }
+
+        this.lstServidores.forEach((s:any)=>{
+          if (s.nombre == record.nombre){
+            s.healthy_ssh = msg;
           }
-        },
-        error: (err) => {
-          console.log("X",err)
-        },
-      });
+        })
+        this.refreshAll()
+
+      },
+      error: (err: any) => {
+        this.func.closeSwal();
+      },
     });
   }
 
-  verificaServer(resp:any){
-    if (resp.healthy_agente.split("|")[0] == "OK"){
-      this.enviaStats(resp)
-    } else if (resp.healthy_agente.split("|")[0] == "FAIL"){
-      this.lstServidores.forEach(s=>{
-        if (s.idservidor == resp.idservidor){
-          s.healthy_agente = "x";
-          s.uptime = "x";
-          s.cpu= "x";
-          s.memoria= "x";
-          s.disco= "x";
-          s.servicio_httpd= "x";
-          s.servicio_ssh= "x";
-          this.refreshAll();
-          return
-        }
-      });
-    }
+  // putResults(idservidor: any, result:any, what = "ssh"){
+  //   this.lstServidores.forEach(s=>{
+  //       s[`healthy_${what}`] = result[0];
+  //       if (what=="ssh") s.uptime = result[1];
+  //   })
+  //   this.refreshAll();
+  // }
+
+  async testAgente(record:any) {
+    let ws = `ws://${record.host}:${record.agente_puerto}`;
+    console.log("Conectando con " + ws)
+
+    this.wsConn = new WebSocket(ws);
+    this.wsConn.onopen = (event:any) => this.onOpenListener(record, event);
+    this.wsConn.onmessage = (event:any) => this.onMessageListener(record, event);
   }
 
-  enviaStats(resp:any){
-    this.wsSvc.sendCommand(resp.idservidor, {
+  onOpenListener(server:any, event:any){
+    console.log("[√] Conectado")
+
+    this.lstServidores.forEach((s:any)=>{
+      if (s.nombre == server.nombre){
+        s.healthy_agente = "OK|Conectado";
+      }
+    })
+    this.refreshAll()
+    
+    let data = {
       action: "stats",
-      identificador: "k2j3h4273864238gasdgas",
-      referencia: resp.nombre,
-    })
-    .then(resp=>{
-      this.onMessageListener(resp);
-    })
-    .catch(err=>{
-      console.log("x", err)
-    })
+      identificador: "3hhsy3788sjakjaksend",
+      referencia: server.nombre,
+      data: []
+    };
+    console.log("»", data);
+    
+    this.wsConn.send(JSON.stringify(data));
   }
 
-  onMessageListener(e:any){
-    console.log("«", e)
-    let serverid = e.serverId;
-    let action = e.data.action;
-    let identificador = e.data.identificador;
-    let referencia = e.data.referencia;
-    let data:any = e.data.data;
+  onMessageListener(server:any, event:any){
+    console.log("«", event)
 
+    let e = JSON.parse(event.data);
+    let action = e.action;
+    let identificador = e.identificador;
+    let referencia = e.referencia;
+    let data:any = e.data;
+
+    // let referencia = data.identificador.split("-")[0];
+    // let identificador = data.identificador.split("-")[2];
+    
     switch(action){
       case "stats":
         let msg = "";
         this.lstServidores.forEach((s:any)=>{
-          if (s.idservidor == serverid){
+          if (s.nombre == referencia){
             data.forEach((r:any)=>{
               if (r.respuesta.returncode == 0){
                 msg = `OK|${r.respuesta.stdout}`;
@@ -830,38 +846,6 @@ export class Hardening {
         this.refreshAll()
         break;
     }
-  }
-
-  // getStatus = (id: number) => {
-  //   return this.wsSvc.getServerStatus(id);
-  // }
-
-  // ngOnDestroy(): void {
-  //   this.wsSvc.disconnectAll();
-  // }
-
-  enviaSSH(record:any){
-    let param = { data: { host: record.host, puerto: record.ssh_puerto } }
-    this.serverSvc.testHealthy(param).subscribe({
-      next: (resp: any) => {
-        let msg = "";
-        if (resp.status) {
-          msg = "OK|Conectado";
-        } else {
-          msg = "FAIL|No Conectado";
-        }
-        this.lstServidores.forEach((s:any)=>{
-          if (s.nombre == record.nombre){
-            s.healthy_ssh = msg;
-          }
-        })
-        this.refreshAll()
-
-      },
-      error: (err: any) => {
-        this.func.closeSwal();
-      },
-    });
   }
 
   

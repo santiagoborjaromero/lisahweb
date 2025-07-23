@@ -12,9 +12,9 @@ import {
   ModuleRegistry,
 } from 'ag-grid-community';
 import { Functions } from '../../core/helpers/functions.helper';
-import { UsuarioService } from '../../core/services/usuarios';
+import { UsuarioService } from '../../core/services/usuarios.service';
 import { Sessions } from '../../core/helpers/session.helper';
-import { GrupoUsuarioService } from '../../core/services/grupousuarios';
+import { GrupoUsuarioService } from '../../core/services/grupousuarios.service';
 import { Global } from '../../core/config/global.config';
 import Swal from 'sweetalert2';
 

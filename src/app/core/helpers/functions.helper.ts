@@ -5,7 +5,7 @@ import * as moment from 'moment';
 import Swal from 'sweetalert2';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
-import { Auth } from '../services/auth';
+import { Auth } from '../services/auth.service';
 import { Global } from '../config/global.config';
 
 @Injectable({

@@ -26,32 +26,4 @@
   </div>
 
   <div #myGrid id="myGrid" class="ag-theme-quartz" style="height: 300px; min-height: 300px"></div>
-   <!-- <table class="table">
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Host</th>
-          <th>Agente</th>
-          <th>Uptime</th>
-          <th>CPU</th>
-          <th>Memoria</th>
-          <th>Disco</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let server of lstServidores">
-          <td>{{ server.nombre }}</td>
-          <td>{{ server.host }}:{{ server.agente_puerto }}</td>
-          <td>
-            <span [class]="'badge ' + (getStatus(server.idservidor)?.healthy_agente === '1' ? 'bg-success' : 'bg-danger')">
-              {{ getStatus(server.idservidor)?.healthy_agente === '1' ? 'Conectado' : 'Desconectado' }}
-            </span>
-          </td>
-          <td>{{ getStatus(server.idservidor)?.uptime }}</td>
-          <td>{{ getStatus(server.idservidor)?.cpu }}</td>
-          <td>{{ getStatus(server.idservidor)?.memoria }}</td>
-          <td>{{ getStatus(server.idservidor)?.disco }}</td>
-        </tr>
-      </tbody>
-    </table> -->
 </div>

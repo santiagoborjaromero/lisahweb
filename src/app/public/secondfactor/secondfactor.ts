@@ -5,8 +5,8 @@ import moment from 'moment';
 import { Global } from '../../core/config/global.config';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Auth } from '../../core/services/auth';
-import { NotificationService } from '../../core/services/notification-service';
+import { Auth } from '../../core/services/auth.service';
+import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
   selector: 'app-secondfactor',

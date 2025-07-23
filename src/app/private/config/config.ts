@@ -2,11 +2,11 @@ import { Component, inject } from '@angular/core';
 import { Header } from '../shared/header/header';
 import { Breadcrums } from '../shared/breadcrums/breadcrums';
 import { CommonModule } from '@angular/common';
-import { ConfigService } from '../../core/services/config'
+import { ConfigService } from '../../core/services/config.service'
 import { Functions } from '../../core/helpers/functions.helper';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { verificarRuc } from 'udv-ec';
-import { ScriptsService } from '../../core/services/script';
+import { ScriptsService } from '../../core/services/script.service';
 
 @Component({
   selector: 'app-config',

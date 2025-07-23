@@ -4,11 +4,11 @@ import { Breadcrums } from '../../shared/breadcrums/breadcrums';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { GrupoUsuarioService } from '../../../core/services/grupousuarios';
-import { UsuarioService } from '../../../core/services/usuarios';
+import { GrupoUsuarioService } from '../../../core/services/grupousuarios.service';
+import { UsuarioService } from '../../../core/services/usuarios.service';
 import { Functions } from '../../../core/helpers/functions.helper';
 import { Sessions } from '../../../core/helpers/session.helper';
-import { RolMenuService } from '../../../core/services/rolmenu';
+import { RolMenuService } from '../../../core/services/rolmenu.service';
 
 @Component({
   selector: 'app-edit',

@@ -6,8 +6,8 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Functions } from '../../../core/helpers/functions.helper';
 import { Sessions } from '../../../core/helpers/session.helper';
-import { TemplateService } from '../../../core/services/template';
-import { VariablesService } from '../../../core/services/variables';
+import { TemplateService } from '../../../core/services/template.service';
+import { VariablesService } from '../../../core/services/variables.service';
 import vForm from './vform';
 
 

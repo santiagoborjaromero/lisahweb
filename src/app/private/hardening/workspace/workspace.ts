@@ -7,8 +7,7 @@ import { Functions } from '../../../core/helpers/functions.helper';
 import { Sessions } from '../../../core/helpers/session.helper';
 import moment from 'moment';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Monitoreo } from '../monitoreo/monitoreo';
-import { ScriptsService } from '../../../core/services/script';
+import { ScriptsService } from '../../../core/services/script.service';
 import { AllCommunityModule, createGrid, GridApi, GridOptions, ICellRendererParams, ModuleRegistry } from 'ag-grid-community';
 import vForm from './vform';
 
@@ -222,7 +221,8 @@ export class Workspace {
         field: 'nombre',
         cellClass: 'text-start',
         filter: false,
-        flex:2
+        flex:2,
+        pinned: "left"
       },
     ];
     let servicios:any = [];
@@ -303,14 +303,22 @@ dataGridStruct() {
       paginationPageSize: 1,
       paginationPageSizeSelector: [5, 10, 50, 100, 200, 300, 1000],
       rowHeight: 40,
+      tooltipInteraction: true, 
+      deltaSort: true, 
       defaultColDef: {
         flex: 1,
-        minWidth: 100,
+        minWidth: 50,
         filter: false,
         headerClass: 'bold',
         floatingFilter: false,
         resizable: false,
         sortable: false,
+        wrapText: true,
+        wrapHeaderText: true,
+        suppressAutoSize: true,
+        autoHeaderHeight: true,
+        suppressSizeToFit: true,
+
       },
       onRowClicked: (event: any) => {
         this.id_selected = event.data.idservidor;

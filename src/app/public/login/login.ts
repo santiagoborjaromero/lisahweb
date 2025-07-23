@@ -6,8 +6,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Sessions } from '../../core/helpers/session.helper';
 import { Functions } from '../../core/helpers/functions.helper';
 import { environment } from '../../../environments/environment';
-import { Auth } from '../../core/services/auth';
-import { NotificationService } from '../../core/services/notification-service';
+import { Auth } from '../../core/services/auth.service';
+import { NotificationService } from '../../core/services/notification.service';
 
 
 @Component({

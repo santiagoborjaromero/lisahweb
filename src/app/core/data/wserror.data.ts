@@ -1,0 +1,17 @@
+export default [
+    { code: 1000, type: 'info',  reconnect: false, reason: 'Normal Closure' },
+    { code: 1001, type: 'error', reconnect: true,  reason: 'Going away, time expired',      },
+    { code: 1002, type: 'error', reconnect: true,  reason: 'Protocol error' },
+    { code: 1003, type: 'error', reconnect: true,  reason: 'Unsupported Data',},
+    { code: 1004, type: 'error', reconnect: true,  reason: 'Reserved' },
+    { code: 1005, type: 'info',  reconnect: false, reason: 'No Status Rcvd' },
+    { code: 1006, type: 'error', reconnect: true,  reason: 'Abnormal Closure', },
+    { code: 1007, type: 'error', reconnect: true,  reason: 'Invalid frame payload data',},
+    { code: 1008, type: 'error', reconnect: true,  reason: 'Policy Violation', },
+    { code: 1009, type: 'error', reconnect: true,  reason: 'Message Too Big' },
+    { code: 1010, type: 'error', reconnect: true,  reason: 'Mandatory Ext.' },
+    { code: 1012, type: 'error', reconnect: true,  reason: 'Service Restart' },
+    { code: 1013, type: 'error', reconnect: false, reason: 'Try Again Later', },
+    { code: 1014, type: 'error', reconnect: false, reason: 'Bad Gateway' },
+    { code: 3000, type: 'error', reconnect: true,  reason: 'Unauthorized' },
+  ]

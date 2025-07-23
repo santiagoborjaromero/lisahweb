@@ -7,8 +7,8 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Functions } from '../../../core/helpers/functions.helper';
 import { Sessions } from '../../../core/helpers/session.helper';
-import { TemplateService } from '../../../core/services/template';
-import { ScriptsService } from '../../../core/services/script';
+import { TemplateService } from '../../../core/services/template.service';
+import { ScriptsService } from '../../../core/services/script.service';
 import {
   AllCommunityModule,
   createGrid,

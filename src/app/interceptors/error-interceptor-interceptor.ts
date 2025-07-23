@@ -9,7 +9,7 @@ import {
 import { inject } from '@angular/core';
 import { tap, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { NotificationService } from '../core/services/notification-service';
+import { NotificationService } from '../core/services/notification.service';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const notiSvc = inject(NotificationService)

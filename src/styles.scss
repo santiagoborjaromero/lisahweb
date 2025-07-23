@@ -300,9 +300,9 @@ ul.menu{
 .bold { font-weight: 600;}
 
 .link{
-    border-bottom: 1px dashed #15b8a2;
+    border-bottom: 1px dashed SteelBlue;
     cursor: pointer;
-    color: #15b8a2;
+    color: SteelBlue;
 }
 
 .border-right{
@@ -312,3 +312,39 @@ ul.menu{
 }
 
 .bg-white{ background-color: #fff !important;}
+
+.th-center{
+    text-align: center !important;
+    align-items: center !important;
+    justify-content: center !important;
+    vertical-align: middle !important;
+    align-content: center !important;
+}
+.th-normal{
+    background-color:SteelBlue  !important;
+    color: #fff;
+}
+.th-normal2{
+    background-color:#6ba5d4  !important;
+    color: #fff;
+}
+.th-normal3{
+    background-color:#fff  !important;
+    color: #000;
+}
+.th-normal4{
+    background-color:#f3f2f2  !important;
+    color: #000;
+}
+.th-grupo3{
+    background-color:CadetBlue  !important;
+    color: #fff;
+}
+.th-grupo2{
+    background-color:DarkCyan  !important;
+    color: #fff;
+}
+.th-grupo1{
+    background-color:rgba(70, 131, 180, 0.733)  !important;
+    color: #fff;
+}

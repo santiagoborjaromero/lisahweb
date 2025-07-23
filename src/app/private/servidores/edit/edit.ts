@@ -7,8 +7,8 @@ import { Functions } from '../../../core/helpers/functions.helper';
 import { Sessions } from '../../../core/helpers/session.helper';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Global } from '../../../core/config/global.config';
-import { ScriptsService } from '../../../core/services/script';
-import { ServidorService } from '../../../core/services/servidor';
+import { ScriptsService } from '../../../core/services/script.service';
+import { ServidorService } from '../../../core/services/servidor.service';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({

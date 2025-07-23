@@ -3,14 +3,14 @@ import { Header } from '../shared/header/header';
 import { Breadcrums } from '../shared/breadcrums/breadcrums';
 import { Functions } from '../../core/helpers/functions.helper';
 import { Sessions } from '../../core/helpers/session.helper';
-import { UsuarioService } from '../../core/services/usuarios';
-import { GrupoUsuarioService } from '../../core/services/grupousuarios';
+import { UsuarioService } from '../../core/services/usuarios.service';
+import { GrupoUsuarioService } from '../../core/services/grupousuarios.service';
 import { AllCommunityModule, createGrid, GridApi, GridOptions, GroupSelectionMode, ICellRendererParams, ModuleRegistry, SelectionChangedEvent } from 'ag-grid-community';
 import { Global } from '../../core/config/global.config';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ServidorService } from '../../core/services/servidor';
+import { ServidorService } from '../../core/services/servidor.service';
 import moment from 'moment';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -112,20 +112,24 @@ export class Servidores {
     let that = this;
     this.gridOptions = {
       rowData: [],
-      pagination: true,
+      pagination: false,
       paginationPageSize: 50,
       paginationPageSizeSelector: [5, 10, 50, 100, 200, 300, 1000],
       // rowSelection: 'single',
-      rowHeight: 50,
+      rowHeight: 40,
       defaultColDef: {
         flex: 1,
-        minWidth: 100,
-        filter: true,
-        // enableCellChangeFlash: true,
+        minWidth: 50,
+        filter: false,
         headerClass: 'bold',
-        floatingFilter: true,
+        floatingFilter: false,
         resizable: false,
-        sortable: true,
+        sortable: false,
+        wrapText: true,
+        wrapHeaderText: true,
+        suppressAutoSize: true,
+        autoHeaderHeight: true,
+        suppressSizeToFit: true,
       },
       onRowClicked: (event: any) => {
         this.id_selected = event.data.idservidor;

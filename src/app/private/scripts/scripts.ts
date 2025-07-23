@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { Header } from '../shared/header/header';
 import { Breadcrums } from '../shared/breadcrums/breadcrums';
 import { CommonModule } from '@angular/common';
-import { ScriptsService } from '../../core/services/script';
+import { ScriptsService } from '../../core/services/script.service';
 import { Functions } from '../../core/helpers/functions.helper';
 import { Sessions } from '../../core/helpers/session.helper';
 import { AllCommunityModule, createGrid, GridApi, GridOptions, ICellRendererParams, ModuleRegistry } from 'ag-grid-community';

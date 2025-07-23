@@ -11,7 +11,7 @@ import {
   ModuleRegistry,
 } from 'ag-grid-community';
 import { Functions } from '../../core/helpers/functions.helper';
-import { UsuarioService } from '../../core/services/usuarios';
+import { UsuarioService } from '../../core/services/usuarios.service';
 import { Sessions } from '../../core/helpers/session.helper';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';

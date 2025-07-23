@@ -1,5 +1,5 @@
 import { Component, inject, Input } from '@angular/core';
-import { Menuservice } from '../../../core/services/menuservice';
+import { Menuservice } from '../../../core/services/menuservice.service';
 import { Functions } from '../../../core/helpers/functions.helper';
 import { Header } from '../../shared/header/header';
 import { Breadcrums } from '../../shared/breadcrums/breadcrums';
