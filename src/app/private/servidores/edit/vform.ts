@@ -49,16 +49,16 @@ export default  {
       resultado: '',
     },
   },
-  idscript_monitoreo: {
-    requerido: false,
-    etiqueta: "Selección",
-    descripcion: 'Script que se ejecutará cuando requiera monitorear el servidor en hardening',
-    validacion: {
-      pattern: /^[0-9]+$/,
-      patron_descripcion: 'Debe seleccionar un numero válido.',
-      resultado: '',
-    },
-  },
+  // idscript_monitoreo: {
+  //   requerido: false,
+  //   etiqueta: "Selección",
+  //   descripcion: 'Script que se ejecutará cuando requiera monitorear el servidor en hardening',
+  //   validacion: {
+  //     pattern: /^[0-9]+$/,
+  //     patron_descripcion: 'Debe seleccionar un numero válido.',
+  //     resultado: '',
+  //   },
+  // },
   estado: {
     requerido: true,
     etiqueta: "Selección",

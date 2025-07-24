@@ -48,7 +48,6 @@ export class Usuarios {
 
   ngOnInit(): void {
     this.user = JSON.parse(this.sessions.get('user'));
-    // console.log(this.user)
 
     if (this.user.idrol > 1) {
       let scope = this.user.roles.permisos_crud.split('');
@@ -112,6 +111,7 @@ export class Usuarios {
         filter: true,
         // enableCellChangeFlash: true,
         headerClass: 'bold',
+        wrapHeaderText: false,
         floatingFilter: true,
         resizable: false,
         sortable: true,
@@ -126,6 +126,7 @@ export class Usuarios {
     this.gridOptions.columnDefs?.push({
       headerName: 'ID',
       field: 'idusuario',
+      headerClass: ["th-center", "th-normal"],
       filter: false,
       hide: true,
     });
@@ -134,6 +135,7 @@ export class Usuarios {
       this.gridOptions.columnDefs?.push({
         headerName: 'Cliente',
         field: 'cliente.nombre',
+        headerClass: ["th-center", "th-normal"],
         filter: false,
         hide: false,
         sortIndex: 1,
@@ -145,21 +147,27 @@ export class Usuarios {
       this.gridOptions.columnDefs?.push(
         {
           headerName: 'Grupo',
+          headerClass: ["th-center", "th-normal"],
           field: 'grupo.nombre',
           cellClass: 'text-start',
           sortIndex: 2,
           sort: 'asc',
+          cellRenderer: this.renderAccionGrupo.bind(this),
         },
         {
           headerName: 'Nombre',
+          headerClass: ["th-center", "th-normal"],
           field: 'nombre',
           cellClass: 'text-start',
           sortIndex: 3,
           sort: 'asc',
           flex: 2,
+          cellRenderer: this.renderAccionNombre.bind(this),
+          
         },
         {
           headerName: 'Usuario',
+          headerClass: ["th-center", "th-normal"],
           field: 'usuario',
           cellClass: 'text-start',
         },
@@ -175,73 +183,86 @@ export class Usuarios {
         // },
         {
           headerName: 'Email',
+          headerClass: ["th-center", "th-normal"],
           field: 'email',
           cellClass: 'text-start',
+          maxWidth:150,
           cellRenderer: (params: ICellRendererParams) => {
             let data = params.data;
             let email = data.email;
             let confirmado = data.email_confirmado;
-            let adicional = "";
-            if (confirmado){
-              adicional = "";
-            }else{
-              adicional = `<kbd class="bg-danger text-white">No confirmado</kbd>`;
+            let adicional = `far fa-times-circle text-danger`;
+            if (confirmado) {
+              adicional = 'far fa-check-circle text-success';
             }
 
-            let text = `<i class="far fa-times-circle text-danger t20"></i>`;
-            let color = 'bg-danger';
+            let correo = `far fa-times-circle text-danger`;
             if (email) {
-              color = 'bg-success';
-              text = '<i class="far fa-check-circle text-success t20"></i>';
+              correo = 'far fa-check-circle text-success';
             }
-            return text + " " + adicional;
+
+            return `
+              <i class="${correo} t20" title="Email"></i>  <i class="${adicional} t20" title="Email Confirmado"></i>
+              `;
           },
         },
-        // {
-        //   headerName: 'NTFY ID',
-        //   field: 'ntfy_identificador',
-        //   cellClass: 'text-start',
-        // },
         {
           headerName: 'Servidores',
+          headerClass: ["th-center", "th-normal"],
           field: 'servidores.length',
           cellClass: 'text-start',
-          maxWidth: 100,
+          maxWidth: 150,
+          cellRenderer: (params: ICellRendererParams)=>{
+            return `<i class="fas fa-server text-primary t20 mr-2"></i> <span class="t16">${params.value}</span>`
+          }
         },
         {
           headerName: 'Estado',
+          headerClass: ["th-center", "th-normal"],
           field: 'estado',
           cellClass: 'text-start',
           maxWidth:100,
           cellRenderer: (params: ICellRendererParams) => {
             let data = params.data;
             let status = data.estado;
-            let text = 'Inactivo';
-            let color = 'bg-danger';
+            let icono = 'far fa-times-circle';
+            let color = 'text-danger';
             if (status == 1) {
-              color = 'bg-success';
-              text = 'Activo';
+              color = 'text-success';
+              icono = 'far fa-check-circle';
             }
-            return `<kbd class="${color} text-white">${text}</kbd>`;
+            return `<i class="${color} ${icono} t20"></i>`;
           },
         },
         {
           headerName: 'Eliminado',
+          headerClass: ["th-center", "th-normal"],
           field: 'deleted_at',
-          cellClass: 'text-end',
+          cellClass: 'text-start',
           sortIndex: 0,
           sort: 'asc',
-          maxWidth:120,
+          maxWidth:180,
           cellRenderer: (params: ICellRendererParams) => {
             let data = params.data;
             let fecha = data.deleted_at;
             let text = "";
             if (fecha){
               text = moment(fecha).format("YYYY-MM-DD");
+            }else{
+              text = `<i class="fas fa-minus text-dark t20"></i>`
             }
             return text;
           }
-        }
+        },
+        {
+          headerName: 'Accion',
+          headerClass: ["th-center", "th-normal"],
+          cellClass: 'text-start',
+          filter: true,
+          flex: 3,
+          maxWidth:80,
+          cellRenderer: this.renderAcciones.bind(this),
+        },
         
       );
     }
@@ -261,18 +282,73 @@ export class Usuarios {
     this.gridApi!.setGridOption('rowData', this.lstData);
   }
 
+  renderAccionGrupo(params: ICellRendererParams) {
+    let nombre = params.value;
+    let grupoid = params.data.idgrupo_usuario;
+
+    const button = document.createElement('button');
+    button.className = 'btn btn-white';
+    button.innerHTML = `<span class="link" title='Editar Grupo de Usuario'>${nombre}</span>`;
+    button.addEventListener('click', () => {
+      this.funcEditGrupo(grupoid);
+    });
+    return button;
+  }
+
+  renderAccionNombre(params: ICellRendererParams) {
+    let nombre = params.value;
+    let grupoid = params.data.idgrupo_usuario;
+
+    const button = document.createElement('button');
+    button.className = 'btn btn-white';
+    button.innerHTML = `<span class="link" title='Editar Usuario'>${nombre}</span>`;
+    button.addEventListener('click', () => {
+      this.funcEdit(params.data.idusuario);
+    });
+    return button;
+  }
+
+  renderAcciones(params: ICellRendererParams) {
+    let button: any | undefined;
+
+    if (params.data.deleted_at === null){
+      button = document.createElement('button');
+      button.className = 'btn btn-white';
+      button.innerHTML = `<i class="far fa-trash-alt text-danger" title='Eliminar'></i>`;
+      button.addEventListener('click', () => {
+        this.procesoEspecial('eliminar un registro', 'eliminar', params.data.idusuario)
+      });
+    } else {
+      button = document.createElement('button');
+      button.className = 'btn btn-white';
+      button.innerHTML = `<i class="fas fa-undo-alt text-warning" title='Recuperar'></i>`;
+      button.addEventListener('click', () => {
+        this.procesoEspecial('recuperar un registro', 'recuperar', params.data.idusuario)
+      });
+    }
+
+    return button;
+  }
+  
+  funcEditGrupo(id: any = null) {
+    this.func.goRoute(`admin/grupousuario/${id}`, true);
+  }
   funcEdit(id: any = null) {
     this.func.goRoute(`admin/usuario/${id ? id : this.id_selected}`, true);
   }
 
-  procesoEspecial(action = '', keyword = 'delete') {
-    if (this.id_selected == '') {
+  procesoEspecial(action = '', keyword = 'delete', idusuario="") {
+    if (this.id_selected == '' && idusuario=="") {
       this.func.showMessage(
         'error',
         'Eliminar',
         'Debe seleccionar una fila para eliminar'
       );
       return;
+    }
+
+    if (idusuario!=""){
+      this.id_selected = idusuario;
     }
 
     Swal.fire({

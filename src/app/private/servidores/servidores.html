@@ -1,27 +1,137 @@
 <app-breadcrums />
 <div class="content">
-  <app-header/>
+  <app-header />
 
-  
-  <div class="row barra-menu ">
+  <div class="row barra-menu">
     <div class="col">
-      <strong >Filtro </strong>
+      <strong>Filtro </strong>
       <div class="col btn-group" role="group" aria-label="Basic">
-        <button (click)="accion='activos'; getData()" type="button" class="btn btn-primary btn-sm {{accion=='activos' ? 'active' : ''}}">Activo</button>
-        <button (click)="accion='inactivos'; getData()" type="button" class="btn btn-primary btn-sm {{accion=='inactivos' ? 'active' : ''}}">Inactivo</button>
-        <button (click)="accion='todos'; getData()" type="button" class="btn btn-primary btn-sm {{accion=='todos' ? 'active' : ''}}">Todos</button>
+        <button (click)="accion='activos'; getData()" type="button" class="btn btn-primary btn-sm {{accion=='activos' ? 'active' : ''}}">
+          Activo
+        </button>
+        <button (click)="accion='inactivos'; getData()" type="button" class="btn btn-primary btn-sm {{accion=='inactivos' ? 'active' : ''}}">
+          Inactivo
+        </button>
+        <button (click)="accion='todos'; getData()" type="button" class="btn btn-primary btn-sm {{accion=='todos' ? 'active' : ''}}">
+          Todos
+        </button>
       </div>
     </div>
     <div class="col text-end">
-      <button *ngIf="canW" (click)="funcEdit(-1)" class="btn btn-primary btn-sm ml-1"><i class="fas fa-plus"></i> Nuevo</button>
-      <button *ngIf="canW && !is_deleted" [disabled]="!id_selected" (click)="funcEdit()" class="btn btn-primary btn-sm ml-1"><i class="far fa-edit"></i> Editar</button>
-      <button *ngIf="canW && !is_deleted && rows_selected>0" (click)="funcCheckHealthy()" class="btn btn-primary btn-sm ml-1"><i class="fas fa-flask"></i> Test Salud {{rows_selected == 1 ? name_selected : rows_selected + ' servidores'}}</button>
-      <button *ngIf="canD && !is_deleted" [disabled]="!id_selected" (click)="procesoEspecial('eliminar un registro', 'eliminar')" class="btn btn-danger btn-sm ml-1"><i class="far fa-trash-alt"></i> Eliminar</button>
-      <button *ngIf="canW && is_deleted" (click)="procesoEspecial('recuperar un registro', 'recuperar')" class="btn btn-warning btn-sm ml-1"><i class="fas fa-undo-alt"></i> Recuperar Servidor</button>
-      <button *ngIf="canR" (click)="getData()" class="btn btn-white btn-sm ml-1"><i class="fas fa-sync-alt"></i></button>
+      <button
+        *ngIf="canW"
+        (click)="funcEdit(-1)"
+        class="btn btn-primary btn-sm ml-1"
+      >
+        <i class="fas fa-plus"></i> Nuevo
+      </button>
+      <button
+        *ngIf="canW && !is_deleted"
+        [disabled]="!id_selected"
+        (click)="funcEdit()"
+        class="btn btn-primary btn-sm ml-1"
+      >
+        <i class="far fa-edit"></i> Editar
+      </button>
+      <!-- <button
+        *ngIf="canW && !is_deleted && rows_selected>0"
+        (click)="funcCheckHealthy()"
+        class="btn btn-primary btn-sm ml-1"
+      >
+        <i class="fas fa-flask"></i> Test Salud {{rows_selected == 1 ?
+        name_selected : rows_selected + ' servidores'}}
+      </button> -->
+      <button
+        *ngIf="canD && !is_deleted"
+        [disabled]="!id_selected"
+        (click)="procesoEspecial('eliminar un registro', 'eliminar')"
+        class="btn btn-danger btn-sm ml-1"
+      >
+        <i class="far fa-trash-alt"></i> Eliminar
+      </button>
+      <button
+        *ngIf="canW && is_deleted"
+        (click)="procesoEspecial('recuperar un registro', 'recuperar')"
+        class="btn btn-warning btn-sm ml-1"
+      >
+        <i class="fas fa-undo-alt"></i> Recuperar Servidor
+      </button>
+      <button
+        *ngIf="canR"
+        (click)="getData()"
+        class="btn btn-white btn-sm ml-1"
+      >
+        <i class="fas fa-sync-alt"></i>
+      </button>
     </div>
   </div>
 
-  
-  <div #myGrid id="myGrid" class="ag-theme-quartz" style="height: 600px; min-height: 600px"></div>
+  <div
+    #myGrid
+    id="myGrid"
+    class="ag-theme-quartz"
+    style="height: 300px; min-height: 300px"
+  ></div>
+
+  <div class="row mt-3 ">
+    <div class="col">
+      <h5 class="">
+        {{name_selected=="" ? 'Seleccione un servidor' : name_selected}}
+      </h5>
+    </div>
+  </div>
+
+  @if(name_selected!=""){
+    <nav class="nav nav-tabs ">
+      <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="#">Detalles</a>
+      </li>
+    </nav>
+    <div class="card" >
+      <div class="card-body">
+      
+        <div class="row mt-2 t14">
+          <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4">
+            <p>
+              <strong for="">Nombre Servidor</strong><br>
+              {{name_selected}}
+            </p>
+            <p>
+              <strong for="">Ubicación del Servidor</strong><br>
+              {{server_selected.ubicacion}}
+            </p>
+            <p>
+              <strong for="">Estado</strong><br>
+              {{server_selected.estado == 1 ? 'Activo' : 'Inactivo'}}
+            </p>
+          </div>
+          <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4">
+            <p>
+              <strong for="">Caracteristicas</strong><br>
+              {{server_selected.comentarios}}
+            </p>
+          </div>
+          <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4">
+            <p>
+              <strong for="">Host o direccion IP</strong><br>
+              {{server_selected.host}}
+            </p>
+            <p>
+              <strong for="">Acceso a Agente</strong><br>
+              <span class="mt-1">{{server_selected.agente_puerto_protocolo}}://{{server_selected.host}}:{{server_selected.agente_puerto}} </span>
+              <button (click)="testAgente()" class="btn btn-white text-primary t14" title="Test de conexión"> <i class="fas fa-flask"></i> </button>
+              <i *ngIf="agente_test>0" class="far {{agente_test == 1 ? 'fa-check-circle text-success' : 'fa-times-circle text-danger'}}  t20"></i>
+            </p>
+            <p >
+              <strong for="">Puerto de acceso a SSH</strong><br>
+              <span class="mt-1">{{server_selected.ssh_puerto}}</span>
+              <button (click)="testSSH()"  class="btn btn-white text-primary t14" title="Test de conexión"> <i class="fas fa-flask"></i> </button>
+              <i *ngIf="ssh_test>0" class="far {{ssh_test == 1 ? 'fa-check-circle text-success' : 'fa-times-circle text-danger'}} t20 mt-1"></i>
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  }
 </div>

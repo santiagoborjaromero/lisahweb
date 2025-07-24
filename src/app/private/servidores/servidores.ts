@@ -40,6 +40,11 @@ export class Servidores {
   public is_deleted: any = null;
   public name_selected: string = '';
   public rows_selected: any = 0;
+  public server_selected: any = {};
+  
+  public titulo_servidor: string | undefined;
+  public agente_test: number = 0;
+  public ssh_test: number = 0;
 
   lstData: Array<any> = [];
   lstServersToCheck: Array<any> = [];
@@ -80,6 +85,7 @@ export class Servidores {
     this.func.showLoading('Cargando');
     this.id_selected = '';
     this.is_deleted = '';
+    this.name_selected = '';
 
     this.serverSvc.getAllFilters(this.accion).subscribe({
       next: (resp: any) => {
@@ -112,8 +118,8 @@ export class Servidores {
     let that = this;
     this.gridOptions = {
       rowData: [],
-      pagination: false,
-      paginationPageSize: 50,
+      pagination: true,
+      paginationPageSize: 5,
       paginationPageSizeSelector: [5, 10, 50, 100, 200, 300, 1000],
       // rowSelection: 'single',
       rowHeight: 40,
@@ -139,14 +145,15 @@ export class Servidores {
         that.lstServersToCheck = [];
         that.lstServersToCheck.push(event.data);
         // console.log(that.lstServersToCheck)
+        this.server_selected = event.data
       },
-      rowSelection: { 
-        mode: 'multiRow',
-        enableClickSelection: false,
-        enableSelectionWithoutKeys: false,
-        // groupSelects: "self",
-        isRowSelectable: (rowNode) => rowNode.data ? rowNode.data.deleted_at === null : false,
-      },
+      // rowSelection: { 
+      //   mode: 'multiRow',
+      //   enableClickSelection: false,
+      //   enableSelectionWithoutKeys: false,
+      //   // groupSelects: "self",
+      //   isRowSelectable: (rowNode) => rowNode.data ? rowNode.data.deleted_at === null : false,
+      // },
       // suppressAggFuncInHeader: true,
       // autoGroupColumnDef: {
       //   headerName: "Ubicacion",
@@ -154,25 +161,27 @@ export class Servidores {
       //   minWidth: 250,
       //   cellRenderer: "agGroupCellRenderer",
       // },
-      onSelectionChanged(event) {
-        let rows = event.selectedNodes;
-        that.rows_selected = rows?.length;
-        that.lstServersToCheck = [];
-        rows?.forEach(e=>{
-          that.lstServersToCheck.push(e.data)
-        })
-        // console.log(that.lstServersToCheck)
-      },
+      // onSelectionChanged(event) {
+      //   let rows = event.selectedNodes;
+      //   that.rows_selected = rows?.length;
+      //   that.lstServersToCheck = [];
+      //   rows?.forEach(e=>{
+      //     that.lstServersToCheck.push(e.data)
+      //   })
+      //   // console.log(that.lstServersToCheck)
+      // },
       
       columnDefs: [
         {
           headerName: 'ID',
+          headerClass: ["th-center", "th-normal"],
           field: 'idservidor',
           filter: false,
           hide: true,
         },
         {
           headerName: 'Nombre',
+          headerClass: ["th-center", "th-normal"],
           field: 'nombre',
           cellClass: 'text-start',
           filter: true,
@@ -180,6 +189,7 @@ export class Servidores {
         },
         {
           headerName: 'Ubicacion',
+          headerClass: ["th-center", "th-normal"],
           field: 'ubicacion',
           cellClass: 'text-start',
           filter: true,
@@ -187,6 +197,7 @@ export class Servidores {
         },
         {
           headerName: 'Host',
+          headerClass: ["th-center", "th-normal"],
           field: 'host',
           cellClass: 'text-start',
           filter: true,
@@ -218,6 +229,7 @@ export class Servidores {
         
         {
           headerName: 'SSH',
+          headerClass: ["th-center", "th-normal"],
           field: 'healthy_ssh',
           cellClass: 'text-start',
           cellRenderer: (params: ICellRendererParams) => {
@@ -238,15 +250,19 @@ export class Servidores {
               text = 'Revisando';
               color = 'text-primary';
             } else if (dato == -2) {
-              icono = 'fas fa-minus-circle t20';
+              icono = '';
               text = '';
-              color = 'text-secondary';
+              color = '';
+              // icono = 'fas fa-minus-circle t20';
+              // text = '';
+              // color = 'text-secondary';
             }
             return `<span class="${color}"><i class='${icono}'></i> ${puerto} ${text}</span>`;
           },
         },
         {
           headerName: 'Agente',
+          headerClass: ["th-center", "th-normal"],
           field: 'healthy_agente',
           cellClass: 'text-start',
           cellRenderer: (params: ICellRendererParams) => {
@@ -266,33 +282,35 @@ export class Servidores {
               text = 'Revisando';
               color = 'text-primary';
             } else if (dato == -2) {
-              icono = 'fas fa-minus-circle t20';
+              icono = '';
               text = '';
-              color = 'text-secondary';
+              color = '';
             }
             return `<span class="${color}"><i class='${icono}'></i> ${puerto} ${text}</span>`;
           },
         },
-        {
-          headerName: 'Monitoreo',
-          field: 'idscript_monitoreo',
-          cellClass: 'text-start',
-          cellRenderer: (params: ICellRendererParams) => {
-            let data = params.data;
-            let dato = data.idscript_monitoreo;
-            let text = 'No asignado';
-            let icono = 'far fa-times-circle  t20';
-            let color = 'text-danger';
-            if (dato !== null) {
-              icono = 'far fa-check-circle  t20';
-              text = 'Asignado';
-              color = 'text-success';
-            }
-            return `<span class="${color}"><i class='${icono}'></i> ${text}</span>`;
-          },
-        },
+        
+        // {
+        //   headerName: 'Monitoreo',
+        //   field: 'idscript_monitoreo',
+        //   cellClass: 'text-start',
+        //   cellRenderer: (params: ICellRendererParams) => {
+        //     let data = params.data;
+        //     let dato = data.idscript_monitoreo;
+        //     let text = 'No asignado';
+        //     let icono = 'far fa-times-circle  t20';
+        //     let color = 'text-danger';
+        //     if (dato !== null) {
+        //       icono = 'far fa-check-circle  t20';
+        //       text = 'Asignado';
+        //       color = 'text-success';
+        //     }
+        //     return `<span class="${color}"><i class='${icono}'></i> ${text}</span>`;
+        //   },
+        // },
         {
           headerName: 'Tiempo Activo',
+          headerClass: ["th-center", "th-normal"],
           field: 'uptime',
           cellClass: 'text-start',
           cellRenderer: (params: ICellRendererParams) => {
@@ -305,23 +323,25 @@ export class Servidores {
         },
         {
           headerName: 'Estado',
+          headerClass: ["th-center", "th-normal"],
           field: 'estado',
           cellClass: 'text-start',
           cellRenderer: (params: ICellRendererParams) => {
             let data = params.data;
             let status = data.estado;
-            let text = 'inhabilitado';
-            let color = 'bg-danger';
+            let text = `far fa-times-circle`;
+            let color = 'text-danger';
             if (status == 1) {
-              color = 'bg-success';
-              text = 'Habilitado';
+              color = 'text-success';
+              text = `far fa-check-circle`;
             
             }
-            return `<kbd class="${color} text-white">${text}</kbd>`;
+            return `<i class="${color} ${text} t20"></i>`;
           },
         },
         {
           headerName: 'Eliminado',
+          headerClass: ["th-center", "th-normal"],
           field: 'deleted_at',
           cellClass: 'text-end',
           sortIndex: 0,
@@ -336,7 +356,16 @@ export class Servidores {
             }
             return text;
           }
-        }
+        },
+        {
+          headerName: 'Accion',
+          headerClass: ["th-center", "th-normal"],
+          cellClass: 'text-start',
+          filter: true,
+          flex: 3,
+          maxWidth:100,
+          cellRenderer: this.renderAcciones.bind(this),
+        },
       ],
     };
 
@@ -356,31 +385,55 @@ export class Servidores {
   }
 
   renderAccionNombre(params: ICellRendererParams) {
-    let data = params.data;
-    let nombre = data.nombre;
-    this.id_selected = data.idservidor;
-
     const button = document.createElement('button');
     button.className = 'btn btn-white';
-    button.innerHTML = `<span class="link" title='Editar'>${nombre}</span>`;
+    button.innerHTML = `<span class="link" title='Editar'>${params.data.nombre}</span>`;
     button.addEventListener('click', () => {
-      this.funcEdit();
+      this.funcEdit(params.data.idservidor);
     });
     return button;
   }
+
+  renderAcciones(params: ICellRendererParams) {
+    let button: any | undefined;
+
+    if (params.data.deleted_at === null){
+      button = document.createElement('button');
+      button.className = 'btn btn-white';
+      button.innerHTML = `<i class="far fa-trash-alt text-danger" title='Eliminar'></i>`;
+      button.addEventListener('click', () => {
+        this.procesoEspecial('eliminar un registro', 'eliminar', params.data.idservidor)
+      });
+    } else {
+      button = document.createElement('button');
+      button.className = 'btn btn-white';
+      button.innerHTML = `<i class="fas fa-undo-alt text-warning" title='Recuperar'></i>`;
+      button.addEventListener('click', () => {
+        this.procesoEspecial('recuperar un registro', 'recuperar', params.data.idservidor)
+      });
+    }
+
+    return button;
+  }
+
+
 
   funcEdit(id: any = null) {
     this.func.goRoute(`admin/servidor/${id ? id : this.id_selected}`, true);
   }
 
-  procesoEspecial(action = '', keyword = 'delete') {
-    if (this.id_selected == '') {
+  procesoEspecial(action = '', keyword = 'delete', id="") {
+    if (this.id_selected == '' && id=="") {
       this.func.showMessage(
         'error',
         'Eliminar',
         'Debe seleccionar una fila para eliminar'
       );
       return;
+    }
+
+    if (id!=""){
+      this.id_selected = id;
     }
 
     Swal.fire({
@@ -460,40 +513,42 @@ export class Servidores {
     });
   }
 
-  funcCheckHealthy(){
-    if (this.lstServersToCheck.length == 0){
-      return
-    }
+  // funcCheckHealthy(){
+  //   if (this.lstServersToCheck.length == 0){
+  //     return
+  //   }
 
-    // console.log(this.lstServersToCheck);
-    this.lstServersToCheck.forEach(e=>{
-      this.lstData.forEach(s=>{
-        if (s.idservidor == e.idservidor){
-          s.healthy_ssh = -1
-          s.healthy_agente = -1
-          return
-        };
-      })
-      this.refreshAll()
-      this.testSSH(e);
-      this.testAgente(e);
-    });
-  }
+  //   // console.log(this.lstServersToCheck);
+  //   this.lstServersToCheck.forEach(e=>{
+  //     this.lstData.forEach(s=>{
+  //       if (s.idservidor == e.idservidor){
+  //         s.healthy_ssh = -1
+  //         s.healthy_agente = -1
+  //         return
+  //       };
+  //     })
+  //     this.refreshAll()
+  //     this.testSSH();
+  //     this.testAgente();
+  //   });
+  // }
 
   
 
-  testSSH(record:any){
+  testSSH(){
 
-    let param = { data: { host: record.host, puerto: record.ssh_puerto } }
+    let param = { data: { host: this.server_selected.host, puerto: this.server_selected.ssh_puerto } }
     // this.func.showLoading(`Realizando prueba de salud a ${record.nombre}`);
     this.serverSvc.testHealthy(param).subscribe({
       next: (resp: any) => {
         this.func.closeSwal();
         // console.log(resp)
         if (resp.status) {
-          this.putResults(record.idservidor, [1, resp.data], "ssh")
+          this.ssh_test = 1;
+          this.putResults(this.server_selected.idservidor, [1, resp.data], "ssh")
         } else {
-          this.putResults(record.idservidor, [0,""], "ssh")
+          this.ssh_test = 2;
+          this.putResults(this.server_selected.idservidor, [0,""], "ssh")
         }
       },
       error: (err: any) => {
@@ -512,8 +567,9 @@ export class Servidores {
     this.refreshAll();
   }
 
-  async testAgente(record:any) {
-    let ws = `ws://${record.host}:${record.agente_puerto}`;
+  async testAgente() {
+
+    let ws = `ws://${this.server_selected.host}:${this.server_selected.agente_puerto}`;
     // console.log("Conectando con " + ws)
 
     let wsConn:any = new WebSocket(ws);
@@ -523,11 +579,13 @@ export class Servidores {
       setTimeout(()=>{
         wsConn.send('hello');
       },4000)
-      this.putResults(record.idservidor, [1, ""], "agente")
+      this.agente_test = 1;
+      this.putResults(this.server_selected.idservidor, [1, ""], "agente")
       wsConn.close(1000);
       // wsConn = null;
     } else {
-      this.putResults(record.idservidor, [0, ""], "agente")
+      this.agente_test = 2;
+      this.putResults(this.server_selected.idservidor, [0, ""], "agente")
       // console.log("the socket is closed OR couldn't have the socket in time, program crashed");
     }
   }

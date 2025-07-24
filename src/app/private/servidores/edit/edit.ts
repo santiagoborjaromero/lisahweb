@@ -104,7 +104,7 @@ export class Edit {
           this.ssh_puerto = this.rstData.ssh_puerto;
           this.agente_puerto = this.rstData.agente_puerto;
           this.comentarios = this.rstData.comentarios;
-          this.idscript_monitoreo = this.rstData.idscript_monitoreo;
+          // this.idscript_monitoreo = this.rstData.idscript_monitoreo;
           this.estado = this.rstData.estado;
         } else {
           this.func.showMessage("error", "Usuario", resp.message);
@@ -141,7 +141,7 @@ export class Edit {
       agente_puerto: this.agente_puerto,
       estado: this.estado,
       comentarios: this.comentarios,
-      idscript_monitoreo: parseInt(this.idscript_monitoreo),
+      // idscript_monitoreo: parseInt(this.idscript_monitoreo),
     };
 
     if (this.func.validaCampos(this.validador,data) ){

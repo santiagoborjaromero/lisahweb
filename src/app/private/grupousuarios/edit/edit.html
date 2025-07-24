@@ -39,7 +39,7 @@
           </div>
        
 
-          <div class="col-4 col-md-3 td2 text-end">
+          <!-- <div class="col-4 col-md-3 td2 text-end">
             Script Creación <small *ngIf="formData.idscript_creacion.requerido"><i class="text-danger">*</i></small>
             <br />
             <small><i class="text-secondary">Selección</i></small>
@@ -60,69 +60,8 @@
                 {{formData.idscript_creacion.validacion.resultado == '' ? formData.idscript_creacion.descripcion : formData.idscript_creacion.validacion.resultado}}
               </i>
             </sup>
-          </div>
+          </div> -->
         </div>
-
-        <!-- <div class="p-1 row">
-          <div class="col-4 col-md-3 td2 text-end">
-            IDGrupo en Servidor
-            <br />
-            <small><i class="text-secondary">numérico - opcional</i></small>
-          </div>
-          <div class="col-8 col-md-9 td2">
-            <input
-              type="number"
-              name="idgrupo"
-              id="idgrupo"
-              class="form-control"
-              placeholder="000"
-              [(ngModel)]="formData.idgrupo"
-            />
-            <sup
-              ><i class="text-secondary"
-                >Es número del identificación del grupo para los servidores</i
-              ></sup
-            >
-          </div>
-        </div> -->
-<!-- 
-        <div class="p-1 row">
-          <div class="col-4 col-md-3 td2 text-end">
-            Permisos de Acceso
-            <br />
-            <small><i class="text-secondary">opcional</i></small>
-          </div>
-          <div class="col-8 col-md-9 td2">
-            <input
-              type="checkbox"
-              name="lectura"
-              id="lectura"
-              class="form-check-input t16"
-            />
-            Lectura &nbsp;&nbsp;&nbsp;
-            <input
-              type="checkbox"
-              name="escritura"
-              id="escritura"
-              class="form-check-input t16"
-            />
-            Escritura &nbsp;&nbsp;&nbsp;
-            <input
-              type="checkbox"
-              name="ejecucion"
-              id="ejecucion"
-              class="form-check-input t16"
-            />
-            Ejecución &nbsp;&nbsp;&nbsp;
-            <br />
-            <sup
-              ><i class="text-secondary"
-                >Es el permiso que tienen los usuarios para operar dentro de los
-                servidores</i
-              ></sup
-            >
-          </div>
-        </div> -->
       </div>
     </div>
     <div class="col col-md-6">
