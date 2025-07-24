@@ -42,7 +42,7 @@ export class WSService {
     const url = `ws://${server.host}:${server.agente_puerto}`;
 
     if (this.connections.has(id)) {
-      console.warn(`Ya existe una conexión activa con el servidor: ${id}`);
+      // console.warn(`Ya existe una conexión activa con el servidor: ${id}`);
       return this.connectionStatus.get(id)!.asObservable();
     }
 

@@ -44,7 +44,18 @@ export const routes: Routes = [
             {path:"audits", loadComponent: () => import('./private/audit/audit').then((c)=> c.Audit)},
             {path:"hardening", loadComponent: () => import('./private/hardening/hardening').then((c)=> c.Hardening)},
             {path:"monitoreo", loadComponent: () => import('./private/monitoreo/monitoreo').then((c)=> c.Monitoreo)},
-            {path:"hardening/workspace", loadComponent: () => import('./private/hardening/workspace/workspace').then((c)=> c.Workspace)},
+            // {path:"hardening/workspace/:id", loadComponent: () => import('./private/workspace/workspace').then((c)=> c.Workspace)},
+            {
+                path: 'hardening/workspace',
+                loadComponent: () => import('./private/workspace/workspace').then( (c)=> c.Workspace),
+                canActivate: [authGuard],
+                children:[
+                    {path:"general", loadComponent: () => import('./private/workspace/general/general').then((c)=> c.General)},
+                    {path:"servicios", loadComponent: () => import('./private/workspace/servicios/servicios').then((c)=> c.Servicios)},
+                    {path:"", redirectTo: "general", pathMatch: "full"},
+                    {path:"**", redirectTo: "general"},
+                ]
+            },
             {path:"", redirectTo: "dashboard", pathMatch: "full"},
             {path:"**", redirectTo: "dashboard"},
         ]

@@ -4,7 +4,7 @@
 
   <div class="row barra-menu">
     <div class="col d-flex justify-content-end mb-2">
-      <button  class="btn btn-warning btn-sm mr-1" (click)="enviarStats()" >Stats </button>
+      <div class=""><i *ngIf="loadMonitoreo" class="t14 text-primary mr-2"><i class="fas fa-spinner fa-spin "></i> Cargando</i></div>
       <div class="btn-group mr-1" role="group" aria-label="Basic example">
         <button [disabled]="playMonitor"  class="btn btn-primary btn-sm" (click)="startMonitor()"  title="Iniciar Monitoreo"><i class="fas fa-play"></i> Iniciar</button>
         <button [disabled]="!playMonitor" class="btn btn-primary btn-sm" (click)="stopMonitor()"  title="Detener Monitoreo"><i class="fas fa-stop"></i> Detener</button>
@@ -17,10 +17,14 @@
       </div>
       <small class="mt-2 ml-1 text-secondary"><i>Seg.</i></small>
       
-      <button class="btn btn-white text-primary noti" title="Notificaciones">
+      <button class="btn btn-white text-black noti" title="Configuración">
+        <i class="fa fa-cog mr-1"></i>
+      </button>
+
+      <!-- <button class="btn btn-white text-primary noti" title="Notificaciones">
         <i class="fas fa-bell mr-1"></i>
         <span class="badge text-bg-danger">0</span>
-      </button>
+      </button> -->
       
     </div>
   </div>

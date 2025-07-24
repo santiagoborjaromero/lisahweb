@@ -3,55 +3,29 @@
   <app-header />
 
   <div class="row barra-menu">
-    <div class="col d-flex justify-content-end mb-2">
-      <button  class="btn btn-warning btn-sm mr-1" (click)="enviarStats()" >Stats </button>
-      <div class="btn-group mr-1" role="group" aria-label="Basic example">
-        <button [disabled]="playMonitor"  class="btn btn-primary btn-sm" (click)="startMonitor()"  title="Iniciar Monitoreo"><i class="fas fa-play"></i> Iniciar</button>
-        <button [disabled]="!playMonitor" class="btn btn-primary btn-sm" (click)="stopMonitor()"  title="Detener Monitoreo"><i class="fas fa-stop"></i> Detener</button>
-        <button [disabled]="playMonitor"  class="btn btn-primary btn-sm" (click)="sendMonitor()"  title="Monitorear una vez"><i class="far fa-play-circle"></i> Una vez</button>
-      </div>
-
-      <small class="mt-2 mr-1 text-secondary"><i>Intervalo</i></small>
-      <div style="width: 50px;">
-        <input [disabled]="playMonitor" id="refresh" type="text" class="form-control" [(ngModel)]="tiempo_refresco">
-      </div>
-      <small class="mt-2 ml-1 text-secondary"><i>Seg.</i></small>
-      
-      <button class="btn btn-white text-primary noti" title="Notificaciones">
-        <i class="fas fa-bell mr-1"></i>
-        <span class="badge text-bg-danger">0</span>
-      </button>
-      
+    <div class="col d-flex justify-content-between">
+      <h4>Listado de Servidores</h4>
+      <button (click)="goServidores()" class="btn btn-white link" title="Definir Servidores"><i class="fa fa-cog"></i> Servidores</button>
     </div>
   </div>
 
-  <div #myGrid id="myGrid" class="ag-theme-quartz" style="height: 300px; min-height: 300px"></div>
-   <!-- <table class="table">
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Host</th>
-          <th>Agente</th>
-          <th>Uptime</th>
-          <th>CPU</th>
-          <th>Memoria</th>
-          <th>Disco</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let server of lstServidores">
-          <td>{{ server.nombre }}</td>
-          <td>{{ server.host }}:{{ server.agente_puerto }}</td>
-          <td>
-            <span [class]="'badge ' + (getStatus(server.idservidor)?.healthy_agente === '1' ? 'bg-success' : 'bg-danger')">
-              {{ getStatus(server.idservidor)?.healthy_agente === '1' ? 'Conectado' : 'Desconectado' }}
-            </span>
-          </td>
-          <td>{{ getStatus(server.idservidor)?.uptime }}</td>
-          <td>{{ getStatus(server.idservidor)?.cpu }}</td>
-          <td>{{ getStatus(server.idservidor)?.memoria }}</td>
-          <td>{{ getStatus(server.idservidor)?.disco }}</td>
-        </tr>
-      </tbody>
-    </table> -->
+  <div class="row d-flex justify-content-center">
+    @for (server of lstServidores; track $index) {
+    <div class="col-12 col-xs-6 col-sm-4 col-md-3 col-lg-2" >
+      <div class="card p-1" >
+        <div class="card-body">
+          <h5 class="card-title"><i class="fas fa-server text-secondary"></i> {{server.nombre}}</h5>
+          <p class="card-text t12">
+            <!-- {{server.agente_puerto_protocolo}}://{{server.host}}:{{server.agente_puerto}} -->
+             {{server.ubicacion}}, {{server.host}}
+          </p>
+          <div class="d-flex justify-content-between">
+            <button (click)="gowork(server.idservidor)" class="btn btn-white btn-sm mr-1 link"><i class="fas fa-check text-secondary"></i> Seleccionar</button>
+            <button (click)="goEditServer(server.idservidor)" class="btn btn-white btn-sm mr-1 link"><i class="far fa-edit text-secondary"></i> Editar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
 </div>

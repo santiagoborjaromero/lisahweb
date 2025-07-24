@@ -63,7 +63,12 @@
 .mb-4{ margin-bottom: 16px !important;}
 .mb-5{ margin-bottom: 32px !important;}
 
-.pl-1{ padding-left: 4px !important;}
+.p-1{ padding: 4px !important;}
+.p-2{ padding: 8px !important;}
+.p-3{ padding: 12px !important;}
+.p-4{ padding: 16px !important;}
+.p-5{ padding: 32px !important;}
+
 .pl-2{ padding-left: 8px !important;}
 .pl-3{ padding-left: 12px !important;}
 .pl-4{ padding-left: 16px !important;}
@@ -347,4 +352,11 @@ ul.menu{
 .th-grupo1{
     background-color:rgba(70, 131, 180, 0.733)  !important;
     color: #fff;
+}
+
+.w-menu{
+    height: 85vh;
+    background-color: #ffffff;
+    padding: 10px;
+    overflow-y: scroll;
 }

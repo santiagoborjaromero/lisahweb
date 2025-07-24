@@ -121,12 +121,20 @@ private readonly tempSvc = inject(TemplateService);
       columnDefs: [
         {
           headerName: 'ID',
+          headerClass: ["th-center", "th-normal"],
           field: 'idtemplate_comando',
           filter: false,
           hide: true,
         },
         {
+          headerName: 'Alias',
+          headerClass: ["th-center", "th-normal"],
+          field: 'alias',
+          filter: true,
+        },
+        {
           headerName: 'Linea de Comando',
+          headerClass: ["th-center", "th-normal"],
           field: 'linea_comando',
           cellClass: 'text-start',
           filter: true,
@@ -141,19 +149,30 @@ private readonly tempSvc = inject(TemplateService);
         },
         {
           headerName: 'Estado',
+          headerClass: ["th-center", "th-normal"],
           field: 'estado',
           cellClass: 'text-start',
+          maxWidth:100,
           cellRenderer: (params: ICellRendererParams) => {
             let data = params.data;
             let status = data.deleted_at;
-            let text = 'Inactivo';
-            let color = 'bg-danger';
+            let icono = 'far fa-times-circle';
+            let color = 'text-danger';
             if (status == null) {
-              color = 'bg-success';
-              text = 'Activo';
+              color = 'text-success';
+              icono = 'far fa-check-circle';
             }
-            return `<kbd class="${color} text-white">${text}</kbd>`;
+            return `<i class="${color} ${icono} t20"></i>`;
           },
+        },
+        {
+          headerName: 'Accion',
+          headerClass: ["th-center", "th-normal"],
+          cellClass: 'text-start',
+          filter: true,
+          flex: 3,
+          maxWidth:80,
+          cellRenderer: this.renderAcciones.bind(this),
         },
       ],
     };
@@ -173,18 +192,44 @@ private readonly tempSvc = inject(TemplateService);
     this.gridApi!.setGridOption('rowData', this.lstData);
   }
 
+  renderAcciones(params: ICellRendererParams) {
+    let button: any | undefined;
+
+    if (params.data.deleted_at === null){
+      button = document.createElement('button');
+      button.className = 'btn btn-white';
+      button.innerHTML = `<i class="far fa-trash-alt text-danger" title='Eliminar'></i>`;
+      button.addEventListener('click', () => {
+        this.procesoEspecial('eliminar un registro', 'eliminar', params.data.idtemplate_comando)
+      });
+    } else {
+      button = document.createElement('button');
+      button.className = 'btn btn-white';
+      button.innerHTML = `<i class="fas fa-undo-alt text-warning" title='Recuperar'></i>`;
+      button.addEventListener('click', () => {
+        this.procesoEspecial('recuperar un registro', 'recuperar', params.data.idtemplate_comando)
+      });
+    }
+
+    return button;
+  }
+
   funcEdit(id: any = null) {
     this.func.goRoute(`admin/template/${id ? id : this.id_selected}`, true);
   }
 
-  procesoEspecial(action = '', keyword = 'delete') {
-    if (this.id_selected == '') {
+  procesoEspecial(action = '', keyword = 'delete', id="") {
+    if (this.id_selected == '' && id=="") {
       this.func.showMessage(
         'error',
         'Eliminar',
         'Debe seleccionar una fila para eliminar'
       );
       return;
+    }
+
+    if (id != ""){
+      this.id_selected == id;
     }
 
     Swal.fire({

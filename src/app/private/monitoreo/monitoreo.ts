@@ -51,6 +51,11 @@ export class Monitoreo {
     playMonitor:boolean=false;
     funcionaAgente:boolean=false;
     tiempo_refresco:number = 0;
+
+    tmrMonitor: any | undefined
+
+    firstTime:boolean = true;
+    loadMonitoreo:boolean = false;
   
     constructor() {
       // effect(() => {
@@ -97,7 +102,7 @@ export class Monitoreo {
       this.userSvc.getOne(this.user.idusuario).subscribe({
         next: (resp: any) => {
           this.func.closeSwal();
-          console.log(resp);
+          // console.log(resp);
           if (resp.status) {
             if (resp.data[0].servidores && resp.data[0].servidores.length > 0) {
               resp.data[0].servidores.forEach((s:any)=>{
@@ -139,7 +144,6 @@ export class Monitoreo {
         groupHeaderHeight:35,
         headerHeight:35,
         defaultColDef: {
-          flex: 1,
           minWidth: 90,
           filter: false,
           headerClass: 'bold',
@@ -181,107 +185,145 @@ export class Monitoreo {
             pinned: "left",
             minWidth: 200
           },
-          {
-            headerName: 'Ubicación',
-            headerClass: "th-normal",
-            field: 'ubicacion',
-            cellClass: 'text-start',
-            filter: true,
-            pinned: "left",
-            minWidth: 200
-          },
+          // {
+          //   headerName: 'Ubicación',
+          //   headerClass: "th-normal",
+          //   field: 'ubicacion',
+          //   cellClass: 'text-start',
+          //   filter: true,
+          //   pinned: "left",
+          //   minWidth: 200
+          // },
           {
             headerName: 'Host',
-            headerClass: "th-normal4",
+            headerClass: "th-normal3",
             field: 'host',
             cellClass: 'text-start',
             filter: true,
           },
           {
-            headerName: 'Medios de Comunicación',
-            // headerStyle: { color: "white", backgroundColor: "SteelBlue" },
-            headerClass: ["th-center", "th-normal"],
-            children:[
-              {
-                headerName: 'Agente',
-                // headerStyle: { color: "black", backgroundColor: "Gainsboro" },
-                headerClass: ["th-center", "th-normal3"],
-                field: 'healthy_agente',
-                cellClass: 'text-start',
-                cellRenderer: (params: ICellRendererParams) => {
-                  let data = params.data;
-                  let dato = params.value;
-                  let host = data.host;
-                  let puerto = data.agente_puerto  ?? "Sin Asignar";
-                  let text = '';
-                  let icono = 'far fa-times-circle  t16';
-                  let color = 'text-danger';
-  
-                  if (!["","-","1","x"].includes(dato)) {
-                    let d = dato.split("|");
-                    if (d[0]=="OK") {
-                      color = 'text-success';
-                      icono = 'far fa-check-circle t16';
-                    }else{
-                      color = 'text-danger';
-                      icono = 'far fa-times-circle t16';
-                    }
-                    text = "";
-                  } else if (dato == "1") {
-                    icono = 'fas fa-spinner fa-spin ';
-                    text = 'Revisando';
-                    color = 'text-primary';
-                  } else if (dato == "-") {
-                    icono = 'fas fa-minus-circle t16';
-                    text = '';
-                    color = 'text-secondary';
-                  }
-                  return `<span class="${color}"><i class='${icono}'></i> ${puerto} ${text}</span>`;
-                },
-              },
-              {
-                headerName: 'SSH',
-                // headerStyle: { color: "black", backgroundColor: "white" },
-                headerClass: ["th-center", "th-normal4"],
-                field: 'healthy_ssh',
-                cellClass: 'text-start',
-                cellRenderer: (params: ICellRendererParams) => {
-                  let data = params.data;
-                  let dato = params.value;
-                  let host = data.host;
-                  let puerto = data.ssh_puerto ?? "Sin Asignar";
-                  let text = '';
-                  let icono = 'far fa-times-circle t16';
-                  let color = 'text-danger';
-                  if (!["","-","1","x"].includes(dato)) {
-                    let d = dato.split("|");
-                    if (d[0]=="OK") {
-                      color = 'text-success';
-                    }else{
-                      color = 'text-danger';
-                    }
-                    text = "";
-                    icono = 'far fa-check-circle t16';
-                    color = 'text-success';
-                  } else if (dato == "1") {
-                    icono = 'fas fa-spinner fa-spin';
-                    text = 'Revisando';
-                    color = 'text-primary';
-                  } else if (dato == "-") {
-                    icono = 'fas fa-minus-circle t16';
-                    text = '';
-                    color = 'text-secondary';
-                  }
-                  return `<span class="${color}"><i class='${icono}'></i> ${puerto} ${text}</span>`;
-                },
-              },
-            ]
+            headerName: 'Agente',
+            // headerStyle: { color: "black", backgroundColor: "Gainsboro" },
+            headerClass: ["th-center", "th-normal4"],
+            field: 'healthy_agente',
+            cellClass: 'text-start',
+            cellRenderer: (params: ICellRendererParams) => {
+              let data = params.data;
+              let dato = params.value;
+              let host = data.host;
+              let puerto = data.agente_puerto  ?? "Sin Asignar";
+              let text = '';
+              let icono = 'far fa-times-circle  t16';
+              let color = 'text-danger';
+
+              if (!["","-","1","x"].includes(dato)) {
+                let d = dato.split("|");
+                if (d[0]=="OK") {
+                  color = 'text-success';
+                  icono = 'far fa-check-circle t16';
+                }else{
+                  color = 'text-danger';
+                  icono = 'far fa-times-circle t16';
+                }
+                text = "";
+              } else if (dato == "1") {
+                icono = 'fas fa-spinner fa-spin ';
+                text = 'Revisando';
+                color = 'text-primary';
+              } else if (dato == "-") {
+                icono = 'fas fa-minus-circle t16';
+                text = '';
+                color = 'text-secondary';
+              }
+              return `<span class="${color}"><i class='${icono}'></i> ${puerto} ${text}</span>`;
+            },
           },
+          // {
+          //   headerName: 'Medios de Comunicación',
+          //   // headerStyle: { color: "white", backgroundColor: "SteelBlue" },
+          //   headerClass: ["th-center", "th-normal"],
+          //   children:[
+          //     {
+          //       headerName: 'Agente',
+          //       // headerStyle: { color: "black", backgroundColor: "Gainsboro" },
+          //       headerClass: ["th-center", "th-normal3"],
+          //       field: 'healthy_agente',
+          //       cellClass: 'text-start',
+          //       cellRenderer: (params: ICellRendererParams) => {
+          //         let data = params.data;
+          //         let dato = params.value;
+          //         let host = data.host;
+          //         let puerto = data.agente_puerto  ?? "Sin Asignar";
+          //         let text = '';
+          //         let icono = 'far fa-times-circle  t16';
+          //         let color = 'text-danger';
+  
+          //         if (!["","-","1","x"].includes(dato)) {
+          //           let d = dato.split("|");
+          //           if (d[0]=="OK") {
+          //             color = 'text-success';
+          //             icono = 'far fa-check-circle t16';
+          //           }else{
+          //             color = 'text-danger';
+          //             icono = 'far fa-times-circle t16';
+          //           }
+          //           text = "";
+          //         } else if (dato == "1") {
+          //           icono = 'fas fa-spinner fa-spin ';
+          //           text = 'Revisando';
+          //           color = 'text-primary';
+          //         } else if (dato == "-") {
+          //           icono = 'fas fa-minus-circle t16';
+          //           text = '';
+          //           color = 'text-secondary';
+          //         }
+          //         return `<span class="${color}"><i class='${icono}'></i> ${puerto} ${text}</span>`;
+          //       },
+          //     },
+          //     // {
+          //     //   headerName: 'SSH',
+          //     //   // headerStyle: { color: "black", backgroundColor: "white" },
+          //     //   headerClass: ["th-center", "th-normal4"],
+          //     //   field: 'ssh_puerto',
+          //     //   cellClass: 'text-start',
+          //     //   // cellRenderer: (params: ICellRendererParams) => {
+          //     //   //   let data = params.data;
+          //     //   //   let dato = params.value;
+          //     //   //   let host = data.host;
+          //     //   //   let puerto = data.ssh_puerto ?? "Sin Asignar";
+          //     //   //   let text = '';
+          //     //   //   let icono = 'far fa-times-circle t16';
+          //     //   //   let color = 'text-danger';
+          //     //   //   if (!["","-","1","x"].includes(dato)) {
+          //     //   //     let d = dato.split("|");
+          //     //   //     if (d[0]=="OK") {
+          //     //   //       color = 'text-success';
+          //     //   //     }else{
+          //     //   //       color = 'text-danger';
+          //     //   //     }
+          //     //   //     text = "";
+          //     //   //     icono = 'far fa-check-circle t16';
+          //     //   //     color = 'text-success';
+          //     //   //   } else if (dato == "1") {
+          //     //   //     icono = 'fas fa-spinner fa-spin';
+          //     //   //     text = 'Revisando';
+          //     //   //     color = 'text-primary';
+          //     //   //   } else if (dato == "-") {
+          //     //   //     icono = 'fas fa-minus-circle t16';
+          //     //   //     text = '';
+          //     //   //     color = 'text-secondary';
+          //     //   //   }
+          //     //   //   return `<span class="${color}"><i class='${icono}'></i> ${puerto} ${text}</span>`;
+          //     //   // },
+          //     // },
+          //   ]
+          // },
           {
             headerName: 'UpTime',
             // headerStyle: { color: "black", backgroundColor: "Gainsboro" },
             headerClass: ["th-center", "th-normal3"],
             field: 'uptime',
+            filter: true,
             cellClass: 'text-start',
             cellRenderer: (params: ICellRendererParams) => {
               let dato = params.value;
@@ -741,21 +783,33 @@ export class Monitoreo {
       return button;
     }
   
-    startMonitor(){}
-    stopMonitor(){}
-    sendMonitor(){}
+    startMonitor(){
+      this.playMonitor = true;
+      this.sendMonitor();
+
+      this.tmrMonitor = setInterval(() => {
+        this.sendMonitor();
+      }, this.tiempo_refresco *1000);
+    }
+    stopMonitor(){
+      this.playMonitor = false;
+      clearInterval(this.tmrMonitor);
+    }
   
-    enviarStats(){
+    sendMonitor(){
       this.lstServidores.forEach(server => {
-        server.healthy_agente = "1";
-        server.uptime = "1";
-        server.cpu= "1";
-        server.memoria= "1";
-        server.disco= "1";
-        server.servicio_httpd= "1";
-        server.servicio_ssh= "1";
-        this.refreshAll();
-        this.enviaSSH(server);
+        if (this.firstTime){
+          this.firstTime = false;
+          server.healthy_agente = "1";
+          server.uptime = "1";
+          server.cpu= "1";
+          server.memoria= "1";
+          server.disco= "1";
+          server.servicio_httpd= "1";
+          server.servicio_ssh= "1";
+          this.refreshAll();
+        }
+        // this.enviaSSH(server);
   
         this.wsSvc.connect(server).subscribe({
           next: (resp:any) => {
@@ -805,7 +859,8 @@ export class Monitoreo {
     }
   
     onMessageListener(e:any){
-      console.log("«", e)
+      this.loadMonitoreo = true;
+      // console.log("«", e)
       let serverid = e.serverId;
       let action = e.data.action;
       let identificador = e.data.identificador;
@@ -818,16 +873,21 @@ export class Monitoreo {
           this.lstServidores.forEach((s:any)=>{
             if (s.idservidor == serverid){
               data.forEach((r:any)=>{
-                if (r.respuesta.returncode == 0){
-                  msg = `OK|${r.respuesta.stdout}`;
-                }else{
-                  msg = `FAIL|${r.respuesta.stderr}`;
-                }
-                s[r.id] = msg
+                try{
+                  if (r.respuesta.returncode == 0){
+                    msg = `OK|${r.respuesta.stdout}`;
+                  }else{
+                    msg = `FAIL|${r.respuesta.stderr}`;
+                  }
+                  s[r.id] = msg
+                }catch(ex){}
               });
             }
           });
           this.refreshAll()
+          setTimeout(()=>{
+            this.loadMonitoreo = false;
+          }, 500)
           break;
       }
     }

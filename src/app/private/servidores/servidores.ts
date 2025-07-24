@@ -43,8 +43,8 @@ export class Servidores {
   public server_selected: any = {};
   
   public titulo_servidor: string | undefined;
-  public agente_test: number = 0;
-  public ssh_test: number = 0;
+  public agente_test: string = "";
+  public ssh_test: string = "";
 
   lstData: Array<any> = [];
   lstServersToCheck: Array<any> = [];
@@ -536,7 +536,7 @@ export class Servidores {
   
 
   testSSH(){
-
+    this.ssh_test = "-";
     let param = { data: { host: this.server_selected.host, puerto: this.server_selected.ssh_puerto } }
     // this.func.showLoading(`Realizando prueba de salud a ${record.nombre}`);
     this.serverSvc.testHealthy(param).subscribe({
@@ -544,10 +544,10 @@ export class Servidores {
         this.func.closeSwal();
         // console.log(resp)
         if (resp.status) {
-          this.ssh_test = 1;
+          this.ssh_test = "1";
           this.putResults(this.server_selected.idservidor, [1, resp.data], "ssh")
         } else {
-          this.ssh_test = 2;
+          this.ssh_test = "2";
           this.putResults(this.server_selected.idservidor, [0,""], "ssh")
         }
       },
@@ -568,7 +568,7 @@ export class Servidores {
   }
 
   async testAgente() {
-
+    this.agente_test = "-";
     let ws = `ws://${this.server_selected.host}:${this.server_selected.agente_puerto}`;
     // console.log("Conectando con " + ws)
 
@@ -579,12 +579,12 @@ export class Servidores {
       setTimeout(()=>{
         wsConn.send('hello');
       },4000)
-      this.agente_test = 1;
+      this.agente_test = "1";
       this.putResults(this.server_selected.idservidor, [1, ""], "agente")
       wsConn.close(1000);
       // wsConn = null;
     } else {
-      this.agente_test = 2;
+      this.agente_test = "2";
       this.putResults(this.server_selected.idservidor, [0, ""], "agente")
       // console.log("the socket is closed OR couldn't have the socket in time, program crashed");
     }

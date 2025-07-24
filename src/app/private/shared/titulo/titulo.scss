@@ -1,0 +1,20 @@
+.share-cabecera-icono {
+    font-size: 25px;
+    color: #797979 !important;
+    // border: 2px solid #dadada;
+    // padding: 5px;
+}
+.share-cabecera-texto{
+    font-size: 30px;
+    color: rgb(82, 82, 82);
+}
+
+@media (max-width:400px){
+    .share-cabecera-icono {
+        font-size: 18px !important;
+    }
+    .share-cabecera-texto{
+        font-size: 18px !important;
+    }
+       
+}

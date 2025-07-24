@@ -66,12 +66,7 @@
     </div>
   </div>
 
-  <div
-    #myGrid
-    id="myGrid"
-    class="ag-theme-quartz"
-    style="height: 300px; min-height: 300px"
-  ></div>
+  <div #myGrid id="myGrid" class="ag-theme-quartz" style="height: 300px; min-height: 300px"></div>
 
   <div class="row mt-3 ">
     <div class="col">
@@ -82,55 +77,66 @@
   </div>
 
   @if(name_selected!=""){
-    <nav class="nav nav-tabs ">
-      <li class="nav-item">
-        <a class="nav-link active" aria-current="page" href="#">Detalles</a>
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link text-primary active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Detalles</button>
       </li>
-    </nav>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link text-primary" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Monitoreo</button>
+      </li>
+    </ul>
+   
     <div class="card" >
       <div class="card-body">
-      
-        <div class="row mt-2 t14">
-          <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4">
-            <p>
-              <strong for="">Nombre Servidor</strong><br>
-              {{name_selected}}
-            </p>
-            <p>
-              <strong for="">Ubicación del Servidor</strong><br>
-              {{server_selected.ubicacion}}
-            </p>
-            <p>
-              <strong for="">Estado</strong><br>
-              {{server_selected.estado == 1 ? 'Activo' : 'Inactivo'}}
-            </p>
+        <div class="tab-content">
+          <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+            <div class="row mt-2 t14">
+              <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                <p>
+                  <strong for="">Nombre Servidor</strong><br>
+                  {{name_selected}}
+                </p>
+                <p>
+                  <strong for="">Ubicación del Servidor</strong><br>
+                  {{server_selected.ubicacion}}
+                </p>
+                <p>
+                  <strong for="">Estado</strong><br>
+                  {{server_selected.estado == 1 ? 'Activo' : 'Inactivo'}}
+                </p>
+              </div>
+              <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                <p>
+                  <strong for="">Caracteristicas</strong><br>
+                  {{server_selected.comentarios}}
+                </p>
+              </div>
+              <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                <p>
+                  <strong for="">Host o direccion IP</strong><br>
+                  {{server_selected.host}}
+                </p>
+                <p>
+                  <strong for="">Acceso a Agente</strong><br>
+                  <span class="mt-1">{{server_selected.agente_puerto_protocolo}}://{{server_selected.host}}:{{server_selected.agente_puerto}} </span>
+                  <button (click)="testAgente()" class="btn btn-white text-primary t14" title="Test de conexión"> <i class="fas fa-flask"></i> </button>
+                </p>
+                <p >
+                  <strong for="">Puerto de acceso a SSH</strong><br>
+                  <span class="mt-1">{{server_selected.ssh_puerto}}</span>
+                  <button (click)="testSSH()"  class="btn btn-white text-primary t14" title="Test de conexión"> <i class="fas fa-flask"></i> </button>
+                </p>
+              </div>
+            </div>
           </div>
-          <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4">
-            <p>
-              <strong for="">Caracteristicas</strong><br>
-              {{server_selected.comentarios}}
-            </p>
-          </div>
-          <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4">
-            <p>
-              <strong for="">Host o direccion IP</strong><br>
-              {{server_selected.host}}
-            </p>
-            <p>
-              <strong for="">Acceso a Agente</strong><br>
-              <span class="mt-1">{{server_selected.agente_puerto_protocolo}}://{{server_selected.host}}:{{server_selected.agente_puerto}} </span>
-              <button (click)="testAgente()" class="btn btn-white text-primary t14" title="Test de conexión"> <i class="fas fa-flask"></i> </button>
-              <i *ngIf="agente_test>0" class="far {{agente_test == 1 ? 'fa-check-circle text-success' : 'fa-times-circle text-danger'}}  t20"></i>
-            </p>
-            <p >
-              <strong for="">Puerto de acceso a SSH</strong><br>
-              <span class="mt-1">{{server_selected.ssh_puerto}}</span>
-              <button (click)="testSSH()"  class="btn btn-white text-primary t14" title="Test de conexión"> <i class="fas fa-flask"></i> </button>
-              <i *ngIf="ssh_test>0" class="far {{ssh_test == 1 ? 'fa-check-circle text-success' : 'fa-times-circle text-danger'}} t20 mt-1"></i>
-            </p>
+          <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+            <div class="row">
+              <div class="col">
+                
+              </div>
+            </div>
           </div>
         </div>
-
       </div>
     </div>
   }

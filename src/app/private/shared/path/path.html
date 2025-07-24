@@ -1,0 +1,10 @@
+<div class="bread">
+    <i class="fas fa-map-marker-alt mr-2"></i>
+    @for (item of lstRutas; track $index) {
+        @if (item.ruta == ""){
+            <span class="bread-item">{{item.nombre}}</span> / 
+        } @else {
+            <span (click)="go(item.ruta)" class="bread-item2" title="{{item.nombre}}">{{item.nombre}}</span> / 
+        }
+    }
+</div>

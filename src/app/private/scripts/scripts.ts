@@ -124,25 +124,30 @@ export class Scripts {
       columnDefs: [
         {
           headerName: 'ID',
+          headerClass: ["th-center", "th-normal"],
           field: 'idscript',
           filter: false,
           hide: true,
         },
         {
           headerName: 'Nombre',
+          headerClass: ["th-center", "th-normal"],
           field: 'nombre',
           cellClass: 'text-start',
           sortIndex: 0,
           sort: 'asc',
           flex: 5,
+          cellRenderer: this.renderAccionNombre.bind(this),
         },
         {
           headerName: 'Comandos',
+          headerClass: ["th-center", "th-normal"],
           field: 'cmds.length',
           cellClass: 'text-start',
         },
         {
           headerName: 'Creado',
+          headerClass: ["th-center", "th-normal"],
           field: 'updated_at',
           cellClass: 'text-start',
           cellRenderer: (params: ICellRendererParams) => {
@@ -153,19 +158,29 @@ export class Scripts {
         },
         {
           headerName: 'Estado',
+          headerClass: ["th-center", "th-normal"],
           field: 'estado',
           cellClass: 'text-start',
           cellRenderer: (params: ICellRendererParams) => {
             let data = params.data;
             let status = data.estado;
-            let text = 'Inactivo';
-            let color = 'bg-danger';
+            let icono = 'far fa-times-circle';
+            let color = 'text-danger';
             if (status == 1) {
-              color = 'bg-success';
-              text = 'Activo';
+              color = 'text-success';
+              icono = 'far fa-check-circle';
             }
-            return `<kbd class="${color} text-white">${text}</kbd>`;
+            return `<i class="${color} ${icono} t20"></i>`;
           },
+        },
+        {
+          headerName: 'Accion',
+          headerClass: ["th-center", "th-normal"],
+          cellClass: 'text-start',
+          filter: true,
+          flex: 3,
+          maxWidth:80,
+          cellRenderer: this.renderAcciones.bind(this),
         },
       ],
     };
@@ -185,18 +200,45 @@ export class Scripts {
     this.gridApi!.setGridOption('rowData', this.lstData);
   }
 
+  renderAccionNombre(params: ICellRendererParams) {
+    const button = document.createElement('button');
+    button.className = 'btn btn-white';
+    button.innerHTML = `<span class="link" title='Editar'>${params.value}</span>`;
+    button.addEventListener('click', () => {
+      this.funcEdit(params.data.idscript);
+    });
+    return button;
+  }
+
+  renderAcciones(params: ICellRendererParams) {
+    let button: any | undefined;
+
+    button = document.createElement('button');
+    button.className = 'btn btn-white';
+    button.innerHTML = `<i class="far fa-trash-alt text-danger" title='Eliminar'></i>`;
+    button.addEventListener('click', () => {
+      this.procesoEspecial('eliminar un registro', 'eliminar', params.data.idscript)
+    });
+
+    return button;
+  }
+
   funcEdit(id: any = null) {
     this.func.goRoute(`admin/script/${id ? id : this.id_selected}`, true);
   }
 
-  procesoEspecial(action = '', keyword = 'delete') {
-    if (this.id_selected == '') {
+  procesoEspecial(action = '', keyword = 'delete', id="") {
+    if (this.id_selected == '' && id == "") {
       this.func.showMessage(
         'error',
         'Eliminar',
         'Debe seleccionar una fila para eliminar'
       );
       return;
+    }
+
+    if(id != ""){
+      this.id_selected = id;
     }
 
     Swal.fire({

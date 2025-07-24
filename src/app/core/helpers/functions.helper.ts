@@ -259,6 +259,13 @@ export class Functions {
     // this.navCtrl.navigateForward(ruta);
   }
 
+  async irRuta(ruta: string = '') {
+    this.router.navigate([`/${ruta}`], {
+      replaceUrl: true,
+      skipLocationChange: false,
+    });
+  }
+
   validaCampos(objValida:Array<any> = [], campos:any = {}, que = ''){
     let error = false;
     let keys = Object.keys(objValida);

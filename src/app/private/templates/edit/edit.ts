@@ -91,6 +91,7 @@ export class Edit {
         if (resp.status) {
           this.rstData = resp.data[0];
           this.linea_comando = this.rstData.linea_comando;
+          this.alias = this.rstData.alias;
         } else {
           this.func.showMessage("error", "Usuario", resp.message);
         }
