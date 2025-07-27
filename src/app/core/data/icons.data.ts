@@ -25,6 +25,7 @@ export default {
     chev_right: "fas fa-chevron-right",
     chev_down: "fas fa-chevron-down",
     settings: "fa fa-cog",
+    config: "fa fa-cog",
     clean: "fas fa-broom",
     reset: "fas fa-reply",
     coins: "fas fa-coins",

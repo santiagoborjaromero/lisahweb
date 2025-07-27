@@ -27,6 +27,7 @@ export class Servidores {
   private readonly sessions = inject(Sessions);
 
   user: any = null;
+  global = Global;
 
   accion: string = 'activos';
   canR: boolean = true;

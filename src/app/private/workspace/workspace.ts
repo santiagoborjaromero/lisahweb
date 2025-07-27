@@ -1,4 +1,4 @@
-import { Component, inject, Sanitizer } from '@angular/core';
+import { Component, inject, OnInit, Sanitizer, SimpleChanges } from '@angular/core';
 import { Breadcrums } from '../shared/breadcrums/breadcrums';
 import { Header } from '../shared/header/header';
 import { CommonModule } from '@angular/common';
@@ -12,19 +12,17 @@ import { AllCommunityModule, createGrid, GridApi, GridOptions, ICellRendererPara
 import { Path } from '../shared/path/path';
 import { Titulo } from '../shared/titulo/titulo';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
-import { General } from "./general/general";
-import { Servicios } from './servicios/servicios';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 @Component({
   selector: 'app-workspace',
-  imports: [Path, Titulo, CommonModule, ReactiveFormsModule, FormsModule, General, General, Servicios, RouterOutlet],
+  imports: [Path, Titulo, CommonModule, ReactiveFormsModule, FormsModule, RouterOutlet],
   templateUrl: './workspace.html',
   styleUrl: './workspace.scss',
   standalone: true
 })
-export class Workspace {
+export class Workspace implements OnInit  {
   private readonly func = inject(Functions);
   private readonly sessions = inject(Sessions);
   private readonly sanitizer = inject(DomSanitizer);
@@ -34,6 +32,8 @@ export class Workspace {
   path:any = [];
   titulo:any = {icono: "fas fa-server",nombre:""}
 
+  tabactive:string = "general";
+  cansee: boolean = false;
   user: any = null;
   work: any = null;
   canR: boolean = true;
@@ -52,6 +52,8 @@ export class Workspace {
   lstServidor:any | undefined;
 
   servidorID:any | undefined;
+
+  links:any = [];
   
   ngOnInit(): void {
     this.user = JSON.parse(this.sessions.get('user'));
@@ -79,14 +81,34 @@ export class Workspace {
         );
       }
     }
-    
-  }
 
-  ngAfterViewInit(): void {
+    this.links = [
+      { id:"dashboard",         active: true,  icon:"far fa-chart-bar",     title: "Dashboard" },
+      { id:"servicios",         active: false, icon:"fa fa-cog",            title: "Servicios"},
+      { id:"networking",        active: false, icon:"fas fa-network-wired", title: "Redes"},
+      { id:"update",            active: false, icon:"fas fa-download",      title: "Actualizaciones"},
+      { id:"store",             active: false, icon:"fa fa-sd-card",        title: "Almacenamiento"},
+      { id:"grupousuarios",     active: false, icon:"fa fa-users",          title: "Grupo de Usuarios"},
+      { id:"usuarios",          active: false, icon:"fa fa-user",           title: "Usuarios"},
+      { id:"terminal",          active: false, icon:"fas fa-terminal",      title: "Terminal"},
+    ]
+
+    this.tabactive = this.links[0].id;
+    
   }
 
   go(ruta=""){
     this.func.irRuta(`admin/hardening/workspace/${ruta}`);
+  }
+
+  findTab(tab=""){
+    this.cansee = true;
+    this.links.forEach((e:any) => {
+      e.active = false;
+      if (e.id == tab){
+        e.active = true;
+      }
+    });
   }
   
   funcBack(){

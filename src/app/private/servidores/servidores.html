@@ -81,9 +81,9 @@
       <li class="nav-item" role="presentation">
         <button class="nav-link text-primary active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Detalles</button>
       </li>
-      <li class="nav-item" role="presentation">
+      <!-- <li class="nav-item" role="presentation">
         <button class="nav-link text-primary" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Monitoreo</button>
-      </li>
+      </li> -->
     </ul>
    
     <div class="card" >
@@ -117,7 +117,7 @@
                   {{server_selected.host}}
                 </p>
                 <p>
-                  <strong for="">Acceso a Agente</strong><br>
+                  <strong for="">Acceso a {{global.agent}}</strong><br>
                   <span class="mt-1">{{server_selected.agente_puerto_protocolo}}://{{server_selected.host}}:{{server_selected.agente_puerto}} </span>
                   <button (click)="testAgente()" class="btn btn-white text-primary t14" title="Test de conexión"> <i class="fas fa-flask"></i> </button>
                 </p>

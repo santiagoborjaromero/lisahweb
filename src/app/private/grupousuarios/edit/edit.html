@@ -29,7 +29,7 @@
               name="nombre"
               id="nombre"
               class="form-control {{formData.nombre.validacion.resultado == '' ? '' : 'input-danger'}}"
-              [(ngModel)]="formData.nombre.valor"
+              [(ngModel)]="nombre"
             />
             <sup>
               <i class=" {{formData.nombre.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
@@ -39,28 +39,35 @@
           </div>
        
 
-          <!-- <div class="col-4 col-md-3 td2 text-end">
+          <div class="col-4 col-md-3 td2 text-end">
             Script Creación <small *ngIf="formData.idscript_creacion.requerido"><i class="text-danger">*</i></small>
             <br />
             <small><i class="text-secondary">Selección</i></small>
           </div>
-          <div class="col-8 col-md-9 td2">
-            <select [(ngModel)]="formData.idscript_creacion.valor" 
-              name="idscript_creacion_usuario" id="idscript_creacion_usuario" class="form-control">
-              @if(lstScripts.length>0){
-                @for (item of lstScripts; track $index) {
-                  <option value="{{item.idscript}}">{{item.nombre}}</option>
+          <div class="col-8 col-md-9 td2 d-flex justify-content-start">
+            <div>
+              <select [(ngModel)]="idscript_creacion"  [disabled]="true"
+                name="idscript_creacion_usuario" id="idscript_creacion_usuario" class="form-control">
+                @if(lstScripts.length>0){
+                  @for (item of lstScripts; track $index) {
+                    <option value="{{item.idscript}}">{{item.nombre}}</option>
+                  }
+                }@else {
+                  <option value=""> -- No hay scripts asignados --</option>
                 }
-              }@else {
-                <option value=""> -- No hay scripts asignados --</option>
-              }
-            </select>
-             <sup>
-              <i class=" {{formData.idscript_creacion.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
-                {{formData.idscript_creacion.validacion.resultado == '' ? formData.idscript_creacion.descripcion : formData.idscript_creacion.validacion.resultado}}
-              </i>
-            </sup>
-          </div> -->
+              </select>
+               <sup>
+                <i class=" {{formData.idscript_creacion.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+                  {{formData.idscript_creacion.validacion.resultado == '' ? formData.idscript_creacion.descripcion : formData.idscript_creacion.validacion.resultado}}
+                </i>
+              </sup>
+            </div>
+            <div>
+              <button class="btn btn-white btn-sm" title="Buscar Grupos" data-bs-toggle="modal" data-bs-target="#ventanaModalGU">
+                <i class="{{iconos.search}}"></i> <span class="link">Buscar Scripts</span></button>
+              <br><br>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -166,3 +173,23 @@
     </div>
   </div>
 </div>
+
+<div class="modal modal-xl" id="ventanaModalGU" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Lista de Scripts</h5>
+        <button #btnClose type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div #myGrid2 id="myGrid2" class="ag-theme-quartz scrollx" style="height: 400px; min-height: 400px"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+

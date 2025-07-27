@@ -1,0 +1,77 @@
+{
+    "agente_status": "Conectado",
+    "usuarios": [
+        {
+            "uid": "0",
+            "user": "root",
+            "gid": "0",
+            "group": "root",
+            "sgid": "7",
+            "sgroup": "99999",
+            "pwdwarn": "Jul18/19:00",
+            "pwdmin": "",
+            "pwdmax": "",
+            "pwdchange": ""
+        },
+        {
+            "uid": "1000",
+            "user": "ec2-user",
+            "gid": "1000",
+            "group": "ec2-user",
+            "sgid": "10",
+            "sgroup": "wheel",
+            "pwdwarn": "7",
+            "pwdmin": "99999",
+            "pwdmax": "Jul18/19:00",
+            "pwdchange": ""
+        },
+        {
+            "uid": "1001",
+            "user": "santiago.borja",
+            "gid": "1001",
+            "group": "santiago.borja",
+            "sgid": "10",
+            "sgroup": "wheel",
+            "pwdwarn": "7",
+            "pwdmin": "99999",
+            "pwdmax": "Jul19/19:00",
+            "pwdchange": ""
+        },
+        {
+            "uid": "0",
+            "user": "root",
+            "gid": "0",
+            "group": "root",
+            "sgid": "7",
+            "sgroup": "99999",
+            "pwdwarn": "Jul18/19:00",
+            "pwdmin": "",
+            "pwdmax": "",
+            "pwdchange": ""
+        },
+        {
+            "uid": "1000",
+            "user": "ec2-user",
+            "gid": "1000",
+            "group": "ec2-user",
+            "sgid": "10",
+            "sgroup": "wheel",
+            "pwdwarn": "7",
+            "pwdmin": "99999",
+            "pwdmax": "Jul18/19:00",
+            "pwdchange": ""
+        },
+        {
+            "uid": "1001",
+            "user": "santiago.borja",
+            "gid": "1001",
+            "group": "santiago.borja",
+            "sgid": "10",
+            "sgroup": "wheel",
+            "pwdwarn": "7",
+            "pwdmin": "99999",
+            "pwdmax": "Jul19/19:00",
+            "pwdchange": ""
+        }
+    ]
+}

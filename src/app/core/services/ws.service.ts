@@ -108,7 +108,7 @@ export class WSService {
   disconnect(serverId: string): void {
     const ws = this.connections.get(serverId);
     if (ws) {
-      ws.close();
+      ws.close(1000);
       this.connections.delete(serverId);
       this.messageSubjects.get(serverId)?.complete();
       this.messageSubjects.delete(serverId);

@@ -19,7 +19,8 @@ ModuleRegistry.registerModules([AllCommunityModule]);
   selector: 'app-edit',
   imports: [Header, Breadcrums, CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './edit.html',
-  styleUrl: './edit.scss'
+  styleUrl: './edit.scss',
+  standalone: true
 })
 export class Edit {
   // @Input("id") uIDUser!:string;

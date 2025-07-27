@@ -1,60 +1,139 @@
 <div class="row">
-  <div class="col">
+  <div class="col  d-flex justify-content-between">
     <h6>General</h6>
+    <button (click)="openConn()" class="btn btn-primary btn-sm"><i class="fas fa-repeat"></i> Recargar</button>
   </div>
 </div>
 
-<div class="row mt-3">
-  <div class="col-12 col-xs-6 col-sm-6 col-md-4 col-lg-4 mt-2">
+<div class="row">
+  <div class="col-12 col-xs-6 col-sm-6 col-md-4 col-lg-4 mt-1">
     <div class="card p-1 h300">
       <div class="card-body">
         <h5 class="card-title">Medios de Comunicación</h5>
-        <small><i>Permite comprobar la salud de los protocolos de comunicación delservidor</i></small>
-        <div class="card-text t12 mt-2">
+        <small><i>Permite comprobar la salud de los protocolos de comunicación y el tiempo de actividad del servidor.</i></small>
+        <br>
+        <br>
+        <div class="card-text t12">
           <ul class="list-group">
             <li class="list-group-item d-flex justify-content-between">
-              <span>Tiempo activo</span><span>0d 00:00:00</span>
+              <span>Nombre Servidor</span><span>{{work.nombre}}</span>
+            </li>
+                        <li class="list-group-item d-flex justify-content-between">
+              <span>Host</span><span>{{work.host}}</span>
             </li>
             <li class="list-group-item d-flex justify-content-between">
-              <span>Estado del Agente</span><i class="fa fa-minus"></i>
+              <span>Tiempo activo</span>
+              <div class="d-flex align-items-center">
+                <i class="far fa-clock t20 mr-2"></i>
+                <span>{{lstDatos.uptime}}</span>
+              </div>
             </li>
             <li class="list-group-item d-flex justify-content-between">
+              <span class="sentinel">{{global.agent}}</span>
+              <div class="d-flex align-items-center">
+                @if(lstDatos){
+                  @if(lstDatos.agente_status == "Conectado"){
+                    <i class="far fa-check-circle text-success t20"></i>
+                  }@else if(lstDatos.agente_status == "Desconectado"){
+                    <i class="fas fa-times-circle text-danger t20"></i>
+                  }@else if(lstDatos.agente_status == ""){
+                    <i class="fa fa-minus" title="No Conectado"></i>
+                  }
+                }
+                <span class="ml-2">{{lstDatos.agente_status}}</span>
+              </div>
+            </li>
+            <!-- <li class="list-group-item d-flex justify-content-between">
               <span>Acceso por SSH</span><i class="fa fa-minus"></i>
-            </li>
+            </li> -->
           </ul>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="col-12 col-xs-6 col-sm-6 col-md-4 col-lg-4 mt-2">
+  <div class="col-12 col-xs-6 col-sm-6 col-md-4 col-lg-4 mt-1">
     <div class="card p-1 h300">
       <div class="card-body">
-        <h5 class="card-title">Recursos Usados</h5>
+        <h5 class="card-title">Uso de Recursos</h5>
         <small><i>Son los valores de uso de los recursos del servidor</i></small>
-        <div class="card-text t12 mt-2">
+        <br>
+        <br>
+        <div class="card-text t12">
           <ul class="list-group">
             <li class="list-group-item">
-              <span>Disco</span> 
+              <span class="d-flex justify-content-between">
+                <span>Disco</span>
+                <span>{{lstDatos.disco.porcentaje}}</span>
+                <span
+                  >{{lstDatos.disco.usado}} / {{lstDatos.disco.total}}
+                </span>
+              </span>
               <div>
-                <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                  <div class="progress-bar" style="width: 25%">25%</div>
+                <div
+                  class="progress"
+                  role="progressbar"
+                  aria-label="Example with label"
+                  aria-valuenow="25"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                >
+                  <div
+                    class="progress-bar"
+                    style="width: {{lstDatos.disco.porcentaje}}"
+                  ></div>
                 </div>
               </div>
             </li>
             <li class="list-group-item">
-              <span>Memoria</span> 
+              <span class="d-flex justify-content-between">
+                <span>Memoria</span>
+                <span>{{lstDatos.memoria.porcentaje}}%</span>
+                <span
+                  >{{lstDatos.memoria.usado}} / {{lstDatos.memoria.total}}</span
+                >
+              </span>
               <div>
-                <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                  <div class="progress-bar" style="width: 25%">25%</div>
+                <div
+                  class="progress"
+                  role="progressbar"
+                  aria-label="Example with label"
+                  aria-valuenow="25"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                >
+                  <div
+                    class="progress-bar"
+                    style="width: {{lstDatos.memoria.porcentaje}}%"
+                  ></div>
                 </div>
               </div>
             </li>
             <li class="list-group-item">
-              <span>CPU</span> 
+              <span class="d-flex justify-content-between">
+                <span>CPU</span>
+                <span>{{lstDatos.cpu.porcentaje}}%</span>
+                <span
+                  >{{lstDatos.cpu.t1}}<sup class="text-danger">1m</sup>
+                  {{lstDatos.cpu.t5}}<sup class="text-danger">5m</sup>
+                  {{lstDatos.cpu.t15}}<sup class="text-danger">15m</sup></span
+                >
+              </span>
               <div>
-                <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                  <div class="progress-bar" style="width: 25%">25%</div>
+                <div
+                  class="progress"
+                  role="progressbar"
+                  aria-label="Example with label"
+                  aria-valuenow="0"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                >
+                  <div
+                    class="progress-bar"
+                    style="width: {{lstDatos.cpu.porcentaje}}%"
+                  >
+                    {{lstDatos.cpu.porcentaje}}%
+                  </div>
                 </div>
               </div>
             </li>
@@ -64,46 +143,81 @@
     </div>
   </div>
 
-  <div class="col-12 col-xs-6 col-sm-6 col-md-4 col-lg-4 mt-2">
+  <div class="col-12 col-xs-6 col-sm-6 col-md-4 col-lg-4 mt-1">
     <div class="card p-1 h300">
-      <div class="card-body">
-        <h5 class="card-title">Datos del Servidor</h5>
-        <small><i>Permite comprobar la salud de los protocolos de comunicación delservidor</i></small>
-        <div class="card-text t12 mt-2">
+      <div class="card-body ">
+        <h5 class="card-title d-flex justify-content-between">
+          Servicios
+          <button (click)="go('servicios')" class="btn btn-link btn-sm" title="Configuracion"><i class="{{icono.settings}}"></i></button>
+        </h5>
+        <small
+          ><i
+            >Despliega los servicios que se encuentran dentro del servidor</i
+          ></small
+        >
+        <div class="card-text t12">
           <ul class="list-group">
+            @for (item of lstDatos.servicios; track $index) {
             <li class="list-group-item d-flex justify-content-between">
-              <span>Estado del Agente</span><i class="fa fa-minus"></i>
+              <span>{{item[0]}}</span>
+              <span>
+                <span>{{item[1]}}</span> / 
+                <span class="{{item[2]=='active' ? 'text-success bold':'text-danger'}}">{{item[2]}}</span> / 
+                <span class="{{item[3]=='running' ? 'text-success bold':'text-danger'}}">{{item[3]}}</span>
+              </span>
             </li>
-            <li class="list-group-item d-flex justify-content-between">
-              <span>Acceso por SSH</span><i class="fa fa-minus"></i>
-            </li>
+            }
           </ul>
         </div>
- 
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-xs-6 col-sm-6 col-md-4 col-lg-4 mt-1">
+    <div class="col mt-1">
+      <div class="card p-1 h300">
+        <div class="card-body">
+          <h5 class="card-title">Datos del Servidor</h5>
+          <small
+            ><i
+              >Permite comprobar la salud de los protocolos de comunicación
+              delservidor</i
+            ></small
+          >
+          <div class="card-text t12">
+            <ul class="list-group">
+              @for (item of lstDatos.release; track $index) {
+              <li class="list-group-item d-flex justify-content-between">
+                <span>{{item[0]}}</span>
+                <span>{{item[1]}}</span>
+              </li>
+              }
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
 
-  <div class="col-12 col-xs-6 col-sm-6 col-md-4 col-lg-4 mt-2">
-    <div class="card p-1 h300">
-      <div class="card-body">
-        <h5 class="card-title">Servicios</h5>
-        <small><i>Permite comprobar la salud de los protocolos de comunicación delservidor</i></small>
-        <div class="card-text t12 mt-2">
-          <ul class="list-group">
-            <li class="list-group-item d-flex justify-content-between">
-              <span>Estado del Agente</span><i class="fa fa-minus"></i>
-            </li>
-            <li class="list-group-item d-flex justify-content-between">
-              <span>Acceso por SSH</span><i class="fa fa-minus"></i>
-            </li>
-          </ul>
+  <div class="col-12 col-xs-6 col-sm-6 col-md-4 col-lg-4 mt-1">
+    <div class="col mt-1">
+      <div class="card p-1 h300">
+        <div class="card-body">
+          <h5 class="card-title">Datos del CPU</h5>
+          <small><i>Información pertienete al cpu como el procesados, familia, entre otros.</i></small>
+          <div class="card-text t12">
+            <ul class="list-group">
+              @for (item of lstDatos.infocpu; track $index) {
+              <li class="list-group-item d-flex justify-content-between">
+                <span>{{item[0]}}</span>
+                <span>{{item[1]}}</span>
+              </li>
+              }
+            </ul>
+          </div>
         </div>
- 
       </div>
     </div>
   </div>
-
-
 </div>

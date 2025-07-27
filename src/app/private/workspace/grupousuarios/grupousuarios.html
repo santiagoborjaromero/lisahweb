@@ -10,7 +10,7 @@
           }@else if(lstDatos.agente_status == "Desconectado"){
           <i class="fas fa-times-circle text-danger t20"></i>
           }@else if(lstDatos.agente_status == ""){
-          <i class="fas fa-minus-circle text-secondary"></i> 
+          <!-- <i class="fas fa-minus-circle text-secondary"></i>  -->
           }
       }
       <span class="ml-2">{{lstDatos.agente_status}}</span>
@@ -19,3 +19,6 @@
     <button (click)="openConn()" class="btn btn-primary btn-sm"><i class="fas fa-repeat"></i> Recargar</button>
   </div>
 </div>
+
+<div #myGrid id="myGrid" class="ag-theme-quartz mt-3" style="height: 600px; min-height: 600px"></div>
+

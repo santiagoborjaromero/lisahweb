@@ -7,6 +7,7 @@ import { Functions } from '../../core/helpers/functions.helper';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { verificarRuc } from 'udv-ec';
 import { ScriptsService } from '../../core/services/script.service';
+import { Global } from '../../core/config/global.config';
 
 @Component({
   selector: 'app-config',
@@ -20,6 +21,7 @@ export class Config {
   private readonly scriptSvc = inject(ScriptsService);
 
   rstConfig: any;
+  global = Global;
 
   accionEditar:boolean = false;
 

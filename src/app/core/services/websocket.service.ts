@@ -64,7 +64,7 @@ export class WebsocketService {
 
     ws.onopen = () => {
       console.log(
-        `✅ Conectado al agente: ${server.nombre} (ID: ${server.idservidor})`
+        `✅ Conectado: ${server.nombre} (ID: ${server.idservidor})`
       );
       this.updateServerStatus(server.idservidor, { healthy_agente: '1' });
       // this.sendMessage(server.idservidor,({

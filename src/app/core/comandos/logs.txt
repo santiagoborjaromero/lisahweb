@@ -1,0 +1,2 @@
+
+cat httpd/error_log |egrep "fatal"

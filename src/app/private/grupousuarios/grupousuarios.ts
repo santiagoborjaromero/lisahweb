@@ -144,6 +144,13 @@ export class Grupousuarios {
           cellRenderer: this.renderAccionNombre.bind(this),
         },
         {
+          headerName: 'Script de Creacion',
+          headerClass: ["th-center", "th-normal"],
+          field: 'scripts.nombre',
+          cellClass: 'text-start',
+          filter: true,
+        },
+        {
           headerName: 'Usuarios',
           headerClass: ["th-center", "th-normal"],
           field: 'usuarios.length',
