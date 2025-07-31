@@ -7,7 +7,7 @@
     </div>
     <div class="col text-end">
       <button (click)="funcBack()" class="btn btn-danger btn-sm ml-1">
-        <i class="fas fa-reply"></i> Regresar
+        <i role="img" class="fas fa-reply"></i> Regresar
       </button>
     </div>
   </div>
@@ -15,7 +15,7 @@
   <ul class="nav nav-tabs" id="myTab" role="tablist">
     <!-- <li class="nav-item " role="presentation">
       <button (click)="go('dashboard')" class="nav-link text-primary {{tabactive == 'general' || tabactive == '' ? 'active' : ''}}" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">
-        <i class="far fa-chart-bar mr-2 iconomenu"></i><span>Dashboard</span>
+        <i role="img" class="far fa-chart-bar mr-2 iconomenu"></i><span>Dashboard</span>
       </button>
     </li> -->
       @for (item of links; track $index) {
@@ -23,33 +23,33 @@
           <button (click)="go(item.id)" class="nav-link text-primary {{item.active ? 'active' : ''}}" 
             id="{{item.id}}-tab" data-bs-toggle="tab" type="button" role="tab" 
             aria-controls="profile" aria-selected="false">
-            <i class="{{item.icon}} mr-2 iconomenu"></i><span>{{item.title}}</span>
+            <i role="img" class="{{item.icon}} mr-2 iconomenu"></i><span>{{item.title}}</span>
           </button>
         </li>
       }
       <!-- <li class="nav-item" role="presentation">
         <button (click)="go('networking')" class="nav-link text-primary {{tabactive == 'servicios' ? 'active' : ''}}" id="networking-tab" data-bs-toggle="tab" data-bs-target="#networking" type="button" role="tab" aria-controls="profile" aria-selected="false">
-          <i class="fas fa-network-wired mr-2 iconomenu"></i><span>Networking</span>
+          <i role="img" class="fas fa-network-wired mr-2 iconomenu"></i><span>Networking</span>
         </button>
       </li>
       <li class="nav-item" role="presentation">
         <button (click)="go('update')" class="nav-link text-primary {{tabactive == 'servicios' ? 'active' : ''}}" id="update-tab" data-bs-toggle="tab" data-bs-target="#update" type="button" role="tab" aria-controls="profile" aria-selected="false">
-          <i class="fas fa-download mr-2 iconomenu"></i><span>Actualizaciones</span>
+          <i role="img" class="fas fa-download mr-2 iconomenu"></i><span>Actualizaciones</span>
         </button>
       </li>
       <li class="nav-item" role="presentation">
         <button (click)="go('store')" class="nav-link text-primary {{tabactive == 'servicios' ? 'active' : ''}}" id="store-tab" data-bs-toggle="tab" data-bs-target="#store" type="button" role="tab" aria-controls="profile" aria-selected="false">
-          <i class="fa fa-sd-card mr-2 iconomenu"></i><span>Almacenamiento</span>
+          <i role="img" class="fa fa-sd-card mr-2 iconomenu"></i><span>Almacenamiento</span>
         </button>
       </li>
       <li class="nav-item" role="presentation">
         <button (click)="go('usuarios')" class="nav-link text-primary {{tabactive == 'servicios' ? 'active' : ''}}" id="usuarios-tab" data-bs-toggle="tab" data-bs-target="#usuarios" type="button" role="tab" aria-controls="profile" aria-selected="false">
-          <i class="fa fa-users mr-2 iconomenu"></i><span>Usuarios</span>
+          <i role="img" class="fa fa-users mr-2 iconomenu"></i><span>Usuarios</span>
         </button>
       </li>
       <li class="nav-item" role="presentation">
         <button (click)="go('terminal')" class="nav-link text-primary {{tabactive == 'servicios' ? 'active' : ''}}" id="terminal-tab" data-bs-toggle="tab" data-bs-target="#terminal" type="button" role="tab" aria-controls="profile" aria-selected="false">
-          <i class="fas fa-terminal mr-2 iconomenu"></i><span>Terminal</span>
+          <i role="img" class="fas fa-terminal mr-2 iconomenu"></i><span>Terminal</span>
         </button>
       </li> -->
   </ul>
@@ -88,32 +88,32 @@
           <ul class="item-group">
             <li class="item">
               <button class="btn btn-white" >
-                <i class="far fa-chart-bar mr-2 iconomenu"></i><span>General</span>
+                <i role="img" class="far fa-chart-bar mr-2 iconomenu"></i><span>General</span>
               </button>
             </li>
             <li class="item">
               <button class="btn btn-white" >
-                <i class="fa fa-cog mr-2 iconomenu"></i><span>Servicios</span>
+                <i role="img" class="fa fa-cog mr-2 iconomenu"></i><span>Servicios</span>
               </button>
             </li>
             <li class="item">
               <button class="btn btn-white" >
-                <i class="fas fa-network-wired mr-2 iconomenu"></i><span>Networking</span>
+                <i role="img" class="fas fa-network-wired mr-2 iconomenu"></i><span>Networking</span>
               </button>
             </li>
             <li class="item">
               <button class="btn btn-white" >
-                <i class="fas fa-download mr-2 iconomenu"></i><span>Actualizaciones</span>
+                <i role="img" class="fas fa-download mr-2 iconomenu"></i><span>Actualizaciones</span>
               </button>
             </li>
             <li class="item">
               <button class="btn btn-white" >
-                <i class="fa fa-sd-card mr-2 iconomenu"></i><span>Almacenamiento</span>
+                <i role="img" class="fa fa-sd-card mr-2 iconomenu"></i><span>Almacenamiento</span>
               </button>
             </li>
             <li class="item">
               <button class="btn btn-white" >
-                <i class="fas fa-terminal mr-2 iconomenu"></i><span>Terminal</span>
+                <i role="img" class="fas fa-terminal mr-2 iconomenu"></i><span>Terminal</span>
               </button>
             </li>
           </ul>

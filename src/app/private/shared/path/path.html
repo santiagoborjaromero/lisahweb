@@ -1,10 +1,10 @@
-<div class="bread">
-    <i class="fas fa-map-marker-alt mr-2"></i>
+<section class="bread">
+    <i role="img" class="fas fa-map-marker-alt mr-2"></i>
     @for (item of lstRutas; track $index) {
         @if (item.ruta == ""){
-            <span class="bread-item">{{item.nombre}}</span> / 
+            <label [attr.aria-label]="item.nombre" class="bread-item">{{item.nombre}}</label> / 
         } @else {
-            <span (click)="go(item.ruta)" class="bread-item2" title="{{item.nombre}}">{{item.nombre}}</span> / 
+            <label [attr.aria-label]="item.nombre" (click)="go(item.ruta)" class="bread-item2" title="{{item.nombre}}">{{item.nombre}}</label> / 
         }
     }
-</div>
+</section>

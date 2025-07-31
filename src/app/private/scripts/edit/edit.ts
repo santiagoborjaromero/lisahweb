@@ -1,6 +1,4 @@
 import { Component, ElementRef, inject, ViewChild } from '@angular/core';
-import { Breadcrums } from '../../shared/breadcrums/breadcrums';
-import { Header } from '../../shared/header/header';
 import { CommonModule } from '@angular/common';
 import vForm from './vform';
 import { FormsModule } from '@angular/forms';
@@ -16,16 +14,17 @@ import {
   GridOptions,
   ICellRendererParams,
   ModuleRegistry,
-  RowDragModule,
 } from 'ag-grid-community';
 import { Global } from '../../../core/config/global.config';
 import Swal from 'sweetalert2';
+import { Titulo } from '../../shared/titulo/titulo';
+import { Path } from '../../shared/path/path';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 @Component({
   selector: 'app-edit',
-  imports: [Breadcrums, Header, CommonModule, FormsModule],
+  imports: [Titulo, Path, CommonModule, FormsModule],
   templateUrl: './edit.html',
   styleUrl: './edit.scss',
   standalone: true,
@@ -40,6 +39,8 @@ export class Edit {
   private readonly scriptSvc = inject(ScriptsService);
 
   user: any = null;
+  path:any = [];
+  titulo:any = {icono: "",nombre:""}
   idscript: string = '';
   rstData: any;
   validador: any = vForm;
@@ -73,6 +74,14 @@ export class Edit {
     } else {
       this.idscript = '';
     }
+
+    this.path = [
+      {nombre: "Configuración", ruta: ""}, 
+      {nombre: "Scripts", ruta: "admin/scripts"}, 
+      {nombre: this.idscript == "" ? "Nuevo" : "Edición", ruta: `admin/script/${this.idscript}`}, 
+    ];
+  
+    this.titulo = {icono: "fas fa-superscript",nombre: `Scripts - ${this.idscript == "" ? "Nuevo" : "Edición"}`}
 
     if (this.user.idrol > 1) {
       let scope = this.user.roles.permisos_crud.split('');
@@ -281,12 +290,14 @@ export class Edit {
       columnDefs: [
         {
           headerName: 'ID',
+          headerClass: ["th-center", "th-normal"],
           field: 'idtemplate_comando',
           filter: false,
           hide: true,
         },
         {
           headerName: 'Línea de Comando',
+          headerClass: ["th-center", "th-normal"],
           field: 'linea_comando',
           cellClass: 'text-start',
           filter: true,
@@ -295,6 +306,7 @@ export class Edit {
         },
         {
           headerName: 'Accion',
+          headerClass: ["th-center", "th-normal"],
           field: 'idtemplate_comando',
           cellClass: 'text-start',
           cellRenderer: this.renderAccion.bind(this),
@@ -313,7 +325,7 @@ export class Edit {
   renderAccion(params: ICellRendererParams) {
     const button = document.createElement('button');
     button.className = 'btn btn-link text-danger';
-    button.innerHTML = '<i class="far fa-trash-alt"></i>';
+    button.innerHTML = '<i role="img" class="far fa-trash-alt"></i>';
     button.addEventListener('click', () => {
       this.quitar(params.data.idtemplate_comando);
     });

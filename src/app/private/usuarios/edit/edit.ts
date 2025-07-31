@@ -1,6 +1,4 @@
 import { Component, inject, Input } from '@angular/core';
-import { Header } from '../../shared/header/header';
-import { Breadcrums } from '../../shared/breadcrums/breadcrums';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UsuarioService } from '../../../core/services/usuarios.service';
@@ -12,12 +10,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import vForm from './vform';
 import { ServidorService } from '../../../core/services/servidor.service';
 import { AllCommunityModule, createGrid, GridApi, GridOptions, ICellRendererParams, ModuleRegistry, InfiniteRowModelModule,IDatasource, IGetRowsParams   } from 'ag-grid-community';
+import { Titulo } from '../../shared/titulo/titulo';
+import { Path } from '../../shared/path/path';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 @Component({
   selector: 'app-edit',
-  imports: [Header, Breadcrums, CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [Titulo, Path, CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './edit.html',
   styleUrl: './edit.scss',
   standalone: true
@@ -34,6 +34,8 @@ export class Edit {
   private readonly sessions = inject(Sessions);
 
   user: any = null;
+  path:any = [];
+  titulo:any = {icono: "",nombre:""}
   idusuario: string = "";
   rstData: any;
 
@@ -89,6 +91,15 @@ export class Edit {
     }else{
       this.idusuario = "";
     }
+
+    this.path = [
+      {nombre: "Configuración", ruta: ""}, 
+      {nombre: "Usuarios", ruta: "admin/usuarios"}, 
+      {nombre: this.idusuario == "" ? "Nuevo" : "Edición", ruta: `admin/usuario/${this.idusuario}`}, 
+    ];
+  
+    this.titulo = {icono: "fas fa-users",nombre: `Usuarios - ${this.idusuario == "" ? "Nuevo" : "Edición"}`}
+
 
     this.idrol = this.user.idrol;
     this.idcliente = this.user.idcliente;
@@ -371,7 +382,7 @@ export class Edit {
         //     if (params.value !== undefined) {
         //       return params.value;
         //     } else {
-        //       return '<img src="https://www.ag-grid.com/example-assets/loading.gif">';
+        //       return '<img role="img" src="https://www.ag-grid.com/example-assets/loading.gif">';
         //     }
         //   },
         // },
@@ -565,7 +576,7 @@ export class Edit {
   renderAccion(params: ICellRendererParams) {
     const button = document.createElement('button');
     button.className = 'btn btn-link text-danger';
-    button.innerHTML = '<i class="far fa-trash-alt"></i>';
+    button.innerHTML = '<i role="img" class="far fa-trash-alt"></i>';
     button.addEventListener('click', () => {
       this.quitar(params.data.idservidor);
     });
@@ -578,7 +589,7 @@ export class Edit {
     }else{
       const button = document.createElement('button');
       button.className = 'btn btn-link text-primary';
-      button.innerHTML = '<i class="fas fa-plus-circle t20"></i>';
+      button.innerHTML = '<i role="img" class="fas fa-plus-circle t20"></i>';
       button.addEventListener('click', () => {
         this.addItem(params.data.idservidor);
       });

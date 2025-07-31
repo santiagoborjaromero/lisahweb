@@ -1,4 +1,4 @@
-<span class="share-cabecera">
-    <i class="{{lstHeader.icono}} share-cabecera-icono"></i> 
-    <span class="share-cabecera-texto"> {{lstHeader.nombre}} </span>
-</span>
+<header class="share-cabecera">
+    <i role="img" class="{{lstHeader.icono}} share-cabecera-icono mr-2"  [attr.aria-label]="'icono ' + lstHeader.nombre" ></i>
+    <span [attr.aria-label]="lstHeader.nombre" class="share-cabecera-texto"> {{lstHeader.nombre}} </span>
+</header>

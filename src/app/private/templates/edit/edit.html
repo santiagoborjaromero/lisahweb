@@ -1,14 +1,15 @@
-<app-breadcrums />
+<app-path [lstRutas]="path" />
 <div class="content">
-  <app-header />
+  <app-titulo [lstHeader]="titulo" />
+
 
   <div class="row barra-menu">
     <div class="col text-end">
       <button (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1">
-        <i class="fas fa-save"></i> Guardar
+        <i role="img" class="fas fa-save"></i> Guardar
       </button>
       <button (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1">
-        <i class="fas fa-reply"></i> Cancelar
+        <i role="img" class="fas fa-reply"></i> Cancelar
       </button>
     </div>
   </div>
@@ -22,9 +23,9 @@
 
         <div class="p-1 row">
           <div class="col-4 col-md-3 td2 text-end">
-            Alias <small *ngIf="validador.alias.requerido"><i class="text-danger">*</i></small>
+            Alias <small *ngIf="validador.alias.requerido"><i role="img" class="text-danger">*</i></small>
             <br />
-            <small><i class="text-secondary">{{validador.alias.etiqueta}}</i></small>
+            <small><i role="img" class="text-secondary">{{validador.alias.etiqueta}}</i></small>
           </div>
           <div class="col-8 col-md-9 td2">
             <input type="text" name="alias" id="alias"
@@ -32,7 +33,7 @@
               [(ngModel)]="alias"
             />
             <sup>
-              <i class=" {{validador.alias.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+              <i role="img" class=" {{validador.alias.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
                 {{validador.alias.validacion.resultado == '' ? validador.alias.descripcion : validador.alias.validacion.resultado}}
               </i>
             </sup>
@@ -41,9 +42,9 @@
 
         <div class="p-1 row">
           <div class="col-4 col-md-3 td2 text-end">
-            Limea de comando <small *ngIf="validador.linea_comando.requerido"><i class="text-danger">*</i></small>
+            Limea de comando <small *ngIf="validador.linea_comando.requerido"><i role="img" class="text-danger">*</i></small>
             <br />
-            <small><i class="text-secondary">{{validador.linea_comando.etiqueta}}</i></small>
+            <small><i role="img" class="text-secondary">{{validador.linea_comando.etiqueta}}</i></small>
           </div>
           <div class="col-8 col-md-9 td2">
             <textarea name="linea_comando" id="linea_comando" rows="5"
@@ -51,7 +52,7 @@
               [(ngModel)]="linea_comando"
             ></textarea>
             <sup>
-              <i class=" {{validador.linea_comando.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+              <i role="img" class=" {{validador.linea_comando.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
                 {{validador.linea_comando.validacion.resultado == '' ? validador.linea_comando.descripcion : validador.linea_comando.validacion.resultado}}
               </i>
             </sup>
@@ -64,7 +65,7 @@
           <div class="col-8 col-md-9 td2">
             <button class="btn btn-link btnayudavisual" (click)="verAyuda=!verAyuda">{{verAyuda ? 'Ocultar ayuda visual' : 'Ver ayuda visual'}}</button>
             <br><br>
-            <img *ngIf="verAyuda" src="/assets/img/template.gif" alt="Template" class="imgtemplate">
+            <img role="img" *ngIf="verAyuda" src="/assets/img/template.gif" alt="Template" class="imgtemplate">
           </div>
         </div>
       </div>
@@ -80,7 +81,7 @@
               <li class="list-group-item list-group-item-action"  >
                 <div class="d-flex w-100 justify-content-between">
                   <strong class="mb-1">{{item.nombre}}</strong>
-                  <button (click)="addText(item.nombre)" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i></button>
+                  <button (click)="addText(item.nombre)" class="btn btn-primary btn-sm"><i role="img" class="fas fa-plus"></i></button>
                 </div>
                 <small>{{item.descripcion}}</small>
               </li>

@@ -1,6 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { Header } from '../shared/header/header';
-import { Breadcrums } from '../shared/breadcrums/breadcrums';
 import { Global } from '../../core/config/global.config';
 import {
   AllCommunityModule,
@@ -16,12 +14,14 @@ import { Sessions } from '../../core/helpers/session.helper';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
 import moment from 'moment';
+import { Titulo } from '../shared/titulo/titulo';
+import { Path } from '../shared/path/path';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 @Component({
   selector: 'app-usuarios',
-  imports: [Header, Breadcrums, CommonModule],
+  imports: [Titulo, Path, CommonModule],
   templateUrl: './usuarios.html',
   styleUrl: './usuarios.scss',
 })
@@ -31,6 +31,9 @@ export class Usuarios {
   private readonly sessions = inject(Sessions);
 
   user: any = null;
+  work: any = null;
+  path:any = [];
+  titulo:any = {icono: "",nombre:""}
 
   public dtOptions: any = {};
   public gridOptions: GridOptions<any> = {};
@@ -48,6 +51,13 @@ export class Usuarios {
 
   ngOnInit(): void {
     this.user = JSON.parse(this.sessions.get('user'));
+
+    this.path = [
+      {nombre: "Configuración", ruta: ""}, 
+      {nombre: "Usuarios", ruta: "admin/usuarios"}, 
+    ];
+  
+    this.titulo = {icono: "fas fa-user",nombre: "Usuarios"}
 
     if (this.user.idrol > 1) {
       let scope = this.user.roles.permisos_crud.split('');
@@ -202,7 +212,7 @@ export class Usuarios {
             }
 
             return `
-              <i class="${correo} t20" title="Email"></i>  <i class="${adicional} t20" title="Email Confirmado"></i>
+              <i role="img" class="${correo} t20" title="Email"></i>  <i role="img" class="${adicional} t20" title="Email Confirmado"></i>
               `;
           },
         },
@@ -213,7 +223,7 @@ export class Usuarios {
           cellClass: 'text-start',
           maxWidth: 150,
           cellRenderer: (params: ICellRendererParams)=>{
-            return `<i class="fas fa-server text-primary t20 mr-2"></i> <span class="t16">${params.value}</span>`
+            return `<i role="img" class="fas fa-server text-primary t20 mr-2"></i> <span class="t16">${params.value}</span>`
           }
         },
         {
@@ -231,7 +241,7 @@ export class Usuarios {
               color = 'text-success';
               icono = 'far fa-check-circle';
             }
-            return `<i class="${color} ${icono} t20"></i>`;
+            return `<i role="img" class="${color} ${icono} t20"></i>`;
           },
         },
         {
@@ -249,7 +259,7 @@ export class Usuarios {
             if (fecha){
               text = moment(fecha).format("YYYY-MM-DD");
             }else{
-              text = `<i class="fas fa-minus text-dark t20"></i>`
+              text = `<i role="img" class="fas fa-minus text-dark t20"></i>`
             }
             return text;
           }
@@ -314,14 +324,14 @@ export class Usuarios {
     if (params.data.deleted_at === null){
       button = document.createElement('button');
       button.className = 'btn btn-white';
-      button.innerHTML = `<i class="far fa-trash-alt text-danger" title='Eliminar'></i>`;
+      button.innerHTML = `<i role="img" class="far fa-trash-alt text-danger" title='Eliminar'></i>`;
       button.addEventListener('click', () => {
         this.procesoEspecial('eliminar un registro', 'eliminar', params.data.idusuario)
       });
     } else {
       button = document.createElement('button');
       button.className = 'btn btn-white';
-      button.innerHTML = `<i class="fas fa-undo-alt text-warning" title='Recuperar'></i>`;
+      button.innerHTML = `<i role="img" class="fas fa-undo-alt text-warning" title='Recuperar'></i>`;
       button.addEventListener('click', () => {
         this.procesoEspecial('recuperar un registro', 'recuperar', params.data.idusuario)
       });

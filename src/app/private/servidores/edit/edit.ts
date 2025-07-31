@@ -1,6 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { Breadcrums } from '../../shared/breadcrums/breadcrums';
-import { Header } from '../../shared/header/header';
 import { CommonModule } from '@angular/common';
 import vForm from './vform';
 import { Functions } from '../../../core/helpers/functions.helper';
@@ -10,10 +8,13 @@ import { Global } from '../../../core/config/global.config';
 import { ScriptsService } from '../../../core/services/script.service';
 import { ServidorService } from '../../../core/services/servidor.service';
 import { ActivatedRoute } from '@angular/router';
+import { Titulo } from '../../shared/titulo/titulo';
+import { Path } from '../../shared/path/path';
+
 
 @Component({
   selector: 'app-edit',
-  imports: [Breadcrums, Header, CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [Titulo, Path, CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './edit.html',
   styleUrl: './edit.scss',
   standalone: true
@@ -26,9 +27,13 @@ export class Edit {
   private readonly scriptSvc = inject(ScriptsService);
   
   user: any = null;
+  work: any = null;
+  path:any = [];
+  titulo:any = {icono: "",nombre:""}
   validador:any = vForm; 
   idservidor: string = "";
   rstData: any;
+  global = Global;
 
   nombre: string = "";
   ubicacion: string = "";
@@ -49,7 +54,6 @@ export class Edit {
    ngOnInit(): void {
     this.user = JSON.parse(this.sessions.get('user'));
 
-
     let uIDUser = this.route.snapshot.paramMap.get('id');
 
     if (uIDUser && uIDUser != '-1') {
@@ -57,6 +61,14 @@ export class Edit {
     }else{
       this.idservidor = "";
     }
+    
+    this.path = [
+      {nombre: "Configuración", ruta: ""}, 
+      {nombre: "Servidores", ruta: "admin/servidores"}, 
+      {nombre: this.idservidor == "" ? "Nuevo" : "Edición", ruta: `admin/servidor/${this.idservidor}`}, 
+    ];
+  
+    this.titulo = {icono: "fas fa-server",nombre: `Servidores - ${this.idservidor == "" ? "Nuevo" : "Edición"}`}
 
     if (this.user.idrol > 1) {
       let scope = this.user.roles.permisos_crud.split('');
@@ -194,11 +206,11 @@ export class Edit {
   //       this.func.closeSwal();
   //       if (resp.status) {
   //         this.func.showMessage("success", "Servidor", resp.data);
-  //         this.resultadoTest = `<i class="text-success mt-4 ml-2 t12"><i class="fas fa-check-circle  t16"></i> Healthy</i>`;
+  //         this.resultadoTest = `<i role="img" class="text-success mt-4 ml-2 t12"><i role="img" class="fas fa-check-circle  t16"></i> Healthy</i>`;
   //         this.validador.test.validacion.resultado = "";
   //       } else {
   //         this.func.showMessage("error", "Servidor", resp.message);
-  //         this.resultadoTest = `<i class="text-danger mt-4 ml-2 t12"><i class="fas fa-times-circle  t16"></i> No Healthy</i>`;
+  //         this.resultadoTest = `<i role="img" class="text-danger mt-4 ml-2 t12"><i role="img" class="fas fa-times-circle  t16"></i> No Healthy</i>`;
   //         this.validador.test.validacion.resultado =  resp.message;
   //       }
   //     },

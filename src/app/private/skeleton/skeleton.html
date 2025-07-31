@@ -2,7 +2,7 @@
   <div class="col-12 ">
     <div class="row">
       <div class="col-7 col-md-6 pl-3 pt-2">
-        <img class="ml-1" src="/assets/img/icono80.png" alt="LISAH" width="30" />
+        <img role="img" class="ml-1" src="/assets/img/icono80.png" alt="LISAH" width="30" />
         <strong > {{acronym}} - {{costumer}} </strong>
         <button
           class="btn btn-white text-dark btn-sm"
@@ -11,15 +11,15 @@
           data-bs-toggle="offcanvas"
           data-bs-target="#offcanvasDarkNavbar"
           aria-controls="offcanvasDarkNavbar"
-          aria-label="Toggle navigation"
+          aria-label="Menu Navegacion"
         >
-          <i class="fas fa-bars"></i>
+          <i role="img" class="fas fa-bars"></i>
         </button>
       </div>
       <div class="col-5 col-md-6 text-end pt-2">
-        <button class="btn btn-white text-primary noti" title="Notificaciones">
-          <i class="fas fa-bell mr-1"></i>
-          <span class="badge text-bg-warning">0</span>
+        <button class="btn btn-white text-primary noti" title="Notificaciones"  aria-hidden="true" aria-label="Notificaciones">
+          <i role="img" class="fas fa-bell mr-1" aria-label="Notificaciones icono"></i>
+          <span class="badge text-bg-warning" aria-label="0">0</span>
         </button>
 
         <button
@@ -29,9 +29,9 @@
           data-bs-toggle="offcanvas"
           data-bs-target="#offProfile"
           aria-controls="offProfile"
-          aria-label="Toggle navigation"
+          aria-label="Opciones de Usuario"
         >
-          <i class="fas fa-user fa-fw"></i> 
+          <i role="img" class="fas fa-user fa-fw"></i> 
         </button>
       </div>
     </div>
@@ -48,7 +48,7 @@
   <div class="offcanvas offcanvas-start text-bg-light" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel" >
     <div class="offcanvas-header">
       <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">
-        <img src="/assets/img/icono80.png" alt="LISAH" width="30" /> {{acronym}} - {{costumer}} </h5>
+        <img role="img" src="/assets/img/icono80.png" alt="LISAH" width="30" /> {{acronym}} - {{costumer}} </h5>
       <button #btnClose type="button" class="btn-close btn-close-dark" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
@@ -64,7 +64,7 @@
                 @for (c of m.child; track $index) {
                   <li class="item">
                     <button class="btn btn-white " (click)="execRuta(`${m.nombre}|${c.nombre}|${c.icono}|${c.ruta}`)">
-                      <i class="{{c.icono}} mr-2 iconomenu"></i>
+                      <i role="img" class="{{c.icono}} mr-2 iconomenu"></i>
                       <span>{{c.nombre}}</span>
                     </button>
                   </li>
@@ -82,7 +82,7 @@
         @if(m.es_submenu == 1){
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="true">
-            <i class="{{m.icono}} mr-2"></i> <span>{{m.nombre}}</span>
+            <i role="img" class="{{m.icono}} mr-2"></i> <span>{{m.nombre}}</span>
           </a>
           <ul class="dropdown-menu dropdown-menu-light">
             @for (c of m.child; track $index) {
@@ -92,7 +92,7 @@
                 href="javascript:void(0)"
                 (click)="execRuta(c.ruta)"
               >
-                <i class="{{c.icono}} mr-2 itemmenu"></i>
+                <i role="img" class="{{c.icono}} mr-2 itemmenu"></i>
                 <span>{{c.nombre}}</span>
               </a>
             </li>
@@ -116,24 +116,24 @@
   >
     <div class="offcanvas-header">
       <h5 class="offcanvas-title" id="offProfileLabel">
-        <img src="/assets/img/icono80.png" alt="LISAH" width="30" /> {{acronym}} - Opciones de Usuario
+        <img role="img" src="/assets/img/icono80.png" alt="LISAH" width="30" /> {{acronym}} - Opciones de Usuario
       </h5>
       <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
       <ul class="navbar-nav">
         <li class="nav-item bg-opciones-fondo">
-          <i class="fas fa-user fa-fw t30 mt-2 mr-2 col1"></i>
+          <i role="img" class="fas fa-user fa-fw t30 mt-2 mr-2 col1"></i>
           <div class="col2">
             {{user.nombre}} <br />
             <small>{{user.roles.nombre}}</small>
           </div>
           <div class="text-center p-1 col1">
             <button class="btn btn-link">
-              <i class="far fa-edit text-black t20"></i>
+              <i role="img" class="far fa-edit text-black t20"></i>
             </button>
             <button class="btn btn-link" (click)="closeSession()">
-              <i class="fas fa-power-off text-danger t20"></i>
+              <i role="img" class="fas fa-power-off text-danger t20"></i>
             </button>
           </div>
         </li>
@@ -147,7 +147,7 @@
               track $index) {
               <tr>
                 <td>
-                  <i class="far fa-bell"></i> {{item.label}} <br />
+                  <i role="img" class="far fa-bell"></i> {{item.label}} <br />
                   <small>10/12/2026</small>
                 </td>
                 <td>
@@ -161,7 +161,7 @@
               } } @else {
               <tr>
                 <li>
-                  <i class="far fa-bell-slash"></i>
+                  <i role="img" class="far fa-bell-slash"></i>
                   <small>Sin Notificaciones</small>
                 </li>
               </tr>

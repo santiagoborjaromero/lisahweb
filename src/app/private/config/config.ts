@@ -1,6 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { Header } from '../shared/header/header';
-import { Breadcrums } from '../shared/breadcrums/breadcrums';
 import { CommonModule } from '@angular/common';
 import { ConfigService } from '../../core/services/config.service'
 import { Functions } from '../../core/helpers/functions.helper';
@@ -8,10 +6,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { verificarRuc } from 'udv-ec';
 import { ScriptsService } from '../../core/services/script.service';
 import { Global } from '../../core/config/global.config';
+import { Titulo } from '../shared/titulo/titulo';
+import { Path } from '../shared/path/path';
+import { Sessions } from '../../core/helpers/session.helper';
 
 @Component({
   selector: 'app-config',
-  imports: [Header, Breadcrums, CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [Titulo, Path, CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './config.html',
   styleUrl: './config.scss'
 })
@@ -19,6 +20,12 @@ export class Config {
   private readonly configSvc = inject(ConfigService);
   private readonly func = inject(Functions);
   private readonly scriptSvc = inject(ScriptsService);
+  private readonly sessions = inject(Sessions);
+
+  user: any = null;
+  work: any = null;
+  path:any = [];
+  titulo:any = {icono: "",nombre:""}
 
   rstConfig: any;
   global = Global;
@@ -62,7 +69,19 @@ export class Config {
   validaNombre: string = "";
   validaRUC: string = "";
 
+  constructor(){
+  }
+  
   ngOnInit(): void {
+    this.work = JSON.parse(this.sessions.get('work'));
+    
+    this.path = [
+      {nombre: "Configuración", ruta: ""}, 
+      {nombre: "COnfiguración General", ruta: "admin/configs"}, 
+    ];
+  
+    this.titulo = {icono: "fa fa-cog",nombre: "Configuración General"}
+
     setTimeout(()=>{
       this.getData();
     },800)

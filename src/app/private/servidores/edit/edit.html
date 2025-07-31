@@ -1,14 +1,14 @@
-<app-breadcrums />
+<app-path [lstRutas]="path" />
 <div class="content">
-  <app-header />
+  <app-titulo [lstHeader]="titulo" />
 
   <div class="row barra-menu">
     <div class="col text-end">
       <button (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1">
-        <i class="fas fa-save"></i> Guardar
+        <i role="img" class="fas fa-save"></i> Guardar
       </button>
       <button (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1">
-        <i class="fas fa-reply"></i> Cancelar
+        <i role="img" class="fas fa-reply"></i> Cancelar
       </button>
     </div>
   </div>
@@ -21,79 +21,79 @@
 
         <div class="p-1 row">
           <div class="col-4 col-md-2 td2 text-end">
-            Nombre <small *ngIf="validador.nombre.requerido"><i class="text-danger">*</i></small>
+            <label for="nombre">Nombre</label> <small *ngIf="validador.nombre.requerido"><i role="img" class="text-danger">*</i></small>
             <br />
-            <small><i class="text-secondary">{{validador.nombre.etiqueta}}</i></small>
+            <small><i role="img" class="text-secondary">{{validador.nombre.etiqueta}}</i></small>
           </div>
           <div class="col-8 col-md-4 td2">
             <input type="text" name="nombre" id="nombre" class="form-control {{validador.nombre.validacion.resultado == '' ? '' : 'input-danger'}}" 
               [(ngModel)]="nombre"
             />
             <sup>
-              <i class=" {{validador.nombre.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
+              <i role="img" class=" {{validador.nombre.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
                 {{validador.nombre.validacion.resultado == '' ? validador.nombre.descripcion : validador.nombre.validacion.resultado}} </i>
             </sup>
           </div>
 
 
           <div class="col-4 col-md-2 td2 text-end">
-            Ubicación <small *ngIf="validador.ubicacion.requerido"><i class="text-danger">*</i></small>
+            <label for="ubicacion">Ubicación</label> <small *ngIf="validador.ubicacion.requerido"><i role="img" class="text-danger">*</i></small>
             <br />
-            <small><i class="text-secondary">{{validador.ubicacion.etiqueta}}</i></small>
+            <small><i role="img" class="text-secondary">{{validador.ubicacion.etiqueta}}</i></small>
           </div>
           <div class="col-8 col-md-4 td2">
             <input type="text" name="ubicacion" id="ubicacion" class="form-control {{validador.ubicacion.validacion.resultado == '' ? '' : 'input-danger'}}" 
               [(ngModel)]="ubicacion"
             />
             <sup>
-              <i class=" {{validador.ubicacion.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
+              <i role="img" class=" {{validador.ubicacion.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
                 {{validador.ubicacion.validacion.resultado == '' ? validador.ubicacion.descripcion : validador.ubicacion.validacion.resultado}} </i>
             </sup>
           </div>
 
 
           <div class="col-4 col-md-2 td2 text-end">
-            Host <small *ngIf="validador.host.requerido"><i class="text-danger">*</i></small>
+            <label for="host">Host</label> <small *ngIf="validador.host.requerido"><i role="img" class="text-danger">*</i></small>
             <br />
-            <small><i class="text-secondary">{{validador.host.etiqueta}}</i></small>
+            <small><i role="img" class="text-secondary">{{validador.host.etiqueta}}</i></small>
           </div>
           <div class="col-8 col-md-4 td2">
-            <input type="text" name="host" id="host" class="form-control {{validador.host.validacion.resultado == '' ? '' : 'input-danger'}}" 
+            <input type="text" name="host" id="" class="form-control {{validador.host.validacion.resultado == '' ? '' : 'input-danger'}}" 
               [(ngModel)]="host"
             />
             <sup>
-              <i class=" {{validador.host.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
+              <i role="img" class=" {{validador.host.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
                 {{validador.host.validacion.resultado == '' ? validador.host.descripcion : validador.host.validacion.resultado}} </i>
             </sup>
           </div>
 
 
           <div class="col-4 col-md-2 td2 text-end">
-            Puerto SSH<small *ngIf="validador.ssh_puerto.requerido"><i class="text-danger">*</i></small>
+            <label for="ssh_puerto">Puerto SSH</label><small *ngIf="validador.ssh_puerto.requerido"><i role="img" class="text-danger">*</i></small>
             <br />
-            <small><i class="text-secondary">{{validador.ssh_puerto.etiqueta}}</i></small>
+            <small><i role="img" class="text-secondary">{{validador.ssh_puerto.etiqueta}}</i></small>
           </div>
           <div class="col-8 col-md-4 td2">
             <input type="text" name="ssh_puerto" id="ssh_puerto" class="form-control {{validador.ssh_puerto.validacion.resultado == '' ? '' : 'input-danger'}}" 
               [(ngModel)]="ssh_puerto"
             />
             <sup>
-              <i class=" {{validador.ssh_puerto.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
+              <i role="img" class=" {{validador.ssh_puerto.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
                 {{validador.ssh_puerto.validacion.resultado == '' ? validador.ssh_puerto.descripcion : validador.ssh_puerto.validacion.resultado}} </i>
             </sup>
           </div>
 
           <div class="col-4 col-md-2 td2 text-end">
-            Puerto Agente<small *ngIf="validador.agente_puerto.requerido"><i class="text-danger">*</i></small>
+            <label for="agente_puerto">Puerto {{global.agent}}</label><small *ngIf="validador.agente_puerto.requerido"><i role="img" class="text-danger">*</i></small>
             <br />
-            <small><i class="text-secondary">{{validador.agente_puerto.etiqueta}}</i></small>
+            <small><i role="img" class="text-secondary">{{validador.agente_puerto.etiqueta}}</i></small>
           </div>
           <div class="col-8 col-md-4 td2">
             <input type="text" name="agente_puerto" id="agente_puerto" class="form-control {{validador.agente_puerto.validacion.resultado == '' ? '' : 'input-danger'}}" 
               [(ngModel)]="agente_puerto"
             />
             <sup>
-              <i class=" {{validador.agente_puerto.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
+              <i role="img" class=" {{validador.agente_puerto.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
                 {{validador.agente_puerto.validacion.resultado == '' ? validador.agente_puerto.descripcion : validador.agente_puerto.validacion.resultado}} </i>
             </sup>
           </div>
@@ -101,9 +101,9 @@
 
 
           <!-- <div class="col-4 col-md-2 td2 text-end">
-            Script Monitoreo <small *ngIf="validador.idscript_monitoreo.requerido"><i class="text-danger">*</i></small>
+            Script Monitoreo <small *ngIf="validador.idscript_monitoreo.requerido"><i role="img" class="text-danger">*</i></small>
             <br />
-            <small><i class="text-secondary">{{validador.idscript_monitoreo.etiqueta}}</i></small>
+            <small><i role="img" class="text-secondary">{{validador.idscript_monitoreo.etiqueta}}</i></small>
           </div>
           <div class="col-8 col-md-4 td2">
             <select [(ngModel)]="idscript_monitoreo" name="idscript_monitoreo" id="idscript_monitoreo" 
@@ -117,51 +117,35 @@
               }
             </select>
             <sup>
-              <i class=" {{validador.idscript_monitoreo.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
+              <i role="img" class=" {{validador.idscript_monitoreo.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
                 {{validador.idscript_monitoreo.validacion.resultado == '' ? validador.idscript_monitoreo.descripcion : validador.idscript_monitoreo.validacion.resultado}} </i>
             </sup>
           </div> -->
 
 
           <div class="col-4 col-md-2 td2 text-end">
-            Estado <small *ngIf="validador.estado.requerido"><i class="text-danger">*</i></small>
+            <label for="estado">Estado</label> <small *ngIf="validador.estado.requerido"><i role="img" class="text-danger">*</i></small>
             <br />
-            <small><i class="text-secondary">{{validador.estado.etiqueta}}</i></small>
+            <small><i role="img" class="text-secondary">{{validador.estado.etiqueta}}</i></small>
           </div>
           <div class="col-8 col-md-4 td2">
-            <select [(ngModel)]="estado" name="idrol" id="idrol" class="form-control">
+            <select [(ngModel)]="estado" name="estado" id="estado" class="form-control">
                 <option value="1">Activo</option>
                 <option value="0">Inactivo</option>
               </select>
             <sup>
-              <i class=" {{validador.estado.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+              <i role="img" class=" {{validador.estado.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
                 {{validador.estado.validacion.resultado == '' ? validador.estado.descripcion : validador.estado.validacion.resultado}}
               </i>
             </sup>
           </div>
 
-          <!-- <div class="col-4 col-md-2 td2 text-end">
-            Test SSH <small *ngIf="validador.test.requerido"><i class="text-danger">*</i></small>
-            <br />
-            <small><i class="text-secondary">{{validador.test.etiqueta}}</i></small>
-          </div>
-          <div class="col-8 col-md-4 td2">
-            <button class="btn btn-primary" type="button" (click)="testSSH()">
-              Iniciar Test
-            </button> <span [innerHTML]="resultadoTest"></span>
-            <br>
-            <sup>
-              <i class=" {{validador.test.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
-                {{validador.test.validacion.resultado == '' ? validador.test.descripcion : validador.test.validacion.resultado}}
-              </i>
-            </sup>
-          </div> -->
         </div>
         <div class="p-1 row">
           <div class="col-4 col-md-2 td2 text-end">
-            Observaciones<small *ngIf="validador.comentarios.requerido"><i class="text-danger">*</i></small>
+            <label for="comentarios">Observaciones</label><small *ngIf="validador.comentarios.requerido"><i role="img" class="text-danger">*</i></small>
             <br />
-            <small><i class="text-secondary">{{validador.comentarios.etiqueta}}</i></small>
+            <small><i role="img" class="text-secondary">{{validador.comentarios.etiqueta}}</i></small>
           </div>
           <div class="col-8 col-md-4 td2">
             <textarea name="comentarios" id="comentarios"
@@ -171,7 +155,7 @@
             ></textarea>
  
             <sup>
-              <i class=" {{validador.comentarios.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
+              <i role="img" class=" {{validador.comentarios.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
                 {{validador.comentarios.validacion.resultado == '' ? validador.comentarios.descripcion : validador.comentarios.validacion.resultado}} </i>
             </sup>
           </div>

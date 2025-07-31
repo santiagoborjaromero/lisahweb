@@ -1,6 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { Header } from '../shared/header/header';
-import { Breadcrums } from '../shared/breadcrums/breadcrums';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -17,12 +15,14 @@ import { Sessions } from '../../core/helpers/session.helper';
 import { GrupoUsuarioService } from '../../core/services/grupousuarios.service';
 import { Global } from '../../core/config/global.config';
 import Swal from 'sweetalert2';
+import { Titulo } from '../shared/titulo/titulo';
+import { Path } from '../shared/path/path';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 @Component({
   selector: 'app-grupousuarios',
-  imports: [Header, Breadcrums, CommonModule, FormsModule],
+  imports: [Titulo, Path, CommonModule, FormsModule],
   templateUrl: './grupousuarios.html',
   styleUrl: './grupousuarios.scss',
 })
@@ -33,6 +33,9 @@ export class Grupousuarios {
   private readonly sessions = inject(Sessions);
 
   user: any = null;
+  work: any = null;
+  path:any = [];
+  titulo:any = {icono: "",nombre:""}
 
   accion: string = 'activos';
   canR: boolean = true;
@@ -49,6 +52,12 @@ export class Grupousuarios {
 
   ngOnInit(): void {
     this.user = JSON.parse(this.sessions.get('user'));
+    this.path = [
+      {nombre: "Configuración", ruta: ""}, 
+      {nombre: "Grupo de Usuarios", ruta: "admin/grupousuarios"}, 
+    ];
+  
+    this.titulo = {icono: "fas fa-users",nombre: "Grupo de Usuarios"}
     // console.log(this.user.token)
 
     if (this.user.idrol > 1) {
@@ -159,7 +168,7 @@ export class Grupousuarios {
           maxWidth:150,
           cellRenderer: (params: ICellRendererParams) => {
             let icono = 'fa fa-users';
-            return `<i class="${icono} t16 mr-2"></i> ${params.value}`;
+            return `<i role="img" class="${icono} t16 mr-2"></i> ${params.value}`;
           },
         },
         {
@@ -171,7 +180,7 @@ export class Grupousuarios {
           maxWidth:150,
           cellRenderer: (params: ICellRendererParams) => {
             let icono = 'fas fa-prescription-bottle';
-            return `<i class="${icono} t16 mr-2"></i> ${params.value}`;
+            return `<i role="img" class="${icono} t16 mr-2"></i> ${params.value}`;
           },
         },
         {
@@ -189,7 +198,7 @@ export class Grupousuarios {
               color = 'text-success';
               icono = 'far fa-check-circle';
             }
-            return `<i class="${color} ${icono} t20"></i>`;
+            return `<i role="img" class="${color} ${icono} t20"></i>`;
           },
         },
         {
@@ -235,14 +244,14 @@ export class Grupousuarios {
     if (params.data.deleted_at === null){
       button = document.createElement('button');
       button.className = 'btn btn-white';
-      button.innerHTML = `<i class="far fa-trash-alt text-danger" title='Eliminar'></i>`;
+      button.innerHTML = `<i role="img" class="far fa-trash-alt text-danger" title='Eliminar'></i>`;
       button.addEventListener('click', () => {
         this.procesoEspecial('eliminar un registro', 'eliminar', params.data.idgrupo_usuario)
       });
     } else {
       button = document.createElement('button');
       button.className = 'btn btn-white';
-      button.innerHTML = `<i class="fas fa-undo-alt text-warning" title='Recuperar'></i>`;
+      button.innerHTML = `<i role="img" class="fas fa-undo-alt text-warning" title='Recuperar'></i>`;
       button.addEventListener('click', () => {
         this.procesoEspecial('recuperar un registro', 'recuperar', params.data.idgrupo_usuario)
       });

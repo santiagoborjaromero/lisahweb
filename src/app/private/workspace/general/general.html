@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col  d-flex justify-content-between">
-    <h6>General</h6>
-    <button (click)="openConn()" class="btn btn-primary btn-sm"><i class="fas fa-repeat"></i> Recargar</button>
+    <h6>Dashboard</h6>
+    <button (click)="openConn()" class="btn btn-primary btn-sm"><i role="img" class="fas fa-repeat"></i> Recargar</button>
   </div>
 </div>
 
@@ -9,42 +9,46 @@
   <div class="col-12 col-xs-6 col-sm-6 col-md-4 col-lg-4 mt-1">
     <div class="card p-1 h300">
       <div class="card-body">
-        <h5 class="card-title">Medios de Comunicación</h5>
+        <h5 class="card-title">Datos generales</h5>
         <small><i>Permite comprobar la salud de los protocolos de comunicación y el tiempo de actividad del servidor.</i></small>
         <br>
         <br>
         <div class="card-text t12">
           <ul class="list-group">
             <li class="list-group-item d-flex justify-content-between">
-              <span>Nombre Servidor</span><span>{{work.nombre}}</span>
+              <span>Nombre servidor</span><span>{{work.nombre}}</span>
             </li>
-                        <li class="list-group-item d-flex justify-content-between">
+              <li class="list-group-item d-flex justify-content-between">
               <span>Host</span><span>{{work.host}}</span>
             </li>
             <li class="list-group-item d-flex justify-content-between">
-              <span>Tiempo activo</span>
+              <span>Tiempo activo </span> 
               <div class="d-flex align-items-center">
-                <i class="far fa-clock t20 mr-2"></i>
-                <span>{{lstDatos.uptime}}</span>
+                <i role="img" class="far fa-clock t20 mr-2" title="Formato: dd:hh:mm:ss"></i>
+                <span >{{lstDatos.uptime}}</span>
               </div>
             </li>
             <li class="list-group-item d-flex justify-content-between">
-              <span class="sentinel">{{global.agent}}</span>
+              <span class="sentinel">
+                {{global.agent}} <br>
+                <i>puerto <small>{{work.agente_puerto}}</small></i>
+
+              </span>
               <div class="d-flex align-items-center">
                 @if(lstDatos){
                   @if(lstDatos.agente_status == "Conectado"){
-                    <i class="far fa-check-circle text-success t20"></i>
+                    <i role="img" class="far fa-check-circle text-success t20"></i>
                   }@else if(lstDatos.agente_status == "Desconectado"){
-                    <i class="fas fa-times-circle text-danger t20"></i>
+                    <i role="img" class="fas fa-times-circle text-danger t20"></i>
                   }@else if(lstDatos.agente_status == ""){
-                    <i class="fa fa-minus" title="No Conectado"></i>
+                    <!-- <i role="img" class="fa fa-minus" title="No Conectado"></i> -->
                   }
                 }
                 <span class="ml-2">{{lstDatos.agente_status}}</span>
               </div>
             </li>
             <!-- <li class="list-group-item d-flex justify-content-between">
-              <span>Acceso por SSH</span><i class="fa fa-minus"></i>
+              <span>Acceso por SSH</span><i role="img" class="fa fa-minus"></i>
             </li> -->
           </ul>
         </div>
@@ -148,7 +152,7 @@
       <div class="card-body ">
         <h5 class="card-title d-flex justify-content-between">
           Servicios
-          <button (click)="go('servicios')" class="btn btn-link btn-sm" title="Configuracion"><i class="{{icono.settings}}"></i></button>
+          <button (click)="go('servicios')" class="btn btn-link btn-sm" title="Configuracion"><i role="img" class="{{icono.settings}}"></i></button>
         </h5>
         <small
           ><i

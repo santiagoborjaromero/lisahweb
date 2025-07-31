@@ -1,6 +1,4 @@
 import { Component, effect, inject } from '@angular/core';
-import { Breadcrums } from '../shared/breadcrums/breadcrums';
-import { Header } from '../shared/header/header';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AllCommunityModule, ColumnAutosizeService, createGrid, GridApi, GridOptions, ICellRendererParams, ModuleRegistry} from 'ag-grid-community';
@@ -11,12 +9,14 @@ import { UsuarioService } from '../../core/services/usuarios.service';
 import moment from 'moment';
 
 import { WSService } from '../../core/services/ws.service';
+import { Titulo } from '../shared/titulo/titulo';
+import { Path } from '../shared/path/path';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 @Component({
   selector: 'app-monitoreo',
-  imports: [Breadcrums, Header, CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [Titulo, Path, CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './monitoreo.html',
   styleUrl: './monitoreo.scss',
   standalone: true,
@@ -34,6 +34,8 @@ export class Monitoreo {
     private server = new Map<number, any>();
   
     user: any = null;
+    path:any = [];
+    titulo:any = {icono: "",nombre:""}
     canR: boolean = true;
     canW: boolean = true;
     canD: boolean = true;
@@ -66,7 +68,12 @@ export class Monitoreo {
   
     ngOnInit(): void {
       this.user = JSON.parse(this.sessions.get('user'));
-      // console.log(this.user.token)
+      this.path = [
+        {nombre: "Admin & Hardening", ruta: ""}, 
+        {nombre: "Monitoreo", ruta: "admin/monitoreo"}, 
+      ];
+    
+      this.titulo = {icono: "fas fa-chart-bar",nombre: "Monitoreo"}
   
       this.tiempo_refresco = this.user.config.tiempo_refresco;
   
@@ -91,8 +98,6 @@ export class Monitoreo {
       this.getUsuario();  
     }
     
-  
-  
     getUsuario() {
       this.lstServidores = [];
       this.func.showLoading('Cargando Servidores del Usuario');
@@ -235,7 +240,7 @@ export class Monitoreo {
                 text = '';
                 color = 'text-secondary';
               }
-              return `<span class="${color}"><i class='${icono}'></i> ${puerto} ${text}</span>`;
+              return `<span class="${color}"><i role="img" class='${icono}'></i> ${puerto} ${text}</span>`;
             },
           },
           // {
@@ -277,7 +282,7 @@ export class Monitoreo {
           //           text = '';
           //           color = 'text-secondary';
           //         }
-          //         return `<span class="${color}"><i class='${icono}'></i> ${puerto} ${text}</span>`;
+          //         return `<span class="${color}"><i role="img" class='${icono}'></i> ${puerto} ${text}</span>`;
           //       },
           //     },
           //     // {
@@ -313,7 +318,7 @@ export class Monitoreo {
           //     //   //     text = '';
           //     //   //     color = 'text-secondary';
           //     //   //   }
-          //     //   //   return `<span class="${color}"><i class='${icono}'></i> ${puerto} ${text}</span>`;
+          //     //   //   return `<span class="${color}"><i role="img" class='${icono}'></i> ${puerto} ${text}</span>`;
           //     //   // },
           //     // },
           //   ]
@@ -350,7 +355,7 @@ export class Monitoreo {
                 text = '';
                 color = 'text-secondary';
               }
-              return `<span class="${color}"><i class='${icono}'></i> ${text}</span>`;
+              return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
             },
           },
           {
@@ -391,7 +396,7 @@ export class Monitoreo {
                     text = '';
                     color = 'text-secondary';
                   }
-                  return `<span class="${color}"><i class='${icono}'></i> ${text}</span>`;
+                  return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
                 },
               },
               {
@@ -426,7 +431,7 @@ export class Monitoreo {
                     text = '';
                     color = 'text-secondary';
                   }
-                  return `<span class="${color}"><i class='${icono}'></i> ${text}</span>`;
+                  return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
                 },
               },
               {
@@ -461,7 +466,7 @@ export class Monitoreo {
                     text = '';
                     color = 'text-secondary';
                   }
-                  return `<span class="${color}"><i class='${icono}'></i> ${text}</span>`;
+                  return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
                 },
               },
             ]
@@ -501,7 +506,7 @@ export class Monitoreo {
                     text = '';
                     color = 'text-secondary';
                   }
-                  return `<span class="${color}"><i class='${icono}'></i> ${text}</span>`;
+                  return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
                 },
               },
               {
@@ -534,7 +539,7 @@ export class Monitoreo {
                     text = '';
                     color = 'text-secondary';
                   }
-                  return `<span class="${color}"><i class='${icono}'></i> ${text}</span>`;
+                  return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
                 },
               },
               {
@@ -566,7 +571,7 @@ export class Monitoreo {
                     text = '';
                     color = 'text-secondary';
                   }
-                  return `<span class="${color}"><i class='${icono}'></i> ${text}</span>`;
+                  return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
                 },
               },
             ]
@@ -605,7 +610,7 @@ export class Monitoreo {
                     text = '';
                     color = 'text-secondary';
                   }
-                  return `<span class="${color}"><i class='${icono}'></i> ${text}</span>`;
+                  return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
                 },
               },
               {
@@ -637,7 +642,7 @@ export class Monitoreo {
                     text = '';
                     color = 'text-secondary';
                   }
-                  return `<span class="${color}"><i class='${icono}'></i> ${text}</span>`;
+                  return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
                 },
               },
               {
@@ -669,7 +674,7 @@ export class Monitoreo {
                     text = '';
                     color = 'text-secondary';
                   }
-                  return `<span class="${color}"><i class='${icono}'></i> ${text}</span>`;
+                  return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
                 },
               },
             ]
@@ -709,7 +714,7 @@ export class Monitoreo {
                     text = '';
                     color = 'text-secondary';
                   }
-                  return `<span class="${color}"><i class='${icono}'></i> ${text}</span>`;
+                  return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
                 },
               },
               {
@@ -742,7 +747,7 @@ export class Monitoreo {
                     text = '';
                     color = 'text-secondary';
                   }
-                  return `<span class="${color}"><i class='${icono}'></i> ${text}</span>`;
+                  return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
                 },
               },
             ]

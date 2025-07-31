@@ -32,43 +32,20 @@ export class Login {
   entorno = environment.production ? "" : "Desarrollo"
   // remember = signal<boolean>(false);
   remember: boolean = false;
-
-  formData = {
-    usuario: "",
-    clave: ""
-  };
-
-  constructor(){
-    // effect(() => {
-    //   console.log(this.initial)
-    //   if (this.remember()){
-    //     this.sessions.set("remember", JSON.stringify({remember: this.remember(), usuario:this.formData.usuario, clave:this.formData.clave}))
-    //   }else{
-    //     if (this.initial){
-    //       this.sessions.set("remember",JSON.stringify({remember: this.remember(), usuario:"", clave:""}))
-    //     }
-    //   }
-    // });
-  }
+  
+  usuario:string =  "";
+  clave:string =  "";
 
   ngOnInit(): void {
     this.sessions.set('statusLogged', 'false');
     this.sessions.set('user',"");
     this.sessions.set('token',"");
     this.sessions.set('form',"");
-
-
-    // this.formData = JSON.parse(this.sessions.get("remember"));
-    // if (this.formData && this.formData.usuario != ""){
-    //   this.remember = true
-    // }
   }
 
   ngOnDestroy(): void {
-    this.formData =  {
-      usuario: "",
-      clave: ""
-    };
+    this.usuario =  "";
+    this.clave =  "";
   }
 
   // funcRemember(){
@@ -84,12 +61,12 @@ export class Login {
     let msgErr = "";
     let error = false;
 
-    if (!error && this.formData.usuario.trim() == ''){
+    if (!error && this.usuario.trim() == ''){
       msgErr = "Debe ingresar el nombre del usuario";
       error = true;
     }
 
-    if (!error && this.formData.clave.trim() == ''){
+    if (!error && this.clave.trim() == ''){
       msgErr = "Debe ingresar la contrasena del usuario";
       error = true;
     }
@@ -99,21 +76,26 @@ export class Login {
       return
     }
 
+    let param = {
+      usuario: this.usuario,
+      clave: this.clave,
+    }
+
     this.func.showLoading("Cargando");
     try{
-      this.authSvc.login(this.formData).subscribe({
+      this.authSvc.login(param).subscribe({
         next: (resp:any) => {
           this.func.closeSwal();
-          this.formData.usuario = "";
-          this.formData.clave = "";
+          // console.log(resp)
+          this.usuario = "";
+          this.clave = "";
           if (resp.status){
             let data = resp.data[0];
 
             if (data){
               this.sessions.set("user", JSON.stringify(data));
-              // this.sessions.set('statusLogged', 'false');
               this.sessions.set('token', data.token);
-              this.sessions.set('form', JSON.stringify(this.formData));
+              this.sessions.set('form', JSON.stringify(param));
 
               if (data.config && data.config.segundo_factor_activo == 1){
                 this.func.goRoute("secondfactor")

@@ -1,11 +1,11 @@
-<app-breadcrums />
+<app-path [lstRutas]="path" />
 <div class="content">
-  <app-header />
+  <app-titulo [lstHeader]="titulo" />
 
   <div class="row barra-menu">
     <div class="col text-end">
-      <button (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1"><i class="fas fa-save mr-1"></i> Guardar</button>
-      <button (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1"><i class="fas fa-reply mr-1"></i> Cancelar</button>
+      <button (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1"><i role="img" class="fas fa-save mr-1"></i> Guardar</button>
+      <button (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1"><i role="img" class="fas fa-reply mr-1"></i> Cancelar</button>
     </div>
   </div>
   
@@ -14,14 +14,14 @@
       <div class="card mt-3">
         <div class="card-header th d-flex justify-content-between">
           <span> Información General </span>
-          <!-- <i class="far fa-question-circle text-primary"></i> -->
+          <!-- <i role="img" class="far fa-question-circle text-primary"></i> -->
         </div>
 
         <div class="p-1 row">
           <div class="col-4 col-md-3 td2 text-end">
-            Nombre Grupo <small *ngIf="formData.nombre.requerido"><i class="text-danger">*</i></small>
+            Nombre Grupo <small *ngIf="formData.nombre.requerido"><i role="img" class="text-danger">*</i></small>
             <br />
-            <small><i class="text-secondary">alfanumérico</i></small>
+            <small><i role="img" class="text-secondary">alfanumérico</i></small>
           </div>
           <div class="col-8 col-md-9 td2">
             <input
@@ -32,7 +32,7 @@
               [(ngModel)]="nombre"
             />
             <sup>
-              <i class=" {{formData.nombre.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+              <i role="img" class=" {{formData.nombre.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
                 {{formData.nombre.validacion.resultado == '' ? formData.nombre.descripcion : formData.nombre.validacion.resultado}}
               </i>
             </sup>
@@ -40,9 +40,9 @@
        
 
           <div class="col-4 col-md-3 td2 text-end">
-            Script Creación <small *ngIf="formData.idscript_creacion.requerido"><i class="text-danger">*</i></small>
+            Script Creación <small *ngIf="formData.idscript_creacion.requerido"><i role="img" class="text-danger">*</i></small>
             <br />
-            <small><i class="text-secondary">Selección</i></small>
+            <small><i role="img" class="text-secondary">Selección</i></small>
           </div>
           <div class="col-8 col-md-9 td2 d-flex justify-content-start">
             <div>
@@ -57,14 +57,14 @@
                 }
               </select>
                <sup>
-                <i class=" {{formData.idscript_creacion.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+                <i role="img" class=" {{formData.idscript_creacion.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
                   {{formData.idscript_creacion.validacion.resultado == '' ? formData.idscript_creacion.descripcion : formData.idscript_creacion.validacion.resultado}}
                 </i>
               </sup>
             </div>
             <div>
               <button class="btn btn-white btn-sm" title="Buscar Grupos" data-bs-toggle="modal" data-bs-target="#ventanaModalGU">
-                <i class="{{iconos.search}}"></i> <span class="link">Buscar Scripts</span></button>
+                <i role="img" class="{{iconos.search}}"></i> <span class="link">Buscar Scripts</span></button>
               <br><br>
             </div>
           </div>
@@ -75,7 +75,7 @@
       <div class="card mt-3">
         <div class="card-header th d-flex justify-content-between">
           <span> Opcion del Menú </span>
-          <i class="far fa-question-circle text-primary"></i>
+          <i role="img" class="far fa-question-circle text-primary"></i>
         </div>
         <div class="p-3 row">
           <p>

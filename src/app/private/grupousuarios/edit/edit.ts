@@ -1,6 +1,4 @@
 import { Component, ElementRef, inject, ViewChild } from '@angular/core';
-import { Header } from '../../shared/header/header';
-import { Breadcrums } from '../../shared/breadcrums/breadcrums';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
@@ -12,6 +10,8 @@ import { RolMenuService } from '../../../core/services/rolmenu.service';
 import { ScriptsService } from '../../../core/services/script.service';
 import iconsData from '../../../core/data/icons.data';
 import { AllCommunityModule, createGrid, GridApi, GridOptions, ICellRendererParams, ModuleRegistry } from 'ag-grid-community';
+import { Titulo } from '../../shared/titulo/titulo';
+import { Path } from '../../shared/path/path';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -19,7 +19,7 @@ declare var $: any;
 
 @Component({
   selector: 'app-edit',
-  imports: [Header, Breadcrums, FormsModule, CommonModule, ReactiveFormsModule],
+  imports: [Titulo, Path, FormsModule, CommonModule, ReactiveFormsModule],
   templateUrl: './edit.html',
   styleUrl: './edit.scss',
   standalone: true
@@ -36,6 +36,9 @@ export class Edit {
   private readonly scriptSvc = inject(ScriptsService);
 
   user: any = null;
+  work: any = null;
+  path:any = [];
+  titulo:any = {icono: "",nombre:""}
   iconos = iconsData;
   idgrupo_usuario: string = "";
   rstData: any;
@@ -77,14 +80,22 @@ export class Edit {
   
   ngOnInit(): void {
     this.user = JSON.parse(this.sessions.get('user'));
-
+    this.work = JSON.parse(this.sessions.get('work'));
     let uIDUser = this.route.snapshot.paramMap.get('id');
-
+    
     if (uIDUser && uIDUser!='-1') {
       this.idgrupo_usuario = uIDUser;
     }else{
       this.idgrupo_usuario = "";
     }
+
+    this.path = [
+      {nombre: "Configuración", ruta: ""}, 
+      {nombre: "Grupo de Usuarios", ruta: "admin/grupousuarios"}, 
+      {nombre: this.idgrupo_usuario == "" ? "Nuevo" : "Edición", ruta: `admin/grupousuario/${this.idgrupo_usuario}`}, 
+    ];
+  
+    this.titulo = {icono: "fas fa-users",nombre: `Grupo de Usuarios - ${this.idgrupo_usuario == "" ? "Nuevo" : "Edición"}`}
     
     this.dataGridStruct();
     this.getMenuItemsByClient();
@@ -109,9 +120,13 @@ export class Edit {
         // console.log(resp)
         this.func.closeSwal();
         if (resp.status) {
-          this.rstData = resp.data[0];
-          this.populateData();
-          // this.formData.idgrupo_usuario = this.lstGrupoUsuarios[0].idgrupo_usuario;
+          if (resp.data.length>0){
+            this.rstData = resp.data[0];
+            this.populateData();
+          }else{
+            this.func.showMessage("error", "Grupo de Usuario", "No existe informacion con ese ID");
+            this.funcCancelar();
+          }
         } else {
           this.func.showMessage("error", "Grupo de Usuario", resp.message);
         }
@@ -357,7 +372,7 @@ export class Edit {
 
     button = document.createElement('button');
     button.className = 'btn btn-white';
-    button.innerHTML = `<i class="fas fa-plus text-primary" title='Seleccionar Sript'></i>`;
+    button.innerHTML = `<i role="img" class="fas fa-plus text-primary" title='Seleccionar Sript'></i>`;
     button.addEventListener('click', () => {
       this.idscript_creacion = params.data.idscript;
       this.btnClose.nativeElement.click();

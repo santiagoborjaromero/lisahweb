@@ -1,14 +1,14 @@
-<app-breadcrums />
+<app-path [lstRutas]="path" />
 <div class="content">
-  <app-header />
+  <app-titulo [lstHeader]="titulo" />
 
   <div class="row barra-menu">
     <div class="col text-end">
       <button (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1">
-        <i class="fas fa-save mr-1"></i> Guardar
+        <i role="img" class="fas fa-save mr-1"></i> Guardar
       </button>
       <button (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1">
-        <i class="fas fa-reply mr-1"></i> Cancelar
+        <i role="img" class="fas fa-reply mr-1"></i> Cancelar
       </button>
     </div>
   </div>
@@ -24,11 +24,11 @@
           <div class="col-4 col-md-2 td2 text-end">
             Nombre del Script
             <small *ngIf="validador.nombre.requerido"
-              ><i class="text-danger">*</i></small
+              ><i role="img" class="text-danger">*</i></small
             >
             <br />
             <small
-              ><i class="text-secondary"
+              ><i role="img" class="text-secondary"
                 >{{validador.nombre.etiqueta}}</i
               ></small
             >
@@ -57,11 +57,11 @@
           <div class="col-4 col-md-2 td2 text-end">
             Estado
             <small *ngIf="validador.estado.requerido"
-              ><i class="text-danger">*</i></small
+              ><i role="img" class="text-danger">*</i></small
             >
             <br />
             <small
-              ><i class="text-secondary"
+              ><i role="img" class="text-secondary"
                 >{{validador.estado.etiqueta}}</i
               ></small
             >
@@ -92,10 +92,10 @@
           <div class="col-4 col-md-2 td2 text-end">
             Linea de comandos
             <small *ngIf="validador.cmds.requerido"
-              ><i class="text-danger">*</i></small
+              ><i role="img" class="text-danger">*</i></small
             >
             <br />
-            <small><i class="text-secondary">Selección</i></small>
+            <small><i role="img" class="text-secondary">Selección</i></small>
           </div>
           <div class="col-4 col-md-4 td2">
             <button
@@ -103,14 +103,14 @@
               data-bs-toggle="modal"
               data-bs-target="#exampleModal"
             >
-              <i class="fas fa-search"></i> Buscar y seleccionar comandos
+              <i role="img" class="fas fa-search"></i> Buscar y seleccionar comandos
             </button>
             <button
               class="btn btn-white"
               title="Añadir comando nuevo"
               (click)="addCommand()"
             >
-              <i class="fab fa-wpforms"></i> Añadir comando nuevo
+              <i role="img" class="fab fa-wpforms"></i> Añadir comando nuevo
             </button>
             <br />
             <sup>
@@ -148,7 +148,7 @@
           <div class="col-4 col-md-2 td2 text-end">
             Linea de comandos
             <br />
-            <small><i class="text-secondary">Alfanumérico</i></small>
+            <small><i role="img" class="text-secondary">Alfanumérico</i></small>
           </div>
           <div class="col-8 col-md-4 td2">
             <input
@@ -159,7 +159,7 @@
               [(ngModel)]="buscar"
               (keyup)="filtrar()"
             />
-            <sup><i class="text-secondary">Ingrese el texto a buscar</i></sup>
+            <sup><i role="img" class="text-secondary">Ingrese el texto a buscar</i></sup>
           </div>
           <div class="col-8 col-md-6 td2 text-end">
             <!-- <button
@@ -167,7 +167,7 @@
               title="Añadir comando"
               (click)="addCommand()"
             >
-              <i class="fab fa-wpforms"></i> Añadir Comando
+              <i role="img" class="fab fa-wpforms"></i> Añadir Comando
             </button> -->
             <br />
             <sup>&nbsp;</sup>
@@ -194,7 +194,7 @@
                       class="btn btn-link"
                       title="Añadir comando"
                     >
-                      <i class="fas fa-plus-circle t20"></i>
+                      <i role="img" class="fas fa-plus-circle t20"></i>
                     </button>
                   </td>
                 </tr>

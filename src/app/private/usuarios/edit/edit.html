@@ -1,11 +1,11 @@
-<app-breadcrums />
+<app-path [lstRutas]="path" />
 <div class="content">
-  <app-header />
+  <app-titulo [lstHeader]="titulo" />
 
   <div class="row barra-menu ">
     <div class="col text-end">
-      <button (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1"><i class="fas fa-save"></i> Guardar</button>
-      <button (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1"><i class="fas fa-reply"></i> Cancelar</button>
+      <button (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1"><i role="img" class="fas fa-save"></i> Guardar</button>
+      <button (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1"><i role="img" class="fas fa-reply"></i> Cancelar</button>
     </div>
   </div>
   
@@ -14,7 +14,7 @@
       <div class="card">
         <div class="card-body d-flexx ">
           <div class="mt-4 mr-3">
-            <i class="far fa-clock t40 mr-2 text-secondary"></i>
+            <i role="img" class="far fa-clock t40 mr-2 text-secondary"></i>
           </div>
           <div  class="text-end">
             <h5 class="card-title h50">{{ultimo_logueo}}</h5>
@@ -27,7 +27,7 @@
       <div class="card">
         <div class="card-body d-flex">
           <div class="mt-4 mr-3">
-            <i class="fas fa-users t40 mr-2 text-secondary"></i>
+            <i role="img" class="fas fa-users t40 mr-2 text-secondary"></i>
           </div>
           <div  class="text-end">
             <h5 class="card-title h50">{{grupo_usuario}}</h5>
@@ -40,7 +40,7 @@
       <div class="card">
         <div class="card-body d-flex">
           <div class="mt-4 mr-3">
-            <i class="fas fa-server text-secondary t40"></i>
+            <i role="img" class="fas fa-server text-secondary t40"></i>
           </div>
           <div class="text-end">
             <h5 class="card-title h50">{{lstSvrs.length}}</h5>
@@ -60,9 +60,9 @@
         <div class="p-1 row">
           @if (user.idrol == 1){
             <div class="col-4 col-md-3 td2 text-end">
-              Rol de Usuario <small *ngIf="validador.idrol.requerido"><i class="text-danger">*</i></small>
+              Rol de Usuario <small *ngIf="validador.idrol.requerido"><i role="img" class="text-danger">*</i></small>
               <br />
-              <small><i class="text-secondary">Selección</i></small>
+              <small><i role="img" class="text-secondary">Selección</i></small>
             </div>
             <div class="col-8 col-md-9 td2">
               <select [(ngModel)]="idrol" name="idrol" id="idrol" class="form-control">
@@ -73,9 +73,9 @@
             </div>
   
             <div class="col-4 col-md-3 td2 text-end">
-              Cliente <small *ngIf="validador.idcliente.requerido"><i class="text-danger">*</i></small>
+              Cliente <small *ngIf="validador.idcliente.requerido"><i role="img" class="text-danger">*</i></small>
               <br />
-              <small><i class="text-secondary">Selección</i></small>
+              <small><i role="img" class="text-secondary">Selección</i></small>
             </div>
             <div class="col-8 col-md-9 td2">
               <select [(ngModel)]="idcliente" (click)="getGrupoUsuarios()" name="idcliente" id="idcliente" class="form-control">
@@ -88,9 +88,9 @@
 
 
           <div class="col-4 col-md-3 td2 text-end">
-            Grupo <small *ngIf="validador.idgrupo_usuario.requerido"><i class="text-danger">*</i></small>
+            Grupo <small *ngIf="validador.idgrupo_usuario.requerido"><i role="img" class="text-danger">*</i></small>
             <br />
-            <small><i class="text-secondary">{{validador.idgrupo_usuario.etiqueta}}</i></small>
+            <small><i role="img" class="text-secondary">{{validador.idgrupo_usuario.etiqueta}}</i></small>
           </div>
           <div class="col-8 col-md-9 td2">
             <select [(ngModel)]="idgrupo_usuario"  name="idcliente" id="idcliente" class="form-control">
@@ -103,16 +103,16 @@
               }
             </select>
              <sup>
-              <i class=" {{validador.idgrupo_usuario.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+              <i role="img" class=" {{validador.idgrupo_usuario.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
                 {{validador.idgrupo_usuario.validacion.resultado == '' ? validador.idgrupo_usuario.descripcion : validador.idgrupo_usuario.validacion.resultado}}
               </i>
             </sup>
           </div>
           
           <div class="col-4 col-md-3 td2 text-end">
-            Nombre Completo <small *ngIf="validador.nombre.requerido"><i class="text-danger">*</i></small>
+            Nombre Completo <small *ngIf="validador.nombre.requerido"><i role="img" class="text-danger">*</i></small>
             <br />
-            <small><i class="text-secondary">{{validador.nombre.etiqueta}}</i></small>
+            <small><i role="img" class="text-secondary">{{validador.nombre.etiqueta}}</i></small>
           </div>
           <div class="col-8 col-md-9 td2">
             <input
@@ -123,7 +123,7 @@
               [(ngModel)]="nombre"
             />
             <sup>
-              <i class=" {{validador.nombre.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+              <i role="img" class=" {{validador.nombre.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
                 {{validador.nombre.validacion.resultado == '' ? validador.nombre.descripcion : validador.nombre.validacion.resultado}}
               </i>
             </sup>
@@ -131,9 +131,9 @@
 
 
           <div class="col-4 col-md-3 td2 text-end">
-            Usuario (login) <small *ngIf="validador.usuario.requerido"><i class="text-danger">*</i></small>
+            Usuario (login) <small *ngIf="validador.usuario.requerido"><i role="img" class="text-danger">*</i></small>
             <br />
-            <small><i class="text-secondary">{{validador.usuario.etiqueta}}</i></small>
+            <small><i role="img" class="text-secondary">{{validador.usuario.etiqueta}}</i></small>
           </div>
           <div class="col-8 col-md-9 td2">
             <input
@@ -144,7 +144,7 @@
               [(ngModel)]="usuario"
             />
             <sup>
-              <i class=" {{validador.usuario.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+              <i role="img" class=" {{validador.usuario.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
                 {{validador.usuario.validacion.resultado == '' ? validador.usuario.descripcion : validador.usuario.validacion.resultado}}
               </i>
             </sup>
@@ -152,9 +152,9 @@
 
 
           <div class="col-4 col-md-3 td2 text-end">
-            Email <small *ngIf="validador.email.requerido"><i class="text-danger">*</i></small>
+            Email <small *ngIf="validador.email.requerido"><i role="img" class="text-danger">*</i></small>
             <br />
-            <small><i class="text-secondary">{{validador.email.etiqueta}}</i></small>
+            <small><i role="img" class="text-secondary">{{validador.email.etiqueta}}</i></small>
           </div>
           <div class="col-8 col-md-9 td2">
             <input
@@ -165,16 +165,16 @@
               [(ngModel)]="email"
             />
             <sup>
-              <i class=" {{validador.email.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+              <i role="img" class=" {{validador.email.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
                 {{validador.email.validacion.resultado == '' ? validador.email.descripcion : validador.email.validacion.resultado}}
               </i>
             </sup>
           </div>
           @if (idusuario!=""){
             <div class="col-4 col-md-3 td2 text-end">
-              Identificador NTFY <small *ngIf="validador.ntfy_identificador.requerido"><i class="text-danger">*</i></small>
+              Identificador NTFY <small *ngIf="validador.ntfy_identificador.requerido"><i role="img" class="text-danger">*</i></small>
               <br />
-              <small><i class="text-secondary">{{validador.ntfy_identificador.etiqueta}}</i></small>
+              <small><i role="img" class="text-secondary">{{validador.ntfy_identificador.etiqueta}}</i></small>
             </div>
             <div class="col-8 col-md-9 td2">
               <input
@@ -185,7 +185,7 @@
                 [(ngModel)]="ntfy_identificador"
               />
               <sup>
-                <i class=" {{validador.ntfy_identificador.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+                <i role="img" class=" {{validador.ntfy_identificador.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
                   {{validador.ntfy_identificador.validacion.resultado == '' ? validador.ntfy_identificador.descripcion : validador.ntfy_identificador.validacion.resultado}}
                 </i>
               </sup>
@@ -193,9 +193,9 @@
           }
 
           <div class="col-4 col-md-3 td2 text-end">
-            Estado <small *ngIf="validador.estado.requerido"><i class="text-danger">*</i></small>
+            Estado <small *ngIf="validador.estado.requerido"><i role="img" class="text-danger">*</i></small>
             <br />
-            <small><i class="text-secondary">{{validador.estado.etiqueta}}</i></small>
+            <small><i role="img" class="text-secondary">{{validador.estado.etiqueta}}</i></small>
           </div>
           <div class="col-8 col-md-9 td2">
             <select [(ngModel)]="estado" name="idrol" id="idrol" class="form-control">
@@ -203,7 +203,7 @@
                 <option value="0">Inactivo</option>
               </select>
             <sup>
-              <i class=" {{validador.estado.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+              <i role="img" class=" {{validador.estado.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
                 {{validador.estado.validacion.resultado == '' ? validador.estado.descripcion : validador.estado.validacion.resultado}}
               </i>
             </sup>
@@ -285,16 +285,16 @@
         <div class="p-1 row">
           <div class="col-4 col-md-2 td2 text-end">
             Servidores
-              <small *ngIf="validador.servidores.requerido"><i class="text-danger">*</i></small>
+              <small *ngIf="validador.servidores.requerido"><i role="img" class="text-danger">*</i></small>
             <br />
-            <small><i class="text-secondary">Selección</i></small>
+            <small><i role="img" class="text-secondary">Selección</i></small>
           </div>
           <div class="col-4 col-md-4 td2">
             <button  class="btn btn-primary btn-sm m-1" (click)="actualizaServidores()"
-              data-bs-toggle="modal" data-bs-target="#ventanaModal"><i class="fas fa-plus"></i> Añadir</button> 
+              data-bs-toggle="modal" data-bs-target="#ventanaModal"><i role="img" class="fas fa-plus"></i> Añadir</button> 
             <br>
             <sup>
-              <i class=" {{validador.servidores.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+              <i role="img" class=" {{validador.servidores.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
                 {{validador.servidores.validacion.resultado == '' ?
                 validador.servidores.descripcion :
                 validador.servidores.validacion.resultado}}
@@ -326,7 +326,7 @@
           <div class="col-4 col-md-2 td2 text-end">
             texto a buscar
             <br />
-            <small><i class="text-secondary">Alfanumérico</i></small>
+            <small><i role="img" class="text-secondary">Alfanumérico</i></small>
           </div>
           <div class="col-8 col-md-4 td2">
             <input
@@ -337,10 +337,10 @@
               [(ngModel)]="buscar"
               (keyup)="filtrar()"
             />
-            <sup><i class="text-secondary">Ingrese el texto a buscar por nombre, ubicacion, host o puerto</i></sup>
+            <sup><i role="img" class="text-secondary">Ingrese el texto a buscar por nombre, ubicacion, host o puerto</i></sup>
           </div>
           <div class="col-8 col-md-1 td2">
-            <button class="btn btn-link" title="Buscar"><i class="fas fa-search"></i></button>
+            <button class="btn btn-link" title="Buscar"><i role="img" class="fas fa-search"></i></button>
             <br>
             <sup>&nbsp;</sup>
           </div>
@@ -359,7 +359,7 @@
                   @if(!item.check){
                     <tr>
                       <td>{{item.nombre}} - <i>{{item.ubicacion}}</i> -  <strong>{{item.host}}:{{item.ssh_puerto}}:{{item.agente_puerto}}</strong></td>
-                      <td><button (click)="addItem(item.idservidor)" class="btn btn-link"><i class="fas fa-plus"></i></button></td>
+                      <td><button (click)="addItem(item.idservidor)" class="btn btn-link"><i role="img" class="fas fa-plus"></i></button></td>
                     </tr>
                   }
                 }

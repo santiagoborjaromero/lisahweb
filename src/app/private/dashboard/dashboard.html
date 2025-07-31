@@ -1,7 +1,6 @@
-<app-breadcrums />
+<app-path [lstRutas]="path" />
 <div class="content">
-  <app-header/>
-</div>
+  <app-titulo [lstHeader]="titulo" />
 <!-- 
 <div class="card mb-4">
   <div class="card-body">
@@ -16,7 +15,7 @@
 </div>
 <div class="card mb-4">
   <div class="card-header">
-    <i class="fas fa-chart-area me-1"></i>
+    <i role="img" class="fas fa-chart-area me-1"></i>
     Area Chart Example
   </div>
   <div class="card-body">
@@ -28,7 +27,7 @@
   <div class="col-lg-6">
     <div class="card mb-4">
       <div class="card-header">
-        <i class="fas fa-chart-bar me-1"></i>
+        <i role="img" class="fas fa-chart-bar me-1"></i>
         Bar Chart Example
       </div>
       <div class="card-body">
@@ -42,7 +41,7 @@
   <div class="col-lg-6">
     <div class="card mb-4">
       <div class="card-header">
-        <i class="fas fa-chart-pie me-1"></i>
+        <i role="img" class="fas fa-chart-pie me-1"></i>
         Pie Chart Example
       </div>
       <div class="card-body">

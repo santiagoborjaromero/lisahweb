@@ -238,7 +238,7 @@ export class Grupousuarios implements OnInit{
                     texto = params.value;
                     color = "text-success";
                   }
-                  return `<i class="fas fa-${icono}-circle ${color} t16 mr-2"></i> ${texto}`;
+                  return `<i role="img" class="fas fa-${icono}-circle ${color} t16 mr-2"></i> ${texto}`;
                 },
               },
             ]
@@ -294,7 +294,7 @@ export class Grupousuarios implements OnInit{
 
       button = document.createElement('button');
       button.className = 'btn btn-white';
-      button.innerHTML = `<i class="fas fa-plus text-primary" title='Crear Grupo'></i>`;
+      button.innerHTML = `<i role="img" class="fas fa-plus text-primary" title='Crear Grupo'></i>`;
       button.addEventListener('click', () => {
         this.crearGrupo(params.data.nombre);
       });

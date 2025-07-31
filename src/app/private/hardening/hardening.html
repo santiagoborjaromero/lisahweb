@@ -1,31 +1,70 @@
-<app-breadcrums />
+<app-path [lstRutas]="path" />
 <div class="content">
-  <app-header />
+  <app-titulo [lstHeader]="titulo" />
 
-  <div class="row barra-menu">
-    <div class="col d-flex justify-content-between">
-      <h4>Listado de Servidores</h4>
-      <button (click)="goServidores()" class="btn btn-white link" title="Definir Servidores"><i class="fa fa-cog"></i> Servidores</button>
+  <section class="row barra-menu">
+    <div class="col d-flex justify-content-end">
+      &nbsp;&nbsp;
+      <!-- <button (click)="goServidores()" class="btn btn-white " title="Definir Servidores"><i role="img" class="fa fa-cog mr-2"></i> <span class="link">Servidores</span> </button> -->
     </div>
-  </div>
-
-  <div class="row d-flex justify-content-center">
+  </section>
+  
+  <section class="row">
+    <div class="col-12 col-md-6"><h4>Listado de Servidores</h4></div>
+    <div class="col-12 col-md-6 text-end d-flex justify-content-end">
+      <!-- <div class="btn-group" role="group" aria-label="Modo Vista">
+        <button type="button" class="btn btn-outline-secondary btn-sm active">
+          <i class="fab fa-buromobelexperte t30" title="Vista en tarjetas"></i>
+        </button>
+        <button type="button" class="btn btn-outline-secondary btn-sm">
+          <i class="fas fa-border-all t30" title="Vista en tabla"></i>
+        </button>
+      </div> -->
+    </div>
+  </section>
+  
+  <section class="row">
+    <div class="col-4 col-md-3 col-lg-2 col-xl-2 td2 text-end">
+      <label for="">Buscar servidores</label>
+    </div>
+    <div class="col-8 col-md-9 col-lg-4 col-xl-2 td2">
+      <input type="text" name="buscar" id="buscar" (keyup)="buscarServidores($event)" class="form-control" [(ngModel)]="buscar" />
+    </div>
+  </section>
+  <section class="row d-flex justify-content-center mt-5">
     @for (server of lstServidores; track $index) {
     <div class="col-12 col-xs-6 col-sm-4 col-md-3 col-lg-2" >
-      <div class="card p-1" >
+      <article class="card p-1" [attr.aria-label]="server.nombre" >
         <div class="card-body">
-          <h5 class="card-title"><i class="fas fa-server text-secondary"></i> {{server.nombre}}</h5>
-          <p class="card-text t12">
+          <h4 class="card-title d-flex justify-content-start align-items-center">
+            <i role="img" class="fas fa-server text-white t30 bg-info p-3 redondo mr-2"></i> {{server.nombre}}
+          </h4>
+          <div class="card-text t12 ">
+            <div class="row">
+              <div class="col"><small class="bold">UBICACION</small>:</div>
+              <div class="col">{{server.ubicacion}}</div>
+            </div>
+            <div class="row">
+              <div class="col"><small class="bold">HOST</small>:</div>
+              <div class="col">{{server.host}}</div>
+            </div>
             <!-- {{server.agente_puerto_protocolo}}://{{server.host}}:{{server.agente_puerto}} -->
-             {{server.ubicacion}}, {{server.host}}
-          </p>
-          <div class="d-flex justify-content-between">
-            <button (click)="gowork(server.idservidor)" class="btn btn-white btn-sm mr-1 link"><i class="fas fa-check text-secondary"></i> Seleccionar</button>
-            <button (click)="goEditServer(server.idservidor)" class="btn btn-white btn-sm mr-1 link"><i class="far fa-edit text-secondary"></i> Editar</button>
+          </div>
+          <div class="d-flex justify-content-end mt-3">
+            <button [attr.aria-label]="'Seleccionar Servidor {{server.nombre}}'" (click)="gowork(server.idservidor)" 
+              class="btn btn-outline-primary btn-sm mr-1">
+              <i role="img" class="fas fa-check mr-2"></i> 
+              <span aria-label="Seleccionar Servidor">Seleccionar</span>
+            </button>
+            <!-- <button [attr.aria-label]="'Editar Servidor {{server.nombre}}'" (click)="goEditServer(server.idservidor)" 
+              class="btn btn-outline-primary btn-sm mr-1">
+              <i role="img" class="far fa-edit mr-2"></i> 
+              <span aria-label="Editar Servidor">Editar</span>
+            </button> -->
           </div>
         </div>
-      </div>
+      </article>
     </div>
     }
-  </div>
+  </section>
 </div>

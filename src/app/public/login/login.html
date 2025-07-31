@@ -7,7 +7,7 @@
             <div class="card shadow-lg border-0 rounded-lg mt-5">
               <div class="card-header">
                 <h3 class="text-center font-weight-light my-4">
-                  <img src="/assets/img/lisah80.png" alt="LISAH" width="80"/>
+                  <img role="img" src="/assets/img/lisah80.png" alt="LISAH" width="80"/>
                   <br>
                   {{costumer}}
                 </h3>
@@ -19,23 +19,22 @@
                 <form (ngSubmit)="funcSubmit()">
                   <div class="form-floating mb-3">
                     <input
+                      type="email"
                       class="form-control"
                       id="usuario"
                       name="usuario"
-                      [(ngModel)]="formData.usuario"
-                      type="email"
-                      placeholder="name@example.com"
+                      [(ngModel)]="usuario"
                     />
                     <label for="usuario">Usuario</label>
                   </div>
                   <div class="form-floating mb-3">
                     <input
+                      type="password"
                       class="form-control"
                       id="clave"
                       name="clave"
-                      [(ngModel)]="formData.clave"
-                      type="password"
-                      placeholder="Password"
+                      [(ngModel)]="clave"
+                      autocomplete="on"
                     />
                     <label for="clave">Contraseña</label>
                   </div>
@@ -56,8 +55,8 @@
                     class="d-flex align-items-center justify-content-between mt-4 mb-0"
                   >
                     <button type="button" class="btn btn-link">Olvide mi contraseña?</button>
-                    <button type="submit" class="btn btn-primary btn-shadow" >
-                      <i class="fas fa-user-shield"></i><br />
+                    <button type="submit" class="btn btn-primary btn-shadow" aria-label="Iniciar Sesion">
+                      <i role="img" class="fas fa-user-shield" aria-hidden="true"  aria-label="Icono Iniciar Sesion"></i><br />
                       Iniciar Sesión
                     </button>
                   </div>

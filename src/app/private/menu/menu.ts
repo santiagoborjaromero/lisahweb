@@ -1,19 +1,19 @@
 import { CommonModule, formatNumber } from '@angular/common';
 import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Header } from '../shared/header/header';
-import { Breadcrums } from '../shared/breadcrums/breadcrums';
 import { themeBalham, ModuleRegistry, AllCommunityModule, createGrid, GridApi, GridOptions, ICellRendererParams, ValueFormatterParams, provideGlobalGridOptions} from 'ag-grid-community';
 import { Global } from '../../core/config/global.config';
 import { Menuservice } from '../../core/services/menuservice.service';
 import { Functions } from '../../core/helpers/functions.helper';
 import { Sessions } from '../../core/helpers/session.helper';
+import { Titulo } from '../shared/titulo/titulo';
+import { Path } from '../shared/path/path';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 @Component({
   selector: 'app-menu',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, Header, Breadcrums],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, Titulo, Path],
   templateUrl: './menu.html',
   styleUrl: './menu.scss',
 })
@@ -24,8 +24,9 @@ export class Menu {
   private readonly func = inject(Functions);
   private readonly sessions = inject(Sessions);
 
-  // title = 'Menu de Opciones';
-  // rutas: Array<any> = ['Creadores', 'Menú de Opciones'];
+  user:any = [];
+  path:any = [];
+  titulo:any = {icono: "",nombre:""}
 
   public dtOptions: any = {};
   public gridOptions: GridOptions<any> = {};
@@ -35,9 +36,13 @@ export class Menu {
   lstData = [];
 
   ngOnInit(): void {
-  }
-  
-  ngAfterViewInit(): void {
+
+    this.path = [
+      {nombre: "Admin & Hardening", ruta: ""}, 
+      {nombre: "Auditoria Logs", ruta: "admin/logs"}, 
+    ];
+    this.titulo = {icono: "fas fa-traffic-light",nombre: "Auditoria Logs"}
+
     this.dataGridStruct();
 
     setTimeout(() => {
@@ -111,7 +116,7 @@ export class Menu {
           sort: "asc",
           // cellRenderer: (params: ICellRendererParams) => {
           //   let data = params.data;
-          //   return `<kbd class="${data.clase} mt-1 pt-1"><i class="${data.icono} text-white"></i></kbd> ${data.tipo}`;
+          //   return `<kbd class="${data.clase} mt-1 pt-1"><i role="img" class="${data.icono} text-white"></i></kbd> ${data.tipo}`;
           // },
         },
         {
@@ -139,7 +144,7 @@ export class Menu {
           cellRenderer: (params: ICellRendererParams) => {
             let data = params.data;
             let icono = data.icono;
-            return `<i class="${icono}"></i>`;
+            return `<i role="img" class="${icono}"></i>`;
           },
         },
         {

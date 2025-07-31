@@ -1,6 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { Breadcrums } from '../../shared/breadcrums/breadcrums';
-import { Header } from '../../shared/header/header';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
@@ -9,11 +7,13 @@ import { Sessions } from '../../../core/helpers/session.helper';
 import { TemplateService } from '../../../core/services/template.service';
 import { VariablesService } from '../../../core/services/variables.service';
 import vForm from './vform';
+import { Titulo } from '../../shared/titulo/titulo';
+import { Path } from '../../shared/path/path';
 
 
 @Component({
   selector: 'app-edit',
-  imports: [Breadcrums, Header, FormsModule, CommonModule, ReactiveFormsModule],
+  imports: [Titulo, Path, FormsModule, CommonModule, ReactiveFormsModule],
   templateUrl: './edit.html',
   styleUrl: './edit.scss',
   standalone: true
@@ -27,6 +27,8 @@ export class Edit {
   private readonly varSvc = inject(VariablesService);
   
   user: any = null;
+  path:any = [];
+  titulo:any = {icono: "",nombre:""}
   idtemplate: string = "";
   rstData: any;
 
@@ -52,6 +54,14 @@ export class Edit {
     }else{
       this.idtemplate = "";
     }
+
+    this.path = [
+      {nombre: "Configuración", ruta: ""}, 
+      {nombre: "Comandos", ruta: "admin/templates"}, 
+      {nombre: this.idtemplate == "" ? "Nuevo" : "Edición", ruta: `admin/template/${this.idtemplate}`}, 
+    ];
+  
+    this.titulo = {icono: "fab fa-wpforms",nombre: `Comandos - ${this.idtemplate == "" ? "Nuevo" : "Edición"}`}
 
     if (this.user.idrol > 1) {
       let scope = this.user.roles.permisos_crud.split('');

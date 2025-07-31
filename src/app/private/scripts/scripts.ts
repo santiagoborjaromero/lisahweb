@@ -1,6 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { Header } from '../shared/header/header';
-import { Breadcrums } from '../shared/breadcrums/breadcrums';
 import { CommonModule } from '@angular/common';
 import { ScriptsService } from '../../core/services/script.service';
 import { Functions } from '../../core/helpers/functions.helper';
@@ -9,12 +7,14 @@ import { AllCommunityModule, createGrid, GridApi, GridOptions, ICellRendererPara
 import { Global } from '../../core/config/global.config';
 import Swal from 'sweetalert2';
 import moment from 'moment';
+import { Titulo } from '../shared/titulo/titulo';
+import { Path } from '../shared/path/path';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 @Component({
   selector: 'app-scripts',
-  imports: [Header, Breadcrums, CommonModule],
+  imports: [Titulo, Path, CommonModule],
   templateUrl: './scripts.html',
   styleUrl: './scripts.scss'
 })
@@ -24,6 +24,8 @@ export class Scripts {
   private readonly sessions = inject(Sessions);
 
   user: any = null;
+  path:any = [];
+  titulo:any = {icono: "",nombre:""}
 
   public gridOptions: GridOptions<any> = {};
   public gridApi?: GridApi<any>;
@@ -47,7 +49,12 @@ export class Scripts {
 
   ngOnInit(): void {
     this.user = JSON.parse(this.sessions.get('user'));
-    // console.log(this.user)
+    this.path = [
+      {nombre: "Configuración", ruta: ""}, 
+      {nombre: "Scripts", ruta: "admin/scripts"}, 
+    ];
+  
+    this.titulo = {icono: "fas fa-superscript",nombre: "Listado de Scripts"}
 
     if (this.user.idrol > 1) {
       let scope = this.user.roles.permisos_crud.split('');
@@ -170,7 +177,7 @@ export class Scripts {
               color = 'text-success';
               icono = 'far fa-check-circle';
             }
-            return `<i class="${color} ${icono} t20"></i>`;
+            return `<i role="img" class="${color} ${icono} t20"></i>`;
           },
         },
         {
@@ -215,7 +222,7 @@ export class Scripts {
 
     button = document.createElement('button');
     button.className = 'btn btn-white';
-    button.innerHTML = `<i class="far fa-trash-alt text-danger" title='Eliminar'></i>`;
+    button.innerHTML = `<i role="img" class="far fa-trash-alt text-danger" title='Eliminar'></i>`;
     button.addEventListener('click', () => {
       this.procesoEspecial('eliminar un registro', 'eliminar', params.data.idscript)
     });

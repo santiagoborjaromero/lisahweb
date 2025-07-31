@@ -6,16 +6,16 @@
       <div class="d-flex align-items-center">
       @if(lstDatos){
           @if(lstDatos.agente_status == "Conectado"){
-          <i class="far fa-check-circle text-success t20"></i>
+          <i role="img" class="far fa-check-circle text-success t20"></i>
           }@else if(lstDatos.agente_status == "Desconectado"){
-          <i class="fas fa-times-circle text-danger t20"></i>
+          <i role="img" class="fas fa-times-circle text-danger t20"></i>
           }@else if(lstDatos.agente_status == ""){
-          <i class="fas fa-minus-circle text-secondary"></i> 
+          <i role="img" class="fas fa-minus-circle text-secondary"></i> 
           }
       }
       <span class="ml-2">{{lstDatos.agente_status}}</span>
       </div>
     </div>
-    <button (click)="openConn()" class="btn btn-primary btn-sm"><i class="fas fa-repeat"></i> Recargar</button>
+    <button (click)="openConn()" class="btn btn-primary btn-sm"><i role="img" class="fas fa-repeat"></i> Recargar</button>
   </div>
 </div>

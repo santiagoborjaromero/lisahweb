@@ -1,66 +1,54 @@
-<app-breadcrums />
+<app-path [lstRutas]="path" />
 <div class="content">
-  <app-header />
-
-  <div class="row barra-menu">
+  <app-titulo [lstHeader]="titulo" />
+  
+  <section class="row barra-menu">
     <div class="col text-end">
-      <button
-        *ngIf="!accionEditar"
-        (click)="accionEditar=!accionEditar"
-        class="btn btn-primary btn-sm ml-1"
-      >
-        <i class="far fa-edit"></i> Editar
+      <button aria-label="Editar configuracion" *ngIf="!accionEditar" (click)="accionEditar=!accionEditar" class="btn btn-primary btn-sm ml-1">
+        <i role="img" class="far fa-edit"></i> Editar
       </button>
-      <button
-        *ngIf="accionEditar"
-        (click)="funcSubmit()"
-        class="btn btn-primary btn-sm ml-1"
-      >
-        <i class="fas fa-save"></i> Guardar
+      <button aria-label="Guardar configuracion" *ngIf="accionEditar" (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1">
+        <i role="img" class="fas fa-save"></i> Guardar
       </button>
-      <button
-        *ngIf="accionEditar"
-        (click)="funcCancelar()"
-        class="btn btn-danger btn-sm ml-1"
-      >
-        <i class="fas fa-reply"></i> Cancelar
+      <button aria-label="Cancelar configuracion" *ngIf="accionEditar" (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1">
+        <i role="img" class="fas fa-reply"></i> Cancelar
       </button>
-      <button (click)="getData()" class="btn btn-info btn-sm ml-1">
-        <i class="fas fa-sync-alt"></i>
+      <button (click)="getData()" aria-label="Refrescar" class="btn btn-white btn-sm ml-1" title="Refrescar">
+        <i role="img" class="fas fa-sync-alt"></i>
       </button>
     </div>
-  </div>
+  </section>
 
-  <div class="row">
+  <section class="row">
     <div class="col col-md-12">
       <div class="card mt-3">
         <div class="card-header th2 d-flex justify-content-between">
-          <span> Información General </span>
-          <i class="far fa-question-circle text-primary"></i>
+          <span aria-label="Información General del Cliente"> Información General </span>
+          <i role="img" class="far fa-question-circle text-primary"></i>
         </div>
 
         <div class="p-1 row">
           <div class="col-4 col-md-2 td2 text-end">
-            Razon Social <small><i class="text-danger">*</i></small>
+            <label for="cliente_nombre">Razon Social</label> <small><i role="img" class="text-danger">*</i></small>
             <br />
-            <small><i class="text-secondary">Alfabético</i></small>
+            <small><i role="img" class="text-secondary">Alfabético</i></small>
           </div>
           <div class="col-8 col-md-10 td2">
             <input type="text" name="cliente_nombre" id="cliente_nombre" class="form-control {{validaNombre == '' ? '' : 'input-danger'}}"
 
-              [disabled]="!accionEditar" [(ngModel)]="cliente_nombre" (blur)="validacionCampos('nombre')"
+              [readonly]="!accionEditar" [(ngModel)]="cliente_nombre" (blur)="validacionCampos('nombre')"
             />
             <sup>
-              <i class=" {{validaNombre == '' ? 'text-secondary' : 'text-danger' }}">
+              <i  [attr.aria-label]="validaNombre" class=" {{validaNombre == '' ? 'text-secondary' : 'text-danger' }}">
                 {{validaNombre == '' ? 'Razon social de la empresa.' : validaNombre}}
               </i>
             </sup>
           </div>
 
           <div class="col-4 col-md-2 td2 text-end">
-            R.U.C. <small><i class="text-danger">*</i></small>
+            <label for="cliente_identificacion">R.U.C.</label> <small><i role="img" class="text-danger">*</i></small>
             <br />
-            <small><i class="text-secondary">Numérico</i></small>
+            <small><i role="img" class="text-secondary">Numérico</i></small>
           </div>
           <div class="col-8 col-md-4 td2">
             <input type="number" name="cliente_identificacion" id="cliente_identificacion" 
@@ -69,16 +57,16 @@
               (blur)="validacionCampos('ruc')"
             />
             <sup>
-              <i class=" {{validaRUC == '' ? 'text-secondary' : 'text-danger' }}">
+              <i [attr.aria-label]="validaRUC" class=" {{validaRUC == '' ? 'text-secondary' : 'text-danger' }}">
                 {{validaRUC == '' ? 'El número de la identificación de la empresa.' : validaRUC}}
               </i>
             </sup>
           </div>
 
           <div class="col-4 col-md-2 td2 text-end">
-            Teléfono
+            <label for="cliente_telefono">Teléfono</label>
             <br />
-            <small><i class="text-secondary">Numérico</i></small>
+            <small><i role="img" class="text-secondary">Numérico</i></small>
           </div>
           <div class="col-8 col-md-4 td2">
             <input
@@ -90,13 +78,13 @@
               [disabled]="!accionEditar"
               [(ngModel)]="cliente_telefono"
             />
-            <sup><i class="text-secondary">El número de teléfono.</i></sup>
+            <sup><i role="img" class="text-secondary">El número de teléfono.</i></sup>
           </div>
 
           <div class="col-4 col-md-2 td2 text-end">
-            Dirección
+            <label for="cliente_direccion">Dirección</label>
             <br />
-            <small><i class="text-secondary">Numérico</i></small>
+            <small><i role="img" class="text-secondary">Numérico</i></small>
           </div>
           <div class="col-8 col-md-10 td2">
             <input
@@ -109,7 +97,7 @@
               [(ngModel)]="cliente_direccion"
             />
             <sup
-              ><i class="text-secondary"
+              ><i role="img" class="text-secondary"
                 >Dirección domiciliaria de la empresa.</i
               ></sup
             >
@@ -119,15 +107,15 @@
 
       <div class="card mt-3">
         <div class="card-header th2 d-flex justify-content-between">
-          <span> LDAP </span>
-          <i class="far fa-question-circle text-primary"></i>
+          <span aria-label="Configuracion LDAP"> LDAP </span>
+          <i role="img" class="far fa-question-circle text-primary"></i>
         </div>
 
         <div class="p-1 row">
           <div class="col-4 col-md-2 td2 text-end">
-            Host
+            <label for="ldap_servidor">Host</label>
             <br />
-            <small><i class="text-secondary">IP o URL</i></small>
+            <small><i role="img" class="text-secondary">IP o URL</i></small>
           </div>
           <div class="col-8 col-md-4 td2">
             <input
@@ -138,13 +126,13 @@
               [disabled]="!accionEditar"
               [(ngModel)]="ldap_servidor"
             />
-            <sup><i class="text-secondary">https://ldap.example.com.</i></sup>
+            <sup><i role="img" class="text-secondary">https://ldap.example.com.</i></sup>
           </div>
 
           <div class="col-4 col-md-2 td2 text-end">
-            Puerto
+            <label for="ldap_puerto">Puerto</label>
             <br />
-            <small><i class="text-secondary">Numérico</i></small>
+            <small><i role="img" class="text-secondary">Numérico</i></small>
           </div>
           <div class="col-8 col-md-4 td2">
             <input
@@ -155,13 +143,13 @@
               [disabled]="!accionEditar"
               [(ngModel)]="ldap_puerto"
             />
-            <sup><i class="text-secondary">Número de puerto de acceso</i></sup>
+            <sup><i role="img" class="text-secondary">Número de puerto de acceso</i></sup>
           </div>
 
           <div class="col-4 col-md-2 td2 text-end">
-            Base DN
+            <label for="ldap_base_dn">Base DN</label>
             <br />
-            <small><i class="text-secondary">Alfabético</i></small>
+            <small><i role="img" class="text-secondary">Alfabético</i></small>
           </div>
           <div class="col-8 col-md-4 td2">
             <input
@@ -172,13 +160,13 @@
               [disabled]="!accionEditar"
               [(ngModel)]="ldap_base_dn"
             />
-            <sup><i class="text-secondary">cn=admin,dc=example,dc=com</i></sup>
+            <sup><i role="img" class="text-secondary">cn=admin,dc=example,dc=com</i></sup>
           </div>
 
           <div class="col-4 col-md-2 td2 text-end">
-            Usuario
+            <label for="ldap_usuario">Usuario</label>
             <br />
-            <small><i class="text-secondary">Alfabético</i></small>
+            <small><i role="img" class="text-secondary">Alfabético</i></small>
           </div>
           <div class="col-8 col-md-4 td2">
             <input
@@ -190,37 +178,37 @@
               [(ngModel)]="ldap_usuario"
             />
             <sup
-              ><i class="text-secondary"
+              ><i role="img" class="text-secondary"
                 >Nombre de usuario de acceso al LDAP</i
               ></sup
             >
           </div>
 
           <div class="col-4 col-md-2 td2 text-end">
-            Contraseña
+            <label for="ldap_clave">Contraseña</label>
             <br />
-            <small><i class="text-secondary">Alfabético</i></small>
+            <small><i role="img" class="text-secondary">Alfabético</i></small>
           </div>
           <div class="col-8 col-md-4 td2">
             <input type="text" name="ldap_clave" id="ldap_clave" class="form-control"
               [disabled]="!accionEditar" [(ngModel)]="ldap_clave" />
-            <sup><i class="text-secondary">Contraseña</i></sup>
+            <sup><i role="img" class="text-secondary">Contraseña</i></sup>
           </div>
         </div>
       </div>
 
       <div class="card mt-3">
         <div class="card-header th2 d-flex justify-content-between">
-          <span> Factor de Autenticación y Comunicación </span>
-          <i class="far fa-question-circle text-primary"></i>
+          <span aria-label="Factor de Autenticacion"> Factor de Autenticación y Comunicación </span>
+          <i role="img" class="far fa-question-circle text-primary"></i>
         </div>
 
         <div class="p-1 row">
           
           <div class="col-4 col-md-2 td2 text-end">
-            Estado
+            <label for="segundo_factor_activo">Estado</label>
             <br />
-            <small><i class="text-secondary">Selección</i></small>
+            <small><i role="img" class="text-secondary">Selección</i></small>
           </div>
           <div class="col-8 col-md-4 td2">
              <select [disabled]="!accionEditar" [(ngModel)]="segundo_factor_activo" name="segundo_factor_activo" id="segundo_factor_activo" class="form-control">
@@ -232,15 +220,15 @@
                 <option value=""> -- No hay métodos definidos --</option>
               }
             </select>
-            <sup><i class="text-secondary">
+            <sup><i role="img" class="text-secondary">
                 Estado de activación de segundo factor de autenticación.
             </i></sup>
           </div>
 
           <div class="col-4 col-md-2 td2 text-end">
-            Método
+            <label for="segundo_factor_metodo">Método</label>
             <br />
-            <small><i class="text-secondary">Selección</i></small>
+            <small><i role="img" class="text-secondary">Selección</i></small>
           </div>
           <div class="col-8 col-md-4 td2">
              <select [disabled]="!accionEditar" [(ngModel)]="segundo_factor_metodo"  name="segundo_factor_metodo" id="segundo_factor_metodo" class="form-control">
@@ -252,7 +240,7 @@
                 <option value=""> -- No hay métodos definidos --</option>
               }
             </select>
-            <sup><i class="text-secondary">
+            <sup><i role="img" class="text-secondary">
                 Método de contacto y de autenticación.
             </i></sup>
           </div>
@@ -261,15 +249,15 @@
 
       <div class="card mt-3">
         <div class="card-header th2 d-flex justify-content-between">
-          <span> Scripts asignados por acción </span>
-          <i class="far fa-question-circle text-primary"></i>
+          <span aria-label="Scripts asignados de forma general por acción ">Scripts asignados de forma general por acción</span>
+          <i role="img" class="far fa-question-circle text-primary"></i>
         </div>
 
         <div class="p-1 row">
           <div class="col-4 col-md-2 td2 text-end">
-            Creación Grupo de Usuario
+            <label for="idscript_creacion_grupo_usuarios">Creación Grupo de Usuario</label>
             <br />
-            <small><i class="text-secondary">Alfabético</i></small>
+            <small><i role="img" class="text-secondary">Alfabético</i></small>
           </div>
           <div class="col-8 col-md-4 td2">
             <select [disabled]="!accionEditar" [(ngModel)]="idscript_creacion_grupo_usuarios" name="idscript_creacion_grupo_usuarios" id="idscript_creacion_grupo_usuarios" class="form-control">
@@ -281,13 +269,13 @@
                 <option value=""> -- No hay scripts asignados --</option>
               }
             </select>
-            <sup><i class="text-secondary">Script asignado para ejecutar cuando se crea un grupo de usuarios</i></sup>
+            <sup><i role="img" class="text-secondary">Script asignado para ejecutar cuando se crea un grupo de usuarios</i></sup>
           </div>
 
           <div class="col-4 col-md-2 td2 text-end">
-            Creación de Usuarios
+            <label for="idscript_creacion_usuario">Creación de Usuarios</label>
             <br />
-            <small><i class="text-secondary">Alfabético</i></small>
+            <small><i role="img" class="text-secondary">Alfabético</i></small>
           </div>
           <div class="col-8 col-md-4 td2">
             <select [disabled]="!accionEditar" [(ngModel)]="idscript_creacion_usuario" 
@@ -300,7 +288,7 @@
                 <option value=""> -- No hay scripts asignados --</option>
               }
             </select>
-            <sup><i class="text-secondary">Script asignado para ejecutar cuando se crea un usuarios</i></sup>
+            <sup><i role="img" class="text-secondary">Script asignado para ejecutar cuando se crea un usuarios</i></sup>
           </div>
         </div>
       </div>
@@ -308,16 +296,16 @@
 
       <div class="card mt-3">
         <div class="card-header th2 d-flex justify-content-between">
-          <span> Tiempos</span>
-          <i class="far fa-question-circle text-primary"></i>
+          <span aria-label="Area de definicion de tiempos"> Tiempos</span>
+          <i role="img" class="far fa-question-circle text-primary"></i>
         </div>
 
         <div class="p-1 row">
 
           <div class="col-4 col-md-2 td2 text-end">
-            General 
+            <label for="tiempo_refresco">General</label>  
             <br />
-            <small><i class="text-secondary">Numérico <small class="text-danger">[seg]</small></i></small>
+            <small><i role="img" class="text-secondary">Numérico <small class="text-danger">[seg]</small></i></small>
           </div>
           <div class="col-8 col-md-4 td2">
             <input
@@ -329,13 +317,13 @@
               [disabled]="!accionEditar"
               [(ngModel)]="tiempo_refresco"
             />
-            <sup><i class="text-secondary">Refresco para dashboard y notificaciones.</i></sup>
+            <sup><i role="img" class="text-secondary">Refresco para dashboard y notificaciones.</i></sup>
           </div>
 
           <div class="col-4 col-md-2 td2 text-end">
-            Contraseñas 
+            <label for="tiempo_caducidad_claves">Contraseñas </label>
             <br />
-            <small><i class="text-secondary">Numérico <small class="text-danger">[dias]</small></i></small>
+            <small><i role="img" class="text-secondary">Numérico <small class="text-danger">[dias]</small></i></small>
           </div>
           <div class="col-8 col-md-4 td2">
             <input
@@ -347,13 +335,13 @@
               [disabled]="!accionEditar"
               [(ngModel)]="tiempo_caducidad_claves"
             />
-            <sup><i class="text-secondary">Tiempo de caducidad para contraseñas.</i></sup>
+            <sup><i role="img" class="text-secondary">Tiempo de caducidad para contraseñas.</i></sup>
           </div>
 
           <div class="col-4 col-md-2 td2 text-end">
-            Token para usuarios 
+            <label for="tiempo_caducidad_token_usuarios">Token para usuarios </label>
             <br />
-            <small><i class="text-secondary">Numérico <small class="text-danger">[dias]</small></i></small>
+            <small><i role="img" class="text-secondary">Numérico <small class="text-danger">[dias]</small></i></small>
           </div>
           <div class="col-8 col-md-4 td2">
             <input
@@ -365,13 +353,13 @@
               [disabled]="!accionEditar"
               [(ngModel)]="tiempo_caducidad_token_usuarios"
             />
-            <sup><i class="text-secondary">Tiempo de caducidad para token de usuarios.</i></sup>
+            <sup><i role="img" class="text-secondary">Tiempo de caducidad para token de usuarios.</i></sup>
           </div>
 
           <div class="col-4 col-md-2 td2 text-end">
-            Token para {{global.agent}} 
+            <label for="tiempo_caducidad_token_agente">Token para {{global.agent}} </label>
             <br />
-            <small><i class="text-secondary">Numérico <small class="text-danger">[dias]</small></i></small>
+            <small><i role="img" class="text-secondary">Numérico <small class="text-danger">[dias]</small></i></small>
           </div>
           <div class="col-8 col-md-4 td2">
             <input
@@ -383,7 +371,7 @@
               [disabled]="!accionEditar"
               [(ngModel)]="tiempo_caducidad_token_agente"
             />
-            <sup><i class="text-secondary">Tiempo de caducidad para token de agentes.</i></sup>
+            <sup><i role="img" class="text-secondary">Tiempo de caducidad para token de agentes.</i></sup>
           </div>
 
 
@@ -391,5 +379,5 @@
       </div>
 
     </div>
-  </div>
+  </section>
 </div>

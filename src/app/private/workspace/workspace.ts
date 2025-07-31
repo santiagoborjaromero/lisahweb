@@ -1,6 +1,4 @@
 import { Component, inject, OnInit, Sanitizer, SimpleChanges } from '@angular/core';
-import { Breadcrums } from '../shared/breadcrums/breadcrums';
-import { Header } from '../shared/header/header';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Functions } from '../../core/helpers/functions.helper';

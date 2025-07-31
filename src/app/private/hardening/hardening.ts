@@ -1,6 +1,4 @@
 import { Component, effect, inject } from '@angular/core';
-import { Breadcrums } from '../shared/breadcrums/breadcrums';
-import { Header } from '../shared/header/header';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AllCommunityModule, ColumnAutosizeService, createGrid, GridApi, GridOptions, ICellRendererParams, ModuleRegistry} from 'ag-grid-community';
@@ -11,12 +9,14 @@ import { UsuarioService } from '../../core/services/usuarios.service';
 import moment from 'moment';
 
 import { WSService } from '../../core/services/ws.service';
+import { Titulo } from '../shared/titulo/titulo';
+import { Path } from '../shared/path/path';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 @Component({
   selector: 'app-hardening',
-  imports: [Breadcrums, Header, CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [Titulo, Path, CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './hardening.html',
   styleUrl: './hardening.scss',
   standalone: true,
@@ -34,12 +34,16 @@ export class Hardening {
   private server = new Map<number, any>();
 
   user: any = null;
+  path:any = [];
+  titulo:any = {icono: "",nombre:""}
   canR: boolean = true;
   canW: boolean = true;
   canD: boolean = true;
 
   lstServidores: Array<any> = [];
+  lstServidores_Original: Array<any> = [];
 
+  buscar:string = "";
 
   constructor() {
     // effect(() => {
@@ -50,7 +54,12 @@ export class Hardening {
 
   ngOnInit(): void {
     this.user = JSON.parse(this.sessions.get('user'));
-    // console.log(this.user.token)
+    this.path = [
+      {nombre: "Admin & Hardening", ruta: ""}, 
+      {nombre: "Hardening Servidores", ruta: "admin/hardening"}, 
+    ];
+  
+    this.titulo = {icono: "fas fa-shield-alt",nombre: "Hardening Servidores"}
 
     if (this.user.idrol > 1) {
       let scope = this.user.roles.permisos_crud.split('');
@@ -88,7 +97,7 @@ export class Hardening {
             })
           }
 
-          
+          this.lstServidores_Original = Array.from(this.lstServidores);
         } else {
           this.func.showMessage("error", "Usuario", resp.message);
         }
@@ -116,8 +125,21 @@ export class Hardening {
     this.func.irRuta(`admin/hardening/workspace`);
   }
 
+  buscarServidores($event:any){
+    this.lstServidores = [];
+    if (this.buscar == '') {
+      this.lstServidores = Array.from(this.lstServidores_Original);
+    } else {
+      this.lstServidores_Original.forEach((e) => {
+        if (
+          e.nombre.toLowerCase().indexOf(this.buscar.toLowerCase()) > -1 ||
+          e.ubicacion.toLowerCase().indexOf(this.buscar.toLowerCase()) > -1 ||
+          e.host.toLowerCase().indexOf(this.buscar.toLowerCase()) > -1 
+        ) {
+          this.lstServidores.push(e);
+        }
+      });
+    }
+  }
 
-
-
-  
 }

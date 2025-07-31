@@ -1,6 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { Header } from '../shared/header/header';
-import { Breadcrums } from '../shared/breadcrums/breadcrums';
 import { Functions } from '../../core/helpers/functions.helper';
 import { Sessions } from '../../core/helpers/session.helper';
 import { AllCommunityModule, createGrid, GridApi, GridOptions, ICellRendererParams, ModuleRegistry } from 'ag-grid-community';
@@ -8,14 +6,15 @@ import { Global } from '../../core/config/global.config';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ServidorService } from '../../core/services/servidor.service';
 import { TemplateService } from '../../core/services/template.service';
+import { Titulo } from '../shared/titulo/titulo';
+import { Path } from '../shared/path/path';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 @Component({
   selector: 'app-templates',
-  imports: [Header, Breadcrums, CommonModule, FormsModule],
+  imports: [Titulo, Path, CommonModule, FormsModule],
   templateUrl: './templates.html',
   styleUrl: './templates.scss'
 })
@@ -25,6 +24,8 @@ private readonly tempSvc = inject(TemplateService);
   private readonly sessions = inject(Sessions);
 
   user: any = null;
+  path:any = [];
+  titulo:any = {icono: "",nombre:""}
 
   accion: string = 'activos';
   canR: boolean = true;
@@ -41,7 +42,12 @@ private readonly tempSvc = inject(TemplateService);
 
   ngOnInit(): void {
     this.user = JSON.parse(this.sessions.get('user'));
-    // console.log(this.user.token)
+    this.path = [
+      {nombre: "Configuración", ruta: ""}, 
+      {nombre: "Comandos", ruta: "admin/templates"}, 
+    ];
+  
+    this.titulo = {icono: "fab fa-wpforms",nombre: "Lista de Comandos"}
 
     if (this.user.idrol > 1) {
       let scope = this.user.roles.permisos_crud.split('');
@@ -162,7 +168,7 @@ private readonly tempSvc = inject(TemplateService);
               color = 'text-success';
               icono = 'far fa-check-circle';
             }
-            return `<i class="${color} ${icono} t20"></i>`;
+            return `<i role="img" class="${color} ${icono} t20"></i>`;
           },
         },
         {
@@ -198,14 +204,14 @@ private readonly tempSvc = inject(TemplateService);
     if (params.data.deleted_at === null){
       button = document.createElement('button');
       button.className = 'btn btn-white';
-      button.innerHTML = `<i class="far fa-trash-alt text-danger" title='Eliminar'></i>`;
+      button.innerHTML = `<i role="img" class="far fa-trash-alt text-danger" title='Eliminar'></i>`;
       button.addEventListener('click', () => {
         this.procesoEspecial('eliminar un registro', 'eliminar', params.data.idtemplate_comando)
       });
     } else {
       button = document.createElement('button');
       button.className = 'btn btn-white';
-      button.innerHTML = `<i class="fas fa-undo-alt text-warning" title='Recuperar'></i>`;
+      button.innerHTML = `<i role="img" class="fas fa-undo-alt text-warning" title='Recuperar'></i>`;
       button.addEventListener('click', () => {
         this.procesoEspecial('recuperar un registro', 'recuperar', params.data.idtemplate_comando)
       });
