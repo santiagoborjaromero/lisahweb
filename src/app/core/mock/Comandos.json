@@ -1,0 +1,261 @@
+[
+    {
+        "idcomandos": 32,
+        "idservidores_familia": 2,
+        "area": "servicios",
+        "accion": "listar",
+        "comando": "systemctl list-units --type=service"
+    },
+    {
+        "idcomandos": 33,
+        "idservidores_familia": 2,
+        "area": "servicios",
+        "accion": "iniciar",
+        "comando": "systemctl start {nombre_servicio}"
+    },
+    {
+        "idcomandos": 34,
+        "idservidores_familia": 2,
+        "area": "servicios",
+        "accion": "detener",
+        "comando": "systemctl stop {nombre_servicio}"
+    },
+    {
+        "idcomandos": 35,
+        "idservidores_familia": 2,
+        "area": "servicios",
+        "accion": "habilitar",
+        "comando": "systemctl enable {nombre_servicio}"
+    },
+    {
+        "idcomandos": 36,
+        "idservidores_familia": 2,
+        "area": "servicios",
+        "accion": "deshabilitar",
+        "comando": "systemctl disable {nombre_servicio}"
+    },
+    {
+        "idcomandos": 37,
+        "idservidores_familia": 2,
+        "area": "servicios",
+        "accion": "estado",
+        "comando": "systemctl status {nombre_servicio}"
+    },
+    {
+        "idcomandos": 38,
+        "idservidores_familia": 2,
+        "area": "servicios",
+        "accion": "reiniciar",
+        "comando": "systemctl restart {nombre_servicio}"
+    },
+    {
+        "idcomandos": 39,
+        "idservidores_familia": 2,
+        "area": "usuarios",
+        "accion": "listar",
+        "comando": "lslogins --user-accs --output=USER,UID,GECOS,HOMEDIR,SHELL,NOLOGIN,PWD-LOCK,PWD-EMPTY,PWD-DENY,PWD-METHOD,GROUP,GID,SUPP-GROUPS,SUPP-GIDS,LAST-LOGIN,LAST-TTY,LAST-HOSTNAME,FAILED-LOGIN,FAILED-TTY,HUSHED,PWD-WARN,PWD-CHANGE,PWD-MIN,PWD-MAX,PWD-EXPIR,CONTEXT,PROC --colon-separate | sed '1,1d'"
+    },
+    {
+        "idcomandos": 40,
+        "idservidores_familia": 2,
+        "area": "usuarios",
+        "accion": "crear",
+        "comando": "useradd -m {usuario}"
+    },
+    {
+        "idcomandos": 41,
+        "idservidores_familia": 2,
+        "area": "usuarios",
+        "accion": "eliminar",
+        "comando": "userdel {usuario}"
+    },
+    {
+        "idcomandos": 42,
+        "idservidores_familia": 2,
+        "area": "usuarios",
+        "accion": "actualizar_clave",
+        "comando": "echo \"{usuario}:{clave}\" | chpasswd"
+    },
+    {
+        "idcomandos": 43,
+        "idservidores_familia": 2,
+        "area": "usuarios",
+        "accion": "informacion",
+        "comando": "id {usuario}"
+    },
+    {
+        "idcomandos": 44,
+        "idservidores_familia": 2,
+        "area": "grupos",
+        "accion": "listar",
+        "comando": "cut -d: -f1 /etc/group"
+    },
+    {
+        "idcomandos": 45,
+        "idservidores_familia": 2,
+        "area": "grupos",
+        "accion": "crear",
+        "comando": "groupadd {nombre_grupo}"
+    },
+    {
+        "idcomandos": 46,
+        "idservidores_familia": 2,
+        "area": "grupos",
+        "accion": "eliminar",
+        "comando": "groupdel {nombre_grupo}"
+    },
+    {
+        "idcomandos": 47,
+        "idservidores_familia": 2,
+        "area": "grupos",
+        "accion": "agregar_usuario",
+        "comando": "usermod -aG {nombre_grupo} {usuario}"
+    },
+    {
+        "idcomandos": 48,
+        "idservidores_familia": 2,
+        "area": "estadisticas",
+        "accion": "disco",
+        "comando": "df -hT | grep -E 'ext4|xfs|btrfs' | awk '{print $3, $4, $5, $6}'"
+    },
+    {
+        "idcomandos": 49,
+        "idservidores_familia": 2,
+        "area": "estadisticas",
+        "accion": "cpu",
+        "comando": "cat /proc/loadavg | awk '{print $1, $2, $3}'"
+    },
+    {
+        "idcomandos": 50,
+        "idservidores_familia": 2,
+        "area": "estadisticas",
+        "accion": "cpu_usado",
+        "comando": "sar -u | grep '^[0-9]' | awk '{sum+=$3; count++} END {if(count>0) print sum/count}'"
+    },
+    {
+        "idcomandos": 51,
+        "idservidores_familia": 2,
+        "area": "estadisticas",
+        "accion": "procesos",
+        "comando": "ps aux --sort=-%cpu | head -10"
+    },
+    {
+        "idcomandos": 52,
+        "idservidores_familia": 2,
+        "area": "estadisticas",
+        "accion": "fecha_hora",
+        "comando": "date"
+    },
+    {
+        "idcomandos": 53,
+        "idservidores_familia": 2,
+        "area": "firewall",
+        "accion": "listar_reglas",
+        "comando": "sudo firewall-cmd --list-all"
+    },
+    {
+        "idcomandos": 54,
+        "idservidores_familia": 2,
+        "area": "firewall",
+        "accion": "estado",
+        "comando": "sudo systemctl status firewalld"
+    },
+    {
+        "idcomandos": 55,
+        "idservidores_familia": 2,
+        "area": "firewall",
+        "accion": "iniciar",
+        "comando": "sudo systemctl start firewalld"
+    },
+    {
+        "idcomandos": 56,
+        "idservidores_familia": 2,
+        "area": "firewall",
+        "accion": "detener",
+        "comando": "sudo systemctl stop firewalld"
+    },
+    {
+        "idcomandos": 57,
+        "idservidores_familia": 2,
+        "area": "firewall",
+        "accion": "habilitar",
+        "comando": "sudo systemctl enable firewalld"
+    },
+    {
+        "idcomandos": 58,
+        "idservidores_familia": 2,
+        "area": "firewall",
+        "accion": "deshabilitar",
+        "comando": "sudo systemctl disable firewalld"
+    },
+    {
+        "idcomandos": 59,
+        "idservidores_familia": 2,
+        "area": "actualizaciones",
+        "accion": "ver_actualizaciones",
+        "comando": "dnf check-update"
+    },
+    {
+        "idcomandos": 60,
+        "idservidores_familia": 2,
+        "area": "actualizaciones",
+        "accion": "actualizar_sistema",
+        "comando": "dnf update -y"
+    },
+    {
+        "idcomandos": 61,
+        "idservidores_familia": 2,
+        "area": "actualizaciones",
+        "accion": "actualizar_paquete",
+        "comando": "dnf upgrade {paquete} -y"
+    },
+    {
+        "idcomandos": 62,
+        "idservidores_familia": 2,
+        "area": "servicios",
+        "accion": "recargar",
+        "comando": "systemctl reload {nombre_servicio}"
+    },
+    {
+        "idcomandos": 125,
+        "idservidores_familia": 2,
+        "area": "estadisticas",
+        "accion": "memoria",
+        "comando": "free -h | grep -E 'Mem' | awk '{print $2, $3, $4}'"
+    },
+    {
+        "idcomandos": 126,
+        "idservidores_familia": 2,
+        "area": "estadisticas",
+        "accion": "uptime",
+        "comando": "sec=$(( $(date +%s) - $(date -d \"$(ps -p 1 -o lstart=)\" +%s) )); d=$((sec/86400)); h=$(( (sec%86400)/3600 )); m=$(( (sec%3600)/60 )); s=$((sec%60)); printf \"%02d:%02d:%02d:%02d\\n\" $d $h $m $s"
+    },
+    {
+        "idcomandos": 127,
+        "idservidores_familia": 2,
+        "area": "estadisticas",
+        "accion": "release",
+        "comando": "cat /etc/os-release"
+    },
+    {
+        "idcomandos": 128,
+        "idservidores_familia": 2,
+        "area": "estadisticas",
+        "accion": "infocpu",
+        "comando": "cat /proc/cpuinfo"
+    },
+    {
+        "idcomandos": 129,
+        "idservidores_familia": 2,
+        "area": "estadisticas",
+        "accion": "servicios",
+        "comando": "systemctl list-units --type=service --all --no-legend | awk '{print $1\",\"$2\",\"$3\",\"$4,\",\"$5,\",\"$6\",\"$7\",\"$8\",\"$9}'"
+    },
+    {
+        "idcomandos": 130,
+        "idservidores_familia": 2,
+        "area": "usuarios",
+        "accion": "eliminar_completo",
+        "comando": "userdel -r {usuario}"
+    }
+]

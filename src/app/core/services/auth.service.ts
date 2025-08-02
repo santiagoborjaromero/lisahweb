@@ -30,7 +30,11 @@ export class Auth {
     let options = {
       headers: this.headers,
     };
-    return this.http.post(`${this.base_url}login`, data, options);
+    let body = {
+      data: this.encrpt.encryp(JSON.stringify(data))
+    }
+    console.log(body)
+    return this.http.post(`${this.base_url}login`, body, options);
   }
 
   verifyCode(codigo: any): Observable<any> {

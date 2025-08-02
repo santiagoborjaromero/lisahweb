@@ -84,8 +84,7 @@ export class Grupousuarios implements OnInit{
 
     this.grupoSvc.getAll().subscribe({
       next: (resp: any) => {
-        console.log(resp);
-
+        // console.log(resp);
         this.func.closeSwal();
         if (resp.status) {
           this.lstGU = resp.data;
@@ -169,8 +168,8 @@ export class Grupousuarios implements OnInit{
       let that = this;
       this.gridOptions = {
         rowData: [],
-        pagination: false,
-        paginationPageSize: 50,
+        pagination: true,
+        paginationPageSize: 10,
         paginationPageSizeSelector: [5, 10, 50, 100, 200, 300, 1000],
         // rowSelection: 'single',
         rowHeight: 35,
@@ -291,13 +290,15 @@ export class Grupousuarios implements OnInit{
 
     renderAcciones(params: ICellRendererParams) {
       let button: any | undefined;
-
-      button = document.createElement('button');
-      button.className = 'btn btn-white';
-      button.innerHTML = `<i role="img" class="fas fa-plus text-primary" title='Crear Grupo'></i>`;
-      button.addEventListener('click', () => {
-        this.crearGrupo(params.data.nombre);
-      });
+      if (params.data.gid){
+      }else{
+        button = document.createElement('button');
+        button.className = 'btn btn-white';
+        button.innerHTML = `<i role="img" class="fas fa-plus text-primary" title='Crear Grupo'></i>`;
+        button.addEventListener('click', () => {
+          this.crearGrupo(params.data.nombre);
+        });
+      }
       return button;
     }
 

@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import moment from 'moment';
 import {Global} from '../../core/config/global.config';
 import { CommonModule } from '@angular/common';
@@ -8,6 +8,7 @@ import { Functions } from '../../core/helpers/functions.helper';
 import { environment } from '../../../environments/environment';
 import { Auth } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
+import { Encryption } from '../../core/helpers/encryption.helper';
 
 
 @Component({
@@ -22,6 +23,7 @@ export class Login {
   private readonly func = inject(Functions);
   private readonly authSvc = inject(Auth);
   private readonly notiSvc = inject(NotificationService);
+  private readonly encrypt = inject(Encryption);
 
 
   current_year = moment().format("YYYY");
@@ -41,6 +43,7 @@ export class Login {
     this.sessions.set('user',"");
     this.sessions.set('token',"");
     this.sessions.set('form',"");
+
   }
 
   ngOnDestroy(): void {
@@ -58,6 +61,8 @@ export class Login {
   // }
 
   funcSubmit(){
+    // console.log(this.encrypt.decrypt("O6R31xHWQEtXPxTRwEd0sy5T0+Hg67R4+iQAuuxXJ1U="))
+    // return 
     let msgErr = "";
     let error = false;
 
@@ -86,7 +91,6 @@ export class Login {
       this.authSvc.login(param).subscribe({
         next: (resp:any) => {
           this.func.closeSwal();
-          // console.log(resp)
           this.usuario = "";
           this.clave = "";
           if (resp.status){

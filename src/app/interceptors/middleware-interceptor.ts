@@ -4,23 +4,20 @@ import { HttpInterceptorFn, HttpRequest,
   HttpInterceptor,
   HttpResponse,
   HttpHandlerFn, } from '@angular/common/http';
-import { inject } from '@angular/core';
-import { map } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { map, Observable } from 'rxjs';
 import { Encryption } from '../core/helpers/encryption.helper';
+import { environment } from '../../environments/environment';
 
-export const middlewareInterceptor: HttpInterceptorFn = (request, next: HttpHandlerFn) => {
+export const middlewareInterceptor: HttpInterceptorFn = (request:any, next: HttpHandlerFn) => {
   const encr =  inject(Encryption);
   return next(request).pipe(
-      map((event)=>{
-        console.log("▄ Middleware ▄")
-        // if (event instanceof HttpResponse){
-        //   let message = event.body.message;
-        //   let convert = encr.convertRequest(message);
-        //   event.body.message = convert;
-        // }
-        // if (event instanceof HttpRequest){
-        //   console.log("REQUEST", event)
-        // }
+      map((event:any)=>{
+        if (event instanceof HttpResponse){
+          if (environment.debug) console.log(JSON.stringify(event.body));
+          event.body.message =  encr.decrypt(event.body.message);
+          event.body.data = JSON.parse(encr.decrypt(event.body.data));
+        }
         return event
       })
 

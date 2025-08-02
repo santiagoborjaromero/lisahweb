@@ -16,6 +16,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((err) => {
+      console.log("❌",err)
       // let message = "";
       // console.log("INTER: ", err)
       // if (err.status === 0) {

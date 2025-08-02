@@ -16,7 +16,7 @@
       <span class="ml-2">{{lstDatos.agente_status}}</span>
       </div>
     </div>
-    <button (click)="openConn()" class="btn btn-primary btn-sm"><i role="img" class="fas fa-repeat"></i> Recargar</button>
+    <button (click)="initial()" class="btn btn-primary btn-sm"><i role="img" class="fas fa-repeat"></i> Recargar</button>
   </div>
 </div>
 
@@ -25,19 +25,26 @@
 <div class="row mt-3 ">
     <div class="col">
       <h5 class="">
-        {{name_selected=="" ? 'Seleccione un usuario' : name_selected}}
+         @if(user_selected){
+           {{user_selected.nombre}}
+         } @else{
+            Seleccione un usuario
+         }
       </h5>
     </div>
   </div>
 
-  @if(name_selected!=""){
+  @if(user_selected){
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item" role="presentation">
         <button class="nav-link text-primary active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Detalles</button>
       </li>
-      <!-- <li class="nav-item" role="presentation">
-        <button class="nav-link text-primary" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Monitoreo</button>
-      </li> -->
+      <li class="nav-item" role="presentation">
+        <button class="nav-link text-primary" id="servidor-tab" data-bs-toggle="tab" data-bs-target="#servidor" type="button" role="tab" aria-controls="profile" aria-selected="false">Servidor</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link text-primary" id="operaciones-tab" data-bs-toggle="tab" data-bs-target="#operaciones" type="button" role="tab" aria-controls="profile" aria-selected="false">Operaciones</button>
+      </li>
     </ul>
    
     <div class="card" >
@@ -47,46 +54,202 @@
             <div class="row mt-2 t14">
               <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4">
                 <p>
-                  <strong for="">Nombre Servidor</strong><br>
-                  <!-- {{name_selected}} -->
+                  <strong for="">Nombre</strong><br>
+                  {{user_selected.nombre}}
                 </p>
                 <p>
-                  <strong for="">Ubicación del Servidor</strong><br>
-                  <!-- {{server_selected.ubicacion}} -->
+                  <strong for="">Usuario</strong><br>
+                  {{user_selected.usuario}}
+                </p>
+                <p>
+                  <strong for="">Grupo de Usuarios</strong><br>
+                  {{user_selected.grupo.nombre}}
+                </p>
+              </div>
+              <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                <p>
+                  <strong for="">Correo Electrónico</strong><br>
+                  {{user_selected.email}}
+                </p>
+                <p>
+                  <strong for="">Email Confirmado ? </strong><br>
+                  {{user_selected.email_confirmado == 1 ? 'Si' : 'No'}}
                 </p>
                 <p>
                   <strong for="">Estado</strong><br>
-                  <!-- {{server_selected.estado == 1 ? 'Activo' : 'Inactivo'}} -->
+                  {{user_selected.estado == 1 ? 'Activo' : 'Inactivo'}}
                 </p>
               </div>
               <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4">
                 <p>
-                  <strong for="">Caracteristicas</strong><br>
-                  <!-- {{server_selected.comentarios}} -->
-                </p>
-              </div>
-              <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                <p>
-                  <strong for="">Host o direccion IP</strong><br>
-                  <!-- {{server_selected.host}} -->
+                  <strong for="">Caducidad de Contraseña</strong><br>
+                  {{user_selected.clave_expiracion}}
                 </p>
                 <p>
-                  <strong for="">Acceso a {{global.agent}}</strong><br>
-                  <!-- <span class="mt-1">{{server_selected.agente_puerto_protocolo}}://{{server_selected.host}}:{{server_selected.agente_puerto}} </span> -->
-                  <!-- <button (click)="testAgente()" class="btn btn-white text-primary t14" title="Test de conexión"> <i role="img" class="fas fa-flask"></i> </button> -->
+                  <strong for="">Numero de veces que ha ingresado al sistema</strong><br>
+                  {{user_selected.numero_logueos}}
                 </p>
-                <p >
-                  <strong for="">Puerto de acceso a SSH</strong><br>
-                  <!-- <span class="mt-1">{{server_selected.ssh_puerto}}</span> -->
-                  <!-- <button (click)="testSSH()"  class="btn btn-white text-primary t14" title="Test de conexión"> <i role="img" class="fas fa-flask"></i> </button> -->
+                <p>
+                  <strong for="">Numero de veces que se ha deslogueado de forma correcta</strong><br>
+                  {{user_selected.numero_deslogueos}}
                 </p>
               </div>
             </div>
           </div>
-          <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+
+
+
+          <div class="tab-pane" id="servidor" role="tabpanel" aria-labelledby="servidor-tab" tabindex="0">
             <div class="row">
-              <div class="col">
+                <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                <p>
+                  <strong>UID</strong><br>
+                  {{user_selected.servidor ? user_selected.servidor.uid : ''}}
+                </p>
+                <p>
+                  <strong>Usuario</strong><br>
+                  {{user_selected.servidor ? user_selected.servidor.user : ''}}
+                </p>
+                <p>
+                  <strong>Directorio de Trabajo</strong><br>
+                  {{user_selected.servidor ? user_selected.servidor.homedir : ''}}
+                </p>
+                <p>
+                  <strong>Context</strong><br>
+                  {{user_selected.servidor ? user_selected.servidor.context : ''}}
+                </p>
+                <p>
+                  <strong>GID</strong><br>
+                  {{user_selected.servidor ? user_selected.servidor.gid : ''}}
+                </p>
+                <p>
+                  <strong>Grupo</strong><br>
+                  {{user_selected.servidor ? user_selected.servidor.group : ''}}
+                </p>
+                <p>
+                  <strong>Last Login</strong><br>
+                  {{user_selected.servidor ? user_selected.servidor.lastlogin : ''}}
+                </p>
                 
+              </div>
+              <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                <p>
+                  <strong>Last TTY</strong><br>
+                  {{user_selected.servidor ? user_selected.servidor.lasttty : ''}}
+                </p>
+                <p>
+                  <strong>Last Hostname</strong><br>
+                  {{user_selected.servidor ? user_selected.servidor.lasthostname : ''}}
+                </p>
+                <p>
+                  <strong>Last Hostname</strong><br>
+                  {{user_selected.servidor ? user_selected.servidor.lasthostname : ''}}
+                </p>
+                <p>
+                  <strong>Hushed</strong><br>
+                  {{user_selected.servidor ? user_selected.servidor.hushed : ''}}
+                </p>
+                <p>
+                  <strong>Password Change</strong><br>
+                  {{user_selected.servidor ? user_selected.servidor.pwdchange : ''}}
+                </p>
+                <p>
+                  <strong>Password Lock</strong><br>
+                  {{user_selected.servidor ? user_selected.servidor.pwdlock : ''}}
+                </p>
+                <p>
+                  <strong>Password Empty</strong><br>
+                  {{user_selected.servidor ? user_selected.servidor.pwdempty : ''}}
+                </p>
+                
+
+                
+              </div>
+              <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                <p>
+                  <strong>Password Deny</strong><br>
+                  {{user_selected.servidor ? user_selected.servidor.pwddeny : ''}}
+                </p>
+                <p>
+                  <strong>Password Method</strong><br>
+                  {{user_selected.servidor ? user_selected.servidor.pwdmethod : ''}}
+                </p>
+                <p>
+                  <strong>Password Warn</strong><br>
+                  {{user_selected.servidor ? user_selected.servidor.pwdwarn : ''}}
+                </p>
+                <p>
+                  <strong>Password Min</strong><br>
+                  {{user_selected.servidor ? user_selected.servidor.pwdmin : ''}}
+                </p>
+                <p>
+                  <strong>Password Max</strong><br>
+                  {{user_selected.servidor ? user_selected.servidor.pwdmax : ''}}
+                </p>
+                <p>
+                  <strong>Password Expire</strong><br>
+                  {{user_selected.servidor ? user_selected.servidor.pwdpwdexpiremax : ''}}
+                </p>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="tab-pane" id="operaciones" role="tabpanel" aria-labelledby="operaciones-tab" tabindex="0">
+            <div class="row">
+              <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                <p>
+                  <strong for="">Nombre</strong><br>
+                  {{user_selected.nombre}}
+                </p>
+                <p>
+                  <strong for="">Usuario</strong><br>
+                  {{user_selected.usuario}}
+                </p>
+                <p>
+                  <strong for="">Grupo de Usuarios</strong><br>
+                  {{user_selected.grupo.nombre}}
+                </p>
+              </div>
+              <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                <strong>Acciones permitidas para el usuario</strong>
+                @for (ac of lstAcciones; track $index) {
+                  <article *ngIf="ac.condicion" class="card mt-1 cursor hover" title="{{ac.titulo}}" [attr.aria-label]="ac.titulo">
+                    <div  (click)="operaciones(ac.accion)" 
+                      class="card-body d-flex justify-content-between text-align-center">
+                      <span>
+                        {{ac.titulo}}<br>
+                        <small><i>{{ac.subtitulo}}</i></small>
+                      </span>
+                      <i class="fas fa-angle-right t20"></i>
+                    </div>
+                  </article>
+                }
+<!--                 
+                <button *ngIf="user_selected.servidor" class="btn btn-link m-1" (click)="operaciones('actualizar_usuario_grupo_clave')"><span class="link">Actualizar contraseña</span></button> <br>
+                <button *ngIf="user_selected.servidor" class="btn btn-link m-1" (click)="operaciones('actualizar_clave')"><span class="link">Actualizar usuario, grupo y contraseña</span></button> <br>
+                <button *ngIf="user_selected.servidor" class="btn btn-link m-1" (click)="operaciones('crear_clave')"><span class="link">Crear y actualizar contraseña</span></button> <br>
+                <button *ngIf="user_selected.servidor" class="btn btn-link m-1" (click)="operaciones('suspender_usuario')"><span class="link">Suspender Usuario</span></button> <br>
+                <button *ngIf="user_selected.servidor" class="btn btn-link m-1" (click)="operaciones('eliminar_usuario')"><span class="link">Eliminar Usuario</span></button> <br>
+                <button *ngIf="user_selected.servidor" class="btn btn-link m-1" (click)="operaciones('eliminar_usuario_completo')"><span class="link">Eliminar Usuario - Full</span></button> <br> -->
+              </div>
+              <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4 h500">
+                <strong>Auditoria</strong>
+                <ul class="list-group">
+                  @for (item of lstNotificaciones; track $index) {
+                    <li class="list-group-item d-flex text-align-center">
+                      @switch (item.tipo) {
+                        @case ("FATAL") {
+                          <i class="fas fa-info t16 bold text-white bg-danger redondo pl-3 pr-3 pt-2 pb-2 mr-2"></i> 
+                        }
+                        @case ("DEBUG") {
+                          <i class="fas fa-info t16 bold text-white bg-success redondo pl-3 pr-3 pt-2 pb-2 mr-2"></i> 
+                        }
+                      }
+                      {{item.descripcion}}
+                    </li>
+                  }
+                </ul>
               </div>
             </div>
           </div>

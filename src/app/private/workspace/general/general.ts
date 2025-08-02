@@ -58,6 +58,8 @@ export class General implements OnInit {
   icono = iconsData;
   global = Global;
 
+  loading:boolean = false;
+
   lstServicios: Array<any> = [];
   lstRecursos: any = {};
   lstDatos:Datos;
@@ -123,26 +125,30 @@ export class General implements OnInit {
   // }
 
   openConn(){
+    this.loading = true;
     this.agente.connect(this.work).subscribe({
       next: (resp)=>{
         console.log("Sentinel->", resp)
         if (resp){
+          
           let result = resp.healthy_agente.split("|");
           if (result[0] == "OK"){
             this.lstDatos.agente_status = result[1];
-            this.parent.cansee = true;
             this.onSendCommands();
           } else{
+            this.loading = false;
             this.lstDatos.agente_status = result[1];
-            this.parent.cansee = false;
           }
           
           // setTimeout(()=>{
           //   this.agente.disconnect(this.work.idservidor);
           // },1000)
+        } else {
+          this.lstDatos.agente_status = "Desconectado";
         }
       },
       error: (err)=>{
+        this.loading = false;
         console.log("Error", err)
       },
     })
@@ -255,6 +261,7 @@ export class General implements OnInit {
           }
         })
       }
+      this.loading = false;
     })
     .catch(err=>{
 

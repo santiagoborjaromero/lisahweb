@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, Sanitizer, SimpleChanges } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Functions } from '../../core/helpers/functions.helper';

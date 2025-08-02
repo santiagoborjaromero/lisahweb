@@ -64,6 +64,14 @@ export class UsuarioService {
     }
   }
 
+  updatePass(id=""): Observable<any> {
+    this.headers = new HttpHeaders(this.headerHlp.getWithToken());
+    let options = {
+      headers: this.headers,
+    };
+    return this.http.put(`${this.base_url}usuario_actualiza_clave/${id}`, null, options);
+  }
+
   delete(id: any): Observable<any> {
     this.headers = new HttpHeaders(this.headerHlp.getWithToken());
     let options = {

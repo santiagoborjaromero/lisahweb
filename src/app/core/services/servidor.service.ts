@@ -51,6 +51,14 @@ export class ServidorService {
     return this.http.get(`${this.base_url}servidores/${id}`, options);
   }
 
+  getOneWithUsers(id: any): Observable<any> {
+    this.headers = new HttpHeaders(this.headerHlp.getWithToken());
+    let options = {
+      headers: this.headers,
+    };
+    return this.http.get(`${this.base_url}servidores_usuarios/${id}`, options);
+  }
+
   save(data: any, id=""): Observable<any> {
     this.headers = new HttpHeaders(this.headerHlp.getWithToken());
     let options = {

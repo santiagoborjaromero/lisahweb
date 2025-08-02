@@ -15,8 +15,10 @@ export class Sessions {
 
   get = (key:string) => {
     let content: any ;
+    let key_to_search:string = `${Global.prefix_storage}${key}`;
     try {
-      content = this.encryp.decrypt(sessionStorage.getItem(`${Global.prefix_storage}${key}`));
+      let sess = sessionStorage.getItem(key_to_search);
+      content = this.encryp.decrypt(sess!);
     } catch (ex) {
       content = sessionStorage.getItem(key);
     }
