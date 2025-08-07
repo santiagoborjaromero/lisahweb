@@ -25,17 +25,16 @@ export class Auth {
     this.base_url = this.addr.getapiUrl();
   }
 
-  login(data: any): Observable<any> {
-    this.headers = new HttpHeaders(this.headerHlp.get());
-    let options = {
-      headers: this.headers,
-    };
-    let body = {
-      data: this.encrpt.encryp(JSON.stringify(data))
-    }
-    console.log(body)
-    return this.http.post(`${this.base_url}login`, body, options);
-  }
+  // login(data: any): Observable<any> {
+  //   this.headers = new HttpHeaders(this.headerHlp.get());
+  //   let options = {
+  //     headers: this.headers,
+  //   };
+  //   let body = {
+  //     data: this.encrpt.encryp(JSON.stringify(data))
+  //   }
+  //   return this.http.post(`${this.base_url}login`, body, options);
+  // }
 
   verifyCode(codigo: any): Observable<any> {
     this.headers = new HttpHeaders(this.headerHlp.getWithToken());

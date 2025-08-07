@@ -5,7 +5,7 @@
       <i  class="fas fa-spinner fa-spin"></i>
       Cargando
     </span>
-    <button (click)="openConn()" class="btn btn-primary btn-sm"><i role="img" class="fas fa-repeat"></i> Recargar</button>
+    <button role="button" (click)="openConn()" class="btn btn-primary btn-sm"><i role="img" class="fas fa-repeat"></i> Recargar</button>
   </div>
 </div>
 
@@ -155,7 +155,7 @@
       <div class="card-body ">
         <h5 class="card-title d-flex justify-content-between">
           Servicios
-          <button (click)="go('servicios')" class="btn btn-link btn-sm" title="Configuracion"><i role="img" class="{{icono.settings}}"></i></button>
+          <button role="button" (click)="go('servicios')" class="btn btn-link btn-sm" title="Configuracion"><i role="img" class="{{icono.settings}}"></i></button>
         </h5>
         <small
           ><i

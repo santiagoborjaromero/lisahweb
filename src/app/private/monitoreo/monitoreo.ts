@@ -11,6 +11,7 @@ import moment from 'moment';
 import { WSService } from '../../core/services/ws.service';
 import { Titulo } from '../shared/titulo/titulo';
 import { Path } from '../shared/path/path';
+import { GeneralService } from '../../core/services/general.service';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -24,6 +25,7 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 export class Monitoreo {
     private readonly userSvc = inject(UsuarioService);
     private readonly serverSvc = inject(ServidorService);
+    private readonly generalSvc = inject(GeneralService);
     private readonly func = inject(Functions);
     private readonly sessions = inject(Sessions);
     private readonly wsSvc = inject(WSService);
@@ -905,29 +907,32 @@ export class Monitoreo {
     //   this.wsSvc.disconnectAll();
     // }
   
-    enviaSSH(record:any){
-      let param = { data: { host: record.host, puerto: record.ssh_puerto } }
-      this.serverSvc.testHealthy(param).subscribe({
-        next: (resp: any) => {
-          let msg = "";
-          if (resp.status) {
-            msg = "OK|Conectado";
-          } else {
-            msg = "FAIL|No Conectado";
-          }
-          this.lstServidores.forEach((s:any)=>{
-            if (s.nombre == record.nombre){
-              s.healthy_ssh = msg;
-            }
-          })
-          this.refreshAll()
+    // enviaSSH(record:any){
+    //   let param = { 
+    //     host: record.host, 
+    //     puerto: record.ssh_puerto 
+    //   };
+    //   this.generalSvc.apiRest("POST", "healthy_server", param).subscribe({
+    //     next: (resp: any) => {
+    //       let msg = "";
+    //       if (resp.status) {
+    //         msg = "OK|Conectado";
+    //       } else {
+    //         msg = "FAIL|No Conectado";
+    //       }
+    //       this.lstServidores.forEach((s:any)=>{
+    //         if (s.nombre == record.nombre){
+    //           s.healthy_ssh = msg;
+    //         }
+    //       })
+    //       this.refreshAll()
   
-        },
-        error: (err: any) => {
-          this.func.closeSwal();
-        },
-      });
-    }
+    //     },
+    //     error: (err: any) => {
+    //       this.func.closeSwal();
+    //     },
+    //   });
+    // }
   
     
   }

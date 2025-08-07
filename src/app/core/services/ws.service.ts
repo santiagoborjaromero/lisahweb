@@ -37,13 +37,15 @@ export class WSService {
   /**
    * Conecta a un servidor
    */
-  connect(server: any): Observable<any> {
+  connect(server: any, reconnect:boolean =  false): Observable<any> {
     const id = server.idservidor;
     const url = `ws://${server.host}:${server.agente_puerto}`;
 
-    if (this.connections.has(id)) {
-      // console.warn(`Ya existe una conexión activa con el servidor: ${id}`);
-      return this.connectionStatus.get(id)!.asObservable();
+    if (reconnect){
+      if (this.connections.has(id)) {
+        // console.log(`Ya existe una conexión activa con el servidor: ${id}`);
+        return this.connectionStatus.get(id)!.asObservable();
+      }
     }
 
     const subject = new Subject<WsResponse>();
@@ -54,7 +56,7 @@ export class WSService {
     const ws = new WebSocket(url);
 
     ws.onopen = () => {
-      // console.log(`[WS] Conectado a ${id} (${url})`);
+      console.log(`[WS] Conectado a ${id} (${url})`);
       server.healthy_agente = "OK|Conectado";
       status.next(server);
     };
@@ -71,7 +73,7 @@ export class WSService {
         subject.next(response);
         this.onAnyMessage.next(response); // Broadcast global
       } catch (err) {
-        console.error(`[WS] Error procesando mensaje de ${id}:`, err);
+        console.log(`[WS] Error procesando mensaje de ${id}:`, err);
         const errorResponse: WsResponse = {
           action: 'error',
           data: { original: event.data, error: 'Invalid JSON' },
@@ -85,13 +87,14 @@ export class WSService {
     };
 
     ws.onclose = (event) => {
-      // console.log(`[WS] Conexión cerrada con ${id}`, event);
- 
-      // this.reconnect(server); // Reintento automático
+      console.log(`[WS] Conexión cerrada con ${id}`, event);
+      if (reconnect){
+        this.reconnect(server); // Reintento automático
+      }
     };
 
     ws.onerror = (err) => {
-      // console.error(`[WS] Error con ${id}`, err);
+      console.log(`[WS] Error con ${id}`, err);
       // status.next(false);
       server.healthy_agente = "FAIL|Desconectado|"+id;
       status.next(server);

@@ -8,6 +8,7 @@
     --color-datagrid-row-impar: #d1d1d1;
     --color-datagrid-row-impar-border: #f5f5f5;
     --color-datagrid-font-color: rgb(0, 0, 0);
+    --color-hover: #00000015;
 }
 
 
@@ -375,4 +376,89 @@ ul.menu{
 
 .hover:hover{
     background-color: #3103031c;
+}
+
+
+.content-stats{
+    display: flex;
+    // background-color: #0b792c;
+    // text-align: center;
+    // align-content: center;
+    justify-content: center;
+    height: 200px;
+
+    .stats:hover{
+        background-color: var(--color-hover);
+    }
+    .stats{
+        // width: 33% ;
+        display: flex;
+        flex-direction: column;
+        
+        border: 1px solid #dadada;
+        border-radius: 10px;
+        padding: 10px;
+        margin: 10px;
+        box-shadow: 10px 10px 11px 0px rgba(0,0,0,0.11);
+        -webkit-box-shadow: 10px 10px 11px 0px rgba(0,0,0,0.11);
+        -moz-box-shadow: 10px 10px 11px 0px rgba(0,0,0,0.11);
+        // text-align: center;
+        // align-content: center;
+        // justify-content: center;
+    
+        .icono{
+            width:40px;
+            height: 40px;
+            display: absolute;
+            font-size: 20px;
+            align-content: center;
+            text-align: center;
+            border-radius: 5px;
+        }
+    
+        .icono-rojo{
+            background-color: #790b0b42;
+            color: #790b0b;
+        }
+        .icono-morado{
+            background-color: #3b0b7942;
+            color: #3b0b79;
+        }
+        .icono-verde{
+            background-color: #0b792c42;
+            color: #0b792c;
+        }
+    
+        .seccion{
+            font-weight: 600;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+    
+        .valor{
+            font-weight: 400;
+            font-size: 30px;
+            
+        }
+    
+        .valor-rojo{ color: #790b0b; }
+        .valor-morado{ color: #3b0b79; }
+        .valor-verde{ color: #0b792c; }
+    
+        .avg{
+            font-weight: 400;
+            font-size: 12px;
+            color: #868686;
+        }
+    
+        .progress{
+            height: 5px;
+        }
+    
+        .pbar-rojo{ background-color: #790b0b; }
+        .pbar-morado{ background-color: #3b0b79; }
+        .pbar-verder{ background-color: #0b792c; }
+    
+    
+    }
 }

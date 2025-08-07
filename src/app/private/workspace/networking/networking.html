@@ -4,18 +4,59 @@
     <div class="d-flex justify-content-between align-items-center">
       <span class="mr-2 sentinel">{{global.agent}}</span>
       <div class="d-flex align-items-center">
-      @if(lstDatos){
-          @if(lstDatos.agente_status == "Conectado"){
-          <i role="img" class="far fa-check-circle text-success t20"></i>
-          }@else if(lstDatos.agente_status == "Desconectado"){
-          <i role="img" class="fas fa-times-circle text-danger t20"></i>
-          }@else if(lstDatos.agente_status == ""){
-          <i role="img" class="fas fa-minus-circle text-secondary"></i> 
-          }
-      }
-      <span class="ml-2">{{lstDatos.agente_status}}</span>
+      <span class="ml-2 {{agente_status == 'Conectado' ? 'text-success bold' : 'text-danger bold'}}">{{agente_status}}</span>
       </div>
     </div>
-    <button (click)="openConn()" class="btn btn-primary btn-sm"><i role="img" class="fas fa-repeat"></i> Recargar</button>
+    <button role="button" (click)="initial()" class="btn btn-primary btn-sm"><i role="img" class="fas fa-repeat"></i> Recargar</button>
   </div>
 </div>
+
+<section class="row  mt-5">
+  <h5>Firewall</h5>
+  <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4">
+    <ul class="list-group">
+      @for (item of lstNotificaciones; track $index) {
+        <li class="list-group-item d-flex text-align-center">
+          @switch (item.tipo) {
+            @case ("FATAL") {
+              <i class="fas fa-info t16 bold text-white bg-danger redondo pl-3 pr-3 pt-2 pb-2 mr-2"></i> 
+            }
+            @case ("DEBUG") {
+              <i class="fas fa-info t16 bold text-white bg-success redondo pl-3 pr-3 pt-2 pb-2 mr-2"></i> 
+            }
+          }
+          {{item.descripcion}}
+        </li>
+      }
+    </ul>
+  </div>
+</section>
+
+
+<section class="row mt-5">
+  <h5>Interfaces</h5>
+  <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th class="th-normal text-white">Red</th>
+          <th class="th-normal text-white">Interface</th>
+          <th class="th-normal text-white">Protocolo</th>
+          <th class="th-normal text-white">Alcance</th>
+          <th class="th-normal text-white">IP v4</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of lstInterfaces; track $index) {
+          <tr>
+            <td>{{item[0]}}</td>
+            <td>{{item[2]}}</td>
+            <td>{{item[4]}}</td>
+            <td>{{item[6]}}</td>
+            <td>{{item[8]}}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

@@ -50,7 +50,8 @@ export const routes: Routes = [
                 loadComponent: () => import('./private/workspace/workspace').then( (c)=> c.Workspace),
                 canActivate: [authGuard],
                 children:[
-                    {path:"dashboard", loadComponent: () => import('./private/workspace/general/general').then((c)=> c.General)},
+                    // {path:"dashboard", loadComponent: () => import('./private/workspace/general/general').then((c)=> c.General)},
+                    {path:"dashboard", loadComponent: () => import('./private/workspace/dashboard/dashboard').then((c)=> c.Dashboard)},
                     {path:"servicios", loadComponent: () => import('./private/workspace/servicios/servicios').then((c)=> c.Servicios)},
                     {path:"usuarios", loadComponent: () => import('./private/workspace/usuarios/usuarios').then((c)=> c.Usuarios)},
                     {path:"grupousuarios", loadComponent: () => import('./private/workspace/grupousuarios/grupousuarios').then((c)=> c.Grupousuarios)},

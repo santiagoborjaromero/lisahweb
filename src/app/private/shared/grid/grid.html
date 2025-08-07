@@ -38,25 +38,25 @@
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-end">
                 <li class="page-item {{enabledAnterior ? '' : 'disabled'}}">
-                     <button class="page-link">Anterior</button>
+                     <button role="button" class="page-link">Anterior</button>
                 </li>
 
                 @if (pages.length>0) {
                     @for (p of pages; track $index) {
                         <li class="page-item">
-                             <button class="page-link {{p == current_page ? 'active' : ''}}">{{p}}</button>
+                             <button role="button" class="page-link {{p == current_page ? 'active' : ''}}">{{p}}</button>
                         </li>
                     }
                 } @else{
                     <li class="page-item">
-                        <button class="page-link">1</button>
+                        <button role="button" class="page-link">1</button>
                     </li>
                 }
 
 
                 
                 <li class="page-item {{enabledSiguiente ? '' : 'disabled'}}">
-                    <button class="page-link">Siguiente</button>
+                    <button role="button" class="page-link">Siguiente</button>
                 </li>
             </ul>
         </nav>

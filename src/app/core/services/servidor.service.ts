@@ -71,13 +71,13 @@ export class ServidorService {
     }
   }
 
-  testHealthy(data: any): Observable<any> {
-    this.headers = new HttpHeaders(this.headerHlp.getWithToken());
-    let options = {
-      headers: this.headers,
-    };
-    return this.http.post(`${this.base_url}healthy_server`, data, options);
-  }
+  // testHealthy(data: any): Observable<any> {
+  //   this.headers = new HttpHeaders(this.headerHlp.getWithToken());
+  //   let options = {
+  //     headers: this.headers,
+  //   };
+  //   return this.http.post(`${this.base_url}healthy_server`, data, options);
+  // }
 
   delete(id: any): Observable<any> {
     this.headers = new HttpHeaders(this.headerHlp.getWithToken());

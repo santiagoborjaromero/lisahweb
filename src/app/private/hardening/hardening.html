@@ -5,7 +5,7 @@
   <section class="row barra-menu">
     <div class="col d-flex justify-content-end">
       &nbsp;&nbsp;
-      <!-- <button (click)="goServidores()" class="btn btn-white " title="Definir Servidores"><i role="img" class="fa fa-cog mr-2"></i> <span class="link">Servidores</span> </button> -->
+      <!-- <button role="button" (click)="goServidores()" class="btn btn-white " title="Definir Servidores"><i role="img" class="fa fa-cog mr-2"></i> <span class="link">Servidores</span> </button> -->
     </div>
   </section>
   
@@ -13,10 +13,10 @@
     <div class="col-12 col-md-6"><h4>Listado de Servidores</h4></div>
     <div class="col-12 col-md-6 text-end d-flex justify-content-end">
       <!-- <div class="btn-group" role="group" aria-label="Modo Vista">
-        <button type="button" class="btn btn-outline-secondary btn-sm active">
+        <button role="button" type="button" class="btn btn-outline-secondary btn-sm active">
           <i class="fab fa-buromobelexperte t30" title="Vista en tarjetas"></i>
         </button>
-        <button type="button" class="btn btn-outline-secondary btn-sm">
+        <button role="button" type="button" class="btn btn-outline-secondary btn-sm">
           <i class="fas fa-border-all t30" title="Vista en tabla"></i>
         </button>
       </div> -->
@@ -52,12 +52,12 @@
             <!-- {{server.agente_puerto_protocolo}}://{{server.host}}:{{server.agente_puerto}} -->
           </div>
           <div class="d-flex justify-content-end mt-3">
-            <button [attr.aria-label]="'Seleccionar Servidor {{server.nombre}}'" (click)="gowork(server.idservidor)" 
+            <button role="button" [attr.aria-label]="'Seleccionar Servidor {{server.nombre}}'" (click)="gowork(server.idservidor)" 
               class="btn btn-outline-primary btn-sm mr-1">
               <i role="img" class="fas fa-check mr-2"></i> 
               <span aria-label="Seleccionar Servidor">Seleccionar</span>
             </button>
-            <!-- <button [attr.aria-label]="'Editar Servidor {{server.nombre}}'" (click)="goEditServer(server.idservidor)" 
+            <!-- <button role="button" [attr.aria-label]="'Editar Servidor {{server.nombre}}'" (click)="goEditServer(server.idservidor)" 
               class="btn btn-outline-primary btn-sm mr-1">
               <i role="img" class="far fa-edit mr-2"></i> 
               <span aria-label="Editar Servidor">Editar</span>

@@ -4,8 +4,8 @@
 
   <div class="row barra-menu ">
     <div class="col text-end">
-      <button (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1"><i role="img" class="fas fa-save"></i> Guardar</button>
-      <button (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1"><i role="img" class="fas fa-reply"></i> Cancelar</button>
+      <button role="button" (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1"><i role="img" class="fas fa-save"></i> Guardar</button>
+      <button role="button" (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1"><i role="img" class="fas fa-reply"></i> Cancelar</button>
     </div>
   </div>
   
@@ -230,7 +230,7 @@
               <small><i>Filtro</i></small>
             </div>
             <div class="col-auto">
-              <button class="btn btn-primary">Buscar</button>
+              <button role="button" class="btn btn-primary">Buscar</button>
             </div>
           </div>
           <div class="h300 scrollx">
@@ -290,7 +290,7 @@
             <small><i role="img" class="text-secondary">Selección</i></small>
           </div>
           <div class="col-4 col-md-4 td2">
-            <button  class="btn btn-primary btn-sm m-1" (click)="actualizaServidores()"
+            <button role="button"  class="btn btn-primary btn-sm m-1" (click)="actualizaServidores()"
               data-bs-toggle="modal" data-bs-target="#ventanaModal"><i role="img" class="fas fa-plus"></i> Añadir</button> 
             <br>
             <sup>
@@ -317,7 +317,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Lista de Servidores sin asignar</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button role="button" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div #myGrid2 id="myGrid2" class="ag-theme-quartz scrollx" style="height: 400px; min-height: 400px"></div>
@@ -340,7 +340,7 @@
             <sup><i role="img" class="text-secondary">Ingrese el texto a buscar por nombre, ubicacion, host o puerto</i></sup>
           </div>
           <div class="col-8 col-md-1 td2">
-            <button class="btn btn-link" title="Buscar"><i role="img" class="fas fa-search"></i></button>
+            <button role="button" class="btn btn-link" title="Buscar"><i role="img" class="fas fa-search"></i></button>
             <br>
             <sup>&nbsp;</sup>
           </div>
@@ -359,7 +359,7 @@
                   @if(!item.check){
                     <tr>
                       <td>{{item.nombre}} - <i>{{item.ubicacion}}</i> -  <strong>{{item.host}}:{{item.ssh_puerto}}:{{item.agente_puerto}}</strong></td>
-                      <td><button (click)="addItem(item.idservidor)" class="btn btn-link"><i role="img" class="fas fa-plus"></i></button></td>
+                      <td><button role="button" (click)="addItem(item.idservidor)" class="btn btn-link"><i role="img" class="fas fa-plus"></i></button></td>
                     </tr>
                   }
                 }
@@ -370,8 +370,8 @@
         </div> -->
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+        <button role="button" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <!-- <button role="button" type="button" class="btn btn-primary">Save changes</button> -->
       </div>
     </div>
   </div>

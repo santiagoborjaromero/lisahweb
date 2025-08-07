@@ -2,17 +2,17 @@
 <div class="content">
   <app-titulo [lstHeader]="titulo" />
 
-  <section class="row barra-menu">
+  <header class="row barra-menu">
     <div class="col">
       <strong>Filtro </strong>
       <div class="col btn-group" role="group" aria-label="Basic">
-        <button (click)="accion='activos'; getData()" type="button" class="btn btn-primary btn-sm {{accion=='activos' ? 'active' : ''}}">
+        <button role="button" (click)="accion='activos'; getData()" type="button" class="btn btn-primary btn-sm {{accion=='activos' ? 'active' : ''}}">
           Activo
         </button>
-        <button (click)="accion='inactivos'; getData()" type="button" class="btn btn-primary btn-sm {{accion=='inactivos' ? 'active' : ''}}">
+        <button role="button" (click)="accion='inactivos'; getData()" type="button" class="btn btn-primary btn-sm {{accion=='inactivos' ? 'active' : ''}}">
           Inactivo
         </button>
-        <button (click)="accion='todos'; getData()" type="button" class="btn btn-primary btn-sm {{accion=='todos' ? 'active' : ''}}">
+        <button role="button" (click)="accion='todos'; getData()" type="button" class="btn btn-primary btn-sm {{accion=='todos' ? 'active' : ''}}">
           Todos
         </button>
       </div>
@@ -64,7 +64,7 @@
         <i role="img" class="fas fa-sync-alt"></i>
       </button>
     </div>
-  </section>
+  </header>
 
   <div #myGrid id="myGrid" class="ag-theme-quartz" style="height: 300px; min-height: 300px"></div>
 
@@ -79,10 +79,10 @@
   @if(name_selected!=""){
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item" role="presentation">
-        <button class="nav-link text-primary active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Detalles</button>
+        <button role="button" class="nav-link text-primary active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Detalles</button>
       </li>
       <!-- <li class="nav-item" role="presentation">
-        <button class="nav-link text-primary" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Monitoreo</button>
+        <button role="button" class="nav-link text-primary" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Monitoreo</button>
       </li> -->
     </ul>
    
@@ -119,12 +119,12 @@
                 <p>
                   <strong for="">Acceso a {{global.agent}}</strong><br>
                   <span class="mt-1">{{server_selected.agente_puerto_protocolo}}://{{server_selected.host}}:{{server_selected.agente_puerto}} </span>
-                  <button (click)="testAgente()" class="btn btn-white text-primary t14" title="Test de conexión"> <i role="img" class="fas fa-flask"></i> </button>
+                  <button role="button" (click)="testAgente()" class="btn btn-white text-primary t14" title="Test de conexión"> <i role="img" class="fas fa-flask"></i> </button>
                 </p>
                 <p >
                   <strong for="">Puerto de acceso a SSH</strong><br>
                   <span class="mt-1">{{server_selected.ssh_puerto}}</span>
-                  <button (click)="testSSH()"  class="btn btn-white text-primary t14" title="Test de conexión"> <i role="img" class="fas fa-flask"></i> </button>
+                  <button role="button" (click)="testSSH()"  class="btn btn-white text-primary t14" title="Test de conexión"> <i role="img" class="fas fa-flask"></i> </button>
                 </p>
               </div>
             </div>

@@ -6,9 +6,9 @@
     <div class="col d-flex justify-content-end mb-2">
       <div class=""><i *ngIf="loadMonitoreo" class="t14 text-primary mr-2"><i role="img" class="fas fa-spinner fa-spin "></i> Cargando</i></div>
       <div class="btn-group mr-1" role="group" aria-label="Basic example">
-        <button [disabled]="playMonitor"  class="btn btn-primary btn-sm" (click)="startMonitor()"  title="Iniciar Monitoreo"><i role="img" class="fas fa-play"></i> Iniciar</button>
-        <button [disabled]="!playMonitor" class="btn btn-primary btn-sm" (click)="stopMonitor()"  title="Detener Monitoreo"><i role="img" class="fas fa-stop"></i> Detener</button>
-        <button [disabled]="playMonitor"  class="btn btn-primary btn-sm" (click)="sendMonitor()"  title="Monitorear una vez"><i role="img" class="far fa-play-circle"></i> Una vez</button>
+        <button role="button" [disabled]="playMonitor"  class="btn btn-primary btn-sm" (click)="startMonitor()"  title="Iniciar Monitoreo"><i role="img" class="fas fa-play"></i> Iniciar</button>
+        <button role="button" [disabled]="!playMonitor" class="btn btn-primary btn-sm" (click)="stopMonitor()"  title="Detener Monitoreo"><i role="img" class="fas fa-stop"></i> Detener</button>
+        <button role="button" [disabled]="playMonitor"  class="btn btn-primary btn-sm" (click)="sendMonitor()"  title="Monitorear una vez"><i role="img" class="far fa-play-circle"></i> Una vez</button>
       </div>
 
       <small class="mt-2 mr-1 text-secondary"><i>Intervalo</i></small>
@@ -17,11 +17,11 @@
       </div>
       <small class="mt-2 ml-1 text-secondary"><i>Seg.</i></small>
       
-      <button class="btn btn-white text-black noti" title="Configuración">
+      <button role="button" class="btn btn-white text-black noti" title="Configuración">
         <i role="img" class="fa fa-cog mr-1"></i>
       </button>
 
-      <!-- <button class="btn btn-white text-primary noti" title="Notificaciones">
+      <!-- <button role="button" class="btn btn-white text-primary noti" title="Notificaciones">
         <i role="img" class="fas fa-bell mr-1"></i>
         <span class="badge text-bg-danger">0</span>
       </button> -->

@@ -9,6 +9,7 @@ import { environment } from '../../../environments/environment';
 import { Auth } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { Encryption } from '../../core/helpers/encryption.helper';
+import { GeneralService } from '../../core/services/general.service';
 
 
 @Component({
@@ -24,6 +25,7 @@ export class Login {
   private readonly authSvc = inject(Auth);
   private readonly notiSvc = inject(NotificationService);
   private readonly encrypt = inject(Encryption);
+  private readonly generalSvc = inject(GeneralService);
 
 
   current_year = moment().format("YYYY");
@@ -88,7 +90,7 @@ export class Login {
 
     this.func.showLoading("Cargando");
     try{
-      this.authSvc.login(param).subscribe({
+      this.generalSvc.apiRest("POST", "login", param, false).subscribe({
         next: (resp:any) => {
           this.func.closeSwal();
           this.usuario = "";

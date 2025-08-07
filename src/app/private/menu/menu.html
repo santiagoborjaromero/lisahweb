@@ -3,10 +3,10 @@
   <app-titulo [lstHeader]="titulo" />
   
   <div class="buttons-grup mb-2 text-end">
-      <button (click)="funcEdit(-1)" class="btn btn-primary btn-sm ml-1"><i role="img" class="fas fa-plus"></i> Nuevo</button>
-      <button [disabled]="!this.id_selected" (click)="funcEdit()" class="btn btn-primary btn-sm ml-1"><i role="img" class="far fa-edit"></i> Editar</button>
-      <button [disabled]="!this.id_selected" (click)="funcDelete()" class="btn btn-danger btn-sm ml-1"><i role="img" class="far fa-trash-alt"></i> Eliminar</button>
-      <button (click)="getData()" class="btn btn-white btn-sm ml-1"><i role="img" class="fas fa-sync-alt"></i></button>
+      <button role="button" (click)="funcEdit(-1)" class="btn btn-primary btn-sm ml-1"><i role="img" class="fas fa-plus"></i> Nuevo</button>
+      <button role="button" [disabled]="!this.id_selected" (click)="funcEdit()" class="btn btn-primary btn-sm ml-1"><i role="img" class="far fa-edit"></i> Editar</button>
+      <button role="button" [disabled]="!this.id_selected" (click)="funcDelete()" class="btn btn-danger btn-sm ml-1"><i role="img" class="far fa-trash-alt"></i> Eliminar</button>
+      <button role="button" (click)="getData()" class="btn btn-white btn-sm ml-1"><i role="img" class="fas fa-sync-alt"></i></button>
   </div>
   
   <div #myGrid id="myGrid" class="ag-theme-quartz" style="height: 600px; min-height: 600px"></div>

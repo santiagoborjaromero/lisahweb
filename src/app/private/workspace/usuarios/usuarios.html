@@ -16,7 +16,7 @@
       <span class="ml-2">{{lstDatos.agente_status}}</span>
       </div>
     </div>
-    <button (click)="initial()" class="btn btn-primary btn-sm"><i role="img" class="fas fa-repeat"></i> Recargar</button>
+    <button role="button" (click)="initial()" class="btn btn-primary btn-sm"><i role="img" class="fas fa-repeat"></i> Recargar</button>
   </div>
 </div>
 
@@ -37,13 +37,13 @@
   @if(user_selected){
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item" role="presentation">
-        <button class="nav-link text-primary active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Detalles</button>
+        <button role="button" class="nav-link text-primary active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Detalles</button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link text-primary" id="servidor-tab" data-bs-toggle="tab" data-bs-target="#servidor" type="button" role="tab" aria-controls="profile" aria-selected="false">Servidor</button>
+        <button role="button" class="nav-link text-primary" id="servidor-tab" data-bs-toggle="tab" data-bs-target="#servidor" type="button" role="tab" aria-controls="profile" aria-selected="false">Servidor</button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link text-primary" id="operaciones-tab" data-bs-toggle="tab" data-bs-target="#operaciones" type="button" role="tab" aria-controls="profile" aria-selected="false">Operaciones</button>
+        <button role="button" class="nav-link text-primary" id="operaciones-tab" data-bs-toggle="tab" data-bs-target="#operaciones" type="button" role="tab" aria-controls="profile" aria-selected="false">Operaciones</button>
       </li>
     </ul>
    
@@ -226,12 +226,12 @@
                   </article>
                 }
 <!--                 
-                <button *ngIf="user_selected.servidor" class="btn btn-link m-1" (click)="operaciones('actualizar_usuario_grupo_clave')"><span class="link">Actualizar contraseña</span></button> <br>
-                <button *ngIf="user_selected.servidor" class="btn btn-link m-1" (click)="operaciones('actualizar_clave')"><span class="link">Actualizar usuario, grupo y contraseña</span></button> <br>
-                <button *ngIf="user_selected.servidor" class="btn btn-link m-1" (click)="operaciones('crear_clave')"><span class="link">Crear y actualizar contraseña</span></button> <br>
-                <button *ngIf="user_selected.servidor" class="btn btn-link m-1" (click)="operaciones('suspender_usuario')"><span class="link">Suspender Usuario</span></button> <br>
-                <button *ngIf="user_selected.servidor" class="btn btn-link m-1" (click)="operaciones('eliminar_usuario')"><span class="link">Eliminar Usuario</span></button> <br>
-                <button *ngIf="user_selected.servidor" class="btn btn-link m-1" (click)="operaciones('eliminar_usuario_completo')"><span class="link">Eliminar Usuario - Full</span></button> <br> -->
+                <button role="button" *ngIf="user_selected.servidor" class="btn btn-link m-1" (click)="operaciones('actualizar_usuario_grupo_clave')"><span class="link">Actualizar contraseña</span></button> <br>
+                <button role="button" *ngIf="user_selected.servidor" class="btn btn-link m-1" (click)="operaciones('actualizar_clave')"><span class="link">Actualizar usuario, grupo y contraseña</span></button> <br>
+                <button role="button" *ngIf="user_selected.servidor" class="btn btn-link m-1" (click)="operaciones('crear_clave')"><span class="link">Crear y actualizar contraseña</span></button> <br>
+                <button role="button" *ngIf="user_selected.servidor" class="btn btn-link m-1" (click)="operaciones('suspender_usuario')"><span class="link">Suspender Usuario</span></button> <br>
+                <button role="button" *ngIf="user_selected.servidor" class="btn btn-link m-1" (click)="operaciones('eliminar_usuario')"><span class="link">Eliminar Usuario</span></button> <br>
+                <button role="button" *ngIf="user_selected.servidor" class="btn btn-link m-1" (click)="operaciones('eliminar_usuario_completo')"><span class="link">Eliminar Usuario - Full</span></button> <br> -->
               </div>
               <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4 h500">
                 <strong>Auditoria</strong>

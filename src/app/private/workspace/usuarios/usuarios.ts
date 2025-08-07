@@ -38,7 +38,6 @@ ModuleRegistry.registerModules([AllCommunityModule]);
   styleUrl: './usuarios.scss',
 })
 export class Usuarios implements OnInit {
-  private readonly route = inject(ActivatedRoute);
   private readonly sessions = inject(Sessions);
   private readonly func = inject(Functions);
   private readonly serverSvc = inject(ServidorService);
@@ -47,7 +46,6 @@ export class Usuarios implements OnInit {
   private readonly userSvc = inject(UsuarioService);
   private readonly agente = inject(WSService);
   private readonly parent = inject(Workspace);
-  private readonly sanitizer = inject(DomSanitizer);
   private readonly encrypt = inject(Encryption);
 
   Title = 'Usuarios';
@@ -128,7 +126,6 @@ export class Usuarios implements OnInit {
     ];
   }
 
-
   ngOnInit(): void {
     this.user = JSON.parse(this.sessions.get('user'));
     this.work = JSON.parse(this.sessions.get('work'));
@@ -136,7 +133,6 @@ export class Usuarios implements OnInit {
     this.dataGridStruct();
     
     setTimeout(()=>{
-      // this.openConn();
       this.initial();
     },300)
   }
@@ -158,7 +154,6 @@ export class Usuarios implements OnInit {
 
     this.serverSvc.getOneWithUsers(this.work.idservidor).subscribe({
       next: (resp: any) => {
-        // console.log(resp)
         this.func.closeSwal();
         if (resp.status) {
           if (resp.data[0].usuarios.length > 0){
@@ -170,8 +165,6 @@ export class Usuarios implements OnInit {
           if (resp.data[0].comandos.length > 0){
             this.lstComandos = resp.data[0].comandos;
           }
-          // console.log("↓Srv",this.lstUsuarios)
-          // console.log("↓",this.lstComandos)
           this.refreshAll();
           this.ejecutaOperaciones("listar");
         } else {
@@ -316,7 +309,6 @@ export class Usuarios implements OnInit {
       console.log(err)
     })
   }
-
 
   checkUsers(){
     if (this.lstDatos.usuarios.length>0){

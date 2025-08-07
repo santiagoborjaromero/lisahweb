@@ -101,28 +101,33 @@ export class General implements OnInit {
   }
 
   initial(){
-    
+    this.lstDatos = {
+      uptime: "0d 00:00:00",
+      agente_status: "",
+      ssh_status: "",
+      disco: {
+        total: "0",
+        usado: "0",
+        libre: "0",
+        porcentaje: "0"
+      },
+      memoria: {
+        total: "0",
+        usado: "0",
+        libre: "0",
+        porcentaje: "0"
+      },
+      cpu: {
+        t1: "0",
+        t5: "0",
+        t15:"0",
+        porcentaje: "0"
+      },
+      release: [],
+      servicios: [],
+      infocpu: [],
+    }
   }
-
-  // getUsuario() {
-  //   this.func.showLoading('Cargando');
-  //   console.log(this.work.idservidor)
-
-  //   this.serverSvc.getOne(this.work.idservidor).subscribe({
-  //     next: (resp: any) => {
-  //       this.func.closeSwal();
-  //       console.log(resp);
-  //       if (resp.status) {
-
-  //       } else {
-  //         this.func.showMessage("error", "Usuario", resp.message);
-  //       }
-  //     },
-  //     error: (err: any) => {
-  //       this.func.closeSwal();
-  //     },
-  //   });
-  // }
 
   openConn(){
     this.loading = true;
@@ -130,13 +135,13 @@ export class General implements OnInit {
       next: (resp)=>{
         console.log("Sentinel->", resp)
         if (resp){
-          
           let result = resp.healthy_agente.split("|");
           if (result[0] == "OK"){
             this.lstDatos.agente_status = result[1];
             this.onSendCommands();
           } else{
             this.loading = false;
+            this.initial();
             this.lstDatos.agente_status = result[1];
           }
           

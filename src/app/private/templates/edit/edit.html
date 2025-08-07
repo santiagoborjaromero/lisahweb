@@ -5,10 +5,10 @@
 
   <div class="row barra-menu">
     <div class="col text-end">
-      <button (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1">
+      <button role="button" (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1">
         <i role="img" class="fas fa-save"></i> Guardar
       </button>
-      <button (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1">
+      <button role="button" (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1">
         <i role="img" class="fas fa-reply"></i> Cancelar
       </button>
     </div>
@@ -63,7 +63,7 @@
             
           </div>
           <div class="col-8 col-md-9 td2">
-            <button class="btn btn-link btnayudavisual" (click)="verAyuda=!verAyuda">{{verAyuda ? 'Ocultar ayuda visual' : 'Ver ayuda visual'}}</button>
+            <button role="button" class="btn btn-link btnayudavisual" (click)="verAyuda=!verAyuda">{{verAyuda ? 'Ocultar ayuda visual' : 'Ver ayuda visual'}}</button>
             <br><br>
             <img role="img" *ngIf="verAyuda" src="/assets/img/template.gif" alt="Template" class="imgtemplate">
           </div>
@@ -81,7 +81,7 @@
               <li class="list-group-item list-group-item-action"  >
                 <div class="d-flex w-100 justify-content-between">
                   <strong class="mb-1">{{item.nombre}}</strong>
-                  <button (click)="addText(item.nombre)" class="btn btn-primary btn-sm"><i role="img" class="fas fa-plus"></i></button>
+                  <button role="button" (click)="addText(item.nombre)" class="btn btn-primary btn-sm"><i role="img" class="fas fa-plus"></i></button>
                 </div>
                 <small>{{item.descripcion}}</small>
               </li>

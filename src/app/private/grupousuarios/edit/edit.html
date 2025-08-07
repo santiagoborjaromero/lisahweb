@@ -4,8 +4,8 @@
 
   <div class="row barra-menu">
     <div class="col text-end">
-      <button (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1"><i role="img" class="fas fa-save mr-1"></i> Guardar</button>
-      <button (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1"><i role="img" class="fas fa-reply mr-1"></i> Cancelar</button>
+      <button role="button" (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1"><i role="img" class="fas fa-save mr-1"></i> Guardar</button>
+      <button role="button" (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1"><i role="img" class="fas fa-reply mr-1"></i> Cancelar</button>
     </div>
   </div>
   
@@ -63,7 +63,7 @@
               </sup>
             </div>
             <div>
-              <button class="btn btn-white btn-sm" title="Buscar Grupos" data-bs-toggle="modal" data-bs-target="#ventanaModalGU">
+              <button role="button" class="btn btn-white btn-sm" title="Buscar Grupos" data-bs-toggle="modal" data-bs-target="#ventanaModalGU">
                 <i role="img" class="{{iconos.search}}"></i> <span class="link">Buscar Scripts</span></button>
               <br><br>
             </div>
@@ -179,13 +179,13 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Lista de Scripts</h5>
-        <button #btnClose type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button role="button" #btnClose type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div #myGrid2 id="myGrid2" class="ag-theme-quartz scrollx" style="height: 400px; min-height: 400px"></div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button role="button" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>

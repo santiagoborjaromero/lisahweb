@@ -10,6 +10,7 @@ import { ServidorService } from '../../core/services/servidor.service';
 import moment from 'moment';
 import { Titulo } from '../shared/titulo/titulo';
 import { Path } from '../shared/path/path';
+import { GeneralService } from '../../core/services/general.service';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -21,6 +22,7 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 })
 export class Servidores {
   private readonly serverSvc = inject(ServidorService);
+  private readonly generalSvc = inject(GeneralService);
   private readonly func = inject(Functions);
   private readonly sessions = inject(Sessions);
 
@@ -494,12 +496,15 @@ export class Servidores {
 
   testSSH(){
     this.ssh_test = "-";
-    let param = { data: { host: this.server_selected.host, puerto: this.server_selected.ssh_puerto } }
+    let param = { 
+      host: this.server_selected.host, 
+      puerto: this.server_selected.ssh_puerto 
+    }
     // this.func.showLoading(`Realizando prueba de salud a ${record.nombre}`);
-    this.serverSvc.testHealthy(param).subscribe({
+    this.generalSvc.apiRest("POST", "healthy_server", param).subscribe({
       next: (resp: any) => {
         this.func.closeSwal();
-        // console.log(resp)
+        console.log(resp)
         if (resp.status) {
           this.ssh_test = "1";
           this.putResults(this.server_selected.idservidor, [1, resp.data], "ssh")

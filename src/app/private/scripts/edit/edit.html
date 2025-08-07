@@ -4,10 +4,10 @@
 
   <div class="row barra-menu">
     <div class="col text-end">
-      <button (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1">
+      <button role="button" (click)="funcSubmit()" class="btn btn-primary btn-sm ml-1">
         <i role="img" class="fas fa-save mr-1"></i> Guardar
       </button>
-      <button (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1">
+      <button role="button" (click)="funcCancelar()" class="btn btn-danger btn-sm ml-1">
         <i role="img" class="fas fa-reply mr-1"></i> Cancelar
       </button>
     </div>
@@ -141,7 +141,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Lista de Comandos</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button role="button" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="p-1 row">
@@ -205,8 +205,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Close </button>
-        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+        <button role="button" type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Close </button>
+        <!-- <button role="button" type="button" class="btn btn-primary">Save changes</button> -->
       </div>
     </div>
   </div>

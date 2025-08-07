@@ -120,9 +120,9 @@ export class Functions {
         action: '',
       },
       {
-        message: 'token expired',
+        message: 'token expirado',
         messageResult: 'Token de seguridad expiró',
-        action: 'this.auth()',
+        action: 'logout',
       },
     ];
 
@@ -141,46 +141,19 @@ export class Functions {
     if (action == '') {
       this.showMessage('error', title, msgError);
     } else {
-      this.showLoading(msgError);
-      console.log(msgError, action);
-      // eval(action);
-      if (action == 'this.auth()') {
-        this.auth();
-      }
+      this.showMessage('error', title, msgError);
+      setTimeout(()=>{
+        if (action == 'logout') {
+          this.sessions.set('user', "");
+          this.sessions.set('statusLogged', 'false');
+          this.sessions.set('token', "");
+          this.sessions.set('form', "");
+          this.router.navigate(['/login']);
+        }
+      },4000)
     }
   };
 
-  auth() {
-    let data = JSON.parse(this.sessions.get('form'));
-    this.authSvc.login(data).subscribe({
-      next: (resp: any) => {
-        if (Swal.isVisible()) Swal.close();
-        if (resp.status == 'ok') {
-          if (resp.message.status) {
-            this.sessions.set('user', JSON.stringify(resp.message));
-            this.sessions.set('statusLogged', 'true');
-            this.sessions.set('token', resp.message.token);
-            this.sessions.set('form', JSON.stringify(data));
-            this.router.navigate(['/home']);
-          } else {
-            this.handleErrors(
-              'Validacion',
-              'El usuario no se encuentra activo'
-            );
-            this.sessions.set('statusLogged', 'false');
-          }
-        } else {
-          this.handleErrors('Validacion', resp.message);
-          this.sessions.set('statusLogged', 'false');
-        }
-      },
-      error: (err: any) => {
-        if (Swal.isVisible()) Swal.close();
-        this.handleErrors('Validacion', err);
-        this.sessions.set('statusLogged', 'false');
-      },
-    });
-  }
 
   showMessage(type: any, title: any, msg: any) {
     let that = this;
