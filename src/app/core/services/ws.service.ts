@@ -37,7 +37,7 @@ export class WSService {
   /**
    * Conecta a un servidor
    */
-  connect(server: any, reconnect:boolean =  false): Observable<any> {
+  connect(server: any, reconnect:boolean =  true): Observable<any> {
     const id = server.idservidor;
     const url = `ws://${server.host}:${server.agente_puerto}`;
 

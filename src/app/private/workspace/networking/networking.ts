@@ -10,10 +10,15 @@ import iconsData from '../../../core/data/icons.data';
 import { Workspace } from '../workspace';
 import { Global } from '../../../core/config/global.config';
 import Swal from 'sweetalert2';
+import { Chart, ChartConfiguration, ChartOptions, registerables } from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
+import { color } from 'chart.js/helpers';
+
+Chart.register(...registerables);
 
 @Component({
   selector: 'app-networking',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, BaseChartDirective],
   templateUrl: './networking.html',
   styleUrl: './networking.scss',
   standalone: true
@@ -41,7 +46,68 @@ private readonly route = inject(ActivatedRoute);
   lstAcciones:any  = [];
   lstNotificaciones:any  = [];
   lstInterfaces:any  = [];
+  lstIntefazData:any  = [];
   activar_acciones: boolean = false;
+  tiempo_refresco:number = 0;
+
+  chartLegend:boolean = true;
+
+  lstRxData:any = [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+  lstTxData:any = [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+  lstRxData_err:any = [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+  lstTxData_err:any = [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+
+  dataSetRx:any = [];
+  dataSetTx:any = [];
+
+  tmrMonitor:any = null;
+
+  public rxChartData: ChartConfiguration['data'] = {
+    labels: [],
+    datasets: [],
+  }
+
+  public rxChartOptions: ChartOptions = {
+    responsive: true,
+    plugins:{
+      legend:{
+        position: 'bottom'
+      },
+      title:{
+        display: true,
+        text: `Paquetes recibidos exitosamente`
+      }
+    },
+    indexAxis: 'x',
+    scales: {
+      y: {
+          beginAtZero: true
+      }
+    }
+  };
+  public txChartData: ChartConfiguration['data'] = {
+    labels: [],
+    datasets: [],
+  }
+
+  public txChartOptions: ChartOptions = {
+    responsive: true,
+    plugins:{
+      legend:{
+        position: 'bottom'
+      },
+      title:{
+        display: true,
+        text: `Paquetes enviados exitosamente`
+      }
+    },
+    indexAxis: 'x',
+    scales: {
+      y: {
+          beginAtZero: true
+      }
+    }
+  };
 
   constructor(){
     this.parent.findTab(this.TAB);
@@ -53,11 +119,79 @@ private readonly route = inject(ActivatedRoute);
         condicion: true,
       },
     ];
+
+    // this.dataSetRx.push({
+    //   data: [],
+    //   label: "RX",
+    //   fill: true,
+    //   tension: 0.1,
+    //   borderColor: 'black',
+    //   borderWidth: 0,
+    //   backgroundColor: 'rgba(41, 219, 204, 0.79)'
+    // });
+    // this.dataSetTx.push({
+    //   data: [],
+    //   label: "TX",
+    //   fill: true,
+    //   tension: 0.1,
+    //   borderColor: 'black',
+    //   borderWidth: 0,
+    //   backgroundColor: 'rgba(219, 148, 41, 0.79)'
+    // });
+
+    this.dataSetRx.push({
+      data: [],
+      label: "RX OK",
+      fill: true,
+      tension: 0.1,
+      borderColor: 'black',
+      borderWidth: 0,
+      backgroundColor: 'rgba(41, 219, 204, 0.79)'
+    });
+
+    this.dataSetRx.push({
+      data: [],
+      label: "RX FAIL",
+      fill: true,
+      tension: 0.1,
+      borderColor: 'black',
+      borderWidth: 0,
+      backgroundColor: 'rgba(207, 20, 20, 0.62)'
+    });
+    this.dataSetTx.push({
+      data: [],
+      label: "TX OK",
+      fill: true,
+      tension: 0.1,
+      borderColor: 'black',
+      borderWidth: 0,
+      backgroundColor: 'rgba(212, 210, 74, 0.81)'
+    });
+
+    this.dataSetTx.push({
+      data: [],
+      label: "TX FAIL",
+      fill: true,
+      tension: 0.1,
+      borderColor: 'black',
+      borderWidth: 0,
+      backgroundColor: 'rgba(207, 20, 20, 0.62)'
+    });
   }
+
   ngOnInit(): void {
     this.user = JSON.parse(this.sessions.get("user"));
     this.work = JSON.parse(this.sessions.get("work"));
+    this.tiempo_refresco = this.user.config.tiempo_refresco;
     this.initial();
+    setTimeout(()=>{ this.timer() },2000)
+  }
+  
+  timer(){
+    this.ejecutaOperaciones("intefaz_data");
+    this.tmrMonitor = setInterval(()=>{
+      this.ejecutaOperaciones("intefaz_data");
+    }, this.tiempo_refresco * 1000)
   }
 
   initial(){
@@ -83,6 +217,8 @@ private readonly route = inject(ActivatedRoute);
           }
           this.ejecutaOperaciones("listar");
           setTimeout(()=>{ this.ejecutaOperaciones("interfaces"); },500)
+          
+          // setTimeout(()=>{ this.ejecutaOperaciones("intefaz_data"); },1000)
         } else {
           this.func;
         }
@@ -92,6 +228,12 @@ private readonly route = inject(ActivatedRoute);
       },
     });
   }
+
+  ngOnDestroy(): void {
+    clearInterval(this.tmrMonitor);
+  }
+
+
 
   buscarComando(area="", accion=""){
     let arr:any = [];
@@ -162,11 +304,23 @@ private readonly route = inject(ActivatedRoute);
             acum = [];
             aux.forEach((rs:any, idx:any)=>{
               let rss = rs.split(",");
-              if (rs != "" && idx>0){
+              if (rss != "" && idx>0){
                 acum.push(rss)
               }
             })
             this.lstInterfaces = acum;
+          break;
+        case `${this.area}|intefaz_data`:
+            aux = (d.respuesta.split("\n"));
+            acum = [];
+            aux.forEach((rs:any, idx:any)=>{
+              let rss = rs.split(",");
+              if (rss != "" && idx>0){
+                acum.push(rss)
+              }
+            })
+            this.lstIntefazData = acum;
+            this.graph()
           break;
         default:
           // this.initial();
@@ -239,6 +393,59 @@ private readonly route = inject(ActivatedRoute);
       data: cmd
     };
     this.openConn(params);
+  }
+
+   graph(){
+    let labels:any =  ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20"];
+    
+    let rx:number = 0;
+    let rxerr:number = 0;
+    let tx:number = 0;
+    let txerr:number = 0;
+    let count:number = 0;
+
+    this.lstInterfaces.forEach( (e:any) => {
+      this.lstIntefazData.forEach( (i:any) => {
+        if (e[2] == i[0]){
+          count ++; 
+          rx += parseFloat(i[2]);
+          rxerr += parseFloat(i[2]);
+          tx += parseFloat(i[6]);
+          txerr += parseFloat(i[7]);
+        }
+      });
+    });
+
+    rx = rx / count;
+    tx = tx / count;
+
+    // console.log(rx, tx)
+
+    this.lstRxData.splice(0,1);
+    this.lstRxData.push(rx);
+
+    this.lstRxData_err.splice(0,1);
+    this.lstRxData_err.push(rx);
+
+    this.lstTxData.splice(0,1);
+    this.lstTxData.push(tx);
+    this.lstTxData_err.splice(0,1);
+    this.lstTxData_err.push(tx);
+
+    this.dataSetRx[0].data =  this.lstRxData;
+    this.dataSetRx[1].data =  this.lstRxData_err;
+    this.dataSetTx[0].data =  this.lstTxData;
+    this.dataSetTx[1].data =  this.lstTxData_err;
+    
+    this.rxChartData  = {
+      labels: labels,
+      datasets: this.dataSetRx
+    }
+
+    this.txChartData  = {
+      labels: labels,
+      datasets: this.dataSetTx
+    }
   }
 
 }

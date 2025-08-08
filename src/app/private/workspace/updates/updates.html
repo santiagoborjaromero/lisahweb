@@ -4,18 +4,14 @@
     <div class="d-flex justify-content-between align-items-center">
       <span class="mr-2 sentinel">{{global.agent}}</span>
       <div class="d-flex align-items-center">
-      @if(lstDatos){
-          @if(lstDatos.agente_status == "Conectado"){
-          <i role="img" class="far fa-check-circle text-success t20"></i>
-          }@else if(lstDatos.agente_status == "Desconectado"){
-          <i role="img" class="fas fa-times-circle text-danger t20"></i>
-          }@else if(lstDatos.agente_status == ""){
-          <i role="img" class="fas fa-minus-circle text-secondary"></i> 
-          }
-      }
-      <span class="ml-2">{{lstDatos.agente_status}}</span>
+      <span class="ml-2 {{agente_status == 'Conectado' ? 'text-success bold' : 'text-danger bold'}}">{{agente_status}}</span>
       </div>
     </div>
-    <button role="button" (click)="openConn()" class="btn btn-primary btn-sm"><i role="img" class="fas fa-repeat"></i> Recargar</button>
+    <div>
+      <button role="button" (click)="actualizarTodo()" class="btn btn-primary btn-sm mr-1"><i role="img" class="fas fa-download"></i> Actualizar Sistema</button>
+      <button role="button" (click)="initial()" class="btn btn-primary btn-sm"><i role="img" class="fas fa-repeat"></i> Recargar</button>
+    </div>
   </div>
 </div>
+
+<div #myGrid id="myGrid" class="ag-theme-quartz mt-3" style="height: 500px; min-height: 500px"></div>

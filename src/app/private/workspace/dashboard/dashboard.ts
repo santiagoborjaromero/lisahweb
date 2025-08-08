@@ -152,7 +152,7 @@ export class Dashboard {
 
   openConn(){
     this.loading = true;
-    this.agente.connect(this.work, true).subscribe({
+    this.agente.connect(this.work).subscribe({
       next: (resp)=>{
         console.log("Sentinel->", resp)
         if (resp){
@@ -345,23 +345,7 @@ export class Dashboard {
     this.lstCpuData1.splice(0,1);
     this.lstCpuData1.push(m1);
 
-    // this.lstCpuData5.splice(0,1);
-    // this.lstCpuData5.push(m5);
-    
-    // this.lstCpuData15.splice(0,1);
-    // this.lstCpuData15.push(m15);
-
-    // this.lstCpuData.forEach((e:any, idx:any)=>{
     this.dataset1[0].data =  this.lstCpuData1;
-    // this.dataset1.push({
-    //   data: this.lstCpuData1,
-    //   label: "minuto 1",
-    //   fill: true,
-    //   tension: 0.1,
-    //   borderColor: 'black',
-    //   borderWidth: 0,
-    //   backgroundColor: 'rgba(41, 219, 204, 0.79)'
-    // });
     // dataset.push({
     //   data: this.lstCpuData5,
     //   label: "m5",

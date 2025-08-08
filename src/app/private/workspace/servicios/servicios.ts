@@ -1,7 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
 import { Sessions } from '../../../core/helpers/session.helper';
 import { Functions } from '../../../core/helpers/functions.helper';
 import { ServidorService } from '../../../core/services/servidor.service';
@@ -110,6 +109,7 @@ export class Servicios implements OnInit {
             },
             data: []
           };
+          this.func.showLoading('Cargando');
           this.openConn(params);
         } else {
           this.func.handleErrors("Data", resp.message);
@@ -352,6 +352,7 @@ export class Servicios implements OnInit {
       },
       data: cmd
     };
+    this.func.showLoading('Cargando');
     this.openConn(params);
   }
 
@@ -374,6 +375,7 @@ export class Servicios implements OnInit {
   }
 
   onSendCommands(params:any){
+    
     this.agente.sendCommand(this.work.idservidor, params)
     .then(resp=>{
       this.lstServicios = [];
@@ -405,6 +407,7 @@ export class Servicios implements OnInit {
                 }
               })
               this.refreshAll();
+              Swal.close();
               break;
             default:
               // console.log("cargando Conexion")

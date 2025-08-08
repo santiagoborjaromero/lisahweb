@@ -11,32 +11,23 @@
   </div>
 </div>
 
-<section class="row  mt-5">
-  <h5>Firewall</h5>
-  <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4">
-    <ul class="list-group">
-      @for (item of lstNotificaciones; track $index) {
-        <li class="list-group-item d-flex text-align-center">
-          @switch (item.tipo) {
-            @case ("FATAL") {
-              <i class="fas fa-info t16 bold text-white bg-danger redondo pl-3 pr-3 pt-2 pb-2 mr-2"></i> 
-            }
-            @case ("DEBUG") {
-              <i class="fas fa-info t16 bold text-white bg-success redondo pl-3 pr-3 pt-2 pb-2 mr-2"></i> 
-            }
-          }
-          {{item.descripcion}}
-        </li>
-      }
-    </ul>
-  </div>
-</section>
-
-
 <section class="row mt-5">
   <h5>Interfaces</h5>
-  <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4">
-    <table class="table table-striped">
+  <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4 content-stats">
+     @for (item of lstInterfaces; track $index) {
+       <div class="stats" style="width:50%;">
+           <span class="icono icono-rojo">
+               <i class="fas fa-ethernet"></i>
+           </span>
+           <span class="seccion">{{item[2]}}</span>
+           <span class="valor valor-rojo">{{item[8]}}</span>
+           <span class="avg">
+              Red: {{item[0]}} <br>
+              {{item[4]}} {{item[6]}} 
+           </span>
+       </div>
+     }
+    <!-- <table class="table table-striped">
       <thead>
         <tr>
           <th class="th-normal text-white">Red</th>
@@ -57,6 +48,51 @@
           </tr>
         }
       </tbody>
-    </table>
+    </table> -->
+  </div>
+  <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4">
+    <canvas
+      baseChart
+      width="1200"
+      height="600"
+      [type]="'line'"
+      [data]="rxChartData"
+      [options]="rxChartOptions"
+      [legend]="chartLegend"
+    >
+    </canvas>
+  </div>
+  <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4">
+    <canvas
+      baseChart
+      width="1200"
+      height="600"
+      [type]="'line'"
+      [data]="txChartData"
+      [options]="txChartOptions"
+      [legend]="chartLegend"
+    >
+    </canvas>
+  </div>
+</section>
+
+<section class="row  mt-5">
+  <h5>Firewall</h5>
+  <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4">
+    <ul class="list-group">
+      @for (item of lstNotificaciones; track $index) {
+        <li class="list-group-item d-flex text-align-center">
+          @switch (item.tipo) {
+            @case ("FATAL") {
+              <i class="fas fa-info t16 bold text-white bg-danger redondo pl-3 pr-3 pt-2 pb-2 mr-2"></i> 
+            }
+            @case ("DEBUG") {
+              <i class="fas fa-info t16 bold text-white bg-success redondo pl-3 pr-3 pt-2 pb-2 mr-2"></i> 
+            }
+          }
+          {{item.descripcion}}
+        </li>
+      }
+    </ul>
   </div>
 </section>
