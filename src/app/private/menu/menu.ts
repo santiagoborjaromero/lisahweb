@@ -64,11 +64,12 @@ export class Menu {
           this.lstData = resp.data;
           this.refreshAll();
         } else {
-          this.func;
+          this.func.handleErrors("Server", resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
+        this.func.handleErrors("Menu", err);
       },
     });
   }

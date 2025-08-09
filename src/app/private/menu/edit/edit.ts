@@ -60,7 +60,7 @@ export class Edit {
         if (resp.status) {
           this.rstData = resp.data;
         } else {
-          this.func;
+          this.func.handleErrors("Server", resp.message);
         }
       },
       error: (err: any) => {

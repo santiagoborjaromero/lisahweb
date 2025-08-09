@@ -85,7 +85,7 @@ export class Workspace implements OnInit  {
       { id:"servicios",         active: false, icon:"fa fa-cog",            title: "Servicios"},
       { id:"networking",        active: false, icon:"fas fa-network-wired", title: "Redes"},
       { id:"update",            active: false, icon:"fas fa-download",      title: "Actualizaciones"},
-      { id:"store",             active: false, icon:"fa fa-sd-card",        title: "Almacenamiento"},
+      // { id:"store",             active: false, icon:"fa fa-sd-card",        title: "Almacenamiento"},
       { id:"grupousuarios",     active: false, icon:"fa fa-users",          title: "Grupo de Usuarios"},
       { id:"usuarios",          active: false, icon:"fa fa-user",           title: "Usuarios"},
       { id:"terminal",          active: false, icon:"fas fa-terminal",      title: "Terminal"},

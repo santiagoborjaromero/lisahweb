@@ -114,11 +114,12 @@ export class Servidores {
 
           this.refreshAll();
         } else {
-          this.func;
+          this.func.handleErrors("Servidor", resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
+        this.func.handleErrors("Servidor", err);
       },
     });
   }
@@ -443,11 +444,12 @@ export class Servidores {
             this.getData();
           },500)
         } else {
-          this.func;
+          this.func.handleErrors("Server", resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
+        this.func.handleErrors("Servidor", err);
       },
     });
   }
@@ -463,11 +465,12 @@ export class Servidores {
             this.getData();
           },500)
         } else {
-          this.func;
+          this.func.handleErrors("Server", resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
+        this.func.handleErrors("Server", err);
       },
     });
   }
@@ -514,6 +517,7 @@ export class Servidores {
         }
       },
       error: (err: any) => {
+        this.func.handleErrors("TestSSH", err);
         this.func.closeSwal();
       },
     });

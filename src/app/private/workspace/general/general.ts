@@ -155,6 +155,7 @@ export class General implements OnInit {
       error: (err)=>{
         this.loading = false;
         console.log("Error", err)
+        this.func.handleErrors("Dashboard", err);
       },
     })
   }
@@ -269,7 +270,7 @@ export class General implements OnInit {
       this.loading = false;
     })
     .catch(err=>{
-
+      this.func.handleErrors("Dashboard", err);
     })
   }
 

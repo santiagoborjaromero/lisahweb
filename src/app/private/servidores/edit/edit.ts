@@ -10,6 +10,7 @@ import { ServidorService } from '../../../core/services/servidor.service';
 import { ActivatedRoute } from '@angular/router';
 import { Titulo } from '../../shared/titulo/titulo';
 import { Path } from '../../shared/path/path';
+import { GeneralService } from '../../../core/services/general.service';
 
 
 @Component({
@@ -25,6 +26,7 @@ export class Edit {
   private readonly route = inject(ActivatedRoute);
   private readonly srvSvc = inject(ServidorService);
   private readonly scriptSvc = inject(ScriptsService);
+  private readonly generalSvc = inject(GeneralService);
   
   user: any = null;
   work: any = null;
@@ -124,6 +126,7 @@ export class Edit {
       },
       error: (err: any) => {
         this.func.closeSwal();
+        this.func.handleErrors("Servidores", err);
       },
     });
   }
@@ -138,6 +141,7 @@ export class Edit {
         }
       },
       error: (err: any) => {
+        this.func.handleErrors("Scripts", err);
       },
     });
   }
@@ -162,11 +166,17 @@ export class Edit {
 
     let param = {data};
 
-    // console.log(data)
+    let method = "POST"
+    let url = "servidor"
+    if (this.idservidor != "") {
+      method = "PUT";
+      url += `/${this.idservidor}`
+    }
 
     this.func.showLoading('Guardando');
 
-    this.srvSvc.save(param, this.idservidor).subscribe({
+    // this.srvSvc.save(param, this.idservidor).subscribe({
+    this.generalSvc.apiRest(method,  url,  param).subscribe({
       next: (resp: any) => {
         this.func.closeSwal();
         if (resp.status) {
@@ -177,6 +187,7 @@ export class Edit {
       },
       error: (err: any) => {
         this.func.closeSwal();
+        this.func.handleErrors("Servidores", err);
       },
     });
 

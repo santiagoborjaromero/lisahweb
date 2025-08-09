@@ -92,11 +92,12 @@ private readonly tempSvc = inject(TemplateService);
 
           this.refreshAll();
         } else {
-          this.func;
+          this.func.handleErrors("Server", resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
+        this.func.handleErrors("Templates", err);
       },
     });
   }
@@ -286,11 +287,12 @@ private readonly tempSvc = inject(TemplateService);
             this.getData();
           },500)
         } else {
-          this.func;
+          this.func.handleErrors("Server", resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
+        this.func.handleErrors("Templates", err);
       },
     });
   }
@@ -306,11 +308,12 @@ private readonly tempSvc = inject(TemplateService);
             this.getData();
           },500)
         } else {
-          this.func;
+          this.func.handleErrors("Server", resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
+        this.func.handleErrors("Templates", err);
       },
     });
   }

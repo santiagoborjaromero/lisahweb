@@ -97,11 +97,12 @@ export class Usuarios {
           this.lstData = resp.data;
           this.refreshAll();
         } else {
-          this.func;
+          this.func.handleErrors("Server", resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
+        this.func.handleErrors("Usuarios", err);
       },
     });
   }
@@ -407,11 +408,12 @@ export class Usuarios {
         if (resp.status) {
           this.getData();
         } else {
-          this.func;
+          this.func.handleErrors("Server", resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
+        this.func.handleErrors("Usuarios", err);
       },
     });
   }
@@ -427,11 +429,12 @@ export class Usuarios {
             this.getData();
           }, 500);
         } else {
-          this.func;
+          this.func.handleErrors("Server", resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
+        this.func.handleErrors("Usuarios", err);
       },
     });
   }

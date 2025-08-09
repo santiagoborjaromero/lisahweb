@@ -135,6 +135,7 @@ export class Edit {
       },
       error: (err: any) => {
         this.func.closeSwal();
+        this.func.handleErrors("Scripts", err);
       },
     });
   }
@@ -155,7 +156,8 @@ export class Edit {
         }
       },
       error: (err: any) => {
-        this.func.showMessage('error', 'Templates', err);
+        // this.func.showMessage('error', 'Templates', err);
+        this.func.handleErrors("Templates", err);
       },
     });
   }
@@ -247,6 +249,7 @@ export class Edit {
       },
       error: (err: any) => {
         this.func.closeSwal();
+        this.func.handleErrors("Scripts", err);
       },
     });
   }
@@ -421,7 +424,7 @@ export class Edit {
   //           this.getData();
   //         }, 500);
   //       } else {
-  //         this.func;
+  //         this.func.handleErrors("Server", resp.message);
   //       }
   //     },
   //     error: (err: any) => {
@@ -440,7 +443,7 @@ export class Edit {
   //           this.getData();
   //         }, 500);
   //       } else {
-  //         this.func;
+  //         this.func.handleErrors("Server", resp.message);
   //       }
   //     },
   //     error: (err: any) => {
@@ -498,6 +501,7 @@ export class Edit {
       },
       error: (err: any) => {
         this.func.closeSwal();
+        this.func.handleErrors("Scripts", err);
       },
     });
   }

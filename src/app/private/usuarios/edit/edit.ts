@@ -12,6 +12,7 @@ import { ServidorService } from '../../../core/services/servidor.service';
 import { AllCommunityModule, createGrid, GridApi, GridOptions, ICellRendererParams, ModuleRegistry, InfiniteRowModelModule,IDatasource, IGetRowsParams   } from 'ag-grid-community';
 import { Titulo } from '../../shared/titulo/titulo';
 import { Path } from '../../shared/path/path';
+import { GeneralService } from '../../../core/services/general.service';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -32,6 +33,7 @@ export class Edit {
   private readonly grupoSvc = inject(GrupoUsuarioService);
   private readonly func = inject(Functions);
   private readonly sessions = inject(Sessions);
+  private readonly generalSvc = inject(GeneralService);
 
   user: any = null;
   path:any = [];
@@ -199,6 +201,7 @@ export class Edit {
       },
       error: (err: any) => {
         this.func.closeSwal();
+        this.func.handleErrors("Usuarios", err);
       },
     });
   }
@@ -216,6 +219,7 @@ export class Edit {
         }
       },
       error: (err: any) => {
+        this.func.handleErrors("Usuarios", err);
       },
     });
   }
@@ -236,6 +240,7 @@ export class Edit {
         }
       },
       error: (err: any) => {
+        this.func.handleErrors("Usuarios", err);
       },
     });
   }
@@ -257,6 +262,7 @@ export class Edit {
         }
       },
       error: (err: any) => {
+        this.func.handleErrors("Usuarios", err);
       },
     });
   }
@@ -278,11 +284,18 @@ export class Edit {
       return;
     }
 
-    let param = { data }
+    let param = {data};
+
+    let method = "POST"
+    let url = "usuario"
+    if (this.idusuario != "") {
+      method = "PUT";
+      url += `/${this.idusuario}`
+    }
 
     this.func.showLoading('Guardando');
 
-    this.userSvc.save(param, this.idusuario).subscribe({
+    this.generalSvc.apiRest(method,  url,  param).subscribe({
       next: (resp: any) => {
         console.log(resp)
         this.func.closeSwal();
@@ -296,7 +309,7 @@ export class Edit {
       },
       error: (err: any) => {
         this.func.closeSwal();
-        this.func.showMessage("error", "Usuario", err);
+        this.func.handleErrors("Usuarios", err);
         console.log(err)
       },
     });

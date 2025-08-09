@@ -110,7 +110,7 @@ export class Config {
       },
       error: (err) => {
         this.func.closeSwal();
-        console.log(err)
+        this.func.handleErrors("Configuración", err);
       }
     })
   }
@@ -147,6 +147,7 @@ export class Config {
         }
       },
       error: (err: any) => {
+        this.func.handleErrors("Scripts", err);
       },
     });
   }
@@ -225,7 +226,7 @@ export class Config {
         },
         error: (err:any) => {
           this.func.closeSwal();
-          this.func.showMessage("error", "Configuración", err);
+          this.func.handleErrors("Configuracion", err);
         }
     })
 

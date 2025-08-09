@@ -103,11 +103,12 @@ export class Grupousuarios {
 
           this.refreshAll();
         } else {
-          this.func;
+          this.func.handleErrors("Server", resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
+        this.func.handleErrors("Grupo Usuarios", err);
       },
     });
   }
@@ -325,11 +326,12 @@ export class Grupousuarios {
             this.getData();
           },500)
         } else {
-          this.func;
+          this.func.handleErrors("Server", resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
+        this.func.handleErrors("Configuracion", err);
       },
     });
   }
@@ -345,11 +347,12 @@ export class Grupousuarios {
             this.getData();
           },500)
         } else {
-          this.func;
+          this.func.handleErrors("Server", resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
+        this.func.handleErrors("Configuracion", err);
       },
     });
   }

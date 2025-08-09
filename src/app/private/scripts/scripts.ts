@@ -94,11 +94,12 @@ export class Scripts {
           this.lstData = resp.data;
           this.refreshAll();
         } else {
-          this.func;
+          this.func.handleErrors("Server", resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
+        this.func.handleErrors("Script", err);
       },
     });
   }
@@ -294,7 +295,7 @@ export class Scripts {
         if (resp.status) {
           this.getData();
         } else {
-          this.func;
+          this.func.handleErrors("Server", resp.message);
         }
       },
       error: (err: any) => {
@@ -314,7 +315,7 @@ export class Scripts {
             this.getData();
           }, 500);
         } else {
-          this.func;
+          this.func.handleErrors("Server", resp.message);
         }
       },
       error: (err: any) => {

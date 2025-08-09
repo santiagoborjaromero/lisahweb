@@ -72,6 +72,7 @@ export class Store implements OnInit{
       },
       error: (err)=>{
         console.log("Error", err)
+        this.func.handleErrors("Almacenamiento", err);
       },
     })
   }

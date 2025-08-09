@@ -104,6 +104,7 @@ export class Hardening {
       },
       error: (err: any) => {
         this.func.closeSwal();
+        this.func.handleErrors("Hardening", err);
       },
     });
   }

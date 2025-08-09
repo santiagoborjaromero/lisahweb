@@ -108,6 +108,7 @@ export class Edit {
       },
       error: (err: any) => {
         this.func.closeSwal();
+        this.func.handleErrors("Templates", err);
       },
     });
   }
@@ -124,6 +125,7 @@ export class Edit {
         }
       },
       error: (err: any) => {
+        this.func.handleErrors("Templates", err);
       },
     });
   }
@@ -157,6 +159,7 @@ export class Edit {
       },
       error: (err: any) => {
         this.func.closeSwal();
+        this.func.handleErrors("Templates", err);
       },
     });
   }

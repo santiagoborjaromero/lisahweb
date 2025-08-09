@@ -158,9 +158,11 @@ export class Dashboard {
         if (resp){
           let result = resp.healthy_agente.split("|");
           if (result[0] == "OK"){
+            console.log("█ Conectado")
             this.lstDatos.agente_status = result[1];
             this.onSendCommands();
           } else{
+            console.log("█ Desconectado")
             this.loading = false;
             this.initial();
             this.lstDatos.agente_status = result[1];
@@ -176,6 +178,7 @@ export class Dashboard {
       error: (err)=>{
         this.loading = false;
         console.log("Error", err)
+        this.func.handleErrors("Dashboard", err);
       },
     })
   }
@@ -312,7 +315,7 @@ export class Dashboard {
       this.loading = false;
     })
     .catch(err=>{
-
+      this.func.handleErrors("Dashboard", err);
     })
   }
 

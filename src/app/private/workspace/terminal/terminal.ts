@@ -72,6 +72,7 @@ export class Terminal implements OnInit{
       },
       error: (err)=>{
         console.log("Error", err)
+        this.func.handleErrors("Terminal", err);
       },
     })
   }

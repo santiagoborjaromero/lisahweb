@@ -110,11 +110,12 @@ export class Updates implements OnInit{
           this.ejecutaOperaciones("ver_actualizaciones");
           // setTimeout(()=>{ this.ejecutaOperaciones("interfaces"); },500)
         } else {
-          this.func;
+          this.func.handleErrors("Server", resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
+        this.func.handleErrors("Actualizaciones", err);
       },
     });
   }
@@ -146,6 +147,7 @@ export class Updates implements OnInit{
       },
       error: (err) => {
         console.log('Error', err);
+        this.func.handleErrors("Actualizaciones", err);
       },
     });
   }
@@ -162,6 +164,7 @@ export class Updates implements OnInit{
     .catch(err=>{
       Swal.close()
       console.log(err)
+      this.func.handleErrors("Actualizaciones", err);
     })
   }
 

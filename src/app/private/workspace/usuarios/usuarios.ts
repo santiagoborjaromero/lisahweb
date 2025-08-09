@@ -168,7 +168,7 @@ export class Usuarios implements OnInit {
           this.refreshAll();
           this.ejecutaOperaciones("listar");
         } else {
-          this.func;
+          this.func.handleErrors("Server", resp.message);
         }
       },
       error: (err: any) => {
@@ -183,11 +183,12 @@ export class Usuarios implements OnInit {
         if (resp.status) {
           this.rstConfig = resp.data[0];
         } else {
-          this.func.showMessage("error", "Configuracion", resp.message);
+          // this.func.showMessage("error", "Configuracion", resp.message);
+          this.func.handleErrors("Configuracion", resp.message);
         }
       },
       error: (err: any) => {
-        this.func.showMessage("error", "Configuracion", err);
+        this.func.handleErrors("Configuracion", err);
       },
     });
   }
@@ -219,6 +220,7 @@ export class Usuarios implements OnInit {
       },
       error: (err) => {
         console.log('Error', err);
+        this.func.handleErrors("WsConn", err);
       },
     });
   }
@@ -307,6 +309,7 @@ export class Usuarios implements OnInit {
     })
     .catch(err=>{
       console.log(err)
+      this.func.handleErrors("Send Commands", err);
     })
   }
 
@@ -506,14 +509,14 @@ export class Usuarios implements OnInit {
               let d = resp.data[0];
               this.ejecutaCreacion(d.cmds);
             } else {
-              this.func;
+              this.func.handleErrors("Server", resp.message);
             }
           },
           error: (err: any) => {
           },
         });
       } else{
-        this.func.showMessage("error","Usuarios", "No tiene asignado un script para la creacion de usuarios. Vaya a Configuracion / Configuración General y asigne un script existente")
+        this.func.handleErrors("Send Commands", "No tiene asignado un script para la creacion de usuarios. Vaya a Configuracion / Configuración General y asigne un script existente");
       }
     } 
 

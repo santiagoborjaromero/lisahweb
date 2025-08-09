@@ -109,7 +109,7 @@ export class Servicios implements OnInit {
             },
             data: []
           };
-          this.func.showLoading('Cargando');
+          // this.func.showLoading('Cargando');
           this.openConn(params);
         } else {
           this.func.handleErrors("Data", resp.message);
@@ -117,7 +117,7 @@ export class Servicios implements OnInit {
       },
       error: (err: any) => {
         this.func.closeSwal();
-        this.func.handleErrors("Data", err);
+        this.func.handleErrors("Servicios", err);
       },
     });
   }
@@ -352,35 +352,43 @@ export class Servicios implements OnInit {
       },
       data: cmd
     };
-    this.func.showLoading('Cargando');
+    // this.func.showLoading('Cargando');
     this.openConn(params);
   }
 
   openConn(data:any = null) {
     this.agente.connect(this.work).subscribe({
       next: (resp) => {
-        console.log('↓ Sentinel Status', resp);
         if (resp) {
+          console.log('↓ Sentinel Status', resp);
           let result = resp.healthy_agente.split('|');
           this.agente_status = result[1];
+
           if (result[0] == 'OK') {
+            console.log("█ Conectado")
             this.onSendCommands(data);
+          }else{
+            console.log("█ Desconectado")
+            this.initial();
+            this.agente_status = result[1];
+            this.func.closeSwal();;
           }
         }
       },
       error: (err) => {
         console.log('Error', err);
+        this.func.handleErrors("Servicios", err);
       },
     });
   }
 
   onSendCommands(params:any){
-    
+    // this.func.showLoading("Cargando");
     this.agente.sendCommand(this.work.idservidor, params)
     .then(resp=>{
       this.lstServicios = [];
-      console.log("↓ Sentinel response", resp)
       if (resp){
+        console.log("↓ Sentinel response", resp)
         let data = resp.data.data;
         let r = "";
         let acum:any = [];
@@ -407,9 +415,10 @@ export class Servicios implements OnInit {
                 }
               })
               this.refreshAll();
-              Swal.close();
+              this.func.closeSwal();
               break;
             default:
+              this.func.closeSwal();
               // console.log("cargando Conexion")
               // console.log(resp)
               // this.ejecutaOperaciones("listar");
@@ -420,7 +429,9 @@ export class Servicios implements OnInit {
       }
     })
     .catch(err=>{
+      this.func.closeSwal();;
       console.log(err)
+      this.func.handleErrors("Servicios", err);
     })
   }
   

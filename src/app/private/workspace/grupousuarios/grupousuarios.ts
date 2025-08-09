@@ -90,11 +90,12 @@ export class Grupousuarios implements OnInit{
           this.lstGU = resp.data;
           this.refreshAll();
         } else {
-          this.func;
+          this.func.handleErrors("Server", resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
+        this.func.handleErrors("Grupo de Usuarios", err);
       },
     });
   }
@@ -123,6 +124,7 @@ export class Grupousuarios implements OnInit{
       },
       error: (err)=>{
         console.log("Error", err)
+        this.func.handleErrors("Grupo de Usuarios", err);
       },
     })
   }
@@ -160,6 +162,7 @@ export class Grupousuarios implements OnInit{
         }
       })
       .catch(err=>{
+        this.func.handleErrors("Grupo de Usuarios", err);
   
       })
     }

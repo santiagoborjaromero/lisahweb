@@ -1,9 +1,10 @@
 // websocket-manager.service.ts
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { Sessions } from '../helpers/session.helper';
 
 export interface ServerConfig {
-  id: string;           // Identificador único (puede ser IP, nombre, etc.)
+  idservidor: string;           // Identificador único (puede ser IP, nombre, etc.)
   url: string;          // URL completa del WebSocket (ej: ws://ip:port)
   options?: any;        // Opcional: headers, protocols, etc.
 }
@@ -19,12 +20,14 @@ export interface WsResponse {
   serverId: string;
   timestamp: number;
   error?: boolean;
+  healthy_agente?: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class WSService {
+  private readonly sessions = inject(Sessions)
   private connections = new Map<string, WebSocket>();
   private messageSubjects = new Map<string, Subject<WsResponse>>();
   private connectionStatus = new Map<string, BehaviorSubject<boolean>>();
@@ -39,12 +42,16 @@ export class WSService {
    */
   connect(server: any, reconnect:boolean =  true): Observable<any> {
     const id = server.idservidor;
-    const url = `ws://${server.host}:${server.agente_puerto}`;
+    const token = this.sessions.get("token");
+    // const url = `ws://192.168.1.169:${server.agente_puerto}/ws?token=${token}`;
+    const url = `ws://${server.host}:${server.agente_puerto}/ws?token=${token}`;
 
-    if (reconnect){
-      if (this.connections.has(id)) {
-        // console.log(`Ya existe una conexión activa con el servidor: ${id}`);
+    if (this.connections.has(id)) {
+      if (!this.isConnected(id)){
+        console.log("E9")
         return this.connectionStatus.get(id)!.asObservable();
+      }else{
+        console.log("E8")
       }
     }
 
@@ -57,7 +64,12 @@ export class WSService {
 
     ws.onopen = () => {
       console.log(`[WS] Conectado a ${id} (${url})`);
-      server.healthy_agente = "OK|Conectado";
+      if (this.connections.has(id)) {
+        server.healthy_agente = "OK|Conectado";
+      }else{
+        server.healthy_agente = "FAIL|Desconectado";
+        console.log("E1")
+      }
       status.next(server);
     };
 
@@ -73,11 +85,14 @@ export class WSService {
         subject.next(response);
         this.onAnyMessage.next(response); // Broadcast global
       } catch (err) {
+        console.log("E2")
+        server.healthy_agente = "FAIL|Cerrado|"+id;
         console.log(`[WS] Error procesando mensaje de ${id}:`, err);
         const errorResponse: WsResponse = {
           action: 'error',
           data: { original: event.data, error: 'Invalid JSON' },
           serverId: id,
+          healthy_agente: "FAIL|Cerrado|"+id,
           timestamp: Date.now(),
           error: true
         };
@@ -88,14 +103,19 @@ export class WSService {
 
     ws.onclose = (event) => {
       console.log(`[WS] Conexión cerrada con ${id}`, event);
+      console.log("E3")
+      server.healthy_agente = "FAIL|Desconectado|"+id;
+      console.log("███", server)
       if (reconnect){
         this.reconnect(server); // Reintento automático
       }
     };
 
     ws.onerror = (err) => {
+      console.log("E4")
       console.log(`[WS] Error con ${id}`, err);
       // status.next(false);
+      this.disconnect(id)
       server.healthy_agente = "FAIL|Desconectado|"+id;
       status.next(server);
     };
@@ -117,6 +137,7 @@ export class WSService {
       this.messageSubjects.delete(serverId);
       this.connectionStatus.get(serverId)?.complete();
       this.connectionStatus.delete(serverId);
+      console.log("E5")
       console.log(`[WS] Desconectado de ${serverId}`);
     }
   }
@@ -129,6 +150,7 @@ export class WSService {
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify(message));
     } else {
+      console.log("E6")
       console.warn(`[WS] No se puede enviar a ${serverId}: conexión no abierta`);
     }
   }
@@ -139,6 +161,7 @@ export class WSService {
   onMessage(serverId: string, action?: string): Observable<any> {
     const subject = this.messageSubjects.get(serverId);
     if (!subject) {
+      console.log("E7")
       console.warn(`[WS] No hay conexión con ${serverId}`);
       return new Observable();
     }
@@ -172,9 +195,9 @@ export class WSService {
    */
   private reconnect(server: ServerConfig, delay: number = 1000, maxDelay = 30000): void {
     setTimeout(() => {
-      const status = this.connectionStatus.get(server.id);
+      const status = this.connectionStatus.get(server.idservidor);
       if (!status || !status.value) {
-        console.log(`[WS] Reintentando conexión con ${server.id}...`);
+        console.log(`[WS] Reintentando conexión con ${server.idservidor}...`);
         this.connect(server);
       }
     }, delay);

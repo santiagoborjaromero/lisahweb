@@ -220,11 +220,12 @@ private readonly route = inject(ActivatedRoute);
           
           // setTimeout(()=>{ this.ejecutaOperaciones("intefaz_data"); },1000)
         } else {
-          this.func;
+          this.func.handleErrors("Server", resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
+        this.func.handleErrors("Redes", err);
       },
     });
   }
@@ -264,6 +265,7 @@ private readonly route = inject(ActivatedRoute);
       },
       error: (err) => {
         console.log('Error', err);
+        this.func.handleErrors("Redes", err);
       },
     });
   }
