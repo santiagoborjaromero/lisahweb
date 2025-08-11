@@ -95,6 +95,7 @@ export class Login {
           this.func.closeSwal();
           this.usuario = "";
           this.clave = "";
+          if (environment.debug) console.log(resp)
           if (resp.status){
             let data = resp.data[0];
 

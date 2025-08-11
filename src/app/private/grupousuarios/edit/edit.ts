@@ -12,6 +12,8 @@ import iconsData from '../../../core/data/icons.data';
 import { AllCommunityModule, createGrid, GridApi, GridOptions, ICellRendererParams, ModuleRegistry } from 'ag-grid-community';
 import { Titulo } from '../../shared/titulo/titulo';
 import { Path } from '../../shared/path/path';
+import { GeneralService } from '../../../core/services/general.service';
+import vForm from './vform';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -34,6 +36,7 @@ export class Edit {
   private readonly func = inject(Functions);
   private readonly sessions = inject(Sessions);
   private readonly scriptSvc = inject(ScriptsService);
+  private readonly generalSvc = inject(GeneralService);
 
   user: any = null;
   work: any = null;
@@ -43,29 +46,31 @@ export class Edit {
   idgrupo_usuario: string = "";
   rstData: any;
 
-  formData: any = {
-    nombre: {
-      requerido:true,
-      descripcion: "El nombre del grupo puede tener dos funciones operativas en LISAH y en los servidores.",
-      validacion:{
-        pattern: /^[a-zA-Z0-9._-]+$/,
-        patron_descripcion: "Debe ingresar un nombre válido entre mayúsculas, minúsculas, números, guión bajo o medio, punto, no espacios.",
-        resultado: "",
-      }
-    },
-    idscript_creacion: {
-      requerido:false,
-      descripcion: "Script asignado para ejecutar cuando se crea un grupo de usuarios",
-      validacion:{
-        pattern: /^[0-9]\/s+$/,
-        patron: "",
-        resultado: "",
-      }
-    },
-  }
+  validador:any = vForm; 
+
+  // formData: any = {
+  //   nombre: {
+  //     requerido:true,
+  //     descripcion: "El nombre del grupo puede tener dos funciones operativas en LISAH y en los servidores.",
+  //     validacion:{
+  //       pattern: /^[a-zA-Z0-9._-]+$/,
+  //       patron_descripcion: "Debe ingresar un nombre válido entre mayúsculas, minúsculas, números, guión bajo o medio, punto, no espacios.",
+  //       resultado: "",
+  //     }
+  //   },
+  //   idscript_creacion: {
+  //     requerido:false,
+  //     descripcion: "Script asignado para ejecutar cuando se crea un grupo de usuarios",
+  //     validacion:{
+  //       pattern: /^[0-9]\/s+$/,
+  //       patron: "",
+  //       resultado: "",
+  //     }
+  //   },
+  // }
 
   nombre: string = "";
-  idscript_creacion: number | undefined;
+  idscript_creacion: any = "";
 
   lstMenu:Array<any> = [];
   selectall: boolean = false;
@@ -109,7 +114,7 @@ export class Edit {
   }
 
   ngOnDestroy(): void {
-    this.func.encerarCampos(this.formData);
+    this.func.encerarCampos(this.validador);
   }
 
   getData() {
@@ -222,38 +227,40 @@ export class Edit {
     });
   }
 
-  validacionCampos(que = ''){
-    let error = false;
-    let danger = 0;
-    let warning = 0;
+  // validacionCampos(que = ''){
+  //   let error = false;
+  //   let danger = 0;
+  //   let warning = 0;
 
-    if (["", "nombre"].includes(que)){
-      this.formData.nombre.validacion.resultado = "";
-      if (!this.formData.nombre.validacion.pattern.exec(this.formData.nombre.valor)){
-        error = true;
-        if (this.formData.nombre.requerido){
-          danger++;
-        }else{
-          warning++;
-        }
-        this.formData.nombre.validacion.resultado = this.formData.nombre.validacion.patron_descripcion;
-      }
-    }
+  //   if (["", "nombre"].includes(que)){
+  //     this.formData.nombre.validacion.resultado = "";
+  //     if (!this.formData.nombre.validacion.pattern.exec(this.formData.nombre.valor)){
+  //       error = true;
+  //       if (this.formData.nombre.requerido){
+  //         danger++;
+  //       }else{
+  //         warning++;
+  //       }
+  //       this.formData.nombre.validacion.resultado = this.formData.nombre.validacion.patron_descripcion;
+  //     }
+  //   }
 
-    return [error, danger, warning]
-  }
+  //   return [error, danger, warning]
+  // }
 
   funcSubmit(){
-
-    if (this.validacionCampos()[0]){
-      return
-    }
 
     let param:any = {
       nombre: this.nombre,
       idscript_creacion: this.idscript_creacion,
-      rolmenugrupos: [],
     }
+
+    if (this.func.validaCampos(this.validador, param)){
+      console.log("MMMMMM")
+      return;
+    }
+
+    param["rolmenugrupos"]  = [];
 
     let count_menu = 0;
     this.lstMenu.forEach(e=>{
@@ -268,11 +275,19 @@ export class Edit {
         })
       }
     })
+
+    let method = "POST";
+    let url = "grupousuario";
+    if (this.idgrupo_usuario != ""){
+      method = "PUT";
+      url = `grupousuario/${this.idgrupo_usuario}`;
+    }
     
     // console.log(param)
     this.func.showLoading('Guardando');
 
-    this.grupoSvc.save(this.idgrupo_usuario, param).subscribe({
+    // this.grupoSvc.save(this.idgrupo_usuario, param).subscribe({
+    this.generalSvc.apiRest(method, url, param).subscribe({
       next: (resp: any) => {
         // console.log(resp)
         this.func.closeSwal();

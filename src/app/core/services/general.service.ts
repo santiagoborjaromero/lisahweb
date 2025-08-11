@@ -38,6 +38,7 @@ export class GeneralService {
         data: this.encrpt.encryp(JSON.stringify(data))
       }
       if (environment.debug) console.log(body)
+      console.log(body)
     }
 
     switch(method){

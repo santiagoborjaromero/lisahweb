@@ -19,7 +19,7 @@
 
         <div class="p-1 row">
           <div class="col-4 col-md-3 td2 text-end">
-            Nombre Grupo <small *ngIf="formData.nombre.requerido"><i role="img" class="text-danger">*</i></small>
+            Nombre Grupo <small *ngIf="validador.nombre.requerido"><i role="img" class="text-danger">*</i></small>
             <br />
             <small><i role="img" class="text-secondary">alfanumérico</i></small>
           </div>
@@ -28,26 +28,26 @@
               type="text"
               name="nombre"
               id="nombre"
-              class="form-control {{formData.nombre.validacion.resultado == '' ? '' : 'input-danger'}}"
+              class="form-control {{validador.nombre.validacion.resultado == '' ? '' : 'input-danger'}}"
               [(ngModel)]="nombre"
             />
             <sup>
-              <i role="img" class=" {{formData.nombre.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
-                {{formData.nombre.validacion.resultado == '' ? formData.nombre.descripcion : formData.nombre.validacion.resultado}}
+              <i role="img" class=" {{validador.nombre.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+                {{validador.nombre.validacion.resultado == '' ? validador.nombre.descripcion : validador.nombre.validacion.resultado}}
               </i>
             </sup>
           </div>
        
 
           <div class="col-4 col-md-3 td2 text-end">
-            Script Creación <small *ngIf="formData.idscript_creacion.requerido"><i role="img" class="text-danger">*</i></small>
+            Script Creación <small *ngIf="validador.idscript_creacion.requerido"><i role="img" class="text-danger">*</i></small>
             <br />
             <small><i role="img" class="text-secondary">Selección</i></small>
           </div>
           <div class="col-8 col-md-9 td2 d-flex justify-content-start">
             <div>
               <select [(ngModel)]="idscript_creacion"  [disabled]="true"
-                name="idscript_creacion_usuario" id="idscript_creacion_usuario" class="form-control">
+                name="idscript_creacion" id="idscript_creacion" class="form-control">
                 @if(lstScripts.length>0){
                   @for (item of lstScripts; track $index) {
                     <option value="{{item.idscript}}">{{item.nombre}}</option>
@@ -57,8 +57,8 @@
                 }
               </select>
                <sup>
-                <i role="img" class=" {{formData.idscript_creacion.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
-                  {{formData.idscript_creacion.validacion.resultado == '' ? formData.idscript_creacion.descripcion : formData.idscript_creacion.validacion.resultado}}
+                <i role="img" class=" {{validador.idscript_creacion.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+                  {{validador.idscript_creacion.validacion.resultado == '' ? validador.idscript_creacion.descripcion : validador.idscript_creacion.validacion.resultado}}
                 </i>
               </sup>
             </div>

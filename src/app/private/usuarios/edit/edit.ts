@@ -55,7 +55,6 @@ export class Edit {
 
   validador:any = vForm; 
   paginacion = 10;
-
   
   lstGrupoUsuarios:Array<any> = [];
   lstClientes:Array<any> = [];
@@ -134,9 +133,7 @@ export class Edit {
     this.getServidores();
 
     if (this.idusuario != ""){
-      // setTimeout(()=>{
-        this.getData();
-      // },500)
+      this.getData();
     }
   }
 
@@ -148,7 +145,6 @@ export class Edit {
     this.lstSvrs = this.lstSvrs_original.slice(startIndex, endIndex);
     this.refreshAll();
   }
-
 
   getData(){
     this.rstData = null;
@@ -345,8 +341,6 @@ export class Edit {
       });
     }
   }
-
-  
 
   dataGridStruct() {
     let that = this;
