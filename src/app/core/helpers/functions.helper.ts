@@ -136,7 +136,7 @@ export class Functions {
       }
     }
 
-    console.log('Error', e);
+    // console.log('Error', e);
     // console.log(msgError, action)
     if (action == '') {
       this.showMessage('error', title, msgError);
@@ -249,9 +249,20 @@ export class Functions {
 
           objValida[key].validacion.resultado = "";
           
-          if (!objValida[key].validacion.pattern.exec(campos[key])){
-            error = true;
-            objValida[key].validacion.resultado = objValida[key].validacion.patron_descripcion;
+          console.log(objValida[key].etiqueta)
+          if (objValida[key].etiqueta == "Lógico"){
+          }else{
+            if ( Array.isArray(campos[key]) ){
+              if (campos[key].length == 0){
+                error = true;
+                objValida[key].validacion.resultado = objValida[key].validacion.patron_descripcion;
+              }
+            }else{
+              if (!objValida[key].validacion.pattern.exec(campos[key])){
+                error = true;
+                objValida[key].validacion.resultado = objValida[key].validacion.patron_descripcion;
+              }
+            }
           }
   
         }
