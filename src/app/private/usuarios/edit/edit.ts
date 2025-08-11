@@ -291,7 +291,7 @@ export class Edit {
 
     this.func.showLoading('Guardando');
 
-    this.generalSvc.apiRest(method,  url,  param).subscribe({
+    this.generalSvc.apiRest(method,  url,  data).subscribe({
       next: (resp: any) => {
         console.log(resp)
         this.func.closeSwal();

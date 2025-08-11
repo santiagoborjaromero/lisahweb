@@ -10,18 +10,18 @@ export default  {
     },
   },
   estado: {
-    requerido: true,
+    requerido: false,
     etiqueta: "Lógico",
     descripcion: 'Determina si se encuentra activo o no el script',
     validacion: {
-      pattern: /^[0-9]+$/,
+      pattern: 0,
       patron_descripcion: 'Debe seleccionar Activo o Inactivo.',
       resultado: '',
     },
   },
   cmds: {
     requerido: true,
-    etiqueta: "",
+    etiqueta: "Selección",
     descripcion: 'Seleccione una línea de comandos definido en template de comandos',
     validacion: {
       pattern: /^[0-9]+$/,

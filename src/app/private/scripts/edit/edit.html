@@ -91,9 +91,7 @@
         <div class="p-1 row">
           <div class="col-4 col-md-2 td2 text-end">
             Linea de comandos
-            <small *ngIf="validador.cmds.requerido"
-              ><i role="img" class="text-danger">*</i></small
-            >
+            <small *ngIf="validador.cmds.requerido"><i role="img" class="text-danger">*</i></small>
             <br />
             <small><i role="img" class="text-secondary">Selección</i></small>
           </div>
@@ -101,22 +99,18 @@
             <button
               class="btn btn-primary btn-sm m-1"
               data-bs-toggle="modal"
-              data-bs-target="#exampleModal"
-            >
+              data-bs-target="#exampleModal">
               <i role="img" class="fas fa-search"></i> Buscar y seleccionar comandos
             </button>
             <button
               class="btn btn-white"
               title="Añadir comando nuevo"
-              (click)="addCommand()"
-            >
+              (click)="addCommand()">
               <i role="img" class="fab fa-wpforms"></i> Añadir comando nuevo
             </button>
             <br />
             <sup>
-              <i
-                class=" {{validador.cmds.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}"
-              >
+              <i class=" {{validador.cmds.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
                 {{validador.cmds.validacion.resultado == '' ?
                 validador.cmds.descripcion :
                 validador.cmds.validacion.resultado}}

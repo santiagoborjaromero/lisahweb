@@ -9,6 +9,7 @@ import { VariablesService } from '../../../core/services/variables.service';
 import vForm from './vform';
 import { Titulo } from '../../shared/titulo/titulo';
 import { Path } from '../../shared/path/path';
+import { GeneralService } from '../../../core/services/general.service';
 
 
 @Component({
@@ -25,6 +26,7 @@ export class Edit {
   private readonly sessions = inject(Sessions);
   private readonly tempSvc = inject(TemplateService);
   private readonly varSvc = inject(VariablesService);
+  private readonly generalSvc = inject(GeneralService);
   
   user: any = null;
   path:any = [];
@@ -143,11 +145,16 @@ export class Edit {
       return;
     }
 
-    let param = { data };
+    let method = "POST";
+    let url = "template";
+    if (this.idtemplate != ""){
+      method = "PUT";
+      url = `template/${this.idtemplate}`;
+    }
 
     this.func.showLoading('Guardando');
 
-    this.tempSvc.save(param, this.idtemplate).subscribe({
+    this.generalSvc.apiRest(method, url, data).subscribe({
       next: (resp: any) => {
         // console.log(resp)
         this.func.closeSwal();

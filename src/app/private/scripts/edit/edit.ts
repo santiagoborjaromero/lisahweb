@@ -1,6 +1,5 @@
 import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import vForm from './vform';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Functions } from '../../../core/helpers/functions.helper';
@@ -19,6 +18,8 @@ import { Global } from '../../../core/config/global.config';
 import Swal from 'sweetalert2';
 import { Titulo } from '../../shared/titulo/titulo';
 import { Path } from '../../shared/path/path';
+import vForm from './vform';
+import { GeneralService } from '../../../core/services/general.service';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -37,6 +38,7 @@ export class Edit {
   private readonly sessions = inject(Sessions);
   private readonly tempSvc = inject(TemplateService);
   private readonly scriptSvc = inject(ScriptsService);
+  private readonly generalSvc = inject(GeneralService);
 
   user: any = null;
   path:any = [];
@@ -187,58 +189,27 @@ export class Edit {
     this.refreshAll();
   }
 
-  validacionCampos(que = '') {
-    let error = false;
-    let danger = 0;
-    let warning = 0;
-
-    if (['', 'nombre'].includes(que)) {
-      this.validador.nombre.validacion.resultado = '';
-      if (!this.validador.nombre.validacion.pattern.exec(this.nombre)) {
-        error = true;
-        if (this.validador.nombre.requerido) {
-          danger++;
-        } else {
-          warning++;
-        }
-        this.validador.nombre.validacion.resultado =
-          this.validador.nombre.validacion.patron_descripcion;
-      }
-    }
-
-    if (['', 'cmds'].includes(que)) {
-      this.validador.cmds.validacion.resultado = '';
-      if (this.lstCmds.length == 0) {
-        error = true;
-        if (this.validador.cmds.requerido) {
-          danger++;
-        } else {
-          warning++;
-        }
-        this.validador.cmds.validacion.resultado =
-          this.validador.cmds.validacion.patron_descripcion;
-      }
-    }
-
-    return error;
-  }
-
   funcSubmit() {
-    if (this.validacionCampos()) {
+    let data = {
+      nombre: this.nombre,
+      estado: this.estado,
+      cmds: this.lstCmds,
+    };
+   
+    if(this.func.validaCampos(this.validador, data)){
       return;
     }
 
-    let params = {
-      data: {
-        nombre: this.nombre,
-        estado: this.estado,
-        cmds: this.lstCmds,
-      },
-    };
-
     this.func.showLoading('Guardando');
 
-    this.scriptSvc.save(params, this.idscript).subscribe({
+    let method = "POST";
+    let url = "script";
+    if (this.idscript != ""){
+      method = "PUT";
+      url = `script/${this.idscript}`;
+    }
+
+    this.generalSvc.apiRest(method, url, data).subscribe({
       next: (resp: any) => {
         this.func.closeSwal();
         if (resp.status) {
