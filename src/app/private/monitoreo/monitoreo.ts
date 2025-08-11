@@ -1,27 +1,15 @@
-import { Component, effect, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-  AllCommunityModule,
-  ColumnAutosizeService,
-  createGrid,
-  GridApi,
-  GridOptions,
-  ICellRendererParams,
-  ModuleRegistry,
-} from 'ag-grid-community';
+import { AllCommunityModule, createGrid, GridApi, GridOptions, ICellRendererParams, ModuleRegistry } from 'ag-grid-community';
 import { ServidorService } from '../../core/services/servidor.service';
 import { Functions } from '../../core/helpers/functions.helper';
 import { Sessions } from '../../core/helpers/session.helper';
 import { UsuarioService } from '../../core/services/usuarios.service';
-
-import { WSService } from '../../core/services/ws.service';
 import { Titulo } from '../shared/titulo/titulo';
 import { Path } from '../shared/path/path';
 import { GeneralService } from '../../core/services/general.service';
-import { WebSocketService } from '../../core/services/websocket.service';
 import { SentinelService } from '../../core/services/sentinel.service';
-import { Observable } from 'rxjs';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -38,13 +26,10 @@ export class Monitoreo {
   private readonly generalSvc = inject(GeneralService);
   private readonly func = inject(Functions);
   private readonly sessions = inject(Sessions);
-  // private readonly wsSvc = inject(WSService);
-  // private readonly wsocketSvc = inject(WebSocketService);
   private readonly wsSvc = inject(SentinelService);
 
   aqui: any | undefined;
 
-  // private webSockets = new Map<number, WebSocket>();
   private server = new Map<number, any>();
 
   user: any = null;
@@ -734,16 +719,22 @@ export class Monitoreo {
       this.continuar = false;
       this.revisando = "";
       if (this.playMonitor){
-        this.startMonitor();
+        if (this.lstServidores.length<5){
+          setTimeout(()=>{
+            this.startMonitor();
+          },this.tiempo_refresco * 1000)
+        }else{
+          this.startMonitor();
+        }
       }
     }
-    this.lstServidores[this.serverIndex].healthy_agente = '1';
-    this.lstServidores[this.serverIndex].uptime = '1';
-    this.lstServidores[this.serverIndex].cpu = '1';
-    this.lstServidores[this.serverIndex].memoria = '1';
-    this.lstServidores[this.serverIndex].disco = '1';
-    this.lstServidores[this.serverIndex].servicio_httpd = '1';
-    this.lstServidores[this.serverIndex].servicio_ssh = '1';
+    // this.lstServidores[this.serverIndex].healthy_agente = '1';
+    // this.lstServidores[this.serverIndex].uptime = '';
+    // this.lstServidores[this.serverIndex].cpu = '';
+    // this.lstServidores[this.serverIndex].memoria = '';
+    // this.lstServidores[this.serverIndex].disco = '';
+    // this.lstServidores[this.serverIndex].servicio_httpd = '';
+    // this.lstServidores[this.serverIndex].servicio_ssh = '';
     this.refreshAll()
     this.openWS(this.lstServidores[this.serverIndex]);
   }
@@ -803,7 +794,9 @@ export class Monitoreo {
       this.ws.onmessage = (event: any) => this.onMessageListener(event, server);
       this.ws.onclose = (event: any) => this.onCloseListener(event, server);
       this.ws.onerror = (event: any) => this.onErrorListener(event, server);
-    }catch(ex){console.log(ex)}
+    }catch(ex){
+      // console.log(ex)
+    }
   }
 
   onOpenListener(event: any, server: any) {
@@ -843,19 +836,27 @@ export class Monitoreo {
         setTimeout(() => {
           this.loadMonitoreo = false;
         }, 500);
+        this.ws.close(1000);
+        this.ws = null;
         this.serverIndex ++;
         this.sendMonitor();
         break;
     }
   }
+
   onCloseListener(event: any, server: any) {
     // console.log('onCloseListener', event);
-    console.log(`X Desconectado ${server.idservidor}`);
-    server.healthy_agente = 'FAIL|Desconectado';
-    this.verificaServer(server);
-    this.serverIndex ++;
-    this.sendMonitor();
+    if (event.code != 1000){
+      console.log(`X Desconectado ${server.idservidor}`);
+      server.healthy_agente = 'FAIL|Desconectado';
+      this.verificaServer(server);
+      this.serverIndex ++;
+      try{
+        this.sendMonitor();
+      }catch(err){}
+    }
   }
+
   onErrorListener(event: any, server: any) {
 
   }
