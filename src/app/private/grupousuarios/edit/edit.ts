@@ -256,7 +256,6 @@ export class Edit {
     }
 
     if (this.func.validaCampos(this.validador, param)){
-      console.log("MMMMMM")
       return;
     }
 
