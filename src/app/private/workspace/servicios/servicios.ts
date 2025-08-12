@@ -59,6 +59,9 @@ export class Servicios implements OnInit {
   ws: any;
   reconnect: boolean = false;
   light_ws: boolean =false;
+  ws_error:number = 0;
+  ws_error_limit:number = 3;
+
 
 
   constructor(){
@@ -379,12 +382,14 @@ export class Servicios implements OnInit {
       console.log(`√ Conectado ${this.work.idservidor}`);
       this.agente_status = "Conectado";
       this.work.healthy_agente = 'OK|Conectado';
+
       // this.onSendCommands();
       // this.startMonitor();
     } else {
       this.agente_status = "No se estableció conexion con Sentinel";
       console.log(`X Desconectado ${this.work.idservidor}`);
       this.work.agente_status = 'FAIL|Desconectado';
+      
     }
   }
 
@@ -394,10 +399,16 @@ export class Servicios implements OnInit {
     console.log(`X Desconectado ${this.work.idservidor}`);
     if (event.code == 1000){
       this.agente_status = "Desconectado manualmente";
+      this.ws_error = 0;
     }else{
       this.work.healthy_agente = 'FAIL|Desconectado';
       this.agente_status = "Desconectado";
-      if (this.reconnect) this.traerListaDeServicios();
+      if (this.reconnect && this.ws_error < this.ws_error_limit){
+        this.ws_error ++;
+        setTimeout(()=>{
+          this.traerListaDeServicios();
+        },1000)
+      }
     }
   }
 

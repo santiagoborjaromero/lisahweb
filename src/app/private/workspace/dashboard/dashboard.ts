@@ -71,8 +71,10 @@ export class Dashboard {
    * Sentinel
    */
   ws: any;
-  reconnect: boolean = false;
+  reconnect: boolean = true;
   light_ws: boolean =false;
+  ws_error:number = 0;
+  ws_error_limit:number = 3;
 
   public cpuChartData: ChartConfiguration['data'] = {
     labels: [],
@@ -376,6 +378,7 @@ export class Dashboard {
       this.agente_status = "Conectado";
       this.work.healthy_agente = 'OK|Conectado';
       // this.onSendCommands();
+      this.playMonitor=true;
       this.startMonitor();
     } else {
       this.agente_status = "No se estableció conexion con Sentinel";
@@ -386,15 +389,22 @@ export class Dashboard {
 
   onCloseListener(event: any) {
     // console.log('onCloseListener', event);
-    console.log("█ Desconectado")
+    // console.log("█ Desconectado")
     console.log(`X Desconectado ${this.work.idservidor}`);
     if (event.code == 1000){
       this.agente_status = "Desconectado manualmente";
+      this.ws_error = 0;
     }else{
       this.work.healthy_agente = 'FAIL|Desconectado';
       this.agente_status = "Desconectado";
       this.loading = false;
-      this.initial();
+      this.playMonitor=false;
+      if (this.reconnect && this.ws_error < this.ws_error_limit){
+        this.ws_error ++;
+        setTimeout(()=>{
+          this.initial();
+        },1000)
+      }
     }
   }
 
