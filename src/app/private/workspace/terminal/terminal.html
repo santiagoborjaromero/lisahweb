@@ -1,21 +1,32 @@
 <div class="row">
   <div class="col  d-flex justify-content-between align-items-center">
     <h5>{{Title}}</h5>
-    <div class="d-flex justify-content-between align-items-center">
-      <span class="mr-2 sentinel">{{global.agent}}</span>
-      <div class="d-flex align-items-center">
-      @if(lstDatos){
-          @if(lstDatos.agente_status == "Conectado"){
-          <i role="img" class="far fa-check-circle text-success t20"></i>
-          }@else if(lstDatos.agente_status == "Desconectado"){
-          <i role="img" class="fas fa-times-circle text-danger t20"></i>
-          }@else if(lstDatos.agente_status == ""){
-          <i role="img" class="fas fa-minus-circle text-secondary"></i> 
-          }
-      }
-      <span class="ml-2">{{lstDatos.agente_status}}</span>
+    <div class="d-flex flex-column text-center">
+      <a name="inicio"></a>
+      <small class="mb-2 linea-abajo"><i class="bold text-secondary">Metodo de conexion</i></small>
+      <div class="d-flex justify-content-between">
+        <div>
+          <button (click)="metodo(1)" class="btn btn-{{metdodo_seleccionado == 1 ? 'primary' : 'outline-primary'}} ">
+            <span class="mr-2 sentinel">{{global.agent}}</span>
+            <span class="ml-2 {{light_ws  ? 'text-white bold' : 'text-dark bold'}}">{{agente_status}}</span>
+          </button>
+        </div>
+        <div class="ml-2 mr-2 linea-izquierda">
+          <button (click)="metodo(2)" class="btn btn-{{metdodo_seleccionado == 2 ? 'primary' : 'outline-primary'}} ml-2">
+            <span class="mr-2 sentinel">SSH</span>
+            <span class="ml-2 {{light_ssh  ? 'text-white bold' : 'text-dark bold'}}">{{ssh_status}}</span>
+          </button>
+        </div>
       </div>
     </div>
-    <button role="button" (click)="openConn()" class="btn btn-primary btn-sm"><i role="img" class="fas fa-repeat"></i> Recargar</button>
+    <button role="button" (click)="metodo(1)" class="btn btn-primary btn-sm"><i role="img" class="fas fa-repeat"></i> Recargar</button>
+  </div>
+</div>
+<div class="row mt-5 h500">
+  <div class="col-12 col-sm-12 col-md-10 col-lg-10 col-xl-10 bg-black text-white p-5">
+    # > _
+  </div>
+  <div class="col-12 col-sm-12 col-md-10 col-lg-2 col-xl-2 bg-light">
+    <h5>Logs</h5>
   </div>
 </div>
