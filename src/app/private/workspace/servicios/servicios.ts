@@ -36,7 +36,7 @@ export class Servicios implements OnInit {
   area = "servicios";
 
   global = Global;
-  agente_status:string = "";
+  agente_status:string = "Desconectado";
   rstConfig: any = null;
   lstServicios: Array<any> = [];
   lstUsuarios: Array<any> = [];
@@ -53,6 +53,14 @@ export class Servicios implements OnInit {
   
   lstAcciones:any = [];
 
+  /**
+   * Sentinel
+   */
+  ws: any;
+  reconnect: boolean = false;
+  light_ws: boolean =false;
+
+
   constructor(){
     this.parent.findTab(this.TAB);
     this.lstAcciones = [];
@@ -63,11 +71,17 @@ export class Servicios implements OnInit {
     this.work = JSON.parse(this.sessions.get("work"));
 
     this.dataGridStruct();
+    this.openWS();
     
     setTimeout(()=>{
       this.initial();
     },300)
 
+  }
+
+  ngOnDestroy(): void {
+    this.ws.close(1000);
+    this.ws = null
   }
 
   initial(){
@@ -98,19 +112,7 @@ export class Servicios implements OnInit {
           if (resp.data[0].comandos.length > 0){
             this.lstComandos = resp.data[0].comandos;
           }
-          // this.ejecutaOperaciones("listar_todo");
-          let params = {
-            action: "lista_servicios",
-            identificador: {
-              idcliente: this.user.idcliente,
-              idusuario: this.user.idusuario,
-              idservidor: this.work.idservidor,
-              id: Math.floor(Math.random() * (9999999999999999 - 1000000000000000 + 1)) + 1000000000000000
-            },
-            data: []
-          };
-          // this.func.showLoading('Cargando');
-          this.openConn(params);
+          this.traerListaDeServicios();
         } else {
           this.func.handleErrors("Data", resp.message);
         }
@@ -339,8 +341,7 @@ export class Servicios implements OnInit {
         cmd = this.buscarComando(this.area, accion, servicio);
         break;
     }
-
-    console.log("↑", cmd)
+    // console.log("↑", cmd)
     if (!cmd) return 
     let params = {
       action: "comando",
@@ -352,87 +353,160 @@ export class Servicios implements OnInit {
       },
       data: cmd
     };
-    // this.func.showLoading('Cargando');
-    this.openConn(params);
+    this.onSendCommands(params);
   }
 
-  openConn(data:any = null) {
-    this.agente.connect(this.work).subscribe({
-      next: (resp) => {
-        if (resp) {
-          console.log('↓ Sentinel Status', resp);
-          let result = resp.healthy_agente.split('|');
-          this.agente_status = result[1];
+  /**
+   * WebSocket
+   */
 
-          if (result[0] == 'OK') {
-            console.log("█ Conectado")
-            this.onSendCommands(data);
-          }else{
-            console.log("█ Desconectado")
-            this.initial();
-            this.agente_status = result[1];
-            this.func.closeSwal();;
-          }
-        }
-      },
-      error: (err) => {
-        console.log('Error', err);
-        this.func.handleErrors("Servicios", err);
-      },
-    });
+  openWS() {
+    this.agente_status = "Conectando ...";
+    const token = this.sessions.get('token');
+    let url = `ws://${this.work.host}:${this.work.agente_puerto}/ws?token=${token}`;
+    try{
+      this.ws = new WebSocket(url);
+      this.ws.onopen = (event: any) => this.onOpenListener(event);
+      this.ws.onmessage = (event: any) => this.onMessageListener(event);
+      this.ws.onclose = (event: any) => this.onCloseListener(event);
+      this.ws.onerror = (event: any) => this.onErrorListener(event);
+    }catch(ex){}
   }
 
-  onSendCommands(params:any){
-    // this.func.showLoading("Cargando");
-    this.agente.sendCommand(this.work.idservidor, params)
-    .then(resp=>{
-      this.lstServicios = [];
-      if (resp){
-        console.log("↓ Sentinel response", resp)
-        let data = resp.data.data;
-        let r = "";
-        let acum:any = [];
-        data.forEach((d:any)=>{
-          switch(d.id){
-            // case `${this.area}|listar_todo`:
-            case `lista_servicios`:
-              let dat = d.respuesta.replace(/\n/g, ',');
-              let rd:any = (dat.split("|"));
-              acum = [];
-              rd.forEach((rs:any)=>{
-                let rss = rs.split(",");
-                if (rss[0]!="") acum.push(rss)
+  onOpenListener(event: any) {
+    let status = '';
+    if (event.type == 'open') {
+      console.log(`√ Conectado ${this.work.idservidor}`);
+      this.agente_status = "Conectado";
+      this.work.healthy_agente = 'OK|Conectado';
+      // this.onSendCommands();
+      // this.startMonitor();
+    } else {
+      this.agente_status = "No se estableció conexion con Sentinel";
+      console.log(`X Desconectado ${this.work.idservidor}`);
+      this.work.agente_status = 'FAIL|Desconectado';
+    }
+  }
+
+  onCloseListener(event: any) {
+    // console.log('onCloseListener', event);
+    console.log("█ Desconectado")
+    console.log(`X Desconectado ${this.work.idservidor}`);
+    if (event.code == 1000){
+      this.agente_status = "Desconectado manualmente";
+    }else{
+      this.work.healthy_agente = 'FAIL|Desconectado';
+      this.agente_status = "Desconectado";
+      if (this.reconnect) this.traerListaDeServicios();
+    }
+  }
+
+  onErrorListener(event: any) {}
+
+  onMessageListener(e: any) {
+    console.log(`↓ LlegoMensaje ${this.work.idservidor}`);
+    let data = JSON.parse(e.data);
+    console.log(data)
+    this.func.closeSwal();
+    let r = "";
+    let acum:any = [];
+    let rd:any = [];
+    let aux:any | undefined;
+    data.data.forEach((d:any)=>{
+      d.respuesta= atob(d.respuesta);
+      switch(d.id){
+        // case `${this.area}|listar_todo`:
+        case `lista_servicios`:
+          let dat = d.respuesta.replace(/\n/g, ',');
+          let rd:any = (dat.split("|"));
+          acum = [];
+          rd.forEach((rs:any)=>{
+            let rss = rs.split(",");
+            if (rss[0]!="") acum.push(rss)
+          })
+          // console.log(acum)
+          acum.forEach((e:any)=>{
+            if (!["static","alias","masked","indirect"].includes(e[2])){
+              this.lstServicios.push({
+                servicio: e[0],
+                description: e[1],
+                load: e[2],
+                active: e[3],
               })
-              // console.log(acum)
-              acum.forEach((e:any)=>{
-                if (!["static","alias","masked","indirect"].includes(e[2])){
-                  this.lstServicios.push({
-                    servicio: e[0],
-                    description: e[1],
-                    load: e[2],
-                    active: e[3],
-                  })
-                }
-              })
-              this.refreshAll();
-              this.func.closeSwal();
-              break;
-            default:
-              this.func.closeSwal();
-              // console.log("cargando Conexion")
-              // console.log(resp)
-              // this.ejecutaOperaciones("listar");
-              this.initial();
-              break;
-          }
-        })
+            }
+          })
+          this.refreshAll();
+          this.func.closeSwal();
+          break;
+        default:
+          this.func.closeSwal();
+          setTimeout(()=>{
+            this.traerListaDeServicios();
+          },800)
+          break;
       }
     })
-    .catch(err=>{
-      this.func.closeSwal();;
-      console.log(err)
-      this.func.handleErrors("Servicios", err);
-    })
+  }
+
+  onSendCommands(params:any=null){
+    this.func.showLoading("Cargando");
+    if (this.connState()){
+      this.ws.send(JSON.stringify(params));
+    }else{
+      this.openWS();
+      setTimeout(()=>{
+        this.onSendCommands(params)
+      },1000)
+    }
+  }
+
+  traerListaDeServicios(){
+    let params = {
+      action: "lista_servicios",
+      identificador: {
+        idcliente: this.user.idcliente,
+        idusuario: this.user.idusuario,
+        idservidor: this.work.idservidor,
+        id: Math.floor(Math.random() * (9999999999999999 - 1000000000000000 + 1)) + 1000000000000000
+      },
+      data: []
+    };
+    // this.func.showLoading('Cargando');
+    this.onSendCommands(params);
+  }
+
+  connState = () => {
+    let m = false;
+
+    if (this.ws === undefined){
+       m = false;
+    }else{
+      try{
+        switch (this.ws.readyState){
+          case 0:
+            //m = "Pepper has been created. The connection is not yet open.";
+            m = false;
+            break;
+          case 1:
+            //m = "The connection is open and ready to communicate.";
+            m = true;
+            break;
+          case 2:
+            //m = "The connection is in the process of closing.";
+            m = false;
+            break;
+          case 3:
+            //m = "The connection is closed or couldn't be opened.";
+            m = false;
+            break;
+        }
+      }catch(err){
+        m = false;
+      }
+    }
+
+    this.light_ws = m;
+    return m;
   }
   
 

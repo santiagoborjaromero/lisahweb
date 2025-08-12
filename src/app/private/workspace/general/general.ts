@@ -68,7 +68,7 @@ export class General implements OnInit {
     this.parent.findTab("dashboard");
     this.lstDatos = {
       uptime: "0d 00:00:00",
-      agente_status: "",
+      agente_status: "Desconectado",
       ssh_status: "",
       disco: {
         total: "0",
@@ -103,7 +103,7 @@ export class General implements OnInit {
   initial(){
     this.lstDatos = {
       uptime: "0d 00:00:00",
-      agente_status: "",
+      agente_status: "Desconectado",
       ssh_status: "",
       disco: {
         total: "0",

@@ -41,7 +41,7 @@ export class Terminal implements OnInit{
   constructor(){
     this.parent.findTab(this.TAB);
     this.lstDatos = {
-      agente_status: "",
+      agente_status: "Desconectado",
     }
   }
   ngOnInit(): void {

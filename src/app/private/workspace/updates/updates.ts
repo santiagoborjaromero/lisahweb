@@ -24,18 +24,18 @@ export class Updates implements OnInit{
   private readonly sessions = inject(Sessions);
   private readonly func = inject(Functions);
   private readonly serverSvc = inject(ServidorService);
-  private readonly agente = inject(WSService);
+  // private readonly agente = inject(WSService);
   private readonly parent = inject(Workspace);
 
   Title = "Actualizaciones";
-  TAB = "updates"
+  TAB = "update"
   area = "actualizaciones";
 
   user:any | undefined;
   work:any | undefined;
   icono = iconsData;
 
-  agente_status:string = "";
+  agente_status:string = "Desconectado";
   global = Global;
   lstUsuarios:any  = [];
   lstComandos:any  = [];
@@ -43,6 +43,7 @@ export class Updates implements OnInit{
   lstNotificaciones:any  = [];
   lstData:any  = [];
   activar_acciones: boolean = false;
+  playMonitor: boolean = false;
 
   public dtOptions: any = {};
   public gridOptions: GridOptions<any> = {};
@@ -51,6 +52,13 @@ export class Updates implements OnInit{
   public name_selected: string = '';
   public user_selected: any = null;
   public is_deleted: any = null;
+
+  /**
+   * Sentinel
+   */
+  ws: any;
+  reconnect: boolean = false;
+  light_ws: boolean =false;
 
   constructor(){
     this.parent.findTab(this.TAB);
@@ -80,10 +88,16 @@ export class Updates implements OnInit{
     this.user = JSON.parse(this.sessions.get("user"));
     this.work = JSON.parse(this.sessions.get("work"));
     this.dataGridStruct();
+    this.openWS();
     
     setTimeout(()=>{
       this.initial();
     },300)
+  }
+
+  ngOnDestroy(): void {
+    this.ws.close(1000);
+    this.ws = null
   }
   
   initial(){
@@ -107,8 +121,8 @@ export class Updates implements OnInit{
           if (resp.data[0].comandos.length > 0){
             this.lstComandos = resp.data[0].comandos;
           }
-          this.ejecutaOperaciones("ver_actualizaciones");
-          // setTimeout(()=>{ this.ejecutaOperaciones("interfaces"); },500)
+          // this.ejecutaOperaciones("ver_actualizaciones");
+          this.startMonitor();
         } else {
           this.func.handleErrors("Server", resp.message);
         }
@@ -120,64 +134,67 @@ export class Updates implements OnInit{
     });
   }
 
-  buscarComando(area="", accion="", paquete=""){
-    let arr:any = [];
-    this.lstComandos.forEach((c:any)=>{
-      if (c.area == area && c.accion == accion){
-        arr.push({
-          id: `${c.area}|${c.accion}`,
-          cmd: this.parser(c.comando, paquete)
-        });
-      }
-    })
-    return arr;
+  /**
+   * WebSocket
+   */
+
+  openWS() {
+    this.agente_status = "Conectando ...";
+    const token = this.sessions.get('token');
+    let url = `ws://${this.work.host}:${this.work.agente_puerto}/ws?token=${token}`;
+    try{
+      this.ws = new WebSocket(url);
+      this.ws.onopen = (event: any) => this.onOpenListener(event);
+      this.ws.onmessage = (event: any) => this.onMessageListener(event);
+      this.ws.onclose = (event: any) => this.onCloseListener(event);
+      this.ws.onerror = (event: any) => this.onErrorListener(event);
+    }catch(ex){}
   }
 
-  openConn(data:any = null) {
-    this.agente.connect(this.work).subscribe({
-      next: (resp) => {
-        // console.log('↓ Sentinel Status', resp);
-        if (resp) {
-          let result = resp.healthy_agente.split('|');
-          this.agente_status = result[1];
-          if (result[0] == 'OK') {
-            this.onSendCommands(data);
-          }
-        }
-      },
-      error: (err) => {
-        console.log('Error', err);
-        this.func.handleErrors("Actualizaciones", err);
-      },
-    });
+  onOpenListener(event: any) {
+    let status = '';
+    if (event.type == 'open') {
+      console.log(`√ Conectado ${this.work.idservidor}`);
+      this.agente_status = "Conectado";
+      this.work.healthy_agente = 'OK|Conectado';
+      // this.onSendCommands();
+      // this.startMonitor();
+    } else {
+      this.agente_status = "No se estableció conexion con Sentinel";
+      console.log(`X Desconectado ${this.work.idservidor}`);
+      this.work.agente_status = 'FAIL|Desconectado';
+    }
   }
 
-  onSendCommands(params:any){
-    this.agente.sendCommand(this.work.idservidor, params)
-    .then(resp=>{
-      console.log("↓ Sentinel response", resp)
-      if (resp){
-        let data = resp.data.data;
-        this.onMessageListener(data);
-      } 
-    })
-    .catch(err=>{
-      Swal.close()
-      console.log(err)
-      this.func.handleErrors("Actualizaciones", err);
-    })
+  onCloseListener(event: any) {
+    // console.log('onCloseListener', event);
+    console.log("█ Desconectado")
+    console.log(`X Desconectado ${this.work.idservidor}`);
+    if (event.code == 1000){
+      this.agente_status = "Desconectado manualmente";
+    }else{
+      this.work.healthy_agente = 'FAIL|Desconectado';
+      this.agente_status = "Desconectado";
+      if (this.reconnect) this.startMonitor();
+    }
   }
 
-  onMessageListener(data:any=[]){
+  onErrorListener(event: any) {}
+
+  onMessageListener(e:any=[]){
     Swal.close()
+    console.log(`↓ LlegoMensaje ${this.work.idservidor}`);
+    let data = JSON.parse(e.data);
+    console.log(data)
     let r = "";
     let acum:any = [];
     let aux:any | undefined;
-    data.forEach((d:any)=>{
+    data.data.forEach((d:any)=>{
+      d.respuesta= atob(d.respuesta);
       switch(d.id){
         case `${this.area}|ver_actualizaciones`:
           //let rd:any = (d.respuesta.split("\n"));
-          console.log("->>>>", d.respuesta)
+          console.log("→", d.respuesta)
           if (d.respuesta == ""){
             this.func.showMessage("info", "Actualizaciones",  "No hay paquetes que actualizar");
             this.lstData = [];
@@ -208,6 +225,20 @@ export class Updates implements OnInit{
           break;
       }
     })
+  }
+
+
+  buscarComando(area="", accion="", paquete=""){
+    let arr:any = [];
+    this.lstComandos.forEach((c:any)=>{
+      if (c.area == area && c.accion == accion){
+        arr.push({
+          id: `${c.area}|${c.accion}`,
+          cmd: this.parser(c.comando, paquete)
+        });
+      }
+    })
+    return arr;
   }
 
   operaciones(que="", paquete=""){
@@ -247,36 +278,12 @@ export class Updates implements OnInit{
         },
       }).then((res) => {
         if (res.isConfirmed) {
-          this.ejecutaOperaciones(que, paquete);
+          this.ejecutaOperaciones([{accion:que, paquete}]);
         }
       });
     }
   }
 
-  ejecutaOperaciones(accion="", paquete=""){
-    console.log(`→ ${accion} ←`)
-    let cmd:any = null;
-    switch(accion){
-      default:
-        cmd = this.buscarComando(this.area, accion, paquete);
-        break;
-    }
-
-    console.log("↑", cmd);
-    if (!cmd) return 
-    let params = {
-      action: "comando",
-      identificador: {
-        idcliente: this.user.idcliente,
-        idusuario: this.user.idusuario,
-        idservidor: this.work.idservidor,
-        id: Math.floor(Math.random() * (9999999999999999 - 1000000000000000 + 1)) + 1000000000000000
-      },
-      data: cmd
-    };
-    this.func.showLoading('Cargando');
-    this.openConn(params);
-  }
 
   parser(linea:string, pack=""){
     let l = linea;
@@ -288,95 +295,178 @@ export class Updates implements OnInit{
 
 
   dataGridStruct() {
-      let that = this;
-      this.gridOptions = {
-        rowData: [],
-        pagination: true,
-        paginationPageSize: 50,
-        paginationPageSizeSelector: [5, 10, 50, 100, 200, 300, 1000],
-        rowHeight: 35,
-        groupHeaderHeight: 35,
-        headerHeight: 35,
-        defaultColDef: {
-          flex: 1,
-          minWidth: 100,
+    let that = this;
+    this.gridOptions = {
+      rowData: [],
+      pagination: true,
+      paginationPageSize: 50,
+      paginationPageSizeSelector: [5, 10, 50, 100, 200, 300, 1000],
+      rowHeight: 35,
+      groupHeaderHeight: 35,
+      headerHeight: 35,
+      defaultColDef: {
+        flex: 1,
+        minWidth: 100,
+        filter: true,
+        headerClass: 'bold',
+        floatingFilter: true,
+        resizable: false,
+        sortable: true,
+      },
+
+      onRowClicked: (event: any) => {
+        this.id_selected = event.data.paquete;
+      },
+      columnDefs: [
+        {
+          headerName: 'Paquete',
+          headerClass: 'th-normal',
+          field: 'paquete',
+          cellClass: 'text-start',
           filter: true,
-          headerClass: 'bold',
-          floatingFilter: true,
-          resizable: false,
-          sortable: true,
         },
-  
-        onRowClicked: (event: any) => {
-          this.id_selected = event.data.paquete;
+        {
+          headerName: 'Version',
+          headerClass: 'th-normal',
+          field: 'version',
+          cellClass: 'text-start',
+          filter: false,
         },
-        columnDefs: [
-          {
-            headerName: 'Paquete',
-            headerClass: 'th-normal',
-            field: 'paquete',
-            cellClass: 'text-start',
-            filter: true,
-          },
-          {
-            headerName: 'Version',
-            headerClass: 'th-normal',
-            field: 'version',
-            cellClass: 'text-start',
-            filter: false,
-          },
-          {
-            headerName: 'Arquitectura',
-            headerClass: 'th-normal',
-            field: 'arquitectura',
-            cellClass: 'text-start',
-            filter: true,
-            editable: true,
-            maxWidth:200,
-          },
-          {
-            headerName: 'Accion',
-            headerClass: 'th-normal',
-            cellClass: 'text-start',
-            filter: true,
-            maxWidth:120,
-            cellRenderer: this.renderAcciones.bind(this),
-            sort: "asc"
-          },
-        ],
-      };
-  
-      that.gridApi = createGrid(document.querySelector<HTMLElement>('#myGrid')!, this.gridOptions );
+        {
+          headerName: 'Arquitectura',
+          headerClass: 'th-normal',
+          field: 'arquitectura',
+          cellClass: 'text-start',
+          filter: true,
+          editable: true,
+          maxWidth:200,
+        },
+        {
+          headerName: 'Accion',
+          headerClass: 'th-normal',
+          cellClass: 'text-start',
+          filter: true,
+          maxWidth:120,
+          cellRenderer: this.renderAcciones.bind(this),
+          sort: "asc"
+        },
+      ],
+    };
+
+    that.gridApi = createGrid(document.querySelector<HTMLElement>('#myGrid')!, this.gridOptions );
+  }
+
+  refreshAll() {
+    var params = {
+      force: true,
+      suppressFlash: true,
+    };
+    this.gridApi!.refreshCells(params);
+    this.gridApi!.setGridOption('rowData', this.lstData);
+  }
+
+  renderAcciones(params: ICellRendererParams) {
+    let button: any | undefined;
+    button = document.createElement('button');
+    button.className = 'btn btn-white';
+    button.innerHTML = `<i class="fas fa-download text-primary" title='Actualizar'></i>`;
+    button.addEventListener('click', () => {
+      this.updatePack(params.data);
+    });
+    return button;
+  }
+
+  updatePack(data:any = null){
+    
+    this.operaciones("actualizar_paquete", data.paquete);
+  }
+
+  actualizarTodo(){
+    this.operaciones("actualizar_sistema", "");    
+  }
+
+  onSendCommands(params:any=null){
+    this.func.showLoading("Cargando");
+    if (this.connState()){
+      this.ws.send(JSON.stringify(params));
+    }else{
+      this.openWS();
+      setTimeout(()=>{
+        this.onSendCommands(params)
+      },1000)
     }
-  
-    refreshAll() {
-      var params = {
-        force: true,
-        suppressFlash: true,
-      };
-      this.gridApi!.refreshCells(params);
-      this.gridApi!.setGridOption('rowData', this.lstData);
-    }
-  
-    renderAcciones(params: ICellRendererParams) {
-      let button: any | undefined;
-      button = document.createElement('button');
-      button.className = 'btn btn-white';
-      button.innerHTML = `<i class="fas fa-download text-primary" title='Actualizar'></i>`;
-      button.addEventListener('click', () => {
-        this.updatePack(params.data);
-      });
-      return button;
+  }
+
+  startMonitor(){
+    this.playMonitor = true;
+    this.ejecutaOperaciones([{accion: "ver_actualizaciones", paquete: ""}]);
+  }
+
+  ejecutaOperaciones(acciones:any=[]){
+    let cmds:any = [];
+    acciones.forEach((cmp:any)=>{
+      console.log(`→ ${cmp.accion} ←`)
+      switch(cmp.accion){
+        default:
+          let cmd:any = this.buscarComando(this.area, cmp.accion, cmp.paquete);
+          if (Array.isArray(cmd)){
+            cmd.forEach((e:any)=>{
+              cmds.push(e)
+            })
+          }else{
+            cmds.push(cmd)
+          }
+          break;
+      }
+    })
+    console.log("↑", cmds)
+    if (!cmds) return 
+    let params = {
+      action: "comando",
+      identificador: {
+        idcliente: this.user.idcliente,
+        idusuario: this.user.idusuario,
+        idservidor: this.work.idservidor,
+        id: Math.floor(Math.random() * (9999999999999999 - 1000000000000000 + 1)) + 1000000000000000
+      },
+      data: cmds
+    };
+    this.onSendCommands(params);
+  }
+
+  connState = () => {
+    let m = false;
+
+    if (this.ws === undefined){
+       m = false;
+    }else{
+      try{
+        switch (this.ws.readyState){
+          case 0:
+            //m = "Pepper has been created. The connection is not yet open.";
+            m = false;
+            break;
+          case 1:
+            //m = "The connection is open and ready to communicate.";
+            m = true;
+            break;
+          case 2:
+            //m = "The connection is in the process of closing.";
+            m = false;
+            break;
+          case 3:
+            //m = "The connection is closed or couldn't be opened.";
+            m = false;
+            break;
+        }
+      }catch(err){
+        m = false;
+      }
     }
 
-    updatePack(data:any = null){
-      
-      this.operaciones("actualizar_paquete", data.paquete);
-    }
-
-    actualizarTodo(){
-      this.operaciones("actualizar_sistema", "");    
-    }
+    this.light_ws = m;
+    return m;
+  }
 
 
 }

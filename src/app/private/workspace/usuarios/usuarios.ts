@@ -50,13 +50,13 @@ export class Usuarios implements OnInit {
 
   Title = 'Usuarios';
   TAB = 'usuarios';
+  area = "usuarios";
 
   user: any | undefined;
   work: any | undefined;
   icono = iconsData;
-  area = "usuarios";
 
-  rstConfig: any = null;
+  rstScriptCreacionUsuario: any = null;
   lstDatos: Datos;
   global = Global;
   lstUsuarios: Array<any> = [];
@@ -74,10 +74,18 @@ export class Usuarios implements OnInit {
   lstAcciones: Array<any> = [];
   lstNotificaciones: Array<any> = [];
 
+  /**
+   * Sentinel
+  */
+  agente_status: string = "Desconectado";
+  ws: any;
+  reconnect: boolean = false;
+  light_ws: boolean = false;
+
   constructor() {
     this.parent.findTab(this.TAB);
     this.lstDatos = {
-      agente_status: '',
+      agente_status: 'Desconectado',
       usuarios: []
     };
     this.lstAcciones = [
@@ -117,12 +125,7 @@ export class Usuarios implements OnInit {
         subtitulo: "Remueve el usuario pero no su carpeta",
         condicion: true
       },
-      {
-        accion: "eliminar_completo", 
-        titulo: "Eliminar Usuario - Full", 
-        subtitulo: "Remueve el usuario incluido su carpeta",
-        condicion: true
-      },
+
     ];
   }
 
@@ -131,10 +134,16 @@ export class Usuarios implements OnInit {
     this.work = JSON.parse(this.sessions.get('work'));
 
     this.dataGridStruct();
-    
+    this.openWS();
+
     setTimeout(()=>{
       this.initial();
     },300)
+  }
+
+  ngOnDestroy(): void {
+    this.ws.close(1000);
+    this.ws = null;
   }
   
   initial(){
@@ -143,7 +152,7 @@ export class Usuarios implements OnInit {
     this.user_selected = null;
     this.is_deleted = "";
     this.getDataUsuarios();
-    this.getDataConfiguracion();
+    // this.getDataConfiguracion();
   }
 
   getDataUsuarios() {
@@ -154,6 +163,7 @@ export class Usuarios implements OnInit {
 
     this.serverSvc.getOneWithUsers(this.work.idservidor).subscribe({
       next: (resp: any) => {
+        // console.log("RESP USUARIOS ", resp)
         this.func.closeSwal();
         if (resp.status) {
           if (resp.data[0].usuarios.length > 0){
@@ -165,30 +175,15 @@ export class Usuarios implements OnInit {
           if (resp.data[0].comandos.length > 0){
             this.lstComandos = resp.data[0].comandos;
           }
+          this.rstScriptCreacionUsuario = resp.data[0].cliente.configuracion.script.cmds;
           this.refreshAll();
-          this.ejecutaOperaciones("listar");
+          this.ejecutaOperaciones([{accion:"listar", usuario: ""}]);
         } else {
           this.func.handleErrors("Server", resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
-      },
-    });
-  }
-
-  getDataConfiguracion() {
-    this.cfgSvc.getAll().subscribe({
-      next: (resp: any) => {
-        if (resp.status) {
-          this.rstConfig = resp.data[0];
-        } else {
-          // this.func.showMessage("error", "Configuracion", resp.message);
-          this.func.handleErrors("Configuracion", resp.message);
-        }
-      },
-      error: (err: any) => {
-        this.func.handleErrors("Configuracion", err);
       },
     });
   }
@@ -206,124 +201,22 @@ export class Usuarios implements OnInit {
     return arr;
   }
 
-  openConn(data:any = null) {
-    this.agente.connect(this.work).subscribe({
-      next: (resp) => {
-        // console.log('↓ Sentinel Status', resp);
-        if (resp) {
-          let result = resp.healthy_agente.split('|');
-          this.lstDatos.agente_status = result[1];
-          if (result[0] == 'OK') {
-              this.onSendCommands(data);
-          }
-        }
-      },
-      error: (err) => {
-        console.log('Error', err);
-        this.func.handleErrors("WsConn", err);
-      },
-    });
-  }
-
-  onSendCommands(params:any){
-    this.agente.sendCommand(this.work.idservidor, params)
-    .then(resp=>{
-      this.lstDatos.usuarios = [];
-      console.log("↓ Sentinel response", resp)
-      if (resp){
-        let data = resp.data.data;
-        let r = "";
-        let acum:any = [];
-        let aux:any | undefined;
-        // console.log("D", data)
-        data.forEach((d:any)=>{
-          switch(d.id){
-            case `${this.area}|listar`:
-              let rd:any = (d.respuesta.split("\n"));
-              rd.forEach((rs:any)=>{
-                let rss = rs.split(":");
-                if (rss[0]!="") acum.push(rss)
-              })
-              acum.forEach((u:any)=>{
-                let gid1 = u[11].split(",");
-                let grupo1 = u[10].split(",");
-                let gid2 = u[13].split(",");
-                let grupo2 = u[12].split(",");
-                let gid = gid1.concat(gid2);
-                let grupo = grupo1.concat(grupo2);
-
-                let grupoid:Array<any> = [];
-                gid.forEach((e:any)=>{
-                  if (e!=""){
-                    grupoid.push(e)
-                  }
-                })
-                let gruponombre:Array<any> = [];
-                grupo.forEach((e:any)=>{
-                  if (e!=""){
-                    gruponombre.push(e)
-                  }
-                })
-
-                this.lstDatos.usuarios.push({
-                  user: u[0],
-                  uid: u[1],
-                  gecos: u[2],
-                  homedir: u[3],
-                  shell: u[4],
-                  nologin: u[5],
-                  pwdlock: u[6],
-                  pwdempty: u[7],
-                  pwddeny: u[8],
-                  pwdmethod: u[9],
-                  gid: grupoid.join(", "),
-                  group: gruponombre.join(", "),
-                  lastlogin: u[14],
-                  lasttty: u[15],
-                  lasthostname: u[16],
-                  failedlogin: u[17],
-                  failedtty: u[18],
-                  hushed: u[19],
-                  pwdwarn: u[20],
-                  pwdchange: u[21],
-                  pwdmin: u[22],
-                  pwdmax: u[23],
-                  pwdexpire: u[24],
-                  context: u[25],
-                  proc: u[26],
-
-                })
-              });
-              // console.log(this.lstDatos.usuarios)
-              this.checkUsers();
-              break;
-            default:
-              // console.log("cargando Conexion")
-              // console.log(resp)
-              // this.ejecutaOperaciones("listar");
-              this.initial();
-              break;
-          }
-        })
-      }
-    })
-    .catch(err=>{
-      console.log(err)
-      this.func.handleErrors("Send Commands", err);
-    })
-  }
-
   checkUsers(){
     if (this.lstDatos.usuarios.length>0){
-      this.lstDatos.usuarios.forEach((e:any)=>{
-        this.lstUsuarios.forEach((u:any)=>{
-          if (e.user == u.usuario){
+      let found = false;
+      this.lstUsuarios.forEach((u:any)=>{
+        found = false;
+        this.lstDatos.usuarios.forEach((e:any)=>{
+        if (e.user == u.usuario){
             u["servidor"] = e;
+            found = true;
           }
         })
+        if (!found){
+          u["servidor"] = null;
+        }
       });
       this.refreshAll();
-      // console.log(this.lstUsuarios)
     }
   }
 
@@ -460,15 +353,7 @@ export class Usuarios implements OnInit {
               },
             ]
           },
-          // {
-          //   headerName: 'Accion',
-          //   headerClass: ["th-center", "th-normal"],
-          //   cellClass: 'text-start',
-          //   filter: true,
-          //   flex: 3,
-          //   maxWidth:100,
-          //   cellRenderer: this.renderAcciones.bind(this),
-          // },
+
       ],
     };
 
@@ -500,65 +385,28 @@ export class Usuarios implements OnInit {
 
   creaUsuario(data:any){
     this.user_selected = data;
-    if (this.rstConfig){
-      if (this.rstConfig.idscript_creacion_usuario){
-        this.scriptSvc.getOne(this.rstConfig.idscript_creacion_usuario).subscribe({
-          next: (resp: any) => {
-            // console.log(resp)
-            if (resp.status) {
-              let d = resp.data[0];
-              this.ejecutaCreacion(d.cmds);
-            } else {
-              this.func.handleErrors("Server", resp.message);
-            }
-          },
-          error: (err: any) => {
-          },
-        });
-      } else{
-        this.func.handleErrors("Send Commands", "No tiene asignado un script para la creacion de usuarios. Vaya a Configuracion / Configuración General y asigne un script existente");
-      }
-    } 
-
-  }
-  
-  ejecutaCreacion(cmds:any){
-    let c:any = [];
-    cmds.forEach((e:any) => {
-      c.push({
-        id: e.idtemplate_comando,
-        cmd: this.parser(e.linea_comando)
-      })
+    let cmds:any = [];
+    this.rstScriptCreacionUsuario.forEach((s:any) => {
+      cmds.push({
+        id: s.idtemplate_comando.toString(),
+        cmd: this.parser(s.linea_comando)
+      });
     });
-  
-    let params = {
-      action: "comando",
-      identificador: {
-        idcliente: this.user.idcliente,
-        idusuario: this.user.idusuario,
-        idservidor: this.work.idservidor,
-        id: Math.floor(Math.random() * (9999999999999999 - 1000000000000000 + 1)) + 1000000000000000
-      },
-      data: c
-    };
-    // console.log(params)
-    this.onSendCommands(params);
-  
-    // setTimeout(()=>{
-    //   this.openConn();
-    // },1000)
+    return cmds
   }
 
   parser(linea:string){
     let l = linea;
-    if (l.indexOf("{usuario}")>-1){
-      l = l.replace(/{usuario}/gi, this.user_selected.usuario);
-    }
-    if (l.indexOf("{grupo_nombre}")>-1){
-      l = l.replace(/{grupo_nombre}/gi, this.user_selected.grupo.nombre);
-    }
-    if (l.indexOf("{usuario_clave}")>-1){
-      l = l.replace(/{usuario_clave}/gi, this.encrypt.decrypt(this.user_selected.clave));
+    if (l){
+      if (l.indexOf("{usuario}")>-1){
+        l = l.replace(/{usuario}/gi, this.user_selected.usuario);
+      }
+      if (l.indexOf("{grupo_nombre}")>-1){
+        l = l.replace(/{grupo_nombre}/gi, this.user_selected.grupo.nombre);
+      }
+      if (l.indexOf("{usuario_clave}")>-1){
+        l = l.replace(/{usuario_clave}/gi, this.encrypt.decrypt(this.user_selected.clave));
+      }
     }
     return l
   }
@@ -600,39 +448,37 @@ export class Usuarios implements OnInit {
         },
       }).then((res) => {
         if (res.isConfirmed) {
-          this.ejecutaOperaciones(que);
+          this.ejecutaOperaciones([{accion: que}]);
         }
       });
     }
   }
 
-  ejecutaOperaciones(accion=""){
-    console.log(`→ ${accion} ←`)
-    let cmd:any = null;
-    switch(accion){
-      case "crear":
-        /* 
-        * Crear usuario, grupo y contraseña
-        */
-        this.creaUsuario(this.user_selected);
-        return; 
-      case "crear_clave":
-        /**
-         * Crear y actualizar contraseña
-         */
-        this.actualizaClave()
-          .then((resp:any)=>{})
-          .catch(err=>{
-            this.func.showMessage("error", "Actualizar Contraseña",err);
-          })
-        break;
-      default:
-        cmd = this.buscarComando(this.area, accion);
-        break;
-    }
+  ejecutaOperaciones(acciones:any=[]){
+    let cmds:any = [];
+    let cmd:any ;
+    acciones.forEach((cmp:any)=>{
+      console.log(`→ ${cmp.accion} ←`)
+      switch(cmp.accion){
+        case "crear":
+          cmds = this.creaUsuario(this.user_selected);
+          break;
+        default:
+          cmd = this.buscarComando(this.area,cmp.accion);
+          if (Array.isArray(cmd)){
+            cmd.forEach((e:any)=>{
+              cmds.push(e)
+            })
+          }else{
+            cmds.push(cmd)
+          }
+          break;
+      }
+    })
 
-    console.log("↑", cmd)
-    if (!cmd) return 
+    // console.log("↑", cmds)
+    if (!cmds) return 
+
     let params = {
       action: "comando",
       identificador: {
@@ -641,35 +487,17 @@ export class Usuarios implements OnInit {
         idservidor: this.work.idservidor,
         id: Math.floor(Math.random() * (9999999999999999 - 1000000000000000 + 1)) + 1000000000000000
       },
-      data: cmd
+      data: cmds
     };
-    this.openConn(params);
+    // this.openConn(params);
+    this.onSendCommands(params);
   }
 
-  actualizaClave(){
-    return new Promise((resolve, reject) => {
-      this.userSvc.updatePass(this.user_selected.idusuario).subscribe({
-        next: (resp: any) => {
-          console.log(resp)
-          if (resp.status) {
-            this.user_selected.clave = resp.message;
-            this.checkNovedades();
-            resolve(this.user_selected.clave);
-          } else {
-            reject(resp.message)
-          }
-        },
-        error: (err: any) => {
-          reject(err)
-        },
-      });
-    }) 
-  }
 
   checkNovedades(){
     this.lstNotificaciones = [];
 
-    // console.log(this.user_selected)
+    console.log(this.user_selected)
 
     if (this.user_selected.servidor !== null){
       this.lstAcciones[0].condicion = false;
@@ -683,7 +511,6 @@ export class Usuarios implements OnInit {
         this.lstAcciones[4].condicion = false;
       }
       this.lstAcciones[5].condicion = true;
-      this.lstAcciones[6].condicion = true;
     }else{
       this.lstNotificaciones.push({tipo: "FATAL", descripcion: "El usuario no se encuentra creado en el servidor"})
       this.lstAcciones[0].condicion = true;
@@ -692,7 +519,6 @@ export class Usuarios implements OnInit {
       this.lstAcciones[3].condicion = false;
       this.lstAcciones[4].condicion = false;
       this.lstAcciones[5].condicion = false;
-      this.lstAcciones[6].condicion = false;
     }
 
     if (!this.user_selected.clave){
@@ -705,6 +531,181 @@ export class Usuarios implements OnInit {
     // }
 
   }
+
+
+  openWS() {
+    this.agente_status = "Conectando ...";
+    const token = this.sessions.get('token');
+    let url = `ws://${this.work.host}:${this.work.agente_puerto}/ws?token=${token}`;
+    try{
+      this.ws = new WebSocket(url);
+      this.ws.onopen = (event: any) => this.onOpenListener(event);
+      this.ws.onmessage = (event: any) => this.onMessageListener(event);
+      this.ws.onclose = (event: any) => this.onCloseListener(event);
+      this.ws.onerror = (event: any) => this.onErrorListener(event);
+    }catch(ex){}
+  }
+
+  onOpenListener(event: any) {
+    this.connState();
+    if (event.type == 'open') {
+      console.log(`√ Conectado ${this.work.idservidor}`);
+      this.agente_status = "Conectado";
+      this.work.healthy_agente = 'OK|Conectado';
+    } else {
+      this.agente_status = "No se estableció conexion con Sentinel";
+      console.log(`X Desconectado ${this.work.idservidor}`);
+      this.work.agente_status = 'FAIL|Desconectado';
+    }
+  }
+
+  onCloseListener(event: any) {
+    // console.log('onCloseListener', event);
+    console.log("█ Desconectado")
+    console.log(`X Desconectado ${this.work.idservidor}`);
+    if (event.code == 1000){
+      this.agente_status = "Desconectado manualmente";
+    }else{
+      this.work.healthy_agente = 'FAIL|Desconectado';
+      this.agente_status = "Desconectado";
+    }
+  }
+
+  onErrorListener(event: any) {}
+
+  onMessageListener(e:any){
+    console.log(`↓ LlegoMensaje ${this.work.idservidor}`);
+    let data = JSON.parse(e.data);
+    console.log(data)
+    this.func.closeSwal()
+    let r = "";
+    let acum:any = [];
+    let aux:any | undefined;
+    data.data.forEach((d:any)=>{
+      d.respuesta= atob(d.respuesta);
+
+      switch(d.id){
+        case `${this.area}|listar`:
+          this.lstDatos.usuarios = [];
+
+          let rd:any = (d.respuesta.split("\n"));
+          rd.forEach((rs:any)=>{
+            let rss = rs.split(":");
+            if (rss[0]!="") acum.push(rss)
+          })
+          acum.forEach((u:any)=>{
+            let gid1 = u[11].split(",");
+            let grupo1 = u[10].split(",");
+            let gid2 = u[13].split(",");
+            let grupo2 = u[12].split(",");
+            let gid = gid1.concat(gid2);
+            let grupo = grupo1.concat(grupo2);
+
+            let grupoid:Array<any> = [];
+            gid.forEach((e:any)=>{
+              if (e!=""){
+                grupoid.push(e)
+              }
+            })
+            let gruponombre:Array<any> = [];
+            grupo.forEach((e:any)=>{
+              if (e!=""){
+                gruponombre.push(e)
+              }
+            })
+
+            this.lstDatos.usuarios.push({
+              user: u[0],
+              uid: u[1],
+              gecos: u[2],
+              homedir: u[3],
+              shell: u[4],
+              nologin: u[5],
+              pwdlock: u[6],
+              pwdempty: u[7],
+              pwddeny: u[8],
+              pwdmethod: u[9],
+              gid: grupoid.join(", "),
+              group: gruponombre.join(", "),
+              lastlogin: u[14],
+              lasttty: u[15],
+              lasthostname: u[16],
+              failedlogin: u[17],
+              failedtty: u[18],
+              hushed: u[19],
+              pwdwarn: u[20],
+              pwdchange: u[21],
+              pwdmin: u[22],
+              pwdmax: u[23],
+              pwdexpire: u[24],
+              context: u[25],
+              proc: u[26],
+
+            })
+            this.checkUsers();
+          });
+          break;
+        default:
+          this.startMonitor();
+          break;
+      }
+    })
+  }
+
+  startMonitor(){
+    this.id_selected = "";
+    this.user_selected = null;
+    this.ejecutaOperaciones([{accion: "listar", usuario: ""}]);
+  }
+
+  onSendCommands(params:any=null){
+    this.func.showLoading("Cargando");
+    if (this.connState()){
+      console.log("↑ Enviando")
+      this.ws.send(JSON.stringify(params));
+    }else{
+      this.openWS();
+      setTimeout(()=>{
+        this.onSendCommands(params)
+      },1000)
+    }
+  }
+
+  connState = () => {
+    let m = false;
+
+    if (this.ws === undefined){
+       m = false;
+    }else{
+      try{
+        switch (this.ws.readyState){
+          case 0:
+            //m = "Pepper has been created. The connection is not yet open.";
+            m = false;
+            break;
+          case 1:
+            //m = "The connection is open and ready to communicate.";
+            m = true;
+            break;
+          case 2:
+            //m = "The connection is in the process of closing.";
+            m = false;
+            break;
+          case 3:
+            //m = "The connection is closed or couldn't be opened.";
+            m = false;
+            break;
+        }
+      }catch(err){
+        m = false;
+      }
+    }
+
+    this.light_ws = m;
+    return m;
+  }
+
+
 
 
 }

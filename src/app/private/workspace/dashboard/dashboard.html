@@ -1,10 +1,13 @@
 <header class="row">
   <div class="col  d-flex justify-content-between">
     <h5>{{Title}}</h5> 
-    <span class="ml-2 {{lstDatos.agente_status == 'Conectado' ? 'text-success bold' : 'text-danger bold'}}">{{lstDatos.agente_status}}</span>
+    <div>
+        <span class="mr-2 sentinel">{{global.agent}}</span>
+        <span class="ml-2 {{light_ws  ? 'text-success bold' : 'text-danger bold'}}">{{agente_status}}</span>
+    </div>
     <!-- <div class=""><i *ngIf="loadMonitoreo" class="t14 text-primary mr-2"><i role="img" class="fas fa-spinner fa-spin "></i> Cargando</i></div> -->
     <div class="btn-group mr-1" role="group" aria-label="Basic example">
-      <button role="button" [disabled]="playMonitor"  class="btn btn-primary " (click)="startMonitor()"  title="Iniciar Monitoreo"><i role="img" class="fas fa-play"></i> </button>
+      <button role="button" [disabled]="playMonitor"  class="btn btn-primary " (click)="openWS()"  title="Iniciar Monitoreo"><i role="img" class="fas fa-play"></i> </button>
       <button role="button" [disabled]="!playMonitor" class="btn btn-primary " (click)="stopMonitor()"  title="Detener Monitoreo"><i role="img" class="fas fa-stop"></i> </button>
       <!-- <button role="button" [disabled]="playMonitor"  class="btn btn-primary btn-sm" (click)="sendMonitor()"  title="Monitorear una vez"><i role="img" class="far fa-play-circle"></i> Una vez</button> -->
     </div>

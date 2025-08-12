@@ -33,14 +33,14 @@ private readonly route = inject(ActivatedRoute);
 
   Title = "Redes";
   TAB = "networking"
+  area = "firewall";
 
   user:any | undefined;
   work:any | undefined;
   icono = iconsData;
 
-  agente_status:string = "";
+  agente_status:string = "Desconectado";
   global = Global;
-  area = "firewall";
   lstUsuarios:any  = [];
   lstComandos:any  = [];
   lstAcciones:any  = [];
@@ -48,6 +48,7 @@ private readonly route = inject(ActivatedRoute);
   lstInterfaces:any  = [];
   lstIntefazData:any  = [];
   activar_acciones: boolean = false;
+  playMonitor: boolean = false;
   tiempo_refresco:number = 0;
 
   chartLegend:boolean = true;
@@ -61,6 +62,14 @@ private readonly route = inject(ActivatedRoute);
   dataSetTx:any = [];
 
   tmrMonitor:any = null;
+
+  /**
+   * Sentinel
+   */
+  ws: any;
+  reconnect: boolean = false;
+  light_ws: boolean =false;
+
 
   public rxChartData: ChartConfiguration['data'] = {
     labels: [],
@@ -120,25 +129,6 @@ private readonly route = inject(ActivatedRoute);
       },
     ];
 
-    // this.dataSetRx.push({
-    //   data: [],
-    //   label: "RX",
-    //   fill: true,
-    //   tension: 0.1,
-    //   borderColor: 'black',
-    //   borderWidth: 0,
-    //   backgroundColor: 'rgba(41, 219, 204, 0.79)'
-    // });
-    // this.dataSetTx.push({
-    //   data: [],
-    //   label: "TX",
-    //   fill: true,
-    //   tension: 0.1,
-    //   borderColor: 'black',
-    //   borderWidth: 0,
-    //   backgroundColor: 'rgba(219, 148, 41, 0.79)'
-    // });
-
     this.dataSetRx.push({
       data: [],
       label: "RX OK",
@@ -183,21 +173,17 @@ private readonly route = inject(ActivatedRoute);
     this.user = JSON.parse(this.sessions.get("user"));
     this.work = JSON.parse(this.sessions.get("work"));
     this.tiempo_refresco = this.user.config.tiempo_refresco;
-    this.initial();
-    setTimeout(()=>{ this.timer() },2000)
-  }
-  
-  timer(){
-    this.ejecutaOperaciones("intefaz_data");
-    this.tmrMonitor = setInterval(()=>{
-      this.ejecutaOperaciones("intefaz_data");
-    }, this.tiempo_refresco * 1000)
-  }
-
-  initial(){
     this.getDataUsuarios();
+    this.openWS();
   }
 
+  ngOnDestroy(): void {
+    clearInterval(this.tmrMonitor);
+    this.ws.close(1000);
+    this.ws = null
+  }
+
+  
   getDataUsuarios() {
     this.lstUsuarios = [];
     this.func.showLoading('Cargando');
@@ -215,10 +201,7 @@ private readonly route = inject(ActivatedRoute);
           if (resp.data[0].comandos.length > 0){
             this.lstComandos = resp.data[0].comandos;
           }
-          this.ejecutaOperaciones("listar");
-          setTimeout(()=>{ this.ejecutaOperaciones("interfaces"); },500)
-          
-          // setTimeout(()=>{ this.ejecutaOperaciones("intefaz_data"); },1000)
+          this.startMonitor();
         } else {
           this.func.handleErrors("Server", resp.message);
         }
@@ -230,73 +213,64 @@ private readonly route = inject(ActivatedRoute);
     });
   }
 
-  ngOnDestroy(): void {
-    clearInterval(this.tmrMonitor);
+  
+  openWS() {
+    this.agente_status = "Conectando ...";
+    const token = this.sessions.get('token');
+    let url = `ws://${this.work.host}:${this.work.agente_puerto}/ws?token=${token}`;
+    try{
+      this.ws = new WebSocket(url);
+      this.ws.onopen = (event: any) => this.onOpenListener(event);
+      this.ws.onmessage = (event: any) => this.onMessageListener(event);
+      this.ws.onclose = (event: any) => this.onCloseListener(event);
+      this.ws.onerror = (event: any) => this.onErrorListener(event);
+    }catch(ex){}
   }
 
-
-
-  buscarComando(area="", accion=""){
-    let arr:any = [];
-    // console.log(this.lstComandos,area,accion)
-    this.lstComandos.forEach((c:any)=>{
-      if (c.area == area && c.accion == accion){
-        arr.push({
-          id: `${c.area}|${c.accion}`,
-          cmd: c.comando
-        });
-      }
-    })
-    console.log(arr)
-    return arr;
+  onOpenListener(event: any) {
+    if (event.type == 'open') {
+      console.log(`√ Conectado ${this.work.idservidor}`);
+      this.agente_status = "Conectado";
+      this.work.healthy_agente = 'OK|Conectado';
+    } else {
+      this.agente_status = "No se estableció conexion con Sentinel";
+      console.log(`X Desconectado ${this.work.idservidor}`);
+      this.work.agente_status = 'FAIL|Desconectado';
+    }
   }
 
-  openConn(data:any = null) {
-    this.agente.connect(this.work).subscribe({
-      next: (resp) => {
-        // console.log('↓ Sentinel Status', resp);
-        if (resp) {
-          let result = resp.healthy_agente.split('|');
-          this.agente_status = result[1];
-          if (result[0] == 'OK') {
-            this.onSendCommands(data);
-          }
-        }
-      },
-      error: (err) => {
-        console.log('Error', err);
-        this.func.handleErrors("Redes", err);
-      },
-    });
+  onCloseListener(event: any) {
+    // console.log('onCloseListener', event);
+    console.log("█ Desconectado")
+    console.log(`X Desconectado ${this.work.idservidor}`);
+    if (event.code == 1000){
+      this.agente_status = "Desconectado manualmente";
+    }else{
+      this.work.healthy_agente = 'FAIL|Desconectado';
+      this.agente_status = "Desconectado";
+    }
   }
 
-  onSendCommands(params:any){
-    this.agente.sendCommand(this.work.idservidor, params)
-    .then(resp=>{
-      console.log("↓ Sentinel response", resp)
-      if (resp){
-        let data = resp.data.data;
-        this.onMessageListener(data);
-      } 
-    })
-    .catch(err=>{
-      console.log(err)
-    })
-  }
+  onErrorListener(event: any) {}
 
-  onMessageListener(data:any=[]){
+  onMessageListener(e:any){
+    console.log(`↓ LlegoMensaje ${this.work.idservidor}`);
+    let data = JSON.parse(e.data);
+    // console.log(data)
+    this.func.closeSwal()
     let r = "";
     let acum:any = [];
     let aux:any | undefined;
-    data.forEach((d:any)=>{
+    data.data.forEach((d:any)=>{
+      d.respuesta= atob(d.respuesta);
       switch(d.id){
         case `${this.area}|listar`:
           //let rd:any = (d.respuesta.split("\n"));
-          console.log("->>>>", d.respuesta)
+          console.log("→", d.respuesta)
 
           if (d.respuesta.indexOf("firewall-cmd: command not found")>-1){
             this.lstNotificaciones.push({tipo: "FATAL", descripcion: "El servicio de FirewallD no se encuentra instalado"});
-            console.log(this.lstNotificaciones)
+            // console.log(this.lstNotificaciones)
           } else if (d.respuesta.indefOf("FirewallD is not running")>-1){
 
           }
@@ -325,65 +299,60 @@ private readonly route = inject(ActivatedRoute);
             this.graph()
           break;
         default:
-          // this.initial();
           break;
       }
     })
   }
-  operaciones(que=""){
-    let found = false;
-    let leyenda = "";
-    this.lstAcciones.forEach((c:any)=>{
-      if (c.accion == que){
-        leyenda = c.titulo;
-        found = true;
-      }
-    })
 
-    if (found){
-      Swal.fire({
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        title: 'Pregunta',
-        text: `Para ${leyenda}, debe escribir la palabra ${que}.`,
-        icon: 'question',
-        input: 'text',
-        inputPlaceholder: que,
-        showCancelButton: true,
-        confirmButtonColor: '#33a0d6',
-        confirmButtonText: 'Confirmar',
-        cancelButtonColor: '#f63c3a',
-        cancelButtonText: 'Cancelar',
-        showClass: { backdrop: 'swal2-noanimation', popup: '' },
-        hideClass: { popup: '' },
-        inputValidator: (text) => {
-          return new Promise((resolve) => {
-            if (text.trim() !== '' && text.trim() == que) {
-              resolve('');
-            } else {
-              resolve(`Para ${leyenda}, debe ingresar ${que}.`);
-            }
-          });
-        },
-      }).then((res) => {
-        if (res.isConfirmed) {
-          this.ejecutaOperaciones(que);
-        }
-      });
-    }
+  startMonitor(){
+    this.playMonitor = true;
+    this.ejecutaOperaciones(["listar","interfaces","intefaz_data"]);
+    this.tmrMonitor = setInterval(() => {
+      this.ejecutaOperaciones(["listar","interfaces","intefaz_data"]);
+    }, this.tiempo_refresco *1000);
   }
 
-  ejecutaOperaciones(accion=""){
-    console.log(`→ ${accion} ←`)
-    let cmd:any = null;
-    switch(accion){
-      default:
-        cmd = this.buscarComando(this.area, accion);
-        break;
-    }
+  stopMonitor(){
+    console.log("Deteniendo")
+    this.agente_status = "Deteniendo ...";
+    this.playMonitor = false;
+    clearInterval(this.tmrMonitor);
+    this.ws.close(1000)
+  }
 
-    console.log("↑", cmd);
-    if (!cmd) return 
+  buscarComando(area="", accion=""){
+    let arr:any = [];
+    this.lstComandos.forEach((c:any)=>{
+      if (c.area == area && c.accion == accion){
+        arr.push({
+          id: `${c.area}|${c.accion}`,
+          cmd: c.comando
+        });
+      }
+    })
+    console.log(arr)
+    return arr;
+  }
+
+  ejecutaOperaciones(acciones:any=[]){
+    let cmds:any = [];
+    acciones.forEach((accion:any)=>{
+      console.log(`→ ${accion} ←`)
+      switch(accion){
+        default:
+          let cmd:any = this.buscarComando(this.area, accion);
+          if (Array.isArray(cmd)){
+            cmd.forEach((e:any)=>{
+              cmds.push(e)
+            })
+          }else{
+            cmds.push(cmd)
+          }
+          break;
+      }
+    })
+    // console.log("↑", cmds)
+    if (!cmds) return 
     let params = {
       action: "comando",
       identificador: {
@@ -392,12 +361,60 @@ private readonly route = inject(ActivatedRoute);
         idservidor: this.work.idservidor,
         id: Math.floor(Math.random() * (9999999999999999 - 1000000000000000 + 1)) + 1000000000000000
       },
-      data: cmd
+      data: cmds
     };
-    this.openConn(params);
+    this.onSendCommands(params);
   }
 
-   graph(){
+
+  onSendCommands(params:any=null){
+    // this.func.showLoading("Cargando");
+    if (this.connState()){
+      console.log("↑ Enviando")
+      this.ws.send(JSON.stringify(params));
+    }else{
+      this.openWS();
+      setTimeout(()=>{
+        this.onSendCommands(params)
+      },1000)
+    }
+  }
+
+  connState = () => {
+    let m = false;
+
+    if (this.ws === undefined){
+       m = false;
+    }else{
+      try{
+        switch (this.ws.readyState){
+          case 0:
+            //m = "Pepper has been created. The connection is not yet open.";
+            m = false;
+            break;
+          case 1:
+            //m = "The connection is open and ready to communicate.";
+            m = true;
+            break;
+          case 2:
+            //m = "The connection is in the process of closing.";
+            m = false;
+            break;
+          case 3:
+            //m = "The connection is closed or couldn't be opened.";
+            m = false;
+            break;
+        }
+      }catch(err){
+        m = false;
+      }
+    }
+
+    this.light_ws = m;
+    return m;
+  }
+
+  graph(){
     let labels:any =  ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20"];
     
     let rx:number = 0;
@@ -420,8 +437,6 @@ private readonly route = inject(ActivatedRoute);
 
     rx = rx / count;
     tx = tx / count;
-
-    // console.log(rx, tx)
 
     this.lstRxData.splice(0,1);
     this.lstRxData.push(rx);
