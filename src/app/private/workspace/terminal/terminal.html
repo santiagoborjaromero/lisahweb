@@ -1,32 +1,52 @@
 <div class="row">
   <div class="col  d-flex justify-content-between align-items-center">
     <h5>{{Title}}</h5>
-    <div class="d-flex flex-column text-center">
-      <a name="inicio"></a>
-      <small class="mb-2 linea-abajo"><i class="bold text-secondary">Metodo de conexion</i></small>
-      <div class="d-flex justify-content-between">
-        <div>
-          <button (click)="metodo(1)" class="btn btn-{{metdodo_seleccionado == 1 ? 'primary' : 'outline-primary'}} ">
-            <span class="mr-2 sentinel">{{global.agent}}</span>
-            <span class="ml-2 {{light_ws  ? 'text-white bold' : 'text-dark bold'}}">{{agente_status}}</span>
-          </button>
-        </div>
-        <div class="ml-2 mr-2 linea-izquierda">
-          <button (click)="metodo(2)" class="btn btn-{{metdodo_seleccionado == 2 ? 'primary' : 'outline-primary'}} ml-2">
-            <span class="mr-2 sentinel">SSH</span>
-            <span class="ml-2 {{light_ssh  ? 'text-white bold' : 'text-dark bold'}}">{{ssh_status}}</span>
-          </button>
-        </div>
-      </div>
-    </div>
-    <button role="button" (click)="metodo(1)" class="btn btn-primary btn-sm"><i role="img" class="fas fa-repeat"></i> Recargar</button>
+    <!-- <div>
+      @if(metodo_seleccionado==1){
+        <span class="mr-2 sentinel">{{global.agent}}</span>
+        <span class="ml-2 {{light_ws ? 'text-success bold' : 'text-danger bold'}}">{{agente_status}}</span>
+      }@else{
+        @if(metodo_seleccionado==2){
+          <span class="mr-2 sentinel">SSH</span>
+          <span class="ml-2 {{light_ssh ? 'text-success bold' : 'text-danger bold'}}">{{ssh_status}}</span>
+        }
+      }
+    </div> -->
+    <button *ngIf="procesando" role="button" (click)="procesando=!procesando" class="btn btn-primary btn-sm"><i role="img" class="fas fa-repeat"></i> Forzar prompt</button>
   </div>
 </div>
-<div class="row mt-5 h500">
-  <div class="col-12 col-sm-12 col-md-10 col-lg-10 col-xl-10 bg-black text-white p-5">
-    # > _
+<div class="row mt-5">
+  <div id="terminal" class="col-12 col-sm-12 col-md-9 col-lg-9 col-xl-9">
+    <div #divterminal class="terminal">
+      @for (item of lstHistory; track $index) {
+        <div class="terminal__line {{item.clase}}">
+          {{item.texto}}
+        </div>
+      }
+      <div *ngIf="!procesando" class="terminal__prompt">
+        <div class="terminal__prompt__label">{{prompt}}</div>
+        <div class="terminal__prompt__input">
+          <input  #terminal type="text" [(ngModel)]="texto" id="terminal" name="terminal" (keyup)="terminalTecla($event)" />
+        </div>
+      </div>
+      <br>
+      <br>
+      <br>
+    </div>
+    <a id="fin"></a>
   </div>
-  <div class="col-12 col-sm-12 col-md-10 col-lg-2 col-xl-2 bg-light">
-    <h5>Logs</h5>
+  <div class="col-12 col-sm-12 col-md-3 col-lg-3 col-xl-3 bg-light h500">
+    <h5>Comandos ejecutados</h5>
+    <ul class="list-group">
+      @for (item of this.lstHistoryCmds; track $index) {
+        <li class="list-group-item d-flex justify-content-between">
+          <span>{{item}}</span>
+          <button (click)="copia(item)" type="button" role="btn" class="btn btn-white btn-sm" 
+            aria-label="Copiar comando a terminal" title="Copiar comando a terminal">
+              <i role="img" class="far fa-clone"></i>
+          </button>
+        </li>
+      }
+    </ul>
   </div>
 </div>

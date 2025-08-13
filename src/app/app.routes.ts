@@ -58,7 +58,7 @@ export const routes: Routes = [
                     {path:"networking", loadComponent: () => import('./private/workspace/networking/networking').then((c)=> c.Networking)},
                     {path:"update", loadComponent: () => import('./private/workspace/updates/updates').then((c)=> c.Updates)},
                     {path:"store", loadComponent: () => import('./private/workspace/store/store').then((c)=> c.Store)},
-                    {path:"terminal", loadComponent: () => import('./private/workspace/terminal/terminal').then((c)=> c.Terminal)},
+                    {path:"terminal", loadComponent: () => import('./private/workspace/terminal/terminal').then((c)=> c.Terminals)},
                     {path:"", redirectTo: "dashboard", pathMatch: "full"},
                     {path:"**", redirectTo: "dashboard"},
                 ]
