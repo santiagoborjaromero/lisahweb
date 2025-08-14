@@ -43,11 +43,13 @@ export class Edit {
   ssh_puerto: string = "";
   agente_puerto: string = "";
   idscript_monitoreo: string = "";
+  idservidores_familia: string = "";
   comentarios: string = "";
   estado: number = 1;
 
   resultadoTest = "";
   lstScripts: Array<any> = [];
+  lstFamilia: Array<any> = [];
 
   public canR: boolean = false;
   public canW: boolean = false;
@@ -96,6 +98,7 @@ export class Edit {
     }
 
     this.getScripts();
+    this.getFamilia();
   }
 
   ngOnDestroy(): void {
@@ -118,6 +121,7 @@ export class Edit {
           this.ssh_puerto = this.rstData.ssh_puerto;
           this.agente_puerto = this.rstData.agente_puerto;
           this.comentarios = this.rstData.comentarios;
+          this.idservidores_familia = this.rstData.idservidores_familia;
           // this.idscript_monitoreo = this.rstData.idscript_monitoreo;
           this.estado = this.rstData.estado;
         } else {
@@ -137,7 +141,7 @@ export class Edit {
         if (resp.status) {
           this.lstScripts = resp.data;
         } else {
-          this.func.showMessage("error", "Usuario", resp.message);
+          this.func.showMessage("error", "Scripts", resp.message);
         }
       },
       error: (err: any) => {
@@ -146,7 +150,21 @@ export class Edit {
     });
   }
 
-
+  getFamilia(){
+    this.lstFamilia = [];
+    this.generalSvc.apiRest("GET", "servidores_familia").subscribe({
+      next: (resp: any) => {
+        if (resp.status) {
+          this.lstFamilia = resp.data;
+        } else {
+          this.func.showMessage("error", "Familia", resp.message);
+        }
+      },
+      error: (err: any) => {
+        this.func.handleErrors("Familia", err);
+      },
+    });
+  }
 
   funcSubmit(){
     let data = {
@@ -157,6 +175,7 @@ export class Edit {
       agente_puerto: this.agente_puerto,
       estado: this.estado,
       comentarios: this.comentarios,
+      idservidores_familia: this.idservidores_familia
       // idscript_monitoreo: parseInt(this.idscript_monitoreo),
     };
 

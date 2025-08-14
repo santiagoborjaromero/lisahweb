@@ -28,6 +28,7 @@ export class Servidores {
 
   user: any = null;
   work: any = null;
+  ws:any;
   path:any = [];
   titulo:any = {icono: "",nombre:""}
   global = Global;
@@ -475,35 +476,12 @@ export class Servidores {
     });
   }
 
-  // funcCheckHealthy(){
-  //   if (this.lstServersToCheck.length == 0){
-  //     return
-  //   }
-
-  //   // console.log(this.lstServersToCheck);
-  //   this.lstServersToCheck.forEach(e=>{
-  //     this.lstData.forEach(s=>{
-  //       if (s.idservidor == e.idservidor){
-  //         s.healthy_ssh = -1
-  //         s.healthy_agente = -1
-  //         return
-  //       };
-  //     })
-  //     this.refreshAll()
-  //     this.testSSH();
-  //     this.testAgente();
-  //   });
-  // }
-
-  
-
   testSSH(){
     this.ssh_test = "-";
     let param = { 
       host: this.server_selected.host, 
       puerto: this.server_selected.ssh_puerto 
     }
-    // this.func.showLoading(`Realizando prueba de salud a ${record.nombre}`);
     this.generalSvc.apiRest("POST", "healthy_server", param).subscribe({
       next: (resp: any) => {
         this.func.closeSwal();
@@ -514,6 +492,7 @@ export class Servidores {
         } else {
           this.ssh_test = "2";
           this.putResults(this.server_selected.idservidor, [0,""], "ssh")
+          this.func.showMessage("error", "SSH Test", resp.message)
         }
       },
       error: (err: any) => {
@@ -533,46 +512,35 @@ export class Servidores {
     this.refreshAll();
   }
 
-  async testAgente() {
-    this.agente_test = "-";
-    let ws = `ws://${this.server_selected.host}:${this.server_selected.agente_puerto}`;
-    // console.log("Conectando con " + ws)
+  openWS() {
+    const token = this.sessions.get('token');
+    let url = `ws://${this.server_selected.host}:${this.server_selected.agente_puerto}/ws?token=${token}`;
+    try{
+      this.ws = new WebSocket(url);
+      this.ws.onopen = (event: any) => this.onOpenListener(event);
+      // this.ws.onmessage = (event: any) => this.onMessageListener(event);
+      // this.ws.onclose = (event: any) => this.onCloseListener(event);
+      this.ws.onerror = (event: any) => this.onErrorListener(event);
+    }catch(ex){}
+  }
 
-    let wsConn:any = new WebSocket(ws);
-    const opened = await this.connection(wsConn);
-    
-    if (opened) {
-      setTimeout(()=>{
-        wsConn.send('hello');
-      },4000)
+  onOpenListener(event: any) {
+    if (event.type == 'open') {
+      console.log(`√ Conectado ${this.server_selected.idservidor}`);
       this.agente_test = "1";
       this.putResults(this.server_selected.idservidor, [1, ""], "agente")
-      wsConn.close(1000);
-      // wsConn = null;
     } else {
       this.agente_test = "2";
       this.putResults(this.server_selected.idservidor, [0, ""], "agente")
-      // console.log("the socket is closed OR couldn't have the socket in time, program crashed");
+      console.log(`X Desconectado ${this.server_selected.idservidor}`);
     }
+    this.ws.close(1000);
   }
 
-  async connection(socket: any, timeout = 3000) {
-    const isOpened = () => socket.readyState === WebSocket.OPEN;
-
-    if (socket.readyState !== WebSocket.CONNECTING) {
-      return isOpened();
-    } else {
-      const intrasleep = 100;
-      const ttl = timeout / intrasleep; 
-      // console.log(ttl)
-      let loop = 0;
-      while (socket.readyState === WebSocket.CONNECTING && loop < ttl) {
-        await new Promise((resolve) => setTimeout(resolve, intrasleep));
-        loop++;
-        // console.log(loop)
-      }
-      return isOpened();
-    }
+  onErrorListener(event: any) {
+    this.agente_test = "2";
+    this.putResults(this.server_selected.idservidor, [0, ""], "agente")
+    console.log(`X No responde Servidor ${this.server_selected.idservidor}`);
   }
 
 

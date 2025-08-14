@@ -19,6 +19,16 @@ export default  {
       resultado: '',
     },
   },
+  idservidores_familia: {
+    requerido: false,
+    etiqueta: "Selección",
+    descripcion: 'El tipo de familia de la distribución de linux que pertence el servidor',
+    validacion: {
+      pattern: /^[0-9]+$/,
+      patron_descripcion: 'Debe seleccionar un numero válido.',
+      resultado: '',
+    },
+  },
   host: {
     requerido: true,
     etiqueta: "Alfanumérico",

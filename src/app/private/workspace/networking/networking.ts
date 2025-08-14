@@ -86,7 +86,7 @@ private readonly route = inject(ActivatedRoute);
       },
       title:{
         display: true,
-        text: `Paquetes recibidos exitosamente`
+        text: `Paquetes Recibidos`
       }
     },
     indexAxis: 'x',
@@ -109,7 +109,7 @@ private readonly route = inject(ActivatedRoute);
       },
       title:{
         display: true,
-        text: `Paquetes enviados exitosamente`
+        text: `Paquetes Enviados`
       }
     },
     indexAxis: 'x',
@@ -263,7 +263,7 @@ private readonly route = inject(ActivatedRoute);
   onErrorListener(event: any) {}
 
   onMessageListener(e:any){
-    console.log(`↓ LlegoMensaje ${this.work.idservidor}`);
+    console.log(`↓ Llego Mensaje`);
     let data = JSON.parse(e.data);
     // console.log(data)
     this.func.closeSwal()
@@ -275,10 +275,10 @@ private readonly route = inject(ActivatedRoute);
       switch(d.id){
         case `${this.area}|listar`:
           //let rd:any = (d.respuesta.split("\n"));
-          console.log("→", d.respuesta)
-
+          // console.log("→", d.respuesta)
           if (d.respuesta.indexOf("firewall-cmd: command not found")>-1){
-            this.lstNotificaciones.push({tipo: "FATAL", descripcion: "El servicio de FirewallD no se encuentra instalado"});
+            this.addNotificaciones({tipo: "FATAL", descripcion: "El servicio de FirewallD no se encuentra instalado"});
+            // this.lstNotificaciones.push({tipo: "FATAL", descripcion: "El servicio de FirewallD no se encuentra instalado"});
             // console.log(this.lstNotificaciones)
           } else if (d.respuesta.indefOf("FirewallD is not running")>-1){
 
@@ -339,14 +339,14 @@ private readonly route = inject(ActivatedRoute);
         });
       }
     })
-    console.log(arr)
+    // console.log(arr)
     return arr;
   }
 
   ejecutaOperaciones(acciones:any=[]){
     let cmds:any = [];
     acciones.forEach((accion:any)=>{
-      console.log(`→ ${accion} ←`)
+      // console.log(`→ ${accion} ←`)
       switch(accion){
         default:
           let cmd:any = this.buscarComando(this.area, accion);
@@ -379,7 +379,7 @@ private readonly route = inject(ActivatedRoute);
   onSendCommands(params:any=null){
     // this.func.showLoading("Cargando");
     if (this.connState()){
-      console.log("↑ Enviando")
+      console.log("↑ Enviando Mensaje")
       this.ws.send(JSON.stringify(params));
     }else{
       this.openWS();
@@ -437,7 +437,7 @@ private readonly route = inject(ActivatedRoute);
         if (e[2] == i[0]){
           count ++; 
           rx += parseFloat(i[2]);
-          rxerr += parseFloat(i[2]);
+          rxerr += parseFloat(i[3]);
           tx += parseFloat(i[6]);
           txerr += parseFloat(i[7]);
         }
@@ -445,18 +445,19 @@ private readonly route = inject(ActivatedRoute);
     });
 
     rx = rx / count;
+    rxerr = rxerr / count;
     tx = tx / count;
+    txerr = txerr / count;
 
     this.lstRxData.splice(0,1);
     this.lstRxData.push(rx);
-
     this.lstRxData_err.splice(0,1);
-    this.lstRxData_err.push(rx);
+    this.lstRxData_err.push(rxerr);
 
     this.lstTxData.splice(0,1);
     this.lstTxData.push(tx);
     this.lstTxData_err.splice(0,1);
-    this.lstTxData_err.push(tx);
+    this.lstTxData_err.push(txerr);
 
     this.dataSetRx[0].data =  this.lstRxData;
     this.dataSetRx[1].data =  this.lstRxData_err;
@@ -471,6 +472,20 @@ private readonly route = inject(ActivatedRoute);
     this.txChartData  = {
       labels: labels,
       datasets: this.dataSetTx
+    }
+  }
+
+  addNotificaciones(data:any){
+    //{tipo: "FATAL", descripcion: "El servicio de FirewallD no se encuentra instalado"}
+    let found = false;
+    this.lstNotificaciones.forEach((e:any) => {
+      found = false;
+      if (e.descripcion == data.descripcion){
+        found = true;
+      }
+    });
+    if (!found){
+      this.lstNotificaciones.push(data);
     }
   }
 

@@ -51,6 +51,28 @@
             </sup>
           </div>
 
+          <div class="col-4 col-md-2 td2 text-end">
+            Familia de Servidores <small *ngIf="validador.idservidores_familia.requerido"><i role="img" class="text-danger">*</i></small>
+            <br />
+            <small><i role="img" class="text-secondary">{{validador.idservidores_familia.etiqueta}}</i></small>
+          </div>
+          <div class="col-8 col-md-4 td2">
+            <select [(ngModel)]="idservidores_familia" name="idservidores_familia" id="idservidores_familia" 
+              class="form-control {{validador.idservidores_familia.validacion.resultado == '' ? '' : 'input-danger'}}">
+              @if(lstScripts.length>0){
+                @for (item of lstFamilia; track $index) {
+                  <option value="{{item.idservidores_familia}}">{{item.familia}} ({{item.distro}})</option>
+                }
+              }@else {
+                <option value=""> -- No hay scripts asignados --</option>
+              }
+            </select>
+            <sup>
+              <i role="img" class=" {{validador.idservidores_familia.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
+                {{validador.idservidores_familia.validacion.resultado == '' ? validador.idservidores_familia.descripcion : validador.idservidores_familia.validacion.resultado}} </i>
+            </sup>
+          </div>
+
 
           <div class="col-4 col-md-2 td2 text-end">
             <label for="host">Host</label> <small *ngIf="validador.host.requerido"><i role="img" class="text-danger">*</i></small>

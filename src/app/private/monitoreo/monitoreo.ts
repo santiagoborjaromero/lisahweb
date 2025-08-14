@@ -52,14 +52,15 @@ export class Monitoreo {
   playMonitor: boolean = false;
   funcionaAgente: boolean = false;
   tiempo_refresco: number = 0;
+  tiempo_restante: number = 0;
 
   tmrMonitor: any | undefined;
-
+  monitoreo_esta_activo:boolean = false;
   firstTime: boolean = true;
   loadMonitoreo: boolean = false;
 
   serverIndex:number = 0;
-  continuar: boolean = true;
+  continuar: boolean = false;
   revisando: string = "";
 
   /**
@@ -197,7 +198,7 @@ export class Monitoreo {
           filter: true,
         },
         {
-          headerName: 'Agente',
+          headerName: 'Sentinel',
           // headerStyle: { color: "black", backgroundColor: "Gainsboro" },
           headerClass: ['th-center', 'th-normal4'],
           field: 'healthy_agente',
@@ -694,53 +695,54 @@ export class Monitoreo {
     return button;
   }
 
+  timerGeneral(){
+    let time = 0
+    this.tmrMonitor = setInterval(()=>{
+      this.monitoreo_esta_activo = true;
+      if(this.continuar){
+        time ++;
+        if (time == this.tiempo_refresco){
+          this.sendMonitor();
+          time = 0;
+        }else{
+          this.tiempo_restante = this.tiempo_refresco - time;
+        }
+      }
+    },1000);
+  }
+
   startMonitor() {
-    this.playMonitor = true;
-    this.continuar = true;
     this.serverIndex = 0;
     this.sendMonitor();
+    this.timerGeneral();
   }
 
   stopMonitor() {
-    this.playMonitor = false;
-    this.continuar = false;
+    this.monitoreo_esta_activo = false;
     this.revisando = "";
+    this.serverIndex = 0;
+    this.continuar = false;
+    clearInterval(this.tmrMonitor);
   }
 
   unaSolaVez(){
-    this.continuar = true;
-    this.sendMonitor();
     this.serverIndex = 0;
+    this.sendMonitor();
   }
 
   sendMonitor() {
-    if (!this.continuar) return;
     if (this.serverIndex == this.lstServidores.length ){
-      this.continuar = false;
+      this.serverIndex = 0;
       this.revisando = "";
-      if (this.playMonitor){
-        if (this.lstServidores.length<5){
-          setTimeout(()=>{
-            this.startMonitor();
-          },this.tiempo_refresco * 1000)
-        }else{
-          this.startMonitor();
-        }
-      }
+      this.continuar = true;
+    }else{
+      this.continuar = false;
+      this.openWS(this.lstServidores[this.serverIndex]);
     }
-    // this.lstServidores[this.serverIndex].healthy_agente = '1';
-    // this.lstServidores[this.serverIndex].uptime = '';
-    // this.lstServidores[this.serverIndex].cpu = '';
-    // this.lstServidores[this.serverIndex].memoria = '';
-    // this.lstServidores[this.serverIndex].disco = '';
-    // this.lstServidores[this.serverIndex].servicio_httpd = '';
-    // this.lstServidores[this.serverIndex].servicio_ssh = '';
-    this.refreshAll()
-    this.openWS(this.lstServidores[this.serverIndex]);
   }
 
   verificaServer(server: any) {
-    // console.log(server);
+    console.log("Verificar Server", server.idservidor);
     if (server.healthy_agente.split('|')[0] == 'OK') {
       this.lstServidores.forEach((s) => {
         if (s.idservidor == server.idservidor) {
@@ -774,13 +776,11 @@ export class Monitoreo {
         idcliente: this.user.idcliente,
         idusuario: this.user.idusuario,
         idservidor: server.idservidor,
-        id:
-          Math.floor(
-            Math.random() * (9999999999999999 - 1000000000000000 + 1)
-          ) + 1000000000000000,
+        id: Math.floor( Math.random() * (9999999999999999 - 1000000000000000 + 1) ) + 1000000000000000, 
       },
       data: [],
     };
+    console.log("↑ Enviando")
     this.ws.send(JSON.stringify(param));
   }
 
@@ -815,18 +815,21 @@ export class Monitoreo {
     this.loadMonitoreo = true;
     console.log(`√ LlegoMensaje ${server.idservidor}`);
     let data = JSON.parse(e.data);
+    console.log(data)
     switch(data.action){
       case "stats":
         let msg = '';
         this.lstServidores.forEach((s: any) => {
           if (s.idservidor == server.idservidor){
             data.data.forEach((r: any) => {
+              let respuesta:any = atob(r.respuesta);
+              console.log(respuesta)
               try {
-                if (r.respuesta.returncode == 0) {
-                  msg = `OK|${r.respuesta.stdout}`;
-                } else {
-                  msg = `FAIL|${r.respuesta.stderr}`;
-                }
+                // if (respuesta.returncode == 0) {
+                  msg = `OK|${respuesta}`;
+                // } else {
+                //   msg = `FAIL|${respuesta.stderr}`;
+                // }
                 s[r.id] = msg;
               } catch (ex) {}
             });
@@ -836,8 +839,10 @@ export class Monitoreo {
         setTimeout(() => {
           this.loadMonitoreo = false;
         }, 500);
+
         this.ws.close(1000);
         this.ws = null;
+
         this.serverIndex ++;
         this.sendMonitor();
         break;
