@@ -42,11 +42,14 @@ export const routes: Routes = [
             {path:"procesos", loadComponent: () => import('./private/procesos/procesos').then((c)=> c.Procesos)},
             {path:"logs", loadComponent: () => import('./private/logs/logs').then((c)=> c.Logs)},
             {path:"audits", loadComponent: () => import('./private/audit/audit').then((c)=> c.Audit)},
-            {path:"hardening", loadComponent: () => import('./private/hardening/hardening').then((c)=> c.Hardening)},
             {path:"monitoreo", loadComponent: () => import('./private/monitoreo/monitoreo').then((c)=> c.Monitoreo)},
+            {path:"hardening", loadComponent: () => import('./private/hardening/hardening').then((c)=> c.Hardening)},
+            {path:"terminal", loadComponent: () => import('./private/terminal/terminal').then((c)=> c.Terminal)},
+            
+            {path:"administracion", loadComponent: () => import('./private/administracion/administracion').then((c)=> c.Administracion)},
             // {path:"hardening/workspace/:id", loadComponent: () => import('./private/workspace/workspace').then((c)=> c.Workspace)},
             {
-                path: 'hardening/workspace',
+                path: 'administracion/workspace',
                 loadComponent: () => import('./private/workspace/workspace').then( (c)=> c.Workspace),
                 canActivate: [authGuard],
                 children:[

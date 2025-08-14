@@ -2,27 +2,27 @@ import { Component, ElementRef, inject, Input, OnInit, ViewChild } from '@angula
 import { CommonModule, ViewportScroller } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Sessions } from '../../../core/helpers/session.helper';
-import { Functions } from '../../../core/helpers/functions.helper';
-import { ServidorService } from '../../../core/services/servidor.service';
-import iconsData from '../../../core/data/icons.data';
-import { Workspace } from '../workspace';
-import { Global } from '../../../core/config/global.config';
-import { GeneralService } from '../../../core/services/general.service';
+import { Sessions } from '../../core/helpers/session.helper';
+import { Functions } from '../../core/helpers/functions.helper';
+import { ServidorService } from '../../core/services/servidor.service';
+import iconsData from '../../core/data/icons.data';
+import { Global } from '../../core/config/global.config';
+import { GeneralService } from '../../core/services/general.service';
 import moment from 'moment';
-// import { Terminal } from 'xterm';
-// import { FitAddon } from 'xterm-addon-fit';
+import { Titulo } from '../shared/titulo/titulo';
+import { Path } from '../shared/path/path';
+import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 @Component({
   selector: 'app-terminal',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports:  [Titulo, Path, CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './terminal.html',
   styleUrl: './terminal.scss',
-  standalone: true
+  standalone: true,
 })
-export class Terminals implements OnInit{
-  // @ViewChild("terminal") terminal!: ElementRef<any> ;
+export class Terminal {
   @ViewChild('terminal', { static: false }) public terminal!: ElementRef;
   @ViewChild('divterminal', { static: false }) public divterminal!: ElementRef;
 
@@ -30,19 +30,35 @@ export class Terminals implements OnInit{
   private readonly sessions = inject(Sessions);
   private readonly func = inject(Functions);
   private readonly serverSvc = inject(ServidorService);
-  private readonly parent = inject(Workspace);
   private readonly generalSvc = inject(GeneralService);
   private readonly viewportScroller = inject(ViewportScroller);
-  
-  Title = "Terminal";
-  TAB = "terminal"
+
+  aqui: any | undefined;
+
+  // private webSockets = new Map<number, WebSocket>();
+  private server = new Map<number, any>();
 
   user:any | undefined;
   work:any | undefined;
   icono = iconsData;
-
   global = Global;
-  
+  path:any = [];
+  titulo:any = {icono: "",nombre:""}
+  canR: boolean = true;
+  canW: boolean = true;
+  canD: boolean = true;
+
+  tab: number = 0;
+
+  lstServidores: Array<any> = [];
+  lstServidores_Original: Array<any> = [];
+  idservidor:string = "";
+  idscript:string = "";
+
+  oBuscarHistorico:string = "";
+  oBuscarComandos:string = "";
+  oBuscarScripts:string = "";
+
   /**
    * Sentinel
   */
@@ -58,15 +74,19 @@ export class Terminals implements OnInit{
   ws_error_limit:number = 3;
 
   /**
-   * SSH
-   */
-  
-  /**
    * Terminal
    */
   lstHistory:Array<any> = [];
   lstHistory_Complete:Array<any> = [];
+  
   lstHistoryCmds:Array<any> = [];
+  lstComandos: Array<any> = [];
+  lstScripts: Array<any> = [];
+
+  lstHistoryCmds_O:Array<any> = [];
+  lstComandos_O: Array<any> = [];
+  lstScripts_O: Array<any> = [];
+
   texto:string = "";
   prompt: string = "";
   firstTime: boolean = true; 
@@ -75,84 +95,165 @@ export class Terminals implements OnInit{
   whoami: string = "";
   pwd: string = "";
 
-  constructor(){
-    this.parent.findTab(this.TAB);
+  constructor() {
   }
+
 
   ngOnInit(): void {
-    this.user = JSON.parse(this.sessions.get("user"));
+    this.user = JSON.parse(this.sessions.get('user'));
     this.work = JSON.parse(this.sessions.get("work"));
-    setTimeout(()=>{
-      this.initial();
-    },800)
-    this.lstHistoryCmds = [];
-  }
+    this.path = [
+      {nombre: "Admin & Hardening", ruta: ""}, 
+      {nombre: "Hardening Servidores", ruta: "admin/hardening"}, 
+      {nombre: "Terminal", ruta: ""}, 
+    ];
   
-  initial(){
-    this.lstHistory.push(
-      {texto: "Bienvenido! a LiSAH Terminal", clase:"text-green"},
-      {texto: moment().format("YYYY-MM-DD HH:mm:ss"), clase:"text-green"},
-      {texto: "Seleccione medio de comunicacion", clase:"text-white"},
-      {texto: `1) Conexión vía LiSAH - Sentinel, ${this.work.host}:${this.work.agente_puerto}`, clase:"text-white"},
-      {texto: `2) Conexión vía SSH, ${this.work.host}:${this.work.ssh_puerto}`, clase:"text-white"},
-    )
-    this.prompt = this.user.usuario + ">";
-    setTimeout(()=>{
-      this.terminal.nativeElement.focus();
-    },500)
-    this.firstTime = true;
-    this.ir();
-    
+    this.titulo = {icono: "fas fa-terminal",nombre: `Terminal ${this.work.nombre}`}
+
+    if (this.user.idrol > 1) {
+      let scope = this.user.roles.permisos_crud.split('');
+      this.canR = scope[0] == 'R' ? true : false;
+      this.canW = scope[1] == 'W' ? true : false;
+      this.canD = scope[2] == 'D' ? true : false;
+
+      if (!this.canR) {
+        this.func.showMessage(
+          'info',
+          'Usuarios',
+          'No tiene permisos para leer'
+        );
+      }
+    }
+    this.getUsuario();
+    // this.getScripts();
+    this.getComandos();
+    this.initial();
   }
 
+  cambiarTab(tab=0){
+    this.tab = tab;
+  }
+
+  getUsuario() {
+    this.lstServidores = [];
+    this.generalSvc.apiRest("GET", `usuarios/${this.user.idusuario}`).subscribe({
+      next: (resp: any) => {
+        this.func.closeSwal();
+        if (resp.status) {
+          if (resp.data[0].servidores && resp.data[0].servidores.length > 0) {
+            resp.data[0].servidores.forEach((s:any)=>{
+              this.lstServidores.push(s)
+              this.server.set(s.idservidor, s);
+            })
+          }
+
+          this.lstServidores_Original = Array.from(this.lstServidores);
+        } else {
+          this.func.showMessage("error", "Usuario", resp.message);
+        }
+      },
+      error: (err: any) => {
+        this.func.closeSwal();
+        this.func.handleErrors("Hardening", err);
+      },
+    });
+  }
+
+  // getScripts(){
+  //   this.generalSvc.apiRest("GET", "scripts").subscribe({
+  //     next: (resp: any) => {
+  //       if (resp.status) {
+  //         this.lstScripts_O = resp.data;
+  //         this.lstScripts = resp.data;
+  //       } else {
+  //         this.func.showMessage("error", "Scripts", resp.message);
+  //       }
+  //     },
+  //     error: (err: any) => {
+  //       this.func.handleErrors("Scripts", err);
+  //     },
+  //   });
+  // }
+
+  getComandos(){
+    this.generalSvc.apiRest("GET", "templates").subscribe({
+      next: (resp: any) => {
+        if (resp.status) {
+          this.lstComandos = resp.data;
+          this.lstComandos_O = resp.data;
+        } else {
+          this.func.showMessage("error", "Comandos", resp.message);
+        }
+      },
+      error: (err: any) => {
+        this.func.handleErrors("Comandos", err);
+      },
+    });
+  }
+
+  initial(){
+    this.lstHistory.push(
+      {texto: `Bienvenido! a LiSAH Terminal de ${this.work.nombre}`, clase:"text-green"},
+      {texto: moment().format("YYYY-MM-DD HH:mm:ss"), clase:"text-green"},
+      // {texto: "Seleccione medio de comunicacion", clase:"text-white"},
+      // {texto: `1) Conexión vía LiSAH - Sentinel, ${this.work.host}:${this.work.agente_puerto}`, clase:"text-white"},
+      // {texto: `2) Conexión vía SSH, ${this.work.host}:${this.work.ssh_puerto}`, clase:"text-white"},
+    )
+    this.prompt = "$";
+    
+    this.ir();
+
+    this.metodo_seleccionado = 2;
+    this.modoConexion()
+
+    // setTimeout(()=>{
+    //   this.terminal.nativeElement.focus();
+    // },500)
+  }
+
+  modoConexion(){
+    if (this.metodo_seleccionado==1){
+      this.historico(`Conectando a LiSAH - Sentinel del servidor ${this.work.nombre}, ${this.work.host}:${this.work.agente_puerto} ...`);
+      this.openWS();
+    } else if (this.metodo_seleccionado==2){
+      // console.log("SSH")
+      this.metodo_seleccionado == 2;
+      this.historico(`Conectando por SSH a servidor ${this.work.nombre}, ${this.work.host}:${this.work.ssh_puerto} ...`);
+      this.onSendCommands(["pwd","whoami"]);
+      return;
+    }
+    // this.terminal.nativeElement.focus();
+  }
 
   historicoCmds(cmd:string = ""){
     let found = false;
-    this.lstHistoryCmds.forEach((e:any)=>{
+    this.lstHistoryCmds_O.forEach((e:any)=>{
         if (e == cmd){
           found = true
         }
     });
     if (!found){
-      this.lstHistoryCmds.push(cmd);
+      this.lstHistoryCmds_O.push(cmd);
     }
-
+    this.lstHistoryCmds = Array.from(this.lstHistoryCmds_O);
   }
 
   terminalTecla(event:any){
     if (event.keyCode == 13){
       //enviar
       this.historico(this.prompt + " " + this.texto);
-      
-
-      if (this.firstTime){
-        if (parseInt(this.texto)==1){
-          // console.log("Sentinel")
-          this.metodo_seleccionado = 1;
-          this.texto = "";
-          this.firstTime = false;
-          this.historico(`Conectando a LiSAH - Sentinel del servidor ${this.work.nombre}, ${this.work.host}:${this.work.agente_puerto} ...`);
-          this.openWS();
-          return; 
-        } else if (parseInt(this.texto)==2){
-          // console.log("SSH")
-          this.metodo_seleccionado = 2;
-          this.texto = "";
-          this.historico(`Conectando por SSH a servidor ${this.work.nombre}, ${this.work.host}:${this.work.agente_puerto} ...`);
-          this.firstTime = false;
-          this.onSendCommands(["pwd","whoami"]);
-          return;
-        } else {
-          this.initial();
-          return;
-        }
-      }
-
       this.historicoCmds(this.texto);
 
       if (this.texto.toLowerCase() == "clear"){
         this.clear();
         this.texto = "";
+        return
+      }
+
+      if (this.texto.toLowerCase() == "start"){
+        this.clear();
+        this.texto = "";
+        this.initial();
         return
       }
 
@@ -167,7 +268,8 @@ export class Terminals implements OnInit{
         this.metodo_seleccionado == 0;
         this.clear();
         this.texto = "";
-        this.initial();
+        // this.initial();
+        this.funcBack()
         return
       }
 
@@ -343,11 +445,15 @@ export class Terminals implements OnInit{
       switch(command){
         case "pwd":
           this.pwd = resp.replace(/\n/g, '');
+          
           this.actualizaPrompt();
           // this.prompt = `[${this.work.nombre}@${resp.replace(/\n/g, '')}]$ `;
           break;
         case "whoami":
           this.whoami = resp.replace(/\n/g, '');
+          if (this.whoami == ""){
+            this.historico(`Es posible que el usuario ${this.user.usuario} no exista en el servidor. No puede establecer conexión estable.`);
+          }
           this.actualizaPrompt();
           // this.prompt = `[${this.work.nombre}@${resp.replace(/\n/g, '')}]$ `;
           break;
@@ -412,6 +518,71 @@ export class Terminals implements OnInit{
     this.texto = item;
     this.terminal.nativeElement.focus();
   }
+
+  funcBack(){
+    this.func.irRuta(`admin/hardening`);
+  }
+
+  buscarComandos(event:any) {
+    this.lstComandos = [];
+    if (this.oBuscarComandos == '') {
+      this.lstComandos = Array.from(this.lstComandos_O);
+    } else {
+      this.lstComandos_O.forEach((e) => {
+        if (e.linea_comando.toLowerCase().indexOf(this.oBuscarComandos.toLowerCase()) > -1 ) {
+          this.lstComandos.push(e);
+        }
+      });
+    }
+  }
+
+  buscarScripts(event:any) {
+    this.lstScripts = [];
+    if (this.oBuscarScripts == '') {
+      this.lstScripts = Array.from(this.lstScripts_O);
+    } else {
+      this.lstScripts_O.forEach((e) => {
+        if (e.nombre.toLowerCase().indexOf(this.oBuscarScripts.toLowerCase()) > -1 ) {
+          this.lstScripts.push(e);
+        }
+      });
+    }
+  }
+
+  buscarHistorico(event:any) {
+    this.lstHistoryCmds = [];
+    if (this.oBuscarHistorico == '') {
+      this.lstHistoryCmds = Array.from(this.lstHistoryCmds_O);
+    } else {
+      this.lstHistoryCmds_O.forEach((e) => {
+        if (e.toLowerCase().indexOf(this.oBuscarHistorico.toLowerCase()) > -1 ) {
+          this.lstHistoryCmds.push(e);
+        }
+      });
+    }
+  }
+
+
+  insertar(cmd:any = ""){
+    this.texto = cmd;
+    this.terminal.nativeElement.focus();
+  }
+
+  // insertarScript(idscript:any){
+  //   let cmds:any = [];
+  //   this.lstScripts_O.forEach((e) => {
+  //     if (e.idscript == idscript) {
+  //       cmds = e.cmds
+  //     }
+  //   });
+
+  //   if (cmds.length>0){
+  //     cmds.forEach((c:any)=>{
+
+  //       this.historico(c.linea_comando);
+  //     })
+  //   }
+  // }
 
 
 }

@@ -1,25 +1,28 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AllCommunityModule, ModuleRegistry} from 'ag-grid-community';
+import { AllCommunityModule, ColumnAutosizeService, createGrid, GridApi, GridOptions, ICellRendererParams, ModuleRegistry} from 'ag-grid-community';
 import { ServidorService } from '../../core/services/servidor.service';
 import { Functions } from '../../core/helpers/functions.helper';
 import { Sessions } from '../../core/helpers/session.helper';
 import { UsuarioService } from '../../core/services/usuarios.service';
+import moment from 'moment';
+
 import { WSService } from '../../core/services/ws.service';
 import { Titulo } from '../shared/titulo/titulo';
 import { Path } from '../shared/path/path';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
+
 @Component({
-  selector: 'app-hardening',
-  imports:  [Titulo, Path, CommonModule, FormsModule, ReactiveFormsModule],
-  templateUrl: './hardening.html',
-  styleUrl: './hardening.scss',
+  selector: 'app-administracion',
+  imports: [Titulo, Path, CommonModule, FormsModule, ReactiveFormsModule],
+  templateUrl: './administracion.html',
+  styleUrl: './administracion.scss',
   standalone: true,
 })
-export class Hardening {
+export class Administracion {
   private readonly userSvc = inject(UsuarioService);
   private readonly serverSvc = inject(ServidorService);
   private readonly func = inject(Functions);
@@ -28,6 +31,7 @@ export class Hardening {
 
   aqui: any | undefined;
 
+  // private webSockets = new Map<number, WebSocket>();
   private server = new Map<number, any>();
 
   user: any = null;
@@ -50,10 +54,10 @@ export class Hardening {
     this.user = JSON.parse(this.sessions.get('user'));
     this.path = [
       {nombre: "Admin & Hardening", ruta: ""}, 
-      {nombre: "Hardening de Servidores", ruta: "admin/hardening"}, 
+      {nombre: "Administración de Servidores", ruta: "admin/administracion"}, 
     ];
   
-    this.titulo = {icono: "fas fa-terminal",nombre: "Hardening de Servidores"}
+    this.titulo = {icono: "fab fa-buffer",nombre: "Administración de Servidores"}
 
     if (this.user.idrol > 1) {
       let scope = this.user.roles.permisos_crud.split('');
@@ -117,7 +121,7 @@ export class Hardening {
         this.sessions.set("work", JSON.stringify(s));
       }
     });
-    this.func.irRuta(`admin/terminal`);
+    this.func.irRuta(`admin/administracion/workspace`);
   }
 
   buscarServidores($event:any){

@@ -297,6 +297,7 @@ ul.menu{
 .scrollx{ overflow-x: scroll !important; overflow-y: hidden; }
 
 .h100 {height: 100px !important; overflow-y: visible !important; overflow-x: hidden;}
+.h150 {height: 150px !important; overflow-y: visible !important; overflow-x: hidden;}
 .h200 {height: 200px !important; overflow-y: visible !important; overflow-x: hidden;}
 .h300 {height: 300px !important; overflow-y: visible !important; overflow-x: hidden;}
 .h400 {height: 400px !important; overflow-y: visible !important; overflow-x: hidden;}
@@ -469,6 +470,9 @@ ul.menu{
 }
 
 
+.linea-arriba{
+    border-top: 1px solid #00000033;
+}
 .linea-abajo{
     border-bottom: 1px solid #00000033;
 }

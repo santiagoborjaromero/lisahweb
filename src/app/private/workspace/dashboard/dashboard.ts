@@ -166,7 +166,7 @@ export class Dashboard {
 
   go(ruta=""){
     this.parent.tabactive = ruta;
-    this.func.irRuta(`admin/hardening/workspace/${ruta}`);
+    this.func.irRuta(`admin/administracion/workspace/${ruta}`);
   }
 
   

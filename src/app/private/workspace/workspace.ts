@@ -28,7 +28,7 @@ export class Workspace implements OnInit  {
   private readonly route = inject(ActivatedRoute);
 
   path:any = [];
-  titulo:any = {icono: "fas fa-server",nombre:""}
+  titulo:any = {};
 
   tabactive:string = "general";
   cansee: boolean = false;
@@ -59,11 +59,11 @@ export class Workspace implements OnInit  {
 
     this.path = [
       {nombre: "Admin & Hardening", ruta: ""}, 
-      {nombre: "Hardening", ruta: "admin/hardening"}, 
+      {nombre: "Administración", ruta: "admin/administracion"}, 
       {nombre: this.work.nombre, ruta: ""}
     ];
 
-    this.titulo = {icono: "fas fa-server",nombre: this.work.nombre}
+    this.titulo = {icono: "fab fa-buffer",nombre: this.work.nombre}
 
     if (this.user.idrol > 1) {
       let scope = this.user.roles.permisos_crud.split('');
@@ -88,7 +88,7 @@ export class Workspace implements OnInit  {
       // { id:"store",             active: false, icon:"fa fa-sd-card",        title: "Almacenamiento"},
       { id:"grupousuarios",     active: false, icon:"fa fa-users",          title: "Grupo de Usuarios"},
       { id:"usuarios",          active: false, icon:"fa fa-user",           title: "Usuarios"},
-      { id:"terminal",          active: false, icon:"fas fa-terminal",      title: "Terminal"},
+      // { id:"terminal",          active: false, icon:"fas fa-terminal",      title: "Terminal"},
     ]
 
     this.tabactive = this.links[0].id;
@@ -96,7 +96,7 @@ export class Workspace implements OnInit  {
   }
 
   go(ruta=""){
-    this.func.irRuta(`admin/hardening/workspace/${ruta}`);
+    this.func.irRuta(`admin/administracion/workspace/${ruta}`);
   }
 
   findTab(tab=""){
@@ -110,7 +110,7 @@ export class Workspace implements OnInit  {
   }
   
   funcBack(){
-    this.func.irRuta(`admin/hardening`);
+    this.func.irRuta(`admin/administracion`);
   }
 
 
