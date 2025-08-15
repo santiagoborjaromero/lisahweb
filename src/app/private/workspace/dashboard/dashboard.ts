@@ -382,6 +382,7 @@ export class Dashboard {
       this.startMonitor();
     } else {
       this.agente_status = "No se estableció conexion con Sentinel";
+      this.func.closeSwal()
       console.log(`X Desconectado ${this.work.idservidor}`);
       this.work.agente_status = 'FAIL|Desconectado';
     }
@@ -390,6 +391,7 @@ export class Dashboard {
   onCloseListener(event: any) {
     // console.log('onCloseListener', event);
     // console.log("█ Desconectado")
+    this.func.closeSwal()
     console.log(`X Desconectado ${this.work.idservidor}`);
     if (event.code == 1000){
       this.agente_status = "Desconectado manualmente";

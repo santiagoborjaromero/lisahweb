@@ -270,7 +270,7 @@ export class Grupousuarios implements OnInit{
       button.className = 'btn btn-white';
       button.innerHTML = `<i role="img" class="fas fa-plus text-primary" title='Crear Grupo'></i>`;
       button.addEventListener('click', () => {
-        this.crearGrupo(params.data.nombre);
+        this.crearGrupo(params.data.idgrupo_usuario);
       });
     }
     return button;
@@ -292,23 +292,25 @@ export class Grupousuarios implements OnInit{
       text: `Seleccione la acción para crear el grupo de usuarios`,
       icon: 'question',
       showCancelButton: true,
-      showDenyButton: true,
+      // showDenyButton: true,
       confirmButtonColor: '#33a0d6',
       confirmButtonText: 'Crear ahora',
-      denyButtonColor: '#2fb990ff',
-      denyButtonText: 'Crear después',
+      // denyButtonColor: '#2fb990ff',
+      // denyButtonText: 'Crear después',
       cancelButtonColor: '#f63c3a',
       cancelButtonText: 'Cancelar',
       showClass: { backdrop: 'swal2-noanimation', popup: '' },
       hideClass: { popup: '' },
     }).then((res) => {
       if (res.isConfirmed) {
-        
+        this.crearAhora();
       }else if(res.isDenied){
 
       }
     });
   }
+
+
   crearAhora(){
     let nombre = "";
     let lstCmd:any = [];
@@ -414,6 +416,9 @@ export class Grupousuarios implements OnInit{
             })
           });
           this.refreshAll();
+          break;
+        default:
+          this.startMonitor();
           break;
       }
     })
