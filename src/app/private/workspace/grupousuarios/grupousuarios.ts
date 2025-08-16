@@ -336,6 +336,7 @@ export class Grupousuarios implements OnInit{
           idcliente: this.user.idcliente,
           idusuario: this.user.idusuario,
           idservidor: this.work.idservidor,
+          usuario: this.user.usuario,
           id: Math.floor(Math.random() * (9999999999999999 - 1000000000000000 + 1)) + 1000000000000000
         },
         data: cmds
@@ -453,6 +454,7 @@ export class Grupousuarios implements OnInit{
         idcliente: this.user.idcliente,
         idusuario: this.user.idusuario,
         idservidor: this.work.idservidor,
+        usuario: this.user.usuario,
         id: Math.floor(Math.random() * (9999999999999999 - 1000000000000000 + 1)) + 1000000000000000
       },
       data: cmds

@@ -13,6 +13,7 @@ import Swal from 'sweetalert2';
 import { Chart, ChartConfiguration, ChartOptions, registerables } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { color } from 'chart.js/helpers';
+import { MongoService } from '../../../core/services/mongo.service';
 
 Chart.register(...registerables);
 
@@ -28,8 +29,8 @@ private readonly route = inject(ActivatedRoute);
   private readonly sessions = inject(Sessions);
   private readonly func = inject(Functions);
   private readonly serverSvc = inject(ServidorService);
-  private readonly agente = inject(WSService);
   private readonly parent = inject(Workspace);
+  
 
   Title = "Redes";
   TAB = "networking"
@@ -262,10 +263,10 @@ private readonly route = inject(ActivatedRoute);
 
   onErrorListener(event: any) {}
 
-  onMessageListener(e:any){
+  async onMessageListener(e:any){
     console.log(`↓ Llego Mensaje`);
     let data = JSON.parse(e.data);
-    // console.log(data)
+    
     this.func.closeSwal()
     let r = "";
     let acum:any = [];
@@ -280,7 +281,7 @@ private readonly route = inject(ActivatedRoute);
             this.addNotificaciones({tipo: "FATAL", descripcion: "El servicio de FirewallD no se encuentra instalado"});
             // this.lstNotificaciones.push({tipo: "FATAL", descripcion: "El servicio de FirewallD no se encuentra instalado"});
             // console.log(this.lstNotificaciones)
-          } else if (d.respuesta.indefOf("FirewallD is not running")>-1){
+          } else if (d.respuesta.indexOf("FirewallD is not running")>-1){
 
           }
           break;
@@ -368,6 +369,7 @@ private readonly route = inject(ActivatedRoute);
         idcliente: this.user.idcliente,
         idusuario: this.user.idusuario,
         idservidor: this.work.idservidor,
+        usuario: this.user.usuario,
         id: Math.floor(Math.random() * (9999999999999999 - 1000000000000000 + 1)) + 1000000000000000
       },
       data: cmds

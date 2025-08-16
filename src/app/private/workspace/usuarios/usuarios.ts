@@ -124,7 +124,13 @@ export class Usuarios implements OnInit {
       {
         accion: "eliminar", 
         titulo: "Eliminar Usuario", 
-        subtitulo: "Remueve el usuario pero no su carpeta",
+        subtitulo: "Remueve el usuario del sistema",
+        condicion: true
+      },
+      {
+        accion: "actualizar_grupo", 
+        titulo: "Actualizar grupo de usuario", 
+        subtitulo: "Actualiza el grupo al cual pertenece el usuario",
         condicion: true
       },
 
@@ -209,6 +215,7 @@ export class Usuarios implements OnInit {
       this.lstUsuarios.forEach((u:any)=>{
         found = false;
         this.lstDatos.usuarios.forEach((e:any)=>{
+          // console.log(e)
         if (e.user == u.usuario){
             u["servidor"] = e;
             found = true;
@@ -330,6 +337,32 @@ export class Usuarios implements OnInit {
                   if (params.value && params.value != "0"){
                     icono = "check";
                     texto = params.value;
+                    color = "text-success";
+                  }
+                  return `<i role="img" class="fas fa-${icono}-circle ${color} t16 mr-2"></i> ${texto}`;
+                },
+              },
+              {
+                headerName: 'GID',
+                headerClass: 'th-normal',
+                field: 'servidor.gid',
+                cellClass: 'text-start',
+                filter: true,
+                maxWidth: 100,
+              },
+              {
+                headerName: 'Grupo',
+                headerClass: ["th-center", "th-normal"],
+                field: 'servidor.group',
+                cellClass: 'text-start',
+                filter: true,
+                cellRenderer: (params: ICellRendererParams) => {
+                  let icono = "times";
+                  let grupo_sistema = params.data.grupo.nombre;
+                  let texto = params.value;
+                  let color = "text-danger";
+                  if (params.value == grupo_sistema){
+                    icono = "check";
                     color = "text-success";
                   }
                   return `<i role="img" class="fas fa-${icono}-circle ${color} t16 mr-2"></i> ${texto}`;
@@ -487,6 +520,7 @@ export class Usuarios implements OnInit {
         idcliente: this.user.idcliente,
         idusuario: this.user.idusuario,
         idservidor: this.work.idservidor,
+        usuario: this.user.usuario,
         id: Math.floor(Math.random() * (9999999999999999 - 1000000000000000 + 1)) + 1000000000000000
       },
       data: cmds
@@ -498,8 +532,6 @@ export class Usuarios implements OnInit {
 
   checkNovedades(){
     this.lstNotificaciones = [];
-
-    console.log(this.user_selected)
 
     if (this.user_selected.servidor !== null){
       this.lstAcciones[0].condicion = false;
@@ -513,6 +545,7 @@ export class Usuarios implements OnInit {
         this.lstAcciones[4].condicion = false;
       }
       this.lstAcciones[5].condicion = true;
+      this.lstAcciones[6].condicion = true;
     }else{
       this.lstNotificaciones.push({tipo: "FATAL", descripcion: "El usuario no se encuentra creado en el servidor"})
       this.lstAcciones[0].condicion = true;
@@ -521,6 +554,7 @@ export class Usuarios implements OnInit {
       this.lstAcciones[3].condicion = false;
       this.lstAcciones[4].condicion = false;
       this.lstAcciones[5].condicion = false;
+      this.lstAcciones[6].condicion = false;
     }
 
     if (!this.user_selected.clave){

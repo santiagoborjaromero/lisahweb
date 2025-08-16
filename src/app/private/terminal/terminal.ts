@@ -12,6 +12,7 @@ import moment from 'moment';
 import { Titulo } from '../shared/titulo/titulo';
 import { Path } from '../shared/path/path';
 import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
+import { MongoService } from '../../core/services/mongo.service';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -32,6 +33,7 @@ export class Terminal {
   private readonly serverSvc = inject(ServidorService);
   private readonly generalSvc = inject(GeneralService);
   private readonly viewportScroller = inject(ViewportScroller);
+  private readonly mongoSvc = inject(MongoService);
 
   aqui: any | undefined;
 
@@ -149,7 +151,7 @@ export class Terminal {
 
           this.lstServidores_Original = Array.from(this.lstServidores);
         } else {
-          this.func.showMessage("error", "Usuario", resp.message);
+          this.func.handleErrors("Hardening", resp.message);
         }
       },
       error: (err: any) => {
@@ -182,7 +184,7 @@ export class Terminal {
           this.lstComandos = resp.data;
           this.lstComandos_O = resp.data;
         } else {
-          this.func.showMessage("error", "Comandos", resp.message);
+          this.func.handleErrors("Comandos", resp.message);
         }
       },
       error: (err: any) => {
@@ -203,7 +205,7 @@ export class Terminal {
     
     this.ir();
 
-    this.metodo_seleccionado = 2;
+    this.metodo_seleccionado = 1;        //1 -WS 2-SSH
     this.modoConexion()
 
     // setTimeout(()=>{
@@ -314,7 +316,7 @@ export class Terminal {
     this.lstHistory = [];
   } 
 
-  onSendCommands(cmd_array:any=[]){
+  onSendCommands(cmd_array:any=[], usr = ""){
     this.procesando = true;
     let cmds:Array<any> = [];
     cmd_array.forEach((c:any) => {
@@ -327,6 +329,7 @@ export class Terminal {
         idcliente: this.user.idcliente,
         idusuario: this.user.idusuario,
         idservidor: this.work.idservidor,
+        usuario: usr == "" ? this.user.usuario : usr,
         id: Math.floor(Math.random() * (9999999999999999 - 1000000000000000 + 1)) + 1000000000000000
       },
       data: cmds
@@ -404,7 +407,7 @@ export class Terminal {
       this.agente_status = "Conectado";
       this.work.healthy_agente = 'OK|Conectado';
       this.historico("Conexión establecida")
-      this.onSendCommands(["pwd", "whoami"]);
+      this.onSendCommands(["pwd", "whoami"], "");
     } else {
       this.agente_status = "No se estableció conexion con Sentinel";
       console.log(`X No se pudo conectar con servidor ${this.work.nombre}`);
@@ -428,7 +431,7 @@ export class Terminal {
 
   onErrorListener(event: any) {}
 
-  onMessageListener(e:any){
+  async onMessageListener(e:any){
     console.log(`↓ LlegoMensaje ${this.work.idservidor}`);
     let data = e.data;
     try{
@@ -438,16 +441,24 @@ export class Terminal {
     }
 
     console.log("↓→", data)
+
+    if (this.metodo_seleccionado == 2){ //Cuando es SSH debe enviarse lo generado a base transaccional
+      await this.mongoSvc.apiMongo("POST", "savecmd", data).subscribe({
+        next: resp => {
+          console.log("Mongo", resp)
+        },
+      });
+    }
+
     this.procesando = false;
     data.data.forEach((cmd:any) => {
       let resp = atob(cmd.respuesta);
       let command = atob(cmd.cmd);
+      console.log("▬", command, resp)
       switch(command){
         case "pwd":
           this.pwd = resp.replace(/\n/g, '');
-          
           this.actualizaPrompt();
-          // this.prompt = `[${this.work.nombre}@${resp.replace(/\n/g, '')}]$ `;
           break;
         case "whoami":
           this.whoami = resp.replace(/\n/g, '');
@@ -455,7 +466,6 @@ export class Terminal {
             this.historico(`Es posible que el usuario ${this.user.usuario} no exista en el servidor. No puede establecer conexión estable.`);
           }
           this.actualizaPrompt();
-          // this.prompt = `[${this.work.nombre}@${resp.replace(/\n/g, '')}]$ `;
           break;
         default:
           this.historico(resp);
