@@ -36,7 +36,7 @@ export default  {
     etiqueta: "Alfanumérico",
     descripcion: 'Nombre completo del usuario o nombre distintivo dentro de la empresa',
     validacion: {
-      pattern: /^[a-zA-Z/\s]+$/,
+      pattern: /^[a-zA-Záéíóú/\s]+$/,
       patron_descripcion: 'Debe ingresar un nombre válido entre mayúsculas, minúsculas y espacios en blanco.',
       resultado: '',
     },

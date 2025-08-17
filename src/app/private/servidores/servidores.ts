@@ -113,6 +113,8 @@ export class Servidores {
 
           }
 
+          // console.log(this.lstData)
+
           this.refreshAll();
         } else {
           this.func.handleErrors("Servidor", resp.message);
@@ -196,6 +198,7 @@ export class Servidores {
           field: 'nombre',
           cellClass: 'text-start',
           filter: true,
+          flex:3,
           cellRenderer: this.renderAccionNombre.bind(this),
         },
         {
@@ -204,6 +207,7 @@ export class Servidores {
           field: 'ubicacion',
           cellClass: 'text-start',
           filter: true,
+          flex:2
         },
         {
           headerName: 'Host',
@@ -212,62 +216,75 @@ export class Servidores {
           cellClass: 'text-start',
           filter: true,
         },
-        {
-          headerName: 'SSH',
-          headerClass: ["th-center", "th-normal"],
-          field: 'healthy_ssh',
-          cellClass: 'text-start',
-          cellRenderer: (params: ICellRendererParams) => {
-            let data = params.data;
-            let dato = data.healthy_ssh;
-            let puerto = data.ssh_puerto ?? "Sin Asignar";
-            let text = 'No responde';
-            let icono = 'far fa-times-circle t20';
-            let color = 'text-danger';
-            if (dato == 1) {
-              icono = 'far fa-check-circle t20';
-              // icono = 'fas fa-server t20';
-              text = 'Saludable';
-              color = 'text-success';
-            } else if (dato == -1) {
-              icono = 'fas fa-spinner fa-spin';
-              text = 'Revisando';
-              color = 'text-primary';
-            } else if (dato == -2) {
-              icono = '';
-              text = '';
-              color = '';
-            }
-            return `<span class="${color}"><i role="img" class='${icono}'></i> ${puerto} ${text}</span>`;
-          },
-        },
-        {
-          headerName: 'Agente',
-          headerClass: ["th-center", "th-normal"],
-          field: 'healthy_agente',
-          cellClass: 'text-start',
-          cellRenderer: (params: ICellRendererParams) => {
-            let data = params.data;
-            let dato = data.healthy_agente;
-            let puerto = data.agente_puerto  ?? "Sin Asignar";
-            let text = 'No responde';
-            let icono = 'far fa-times-circle  t20';
-            let color = 'text-danger';
-            if (dato == 1) {
-              icono = 'far fa-check-circle  t20';
-              text = 'Saludable';
-              color = 'text-success';
-            } else if (dato == -1) {
-              icono = 'fas fa-spinner fa-spin ';
-              text = 'Revisando';
-              color = 'text-primary';
-            } else if (dato == -2) {
-              icono = '';
-              text = '';
-              color = '';
-            }
-            return `<span class="${color}"><i role="img" class='${icono}'></i> ${puerto} ${text}</span>`;
-          },
+         {
+          headerName: 'Puertos',
+          headerClass: ["th-center", "th-normal2"],
+          children:[
+
+            {
+              headerName: 'SSH',
+              headerClass: ["th-center", "th-normal"],
+              field: 'healthy_ssh',
+              cellClass: 'text-start',
+              cellRenderer: (params: ICellRendererParams) => {
+                let data = params.data;
+                let dato = data.healthy_ssh;
+                let puerto = data.ssh_puerto ?? "Sin Asignar";
+                let text = 'No responde';
+                let icono = 'far fa-times-circle t20';
+                let color = 'text-danger';
+                if (dato == 1) {
+                  icono = 'far fa-check-circle t20';
+                  // icono = 'fas fa-server t20';
+                  text = 'Saludable';
+                  color = 'text-success';
+                } else if (dato == -1) {
+                  icono = 'fas fa-spinner fa-spin';
+                  text = 'Revisando';
+                  color = 'text-primary';
+                } else if (dato == -2) {
+                  icono = '';
+                  text = '';
+                  color = '';
+                }
+                return `<span class="${color}"><i role="img" class='${icono}'></i> ${puerto} ${text}</span>`;
+              },
+            },
+            {
+              headerName: 'Agente',
+              headerClass: ["th-center", "th-normal"],
+              field: 'healthy_agente',
+              cellClass: 'text-start',
+              cellRenderer: (params: ICellRendererParams) => {
+                let data = params.data;
+                let dato = data.healthy_agente;
+                let puerto = data.agente_puerto  ?? "Sin Asignar";
+                let text = 'No responde';
+                let icono = 'far fa-times-circle  t20';
+                let color = 'text-danger';
+                if (dato == 1) {
+                  icono = 'far fa-check-circle  t20';
+                  text = 'Saludable';
+                  color = 'text-success';
+                } else if (dato == -1) {
+                  icono = 'fas fa-spinner fa-spin ';
+                  text = 'Revisando';
+                  color = 'text-primary';
+                } else if (dato == -2) {
+                  icono = '';
+                  text = '';
+                  color = '';
+                }
+                return `<span class="${color}"><i role="img" class='${icono}'></i> ${puerto} ${text}</span>`;
+              },
+            },
+            {
+              headerName: 'Terminal',
+              headerClass: ["th-center", "th-normal"],
+              field: 'terminal_puerto',
+              cellClass: 'text-start',
+            },
+          ]
         },
         {
           headerName: 'Tiempo Activo',
@@ -281,6 +298,16 @@ export class Servidores {
             if (dato!="") icono = `<i role="img" class="far fa-clock"></i>`;
             return `${icono} ${dato}</span>`;
           }
+        },
+        {
+          headerName: 'Usuarios',
+          headerClass: ["th-center", "th-normal"],
+          field: 'usuarios.length',
+          cellClass: 'text-start',
+          cellRenderer: (params: ICellRendererParams) => {
+            let data = params.value;
+            return `<i role="img" class="fa fa-users t20"></i> <span class="t16">${data}</span>`;
+          },
         },
         {
           headerName: 'Estado',
@@ -348,7 +375,7 @@ export class Servidores {
   renderAccionNombre(params: ICellRendererParams) {
     const button = document.createElement('button');
     button.className = 'btn btn-white';
-    button.innerHTML = `<span class="link" title='Editar'>${params.data.nombre}</span>`;
+    button.innerHTML = `<span class="link" title='Editar Servidor'>${params.data.nombre}</span>`;
     button.addEventListener('click', () => {
       this.funcEdit(params.data.idservidor);
     });

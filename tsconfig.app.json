@@ -8,7 +8,7 @@
   },
   "include": [
     "src/**/*.ts"
-, "src/app/private/hardening/hardening copy.bak"  ],
+  ],
   "exclude": [
     "src/**/*.spec.ts"
   ]

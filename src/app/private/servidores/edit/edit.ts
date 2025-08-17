@@ -42,6 +42,7 @@ export class Edit {
   host: string = "";
   ssh_puerto: string = "";
   agente_puerto: string = "";
+  terminal_puerto: string = "";
   idscript_monitoreo: string = "";
   idservidores_familia: string = "";
   comentarios: string = "";
@@ -120,6 +121,7 @@ export class Edit {
           this.host = this.rstData.host;
           this.ssh_puerto = this.rstData.ssh_puerto;
           this.agente_puerto = this.rstData.agente_puerto;
+          this.terminal_puerto = this.rstData.terminal_puerto;
           this.comentarios = this.rstData.comentarios;
           this.idservidores_familia = this.rstData.idservidores_familia;
           // this.idscript_monitoreo = this.rstData.idscript_monitoreo;
@@ -173,6 +175,7 @@ export class Edit {
       host: this.host,
       ssh_puerto: this.ssh_puerto,
       agente_puerto: this.agente_puerto,
+      terminal_puerto: this.terminal_puerto,
       estado: this.estado,
       comentarios: this.comentarios,
       idservidores_familia: this.idservidores_familia

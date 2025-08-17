@@ -19,85 +19,11 @@
   </div>
 
   <div class="row ">
-    <div class="col-12 col-sm-12 col-md-3 col-lg-3 col-xl-3 bg-light h600">
-      @if (tab==0) {
-        <label for="buscarHistorico"><i>Histórico de Comandos</i></label>
-        <input type="text" 
-          [(ngModel)]="oBuscarHistorico" 
-          (keyup)="buscarHistorico($event)" 
-          id="buscarHistorico" name="buscarHistorico" 
-          autocomplete="false"
-          class="form-control" placeholder="Texto a buscar">
-        <ul class="list-group h400 mt-1">
-          @for (item of this.lstHistoryCmds; track $index) {
-            <li class="list-group-item d-flex justify-content-between">
-              <span>{{item}}</span>
-              <button (click)="copia(item)" type="button" role="btn" class="btn btn-white btn-sm" 
-                aria-label="Copiar comando a terminal" title="Copiar comando a terminal">
-                  <i role="img" class="far fa-clone"></i>
-              </button>
-            </li>
-          }
-        </ul>
-      }
-
-      <!-- @if (tab==2) {
-        <label for="buscarScript"><i>Lista de Scripts</i></label>
-        <input type="text" [(ngModel)]="oBuscarScripts" (keyup)="buscarScripts($event)"  id="buscarScript" name="buscarScript" class="form-control" placeholder="Texto a buscar">
-        <ul class="list-group h400 mt-1">
-          @for (item of this.lstScripts; track $index) {
-            <li class="list-group-item d-flex justify-content-between">
-              <span>{{item.nombre}}</span>
-              <button (click)="insertarScript(item.idscript)" type="button" role="btn" class="btn btn-white btn-sm" 
-                aria-label="Insertar script a terminal" title="Insertar script a terminal">
-                  <i class="fa fa-plus"></i>
-              </button>
-            </li>
-          }
-        </ul>
-      } -->
-
-      @if (tab==1) {
-        <label for="buscarComandos"><i>Lista de Comandos</i></label>
-        <input type="text" [(ngModel)]="oBuscarComandos" (keyup)="buscarComandos($event)"  id="buscarComandos" name="buscarComandos" class="form-control" placeholder="Texto a buscar">
-        <ul class="list-group h400 mt-1">
-          @for (item of this.lstComandos; track $index) {
-            <li class="list-group-item d-flex justify-content-between">
-              <span>{{item.linea_comando}}</span>
-              <button (click)="insertar(item.linea_comando)" type="button" role="btn" class="btn btn-white btn-sm" 
-                aria-label="Insertar comando a terminal" title="Insertar comando a terminal">
-                  <i class="fa fa-plus"></i>
-              </button>
-            </li>
-          }
-        </ul>
-      }
-
-    </div>
-
-    <div id="terminal" class="col-12 col-sm-12 col-md-9 col-lg-9 col-xl-9">
-      <div #divterminal class="terminal">
-        @for (item of lstHistory; track $index) {
-        <div class="terminal__line {{item.clase}}">{{item.texto}}</div>
-        }
-        <div *ngIf="!procesando" class="terminal__prompt">
-          <div class="terminal__prompt__label">{{prompt}}</div>
-          <div class="terminal__prompt__input">
-            <input
-              #terminal
-              type="text"
-              [(ngModel)]="texto"
-              id="terminal"
-              name="terminal"
-              (keyup)="terminalTecla($event)"
-            />
-          </div>
-        </div>
-        <br />
-        <br />
-        <br />
-      </div>
-      <a id="fin"></a>
-    </div>
+    <div class="col">
+      <iframe id="iframe" [src]="webssh2" frameborder="0" class="frame"></iframe>
+    </div> 
   </div>
 </div>
+
+
+<!-- http://localhost:2222/ssh/host/127.0.0.1  -->

@@ -542,6 +542,11 @@ export class Dashboard {
         // {"id": "procesos", "cmd":`top -b -n1 -em | grep -E "^( *PID| *[0-9]+)" | sed 's/  */ /g' | sed 's/^ *//' | sort -t' ' -k5 -nr | head -n10 | tr ' ' ',' | sed 's/^,*//' | sed 's/,$//'`},
         {"id": "procesos", "cmd":`top -b -n1 -em | grep -E "^( *PID| *[0-9]+)" | sed 's/  */ /g' | sed 's/^ *//' | sort -t' ' -k5 -nr | tr ' ' ',' | sed 's/^,*//' | sed 's/,$//'`},
       ]
+      /*
+      dnf install sysstat
+      systemctl enable sysstat
+      systemctl start sysstat
+      */
     };
     if (this.connState()){
       this.ws.send(JSON.stringify(params));

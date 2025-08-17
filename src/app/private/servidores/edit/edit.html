@@ -119,6 +119,21 @@
                 {{validador.agente_puerto.validacion.resultado == '' ? validador.agente_puerto.descripcion : validador.agente_puerto.validacion.resultado}} </i>
             </sup>
           </div>
+
+          <div class="col-4 col-md-2 td2 text-end">
+            <label for="terminal_puerto">Puerto Terminal</label><small *ngIf="validador.terminal_puerto.requerido"><i role="img" class="text-danger">*</i></small>
+            <br />
+            <small><i role="img" class="text-secondary">{{validador.terminal_puerto.etiqueta}}</i></small>
+          </div>
+          <div class="col-8 col-md-4 td2">
+            <input type="text" name="terminal_puerto" id="terminal_puerto" class="form-control {{validador.terminal_puerto.validacion.resultado == '' ? '' : 'input-danger'}}" 
+              [(ngModel)]="terminal_puerto"
+            />
+            <sup>
+              <i role="img" class=" {{validador.terminal_puerto.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
+                {{validador.terminal_puerto.validacion.resultado == '' ? validador.terminal_puerto.descripcion : validador.terminal_puerto.validacion.resultado}} </i>
+            </sup>
+          </div>
           
 
 

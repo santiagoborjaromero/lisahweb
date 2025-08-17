@@ -4,7 +4,7 @@ export default  {
     etiqueta: "Alfanumérico",
     descripcion: 'Nombre de referencia del servidor',
     validacion: {
-      pattern: /^[a-zA-Z0-9/\s]+$/,
+      pattern: /^[a-zA-Z0-9-_/\s]+$/,
       patron_descripcion: 'Debe ingresar un nombre válido entre mayúsculas, minúsculas, números y espacios en blanco.',
       resultado: '',
     },
@@ -53,6 +53,16 @@ export default  {
     requerido: true,
     etiqueta: "Numérico",
     descripcion: 'Número de puerto del servidor para acceso al agente',
+    validacion: {
+      pattern: /^[0-9]+$/,
+      patron_descripcion: 'Debe ingresar un numero válido.',
+      resultado: '',
+    },
+  },
+  terminal_puerto: {
+    requerido: true,
+    etiqueta: "Numérico",
+    descripcion: 'Número de puerto del servidor para acceso al terminal',
     validacion: {
       pattern: /^[0-9]+$/,
       patron_descripcion: 'Debe ingresar un numero válido.',

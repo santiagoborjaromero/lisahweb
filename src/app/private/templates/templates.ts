@@ -173,13 +173,22 @@ private readonly tempSvc = inject(TemplateService);
           },
         },
         {
-          headerName: 'Accion',
+          headerName: 'Eliminar',
           headerClass: ["th-center", "th-normal"],
           cellClass: 'text-start',
           filter: true,
           flex: 3,
           maxWidth:80,
           cellRenderer: this.renderAcciones.bind(this),
+        },
+        {
+          headerName: 'Ejecutar',
+          headerClass: ["th-center", "th-normal"],
+          cellClass: 'text-start',
+          filter: true,
+          flex: 3,
+          maxWidth:80,
+          cellRenderer: this.renderEjecutar.bind(this),
         },
       ],
     };
@@ -217,6 +226,28 @@ private readonly tempSvc = inject(TemplateService);
         this.procesoEspecial('recuperar un registro', 'recuperar', params.data.idtemplate_comando)
       });
     }
+
+    return button;
+  }
+
+  renderEjecutar(params: ICellRendererParams) {
+    let button: any | undefined;
+
+    // if (params.data.deleted_at === null){
+    button = document.createElement('button');
+    button.className = 'btn btn-white';
+    button.innerHTML = `<i role="img" class="fa fa-play text-info t20" title='Eliminar'></i>`;
+    button.addEventListener('click', () => {
+      this.procesoEspecial('eliminar un registro', 'Ejecutar comando', params.data.idtemplate_comando)
+    });
+    // } else {
+      // button = document.createElement('button');
+      // button.className = 'btn btn-white';
+      // button.innerHTML = `<i role="img" class="fas fa-undo-alt text-warning" title='Recuperar'></i>`;
+      // button.addEventListener('click', () => {
+      //   this.procesoEspecial('recuperar un registro', 'recuperar', params.data.idtemplate_comando)
+      // });
+    // }
 
     return button;
   }

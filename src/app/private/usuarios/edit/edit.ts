@@ -406,6 +406,7 @@ export class Edit {
           field: 'nombre',
           cellClass: 'text-start',
           filter: true,
+          flex: 2
         },
         {
           headerName: 'Ubicacion',
