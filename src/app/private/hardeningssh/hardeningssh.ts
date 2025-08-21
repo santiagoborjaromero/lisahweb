@@ -1,27 +1,26 @@
-import { Component, effect, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AllCommunityModule, ColumnAutosizeService, createGrid, GridApi, GridOptions, ICellRendererParams, ModuleRegistry} from 'ag-grid-community';
+import { AllCommunityModule, ModuleRegistry} from 'ag-grid-community';
 import { ServidorService } from '../../core/services/servidor.service';
 import { Functions } from '../../core/helpers/functions.helper';
 import { Sessions } from '../../core/helpers/session.helper';
 import { UsuarioService } from '../../core/services/usuarios.service';
-import moment from 'moment';
-
 import { WSService } from '../../core/services/ws.service';
 import { Titulo } from '../shared/titulo/titulo';
 import { Path } from '../shared/path/path';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
+
 @Component({
-  selector: 'app-logs',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, Titulo, Path],
-  templateUrl: './logs.html',
-  styleUrl: './logs.scss',
+  selector: 'app-hardeningssh',
+  imports: [Titulo, Path, CommonModule, FormsModule, ReactiveFormsModule],
+  templateUrl: './hardeningssh.html',
+  styleUrl: './hardeningssh.scss',
   standalone: true,
 })
-export class Logs {
+export class Hardeningssh {
   private readonly userSvc = inject(UsuarioService);
   private readonly serverSvc = inject(ServidorService);
   private readonly func = inject(Functions);
@@ -30,7 +29,6 @@ export class Logs {
 
   aqui: any | undefined;
 
-  // private webSockets = new Map<number, WebSocket>();
   private server = new Map<number, any>();
 
   user: any = null;
@@ -53,10 +51,10 @@ export class Logs {
     this.user = JSON.parse(this.sessions.get('user'));
     this.path = [
       {nombre: "Admin & Hardening", ruta: ""}, 
-      {nombre: "Auditoría de Logs", ruta: "admin/logs"}, 
+      {nombre: "Hardening SSH", ruta: "admin/hardeningssh"}, 
     ];
   
-    this.titulo = {icono: "fas fa-traffic-light",nombre: "Auditoría de Logs"}
+    this.titulo = {icono: "fas fa-terminal",nombre: "Hardening Terminal por SSH"}
 
     if (this.user.idrol > 1) {
       let scope = this.user.roles.permisos_crud.split('');
@@ -85,7 +83,7 @@ export class Logs {
     this.userSvc.getOne(this.user.idusuario).subscribe({
       next: (resp: any) => {
         this.func.closeSwal();
-        // console.log(resp);
+        console.log(resp);
         if (resp.status) {
           if (resp.data[0].servidores && resp.data[0].servidores.length > 0) {
             resp.data[0].servidores.forEach((s:any)=>{
@@ -106,13 +104,14 @@ export class Logs {
     });
   }
 
+
   gowork(id=""){
     this.lstServidores.forEach((s:any)=>{
       if (s.idservidor == id){
         this.sessions.set("work", JSON.stringify(s));
       }
     });
-    this.func.irRuta(`admin/logs/${id}`);
+    this.func.irRuta(`admin/terminalssh`);
   }
 
   buscarServidores($event:any){

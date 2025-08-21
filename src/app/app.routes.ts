@@ -40,20 +40,21 @@ export const routes: Routes = [
             {path:"scripts", loadComponent: () => import('./private/scripts/scripts').then((c)=> c.Scripts)},
             {path:"script/:id", loadComponent: () => import('./private/scripts/edit/edit').then((c)=> c.Edit)},
             {path:"procesos", loadComponent: () => import('./private/procesos/procesos').then((c)=> c.Procesos)},
-            {path:"logs", loadComponent: () => import('./private/logs/logs').then((c)=> c.Logs)},
             {path:"audits", loadComponent: () => import('./private/audit/audit').then((c)=> c.Audit)},
             {path:"monitoreo", loadComponent: () => import('./private/monitoreo/monitoreo').then((c)=> c.Monitoreo)},
             {path:"hardening", loadComponent: () => import('./private/hardening/hardening').then((c)=> c.Hardening)},
             {path:"terminal", loadComponent: () => import('./private/terminal/terminal').then((c)=> c.Terminal)},
-            
+            {path:"hardeningssh", loadComponent: () => import('./private/hardeningssh/hardeningssh').then((c)=> c.Hardeningssh)},
+            {path:"terminalssh", loadComponent: () => import('./private/terminalssh/terminalssh').then((c)=> c.Terminalssh)},
+            {path:"logs", loadComponent: () => import('./private/logs/logs').then((c)=> c.Logs)},
+            {path:"logs/:id", loadComponent: () => import('./private/logserver/logserver').then((c)=> c.Logserver)},
+
             {path:"administracion", loadComponent: () => import('./private/administracion/administracion').then((c)=> c.Administracion)},
-            // {path:"hardening/workspace/:id", loadComponent: () => import('./private/workspace/workspace').then((c)=> c.Workspace)},
             {
                 path: 'administracion/workspace',
                 loadComponent: () => import('./private/workspace/workspace').then( (c)=> c.Workspace),
                 canActivate: [authGuard],
                 children:[
-                    // {path:"dashboard", loadComponent: () => import('./private/workspace/general/general').then((c)=> c.General)},
                     {path:"dashboard", loadComponent: () => import('./private/workspace/dashboard/dashboard').then((c)=> c.Dashboard)},
                     {path:"servicios", loadComponent: () => import('./private/workspace/servicios/servicios').then((c)=> c.Servicios)},
                     {path:"usuarios", loadComponent: () => import('./private/workspace/usuarios/usuarios').then((c)=> c.Usuarios)},

@@ -535,18 +535,9 @@ export class Dashboard {
         {"id": "cpu_usado", "cmd":`sar -u | grep '^[0-9]' | awk '{sum+=$3; count++} END {if(count>0) print sum/count}'`},
         {"id": "memoria", "cmd":"free -h | grep -E 'Mem' | awk '{print $2, $3, $4}'"},
         {"id": "uptime", "cmd":'sec=$(( $(date +%s) - $(date -d "$(ps -p 1 -o lstart=)" +%s) )); d=$((sec/86400)); h=$(( (sec%86400)/3600 )); m=$(( (sec%3600)/60 )); s=$((sec%60)); printf "%02d:%02d:%02d:%02d\n" $d $h $m $s'},
-        // {"id": "release", "cmd":"cat /etc/os-release"},
-        // {"id": "servicios", "cmd":`systemctl list-units --type=service --all --no-legend | awk '{print $1","$2","$3","$4,","$5,","$6","$7","$8","$9}'`},
-        // {"id": "infocpu", "cmd":"cat /proc/cpuinfo"},
-        // {"id": "procesos", "cmd":`top -em -b -n1 | grep -E "^( *PID| *[0-9]+)" | sed 's/  */ /g' | sed 's/^ *//' | tr ' ' ',' | sed 's/^,*//' | sed 's/,$//'`},
-        // {"id": "procesos", "cmd":`top -b -n1 -em | grep -E "^( *PID| *[0-9]+)" | sed 's/  */ /g' | sed 's/^ *//' | sort -t' ' -k5 -nr | head -n10 | tr ' ' ',' | sed 's/^,*//' | sed 's/,$//'`},
         {"id": "procesos", "cmd":`top -b -n1 -em | grep -E "^( *PID| *[0-9]+)" | sed 's/  */ /g' | sed 's/^ *//' | sort -t' ' -k5 -nr | tr ' ' ',' | sed 's/^,*//' | sed 's/,$//'`},
       ]
-      /*
-      dnf install sysstat
-      systemctl enable sysstat
-      systemctl start sysstat
-      */
+
     };
     if (this.connState()){
       this.ws.send(JSON.stringify(params));

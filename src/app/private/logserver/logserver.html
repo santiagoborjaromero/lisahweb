@@ -1,0 +1,58 @@
+<app-path [lstRutas]="path" />
+<div class="content">
+  <app-titulo [lstHeader]="titulo" />
+
+  <div class="row mb-2">
+    <div class="col d-flex justify-content-between">
+      <div class="btn-group" role="group" aria-label="Seleccion script o comando">
+      </div>
+      <div class="col d-flex justify-content-between">
+        <div>
+            <span class="mr-2 sentinel">{{global.agent}}</span>
+            <span class="ml-2 {{light_ws  ? 'text-success bold' : 'text-danger bold'}}">{{agente_status}}</span>
+        </div>
+        <div>
+          <!-- <button role="button"  role="button"  (click)="startMonitor()" aria-label="Refrescar" class="btn btn-white btn-sm ml-1" title="Refrescar">
+            <i role="img" class="fas fa-sync-alt"></i>
+          </button> -->
+          <button role="button" (click)="funcBack()" class="btn btn-danger btn-sm ml-1">
+            <i role="img" class="fas fa-reply"></i> Regresar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="row mt-2 mb-2">
+    
+      <div class="col-4 col-md-1 td2 text-end">
+        <label for="nombre">Servidor</label>
+      </div>
+      <div class="col-8 col-md-2 td2">
+        <select [(ngModel)]="idservidor_select" name="idservidor_select" id="idservidor_select" class="form-control">
+          @for (item of lstServidores; track $index) {
+            <option value="{{item.idservidor}}">{{item.nombre}}</option>
+          }
+        </select>
+      </div>
+  
+      <div class="col-4 col-md-1 td2 text-end">
+        <label for="nombre">Fecha</label>
+      </div>
+      <div class="col-8 col-md-2 td2">
+        <input type="text" class="form-control"  [(ngModel)]="fecha_select" />
+      </div>
+      
+      <div class="col-8 col-md-2 td2">
+        <button class="btn btn-primary" (click)="startMonitor()">Buscar</button>
+      </div>
+        
+      </div>
+  </div>
+
+  <div #myGrid id="myGrid" class="ag-theme-quartz mt-2" style="height: 500px; min-height: 500px"></div>
+
+</div>
+
+

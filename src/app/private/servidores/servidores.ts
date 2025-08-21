@@ -110,11 +110,7 @@ export class Servidores {
               s.healthy_agente = -2;
               this.lstData.push(s);
             })
-
           }
-
-          // console.log(this.lstData)
-
           this.refreshAll();
         } else {
           this.func.handleErrors("Servidor", resp.message);
@@ -198,8 +194,16 @@ export class Servidores {
           field: 'nombre',
           cellClass: 'text-start',
           filter: true,
-          flex:3,
+          flex:4,
           cellRenderer: this.renderAccionNombre.bind(this),
+        },
+        {
+          headerName: 'Host',
+          headerClass: ["th-center", "th-normal"],
+          field: 'host',
+          cellClass: 'text-start',
+          filter: true,
+          flex:2
         },
         {
           headerName: 'Ubicacion',
@@ -210,13 +214,13 @@ export class Servidores {
           flex:2
         },
         {
-          headerName: 'Host',
+          headerName: 'Familia',
           headerClass: ["th-center", "th-normal"],
-          field: 'host',
+          field: 'familia.familia',
           cellClass: 'text-start',
           filter: true,
         },
-         {
+        {
           headerName: 'Puertos',
           headerClass: ["th-center", "th-normal2"],
           children:[
@@ -286,21 +290,21 @@ export class Servidores {
             },
           ]
         },
+        // {
+        //   headerName: 'Tiempo Activo',
+        //   headerClass: ["th-center", "th-normal"],
+        //   field: 'uptime',
+        //   cellClass: 'text-start',
+        //   cellRenderer: (params: ICellRendererParams) => {
+        //     let data = params.data;
+        //     let dato = data.uptime;
+        //     let icono = "";
+        //     if (dato!="") icono = `<i role="img" class="far fa-clock"></i>`;
+        //     return `${icono} ${dato}</span>`;
+        //   }
+        // },
         {
-          headerName: 'Tiempo Activo',
-          headerClass: ["th-center", "th-normal"],
-          field: 'uptime',
-          cellClass: 'text-start',
-          cellRenderer: (params: ICellRendererParams) => {
-            let data = params.data;
-            let dato = data.uptime;
-            let icono = "";
-            if (dato!="") icono = `<i role="img" class="far fa-clock"></i>`;
-            return `${icono} ${dato}</span>`;
-          }
-        },
-        {
-          headerName: 'Usuarios',
+          headerName: 'Usuarios Asignados',
           headerClass: ["th-center", "th-normal"],
           field: 'usuarios.length',
           cellClass: 'text-start',

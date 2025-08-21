@@ -6,11 +6,11 @@
     <div class="col d-flex justify-content-between">
       <div class="btn-group" role="group" aria-label="Seleccion script o comando">
         <!-- <button (click)="cambiarTab(2)" role="button" type="button" class="btn btn-sm {{tab==2 ? 'btn-primary' : 'btn-outline-secondary'}}">Scripts</button> -->
-        <button (click)="cambiarTab(1)" role="button" type="button" class="btn btn-sm {{tab==1 ? 'btn-primary' : 'btn-outline-secondary'}}">Comandos</button>
-        <button (click)="cambiarTab(0)" role="button" type="button" class="btn btn-sm {{tab==0 ? 'btn-primary' : 'btn-outline-secondary'}}">Historico</button>
+        <!-- <button (click)="cambiarTab(1)" role="button" type="button" class="btn btn-sm {{tab==1 ? 'btn-primary' : 'btn-outline-secondary'}}">Comandos</button>
+        <button (click)="cambiarTab(0)" role="button" type="button" class="btn btn-sm {{tab==0 ? 'btn-primary' : 'btn-outline-secondary'}}">Historico</button> -->
       </div>
       <div>
-        <i>Digite <b>exit</b> para salir del terminal | <b>start</b> para iniciar o reiniciar el terminal</i>
+        <!-- <i>Digite <b>exit</b> para salir del terminal | <b>start</b> para iniciar o reiniciar el terminal</i> -->
         <button role="button" (click)="funcBack()" class="btn btn-danger btn-sm ml-1">
           <i role="img" class="fas fa-reply"></i> Regresar
         </button>
@@ -21,9 +21,7 @@
   <div class="row ">
     <div class="col">
       <iframe id="iframe" [src]="webssh2" frameborder="0" class="frame"></iframe>
+      <!-- <iframe id="iframe" [sandbox]="true" src="{{webssh2}}" frameborder="0" class="frame"></iframe> -->
     </div> 
   </div>
 </div>
-
-
-<!-- http://localhost:2222/ssh/host/127.0.0.1  -->

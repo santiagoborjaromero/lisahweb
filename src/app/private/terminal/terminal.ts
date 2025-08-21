@@ -166,17 +166,17 @@ export class Terminal {
   }
 
   initial(){
-    let url = `http://${this.work.host}:${this.work.terminal_puerto}/ssh/host/${this.work.host}?port=${this.work.ssh_puerto}&header=LISA&headerBackground=green&cursorBlink=true`;
+    // let url = `http://${this.work.host}:${this.work.terminal_puerto}/ssh/host/${this.work.host}?port=${this.work.ssh_puerto}&header=LISA&headerBackground=green&cursorBlink=true`;
+    // let url = `http://192.168.1.169:8750/ssh/host/192.168.1.169?port=2222&header=LISAH&headerBackground=green&cursorBlink=true`;
+    // let url = `http://192.168.1.169:8750/ssh/host/192.168.1.169?port=2222&header=LISAH&headerBackground=green`;
+    let url = `http://${this.work.host}:${this.work.terminal_puerto}/ssh/host/?port=${this.work.ssh_puerto}&header=LISAH&headerBackground=green&cursorBlink=true`;
     console.log(url)
     this.webssh2 = this.sanitizer.bypassSecurityTrustResourceUrl(url);
-    //http://192.168.1.169:8750/ssh/host/192.168.1.169?port=2222&header=LISA&headerBackground=green&cursorBlink=true
+    // this.webssh2 = url;
   }
 
   funcBack(){
-
+    this.func.irRuta(`admin/hardening`);
   }
-
-
-
 
 }
