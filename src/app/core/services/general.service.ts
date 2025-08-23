@@ -32,13 +32,13 @@ export class GeneralService {
       headers: this.headers,
     };
     let body = null;
-    if (["POST", "PUT"].includes(method)){
+    if (["POST", "PUT"].includes(method) && data){
       if (environment.debug) console.log(data)
       body = {
         data: this.encrpt.encryp(JSON.stringify(data))
       }
       if (environment.debug) console.log(body)
-      // console.log(body)
+      console.log(body)
     }
 
     switch(method){
@@ -47,7 +47,6 @@ export class GeneralService {
       case "PUT":
         return this.http.put(`${this.base_url}${ruta}`, body, options);
       case "POST":
-        
         return this.http.post(`${this.base_url}${ruta}`, body, options);
       case "DELETE":
         return this.http.delete(`${this.base_url}${ruta}`, options);

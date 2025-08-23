@@ -105,7 +105,7 @@
         </div>
       </div>
 
-      <div class="card mt-3">
+      <!-- <div class="card mt-3">
         <div class="card-header th2 d-flex justify-content-between">
           <span aria-label="Configuracion LDAP"> LDAP </span>
           <i role="img" class="far fa-question-circle text-primary"></i>
@@ -195,7 +195,7 @@
             <sup><i role="img" class="text-secondary">Contraseña</i></sup>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <div class="card mt-3">
         <div class="card-header th2 d-flex justify-content-between">
@@ -339,6 +339,24 @@
           </div>
 
           <div class="col-4 col-md-2 td2 text-end">
+            <label for="tiempo_caducidad_claves">Fecha general de caducidad de Contraseñas </label>
+            <br />
+            <small><i role="img" class="text-secondary">Fecha <small class="text-danger">[aaaa-mm-dd]</small></i></small>
+          </div>
+          <div class="col-8 col-md-4 td2">
+            <input
+              type="date"
+              name="tiempo_caducidad_claves"
+              id="tiempo_caducidad_claves"
+              class="form-control"
+              placeholder="Fecha"
+              [disabled]="!accionEditar"
+              [(ngModel)]="fecha_limite_validez_clave"
+            />
+            <sup><i role="img" class="text-secondary">Tiempo de caducidad límite para contraseñas de todos los usuarios.</i></sup>
+          </div>
+
+          <div class="col-4 col-md-2 td2 text-end">
             <label for="tiempo_caducidad_token_usuarios">Token para usuarios </label>
             <br />
             <small><i role="img" class="text-secondary">Numérico <small class="text-danger">[dias]</small></i></small>
@@ -356,7 +374,7 @@
             <sup><i role="img" class="text-secondary">Tiempo de caducidad para token de usuarios.</i></sup>
           </div>
 
-          <div class="col-4 col-md-2 td2 text-end">
+          <!-- <div class="col-4 col-md-2 td2 text-end">
             <label for="tiempo_caducidad_token_agente">Token para {{global.agent}} </label>
             <br />
             <small><i role="img" class="text-secondary">Numérico <small class="text-danger">[dias]</small></i></small>
@@ -372,7 +390,7 @@
               [(ngModel)]="tiempo_caducidad_token_agente"
             />
             <sup><i role="img" class="text-secondary">Tiempo de caducidad para token de agentes.</i></sup>
-          </div>
+          </div> -->
 
 
         </div>

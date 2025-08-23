@@ -115,6 +115,17 @@
     color: #474747;
 }
 
+.bg-opciones-fondo2{
+    display: flex;
+    background-color: #eeeeee;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 7px;
+    padding-right: 5px;
+    border-radius: 5px;
+    color: #474747;
+}
+
 .col1{
     flex-grow: 1;
 }
@@ -467,6 +478,9 @@ ul.menu{
 
 .linea-izquierda{
     border-left: 1px solid #00000033;
+}
+.linea-derecha{
+    border-right: 1px solid #00000033;
 }
 
 

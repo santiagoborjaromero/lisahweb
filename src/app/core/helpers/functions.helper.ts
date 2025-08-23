@@ -1,12 +1,14 @@
 import { Injectable, inject } from '@angular/core';
 import { Encryption } from './encryption.helper';
 import { Sessions } from '../helpers/session.helper';
-import * as moment from 'moment';
+import moment from 'moment';
 import Swal from 'sweetalert2';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
 import { Auth } from '../services/auth.service';
 import { Global } from '../config/global.config';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Injectable({
   providedIn: 'root',
@@ -281,6 +283,109 @@ export class Functions {
     return true
   }
 
+  exportarPDF(params:any){
+      var doc = new jsPDF({
+        orientation: params.orientation,
+        format: 'A4',
+        unit: 'mm'
+      });
+  
+      autoTable(doc, {
+        body: [
+          [
+            {
+              content: params.titulo,
+              styles: {
+                halign: 'left',
+                fontSize: 20,
+                textColor: '#062974ff'
+              }
+            },
+          ],
+          [
+            {
+              content: 'Fecha reporte: ' + moment().format("YYYY-MM-DD HH:mm:ss"),
+              styles: {
+                halign: 'left',
+                fontSize: 10,
+                textColor: '#062974ff'
+              }
+            },
+          ],
+        ],
+        theme: 'plain',
+      });
+  
+      let records = this.transformarDatosPDF(params.data)
+  
+      autoTable(doc, {
+          head: [records[0]],
+          body: records.slice(1),
+          theme: 'striped',
+          headStyles:{
+            fillColor: '#dadada',
+            textColor: '#000'
+          },
+          styles:{
+            textColor: '#000'
+          }
+      });
+  
+      doc.save(params.filename);
+    }
+
+  transformarDatosPDF(array:any = []){
+
+    const data = [];
+    let cabecera = Object.keys(array[0]);
+    data.push(cabecera);
+
+    let temp = [];
+    for (var i = 0; i < array.length; i++) {
+        temp = [];
+        for (var index in array[i]) {
+            temp.push(array[i][index] == null ? '' : array[i][index]);
+        }
+        data.push(temp)
+    }
+    return data;
+  }
+
+  exportarCSV(data:any= [], filename:string ="data.csv"){
+    let csv = [];
+
+    let header = Object.keys(data[0]);
+    csv.push(header.join(","));
+    
+    data.forEach((e:any) => {
+      let valor = header.map((field) => this.scapeCSV(e[field]))
+      csv.push(valor.join(","));
+    });
+    
+    let export_data = csv.join("\n");
+
+    let blob = new Blob([export_data], {type: "text/csv;charset=utf-8;"})
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement("a");
+    a.setAttribute("style", "display:none");
+    document.body.appendChild(a)
+    a.download = filename;
+    a.href = url;
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  }
+
+  scapeCSV(valor:any):string{
+    if (typeof valor === "string"){
+      let v = valor.replace(/"/g ,"'");
+      v = v.replace(/,/g ,";");
+      // v = v.replace(/[/]/g ,";");
+      return v
+    }else{
+      return valor
+    }
+  }
 
 
 

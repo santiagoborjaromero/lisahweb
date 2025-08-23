@@ -345,7 +345,7 @@ export class Logserver {
       paginationPageSize: 50,
       paginationPageSizeSelector: [5, 10, 50, 100, 200, 300, 1000],
       // rowSelection: 'single',
-      rowHeight: 40,
+      // rowHeight: 40,
       defaultColDef: {
         flex: 1,
         minWidth: 50,
@@ -353,7 +353,7 @@ export class Logserver {
         headerClass: 'bold',
         floatingFilter: false,
         resizable: false,
-        sortable: false,
+        sortable: true,
         wrapText: true,
         wrapHeaderText: true,
         suppressAutoSize: true,
@@ -381,7 +381,7 @@ export class Logserver {
           field: 'fecha',
           cellClass: 'text-start',
           filter: true,
-          flex: 1
+          maxWidth: 200,
         },
         {
           headerName: 'Usuario',
@@ -389,7 +389,7 @@ export class Logserver {
           field: 'usuario',
           cellClass: 'text-start',
           filter: true,
-          flex: 1
+          maxWidth: 300,
         },
         {
           headerName: 'Accion',
@@ -397,7 +397,7 @@ export class Logserver {
           field: 'accion',
           cellClass: 'text-start',
           filter: true,
-          flex: 1
+          maxWidth: 100,
         },
         {
           headerName: 'Comando',
@@ -405,7 +405,7 @@ export class Logserver {
           field: 'comando',
           cellClass: 'text-start',
           filter: true,
-          flex: 3
+          wrapText: true
         },
       ],
     };
@@ -425,7 +425,38 @@ export class Logserver {
     this.gridApi!.setGridOption('rowData', this.lstData);
   }
 
+  exportarPDF(){
+    let data:any = this.prepareToExport();  
+    let params = {
+      orientation: "p",
+      titulo: this.work.nombre + " - Logs",
+      data: data,
+      filename: `lisah_${this.work.nombre}_logs_${moment().format("YYYYMMDDHHmmss")}.pdf`
+    }
+    this.func.exportarPDF(params);
+  }
 
+  exportarCSV(){
+    let data:any = this.prepareToExport();  
+    this.func.exportarCSV(data, `lisah_${this.work.nombre}_logs_${moment().format("YYYYMMDDHHmmss")}.csv`);
+  }
+  
+  prepareToExport(): Array<any>{
+    let arr:any = [];
+    this.lstData.forEach((d:any) => {
+      try{
+        arr.push({
+          fecha: moment(d.fecha).format("YYYY-MM-DD HH:mm:ss"),
+          usuario: d.usuario ,
+          accion: d.accion,
+          comando: d.comando,
+        })
+      }catch(err){
+        console.log(err, d)
+      }
+    });
+    return arr;
+  }
 
 
 }

@@ -65,6 +65,7 @@ export class Config {
   tiempo_caducidad_claves: number = 0;
   tiempo_caducidad_token_usuarios: number = 0;
   tiempo_caducidad_token_agente: number = 0;
+  fecha_limite_validez_clave:string = "";
   
   validaNombre: string = "";
   validaRUC: string = "";
@@ -134,7 +135,8 @@ export class Config {
     this.tiempo_refresco = this.rstConfig.tiempo_refresco;
     this.tiempo_caducidad_claves = this.rstConfig.tiempo_caducidad_claves;
     this.tiempo_caducidad_token_usuarios = this.rstConfig.tiempo_caducidad_token_usuarios;
-    this.tiempo_caducidad_token_agente = this.rstConfig.tiempo_caducidad_token_agente;
+    // this.tiempo_caducidad_token_agente = this.rstConfig.tiempo_caducidad_token_agente;
+    this.fecha_limite_validez_clave = this.rstConfig.fecha_limite_validez_clave;
   }
 
   getScripts(){
@@ -208,7 +210,8 @@ export class Config {
       tiempo_refresco: this.tiempo_refresco,
       tiempo_caducidad_claves: this.tiempo_caducidad_claves,
       tiempo_caducidad_token_usuarios: this.tiempo_caducidad_token_usuarios,
-      tiempo_caducidad_token_agente: this.tiempo_caducidad_token_agente,
+      // tiempo_caducidad_token_agente: this.tiempo_caducidad_token_agente,
+      fecha_limite_validez_clave: this.fecha_limite_validez_clave,
     }
 
 

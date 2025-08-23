@@ -16,6 +16,7 @@ import { CommonModule } from '@angular/common';
 import moment from 'moment';
 import { Titulo } from '../shared/titulo/titulo';
 import { Path } from '../shared/path/path';
+import { GeneralService } from '../../core/services/general.service';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -29,6 +30,7 @@ export class Usuarios {
   private readonly userSvc = inject(UsuarioService);
   private readonly func = inject(Functions);
   private readonly sessions = inject(Sessions);
+  private readonly generalSvc = inject(GeneralService);
 
   user: any = null;
   work: any = null;
@@ -40,6 +42,7 @@ export class Usuarios {
   public gridApi?: GridApi<any>;
   public id_selected: string = '';
   public is_deleted: any = null;
+  public is_active:boolean = true;
 
   public canR: boolean = false;
   public canW: boolean = false;
@@ -130,6 +133,7 @@ export class Usuarios {
       onRowClicked: (event: any) => {
         this.id_selected = event.data.idusuario;
         this.is_deleted = event.data.deleted_at;
+        this.is_active = event.data.estado == 1 ? true : false;
       },
       columnDefs: [],
     };
@@ -163,7 +167,7 @@ export class Usuarios {
           cellClass: 'text-start',
           sortIndex: 2,
           sort: 'asc',
-          cellRenderer: this.renderAccionGrupo.bind(this),
+          // cellRenderer: this.renderAccionGrupo.bind(this),
         },
         {
           headerName: 'Nombre',
@@ -393,6 +397,12 @@ export class Usuarios {
           this.procesoDelete();
         } else if (keyword == 'recuperar') {
           this.procesoRestore();
+        } else if (keyword == 'reset') {
+          this.procesoReset();
+        } else if (keyword == 'inactivar') {
+          this.procesoInactivar("inactivar");
+        } else if (keyword == 'activar') {
+          this.procesoInactivar("activar");
         }
       }
     });
@@ -428,6 +438,65 @@ export class Usuarios {
           setTimeout(() => {
             this.getData();
           }, 500);
+        } else {
+          this.func.handleErrors("Server", resp.message);
+        }
+      },
+      error: (err: any) => {
+        this.func.closeSwal();
+        this.func.handleErrors("Usuarios", err);
+      },
+    });
+  }
+
+  procesoReset(){
+    this.func.showLoading('Reseteando');
+
+    this.generalSvc.apiRest("PUT", `usuario_actualiza_clave/${this.id_selected}`).subscribe({
+      next: (resp: any) => {
+        console.log(resp)
+        this.func.closeSwal();
+        if (resp.status) {
+          this.func.showMessage("info", "Reset", "Se ha enviado la nueva contraseña al usuario")
+          setTimeout(() => {
+            this.getData();
+          }, 500);
+        } else {
+          this.func.handleErrors("Server", resp.message);
+        }
+      },
+      error: (err: any) => {
+        this.func.closeSwal();
+        this.func.handleErrors("Usuarios", err);
+      },
+    });
+  }
+
+  procesoInactivar(accion=""){
+    this.func.showLoading(accion == "activar" ? 'Activando' : 'Inactivando');
+
+    this.generalSvc.apiRest("PUT", `usuario_inactivar/${this.id_selected}/${accion}`).subscribe({
+      next: (resp: any) => {
+        // console.log(resp)
+        this.func.closeSwal();
+        if (resp.status) {
+
+          let html = `<textarea readonly class="form-control h300">${resp.message}</textarea>`;
+
+          Swal.fire({
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            title: "Usuarios",
+            html: html,
+            footer: Global.acronym + " " + Global.appversion,
+            showClass: { backdrop: 'swal2-noanimation', popup: '' },
+            hideClass: { popup: '' },
+          }).then((result: any) => {
+            this.getData();
+          });
+          // setTimeout(() => {
+          //   this.getData();
+          // }, 3000);
         } else {
           this.func.handleErrors("Server", resp.message);
         }

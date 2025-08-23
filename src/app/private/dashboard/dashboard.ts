@@ -26,8 +26,10 @@ export class Dashboard {
       {nombre: "Dashboards", ruta: ""}, 
       {nombre: "Dashboard", ruta: "admin/dashboard"}, 
     ];
-  
     this.titulo = {icono: "fas fa-chart-bar",nombre: "Dashboard"}
     
   }
+
+
+  
 }
