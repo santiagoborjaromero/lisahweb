@@ -96,7 +96,7 @@ closeSession(confirmed = false){
           next: (resp: any) => {
             this.func.closeSwal();
             if (resp.status) {
-              this.func.toast("success", "Sesion cerrada con éxtito");
+              this.func.toast("success", resp.message);
               setTimeout(()=>{
                 this.sessions.set("statusLogged", "false")
                 this.sessions.set("ruta", "")
