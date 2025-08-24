@@ -6,6 +6,7 @@ import moment from 'moment';
 import { Global } from '../../core/config/global.config';
 import { RouterOutlet } from '@angular/router';
 import Swal from 'sweetalert2';
+import { GeneralService } from '../../core/services/general.service';
 
 @Component({
   selector: 'app-skeleton',
@@ -21,6 +22,7 @@ export class Skeleton {
 
   private readonly func = inject(Functions)
   private readonly sessions = inject(Sessions)
+  private readonly generalSvc = inject(GeneralService)
 
   current_year = moment().format("YYYY");
   costumer = Global.costumer;
@@ -74,6 +76,7 @@ ngOnDestroy(): void {
 }
 
 closeSession(confirmed = false){
+  
   Swal.fire({
       allowOutsideClick: false,
       allowEscapeKey: false,
@@ -89,12 +92,30 @@ closeSession(confirmed = false){
       hideClass: { popup: '' },
     }).then(res => {
       if (res.isConfirmed) {
-        this.sessions.set("statusLogged", "false")
-        this.sessions.set("ruta", "")
-        this.func.goRoute("login");
+        this.generalSvc.apiRest("POST", "logout").subscribe({
+          next: (resp: any) => {
+            this.func.closeSwal();
+            if (resp.status) {
+              this.func.toast("success", "Sesion cerrada con éxtito");
+              setTimeout(()=>{
+                this.sessions.set("statusLogged", "false")
+                this.sessions.set("ruta", "")
+                this.func.goRoute("login");
+              })
+            } else {
+              this.func.handleErrors("Logout", resp.message);
+            }
+          },
+          error: (err: any) => {
+            this.func.closeSwal();
+            this.func.handleErrors("Logout", err);
+          },
+        });
       }
     });
   }
+
+
 
   execRuta(ruta: string){
     let obj = ruta.split("|");
