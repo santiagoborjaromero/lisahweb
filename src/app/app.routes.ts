@@ -28,6 +28,7 @@ export const routes: Routes = [
             {path:"generalidades", loadComponent: () => import('./private/generalidades/generalidades').then((c)=> c.Generalidades)},
 
             /** Para clientes */
+            {path:"profile", loadComponent: () => import('./private/profile/profile').then((c)=> c.Profile)},
             {path:"configs", loadComponent: () => import('./private/config/config').then((c)=> c.Config)},
             {path:"usuarios", loadComponent: () => import('./private/usuarios/usuarios').then((c)=> c.Usuarios)},
             {path:"usuario/:id", loadComponent: () => import('./private/usuarios/edit/edit').then((c)=> c.Edit)},

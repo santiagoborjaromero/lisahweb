@@ -1,0 +1,88 @@
+<app-path [lstRutas]="path" />
+<div class="content">
+  <app-titulo [lstHeader]="titulo" />
+
+  <div class="row justify-content-md-center">
+    <div class="col-12 col-sm-12 col-md-6 col-lg-4 card mt-1">
+      <div class="car-title d-flex flex-column text-center p-5">
+          <div class="col-12 col-sm-12 col-md-12 col-lg-12 text-center d-flex flex-column">
+            <i class="fa fa-user t50"></i>
+            @if(!edit){
+              <span class="mt-5 t20">{{nombre}}</span>
+            }
+            @if(edit){
+              <input type="text" class="form-control mt-2 text-center" [(ngModel)]="nombre" id="nombre" name="nombre" aria-label="Ingrese el nombre del usuario">
+            }
+            <small class="t12 bold text-secondary text-uppercase">{{user.grupo.nombre}}</small>
+            <br>
+            <div class="text-center d-flexXX justify-content-betweenXXX">
+               @if (!edit) {
+                 <button role="button" (click)="edit = !edit" class="btn btn-outline-primary mr-2" aria-label="Editar Perfil" title="Editar Perfil">
+                   <i class="far fa-edit"></i>
+                 </button>
+               }
+               @if (edit) {
+                 <button role="button" (click)="save()" class="btn btn-outline-primary mr-2" aria-label="Editar Perfil" title="Guardar Perfil">
+                   <i class="fas fa-save"></i>
+                 </button>
+               }
+              <button role="button" class="btn btn-outline-primary mr-2" aria-label="Resetear Contraseña" title="Resetear Contraseña">
+                <i class="fas fa-key"></i>
+              </button>
+            </div>
+      </div>
+        <div class="car-body d-flex flex-column linea-arriba p-5 mt-5">
+          <div class="car-body row">
+             <div class="col-12 col-sm-12 col-md-12 col-lg-8 text-start d-flex flex-column">
+              @if (!edit) {
+                <span>{{email}}</span>
+              }
+              @if (edit) {
+                <input type="email" class="form-control" [(ngModel)]="email" id="email" name="email" aria-label="Ingrese el correo electronico">
+              }
+              <small class="text-secondary bold"><i>Correo Electrónico</i></small>
+              <!-- <br>
+              <span>{{user.cliente.email_confirmado == 1 ? 'Se encuentra confirmado' : 'No se encuentra confirmado' }}</span>
+              <small class="text-secondary bold"><i>Correo Electrónico Confirmado</i></small> -->
+              <br>
+              @if (!edit) {
+                <span>{{ntfy_identificador}}</span>
+              }
+              @if (edit) {
+                <input type="text" class="form-control" [(ngModel)]="ntfy_identificador"  id="ntfy_identificador" name="ntfy_identificador" aria-label="Ingrese el identificador de NTFY">
+              }
+              <small class="text-secondary bold"><i>Identificador NTFY</i></small>
+              <br>
+              <span>{{user.cliente.nombre}}</span>
+              <small class="text-secondary bold"><i>Cliente</i></small>
+             </div>
+             <div class="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column">
+                  <div class="col-12 text-center d-flex flex-column bg-opciones-fondo2">
+                    <span class="t50 bold text-success">{{user.numero_logueos}}</span>
+                    <small class="text-secondary bold"><i>Número de Logins</i></small>
+                  </div>
+                  <div class="col-12 text-center d-flex flex-column bg-opciones-fondo2 mt-1">
+                    <span class="t50 bold text-success">{{user.numero_deslogueos}}</span>
+                    <small class="text-secondary bold"><i>Número de Logouts</i></small>
+                  </div>  
+             </div>
+          </div>
+          
+        </div>
+    </div>
+    <!-- <div class="col-12 col-sm-12 col-md-4 col-lg-3 card mt-1 d-flex flex-column">
+      <div class="car-body row">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-6 text-center d-flex flex-column">
+          <span class="t50 bold text-success">{{user.numero_logueos}}</span>
+          <small class="text-secondary bold"><i>Número de ingresos al sistema</i></small>
+        </div>
+        <div class="col-12 col-sm-12 col-md-12 col-lg-6 text-center d-flex flex-column">
+          <span class="t50 bold text-success">{{user.numero_deslogueos}}</span>
+          <small class="text-secondary bold"><i>Número de salidas del sistema</i></small>
+        </div>  
+      </div>
+    </div> -->
+  </div>
+
+
+</div>

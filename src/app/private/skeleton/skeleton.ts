@@ -17,6 +17,7 @@ import { GeneralService } from '../../core/services/general.service';
 })
 export class Skeleton {
   @ViewChild('btnClose') btnClose: ElementRef | undefined
+  @ViewChild('btnClose2') btnClose2: ElementRef | undefined
   // @ViewChild('offcanvasDarkNavbar') offcanvasDarkNavbar: ElementRef | undefined
   // @ViewChild('offProfile') offProfile: ElementRef | undefined
 
@@ -46,7 +47,16 @@ export class Skeleton {
 ngOnInit(): void {
   this.user = JSON.parse(this.sessions.get("user"));
   if (this.user){
-    this.lstMenuOriginal = this.user.roles.menu;
+    if (this.user.grupo && this.user.grupo.rolmenugrupos){
+      console.log("Por grupo de Usuarios el Menu")
+      this.user.grupo.rolmenugrupos.forEach( (rm:any)=>{
+        this.lstMenuOriginal.push(rm.rolmenu[0].menu[0])
+      })
+      // this.lstMenuOriginal = this.user.grupo.rolmenugrupos;
+    }else{
+      console.log("Por Roles el Menu")
+      this.lstMenuOriginal = this.user.roles.menu;
+    }
 
     this.lstMenuOriginal.sort((a:any, b:any) =>
       a.orden.localeCompare(b.orden)
@@ -122,6 +132,11 @@ closeSession(confirmed = false){
     this.sessions.set("ruta", ruta)
     this.btnClose?.nativeElement.click();
     this.func.goRoute(`/admin/${obj[3]}`, false, false);
+  }
+  
+  profile(){
+    this.btnClose2?.nativeElement.click();
+    this.func.goRoute(`/admin/profile`, false, false);
   }
 
 

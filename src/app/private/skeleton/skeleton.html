@@ -31,7 +31,7 @@
           aria-controls="offProfile"
           aria-label="Opciones de Usuario"
         >
-          <i role="img" class="fas fa-user fa-fw"></i> 
+          <i role="img" class="fas fa-user fa-fw"></i> {{user.nombre}}
         </button>
       </div>
     </header>
@@ -118,18 +118,18 @@
       <h5 class="offcanvas-title" id="offProfileLabel">
         <img role="img" src="/assets/img/icono80.png" alt="LISAH" width="30" /> {{acronym}} - Opciones de Usuario
       </h5>
-      <button role="button" type="button" class="btn-close btn-close-dark" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      <button role="button" #btnClose2 type="button" class="btn-close btn-close-dark" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
       <ul class="navbar-nav">
         <li class="nav-item bg-opciones-fondo">
           <i role="img" class="fas fa-user fa-fw t30 mt-2 mr-2 col1"></i>
           <div class="col2">
-            {{user.nombre}} <br />
-            <small>{{user.roles.nombre}}</small>
+            <span>{{user.nombre}}</span> <br />
+            <small class="bold">{{user.grupo.nombre}}</small>
           </div>
           <div class="text-center p-1 col1">
-            <button role="button" class="btn btn-link">
+            <button role="button" class="btn btn-link" (click)="profile()" >
               <i role="img" class="far fa-edit text-black t20"></i>
             </button>
             <button role="button" class="btn btn-link" (click)="closeSession()">
