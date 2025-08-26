@@ -2,48 +2,220 @@
 <div class="content">
   <app-titulo [lstHeader]="titulo" />
 
-<div class="card mb-4 col-12 col-md-3 col-lg-3">
-  <div class="card-body">
-    
-  </div>
-</div>
-<!-- <div class="card mb-4">
-  <div class="card-header">
-    <i role="img" class="fas fa-chart-area me-1"></i>
-    Area Chart Example
-  </div>
-  <div class="card-body">
-    <canvas id="myAreaChart" width="100%" height="30"></canvas>
-  </div>
-  <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
-</div>
-<div class="row">
-  <div class="col-lg-6">
-    <div class="card mb-4">
-      <div class="card-header">
-        <i role="img" class="fas fa-chart-bar me-1"></i>
-        Bar Chart Example
+  <section class="row barra-menu">
+    <div class="col d-flex justify-content-between">
+      <div class="d-flex justify-content-start">
+        <button class="btn btn-outline-primary t20">
+          Servidor {{current_server_name}} <i class="fas fa-sort-down"></i>
+        </button>
       </div>
-      <div class="card-body">
-        <canvas id="myBarChart" width="100%" height="50"></canvas>
-      </div>
-      <div class="card-footer small text-muted">
-        Updated yesterday at 11:59 PM
+      <div>
+        <div class="btn-group mr-1" role="group" aria-label="Basic example">
+          <button role="button" [disabled]="playMonitor"  class="btn btn-primary " (click)="openWS()"  title="Iniciar Monitoreo"><i role="img" class="fas fa-play"></i> </button>
+          <button role="button" [disabled]="!playMonitor" class="btn btn-primary " (click)="stopMonitor()"  title="Detener Monitoreo"><i role="img" class="fas fa-stop"></i> </button>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="col-lg-6">
-    <div class="card mb-4">
-      <div class="card-header">
-        <i role="img" class="fas fa-chart-pie me-1"></i>
-        Pie Chart Example
+  </section>
+
+  <section class="row">
+    <div class="col col-sm-12 col-md-6 col-lg-4 col-xl-4 content-stats">
+      <div class="stats" style="width: 50%">
+        <span class="icono icono-rojo">
+          <i class="fas fa-server"></i>
+        </span>
+        <span class="seccion">HOST / IP</span>
+        <span class="valor valor-rojo">{{work.host}}</span>
+        <span class="avg">Puerto {{work.agente_puerto}}</span>
       </div>
-      <div class="card-body">
-        <canvas id="myPieChart" width="100%" height="50"></canvas>
-      </div>
-      <div class="card-footer small text-muted">
-        Updated yesterday at 11:59 PM
+      <div class="stats" style="width: 50%">
+        <span class="icono icono-morado">
+          <i class="far fa-clock"></i>
+        </span>
+        <span class="seccion">TIEMPO ACTIVO</span>
+        <span class="valor valor-morado">{{lstDatos.uptime}}</span>
+        <span class="avg"><i>DD:HH:MM:SS</i></span>
       </div>
     </div>
-  </div>
-</div> -->
+
+    <div class="col col-sm-12 col-md-6 col-lg-4 col-xl-4 content-stats">
+      <div class="stats" style="width: 33%">
+        <span class="icono icono-rojo">
+          <i class="fas fa-memory"></i>
+        </span>
+        <span class="seccion">RAM</span>
+        <span class="valor valor-rojo">{{lstDatos.memoria.porcentaje}}%</span>
+        <div
+          class="progress"
+          role="progressbar"
+          aria-label="Porcentaje RAM"
+          aria-valuemin="0"
+          aria-valuemax="100"
+        >
+          <div
+            class="progress-bar pbar-rojo"
+            style="width: {{lstDatos.memoria.porcentaje}}%"
+          ></div>
+        </div>
+        <span class="avg"
+          >{{lstDatos.memoria.usado}} / {{lstDatos.memoria.total}}</span
+        >
+      </div>
+
+      <div class="stats" style="width: 33%">
+        <span class="icono icono-morado">
+          <i class="fas fa-microchip"></i>
+        </span>
+        <span class="seccion">CPU</span>
+        <span class="valor valor-morado">{{lstDatos.cpu.porcentaje}}%</span>
+        <div
+          class="progress"
+          role="progressbar"
+          aria-label="Porcentaje RAM"
+          aria-valuemin="0"
+          aria-valuemax="100"
+        >
+          <div
+            class="progress-bar pbar-morado"
+            style="width: {{lstDatos.cpu.porcentaje}}%"
+          ></div>
+        </div>
+        <span class="avg">
+          <div class="row">
+            <div class="col text-end bold text-primary">
+              {{lstDatos.cpu.t1}}
+            </div>
+            <div class="col text-end bold text-primary">
+              {{lstDatos.cpu.t5}}
+            </div>
+            <div class="col text-end bold text-primary">
+              {{lstDatos.cpu.t15}}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col t10 text-danger bold text-end">1m</div>
+            <div class="col t10 text-danger bold text-end">5m</div>
+            <div class="col t10 text-danger bold text-end">15m</div>
+          </div>
+        </span>
+      </div>
+
+      <div class="stats" style="width: 33%">
+        <span class="icono icono-verde">
+          <i class="fas fa-sd-card"></i>
+        </span>
+        <span class="seccion">DISCO</span>
+        <span class="valor valor-verde">{{lstDatos.disco.porcentaje}}</span>
+        <div
+          class="progress"
+          role="progressbar"
+          aria-label="Porcentaje RAM"
+          aria-valuemin="0"
+          aria-valuemax="100"
+        >
+          <div
+            class="progress-bar pbar-verder"
+            style="width: {{lstDatos.disco.porcentaje}}"
+          ></div>
+        </div>
+        <span class="avg"
+          >{{lstDatos.disco.usado}} / {{lstDatos.disco.total}}</span
+        >
+      </div>
+    </div>
+
+    <div
+      class="col col-sm-12 col-md-6 col-lg-4 col-xl-4 content-stats chartjs-wrapper"
+    >
+      <div class="stats" style="width: 100%">
+        <canvas
+          baseChart
+          width="1200"
+          height="400"
+          [type]="'line'"
+          [data]="cpuChartData"
+          [options]="cpuChartOptions"
+          [legend]="chartLegend"
+        >
+        </canvas>
+      </div>
+    </div>
+  </section>
+
+  <section class="row">
+    <div class="col-12 col-md-3 h300" >
+      <span class="bold"><i>Auditoría de acciones por agrupación </i></span>
+
+      <ul class="list-group list-group-flush" >
+        @for (item of lstAcciones; track $index) {
+          <li class="list-group-item mt-1">
+            <span class="bold text-danger t30">{{item.total}}</span>
+            <br>
+            <span class="t16">{{item.descripcion}}</span>
+          </li>
+        }
+      </ul>
+    </div>
+    <div class="col-12 col-md-3 h300">
+      <span class="bold"><i>Actividad reciente</i></span>
+
+      <ul class="list-group list-group-flush" >
+        @for (item of lstUltimasAcciones; track $index) {
+          <li class="list-group-item mt-1">
+            @if (item.metodo == "POST") {
+              <span class="bold text-danger">{{item.metodo}}</span>
+            }
+            @if (item.metodo == "PUT") {
+              <span class="bold text-success">{{item.metodo}}</span>
+            }
+            @if (item.metodo == "DELETE") {
+              <span class="bold text-danger">{{item.metodo}}</span>
+            }
+            <span class="t16">{{item.ruta}}</span>
+            <br>
+            <span class="t12 text-secondary bold">{{item.fecha}}</span>
+          </li>
+        }
+      </ul>
+    </div>
+    <div class="col-12 col-md-6 h300">
+      <span class="bold"><i>Procesos activos</i></span>
+      <table class="table striped-rows table-bordered ">
+        <thead>
+          <tr>
+            <th class="th-normal text-white">PID</th>
+            <th class="th-normal text-white">USER</th>
+            <th class="th-normal text-white text-end">PR</th>
+            <th class="th-normal text-white text-end">NI</th>
+            <th class="th-normal text-white text-end">VIRT</th>
+            <th class="th-normal text-white text-end">RES</th>
+            <th class="th-normal text-white text-end">SHR</th>
+            <th class="th-normal text-white text-end">S</th>
+            <th class="th-normal text-white text-end">%CPU</th>
+            <th class="th-normal text-white text-end">%MEM</th>
+            <th class="th-normal text-white text-end">TIME+</th>
+            <th class="th-normal text-white">COMMAND</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>  
+        @for (item of lstDatos.procesos; track $index) {
+          <tr>
+            <td class="t14 h50 td2">{{item["PID"]}}</td>
+            <td class="t14 h50 td2">{{item["USER"]}}</td>
+            <td class="t14 h50 td2 text-end">{{item["PR"]}}</td>
+            <td class="t14 h50 td2 text-end">{{item["NI"]}}</td>
+            <td class="t14 h50 td2 text-end">{{item["VIRT"]}}</td>
+            <td class="t14 h50 td2 text-end">{{item["RES"]}}</td>
+            <td class="t14 h50 td2 text-end">{{item["SHR"]}}</td>
+            <td class="t14 h50 td2 text-end">{{item["S"]}}</td>
+            <td class="t14 h50 td2 text-end">{{item["CPU"] | number:'1.2-2' }}</td>
+            <td class="t14 h50 td2 text-end">{{item["MEM"] | number:'1.2-2' }}</td>
+            <td class="t14 h50 td2 text-end">{{item["TIME"]}}</td>
+            <td class="t14 h50 td2">{{item["COMMAND"]}}</td>
+          </tr>
+        }
+      </table>
+    </div>
+  </section>
+</div>
