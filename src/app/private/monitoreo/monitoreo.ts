@@ -101,6 +101,10 @@ export class Monitoreo {
     this.getUsuario();
   }
 
+  ngOnDestroy(): void {
+    this.stopMonitor();
+  }
+
   getUsuario() {
     this.lstServidores = [];
     this.func.showLoading('Cargando Servidores del Usuario');
