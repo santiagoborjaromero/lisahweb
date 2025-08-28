@@ -9,6 +9,7 @@ import { Global } from '../../core/config/global.config';
 import { Titulo } from '../shared/titulo/titulo';
 import { Path } from '../shared/path/path';
 import { Sessions } from '../../core/helpers/session.helper';
+import { GeneralService } from '../../core/services/general.service';
 
 @Component({
   selector: 'app-config',
@@ -21,6 +22,7 @@ export class Config {
   private readonly func = inject(Functions);
   private readonly scriptSvc = inject(ScriptsService);
   private readonly sessions = inject(Sessions);
+  private readonly generalSvc = inject(GeneralService);
 
   user: any = null;
   work: any = null;
@@ -42,10 +44,12 @@ export class Config {
     {id: "ntfy", nombre: "NTFY"},
   ];
 
+  lstUsuarios: Array<any> = [];
   lstScripts: Array<any> = [];
   lstScriptCreacionUsuarios: Array<any> = [];
   lstScriptCreacionGrupoUsuarios: Array<any> = [];
 
+  idusuario: number = 0;
   idconfiguracion: number = 0;
   idcliente: number = 0;
   cliente_nombre: string = "";
@@ -88,6 +92,7 @@ export class Config {
     },800)
 
     this.getScripts();
+    this.getUsuarios();
   }
 
   ngOnDestroy(): void {
@@ -116,6 +121,25 @@ export class Config {
     })
   }
 
+  getUsuarios() {
+    this.lstUsuarios = [];
+    this.generalSvc.apiRest("GET", "usuarios").subscribe({
+      next: (resp: any) => {
+        this.func.closeSwal();
+        if (resp.status) {
+          this.lstUsuarios = resp.data;
+          // console.log(this.lstUsuarios)
+        } else {
+          this.func.handleErrors("Server", resp.message);
+        }
+      },
+      error: (err: any) => {
+        this.func.closeSwal();
+        this.func.handleErrors("Usuarios", err);
+      },
+    });
+  }
+
   populateData(){
     this.idconfiguracion = this.rstConfig.idconfiguracion;
     this.idcliente = this.rstConfig.idcliente;
@@ -123,6 +147,9 @@ export class Config {
     this.cliente_identificacion = this.rstConfig.cliente.identificacion;
     this.cliente_direccion = this.rstConfig.cliente.direccion;
     this.cliente_telefono = this.rstConfig.cliente.telefono;
+    this.idusuario = this.rstConfig.cliente.idusuario ?? this.lstUsuarios[0].idusuario;
+
+
     this.ldap_servidor = this.rstConfig.ldap_servidor;
     this.ldap_puerto = this.rstConfig.ldap_puerto;
     this.ldap_usuario = this.rstConfig.ldap_usuario;
@@ -198,6 +225,7 @@ export class Config {
       cliente_identificacion: this.cliente_identificacion,
       cliente_direccion: this.cliente_direccion,
       cliente_telefono: this.cliente_telefono,
+      idusuario: this.idusuario,
       ldap_servidor: this.ldap_servidor,
       ldap_puerto: this.ldap_puerto,
       ldap_usuario: this.ldap_usuario,

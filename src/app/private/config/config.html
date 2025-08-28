@@ -86,7 +86,7 @@
             <br />
             <small><i role="img" class="text-secondary">Numérico</i></small>
           </div>
-          <div class="col-8 col-md-10 td2">
+          <div class="col-8 col-md-4 td2">
             <input
               type="text"
               name="cliente_direccion"
@@ -99,6 +99,28 @@
             <sup
               ><i role="img" class="text-secondary"
                 >Dirección domiciliaria de la empresa.</i
+              ></sup
+            >
+          </div>
+
+          <div class="col-4 col-md-2 td2 text-end">
+            <label for="cliente_direccion">Usuario Principal</label>
+            <br />
+            <small><i role="img" class="text-secondary">Selección</i></small>
+          </div>
+          <div class="col-8 col-md-4 td2">
+            <select [disabled]="!accionEditar" [(ngModel)]="idusuario" name="idusuario" id="idusuario" class="form-control">
+              @if(lstUsuarios.length>0){
+                @for (item of lstUsuarios; track $index) {
+                  <option value="{{item.idusuario}}">{{item.nombre}}</option>
+                }
+              }@else {
+                <option value=""> -- No hay métodos definidos --</option>
+              }
+            </select>
+            <sup
+              ><i role="img" class="text-secondary"
+                >Usuario principal de clase superusuario .</i
               ></sup
             >
           </div>
