@@ -1,3 +1,4 @@
+
 <app-path [lstRutas]="path" />
 <div class="content">
   <app-titulo [lstHeader]="titulo" />
@@ -5,9 +6,10 @@
   <section class="row barra-menu">
     <div class="col d-flex justify-content-between">
       <div class="d-flex justify-content-start">
-        <button class="btn btn-outline-primary t20">
-          Servidor {{current_server_name}} <i class="fas fa-sort-down"></i>
-        </button>
+        <div class="dropdown">
+          <button role="button"  class="btn btn-primary m-1 dropdown-toggle" 
+              data-bs-toggle="modal" data-bs-target="#ventanaModal">{{current_server_name}}</button> 
+        </div>
       </div>
       <div>
         <div class="btn-group mr-1" role="group" aria-label="Basic example">
@@ -24,9 +26,12 @@
         <span class="icono icono-rojo">
           <i class="fas fa-server"></i>
         </span>
-        <span class="seccion">HOST / IP</span>
+        <span class="seccion">HOST</span>
         <span class="valor valor-rojo">{{work.host}}</span>
-        <span class="avg">Puerto {{work.agente_puerto}}</span>
+        <span class="avgS">  
+          <small><i>Usuarios Asignados:</i></small> &nbsp;
+          <span class="bold">{{rstServidor.usuarios.length}}</span> 
+        </span>
       </div>
       <div class="stats" style="width: 50%">
         <span class="icono icono-morado">
@@ -218,4 +223,22 @@
       </table>
     </div>
   </section>
+</div>
+
+
+<div #modal class="modal modal-xl" id="ventanaModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Lista de Servidores</h5>
+        <button role="button" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div #myGrid id="myGrid" class="ag-theme-quartz scrollx" style="height: 400px; min-height: 400px"></div>
+      </div>
+      <div class="modal-footer">
+        <button #btnClose role="button" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
 </div>

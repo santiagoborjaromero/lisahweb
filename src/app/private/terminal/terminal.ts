@@ -170,7 +170,7 @@ export class Terminal {
     // let url = `http://192.168.1.169:8750/ssh/host/192.168.1.169?port=2222&header=LISAH&headerBackground=green&cursorBlink=true`;
     // let url = `http://192.168.1.169:8750/ssh/host/192.168.1.169?port=2222&header=LISAH&headerBackground=green`;
     let url = `http://${this.work.host}:${this.work.terminal_puerto}/ssh/host/?port=${this.work.ssh_puerto}&header=LISAH&headerBackground=green&cursorBlink=true`;
-    console.log(url)
+    // console.log(url)
     this.webssh2 = this.sanitizer.bypassSecurityTrustResourceUrl(url);
     // this.webssh2 = url;
   }

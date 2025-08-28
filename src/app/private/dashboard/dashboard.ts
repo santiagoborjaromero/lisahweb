@@ -1,5 +1,5 @@
 import { CommonModule, DecimalPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Sessions } from '../../core/helpers/session.helper';
 import { Path } from '../shared/path/path';
@@ -9,7 +9,7 @@ import { GeneralService } from '../../core/services/general.service';
 import { Chart, ChartConfiguration, ChartOptions, registerables } from 'chart.js';
 import iconsData from '../../core/data/icons.data';
 import { Global } from '../../core/config/global.config';
-import { AllCommunityModule, GridApi, GridOptions, ModuleRegistry } from 'ag-grid-community';
+import { AllCommunityModule, createGrid, GridApi, GridOptions, ICellRendererParams, ModuleRegistry } from 'ag-grid-community';
 import { BaseChartDirective } from 'ng2-charts';
 import moment from 'moment';
 
@@ -24,6 +24,7 @@ ModuleRegistry.registerModules([AllCommunityModule]);
   standalone: true
 })
 export class Dashboard {
+  @ViewChild('btnClose') btnClose:any;
   private readonly sessions = inject(Sessions);
   private readonly func = inject(Functions);
   private readonly generalSvc = inject(GeneralService);
@@ -49,6 +50,9 @@ export class Dashboard {
   public rows_selected: any = 0;
   public server_selected: any = {};
 
+
+  rstServidor: any = { usuarios: [] };
+
   lstCfg: any;
   lstAcciones: Array<any> = [];
   lstUltimasAcciones: Array<any> = [];
@@ -57,6 +61,7 @@ export class Dashboard {
   lstDatos:any = [];
   tmrMonitor:any = null;
   tiempo_refresco:number = 10;
+  paginacion = 50;
 
   chartLegend:boolean = false;
   idservidor:any ;
@@ -119,10 +124,17 @@ export class Dashboard {
       {nombre: "Dashboard General", ruta: "admin/dashboard"}, 
     ];
     this.titulo = {icono: "fas fa-chart-bar",nombre: "Dashboard General"}
-    this.getUsuario();
+
     this.initial();
+    this.dataGridStruct();
+    this.getUsuario();
     this.getAcciones();
     this.getUltimasAcciones();
+  }
+
+  ngOnDestroy(): void {
+    console.log("Deteniendo Temporizador")
+    clearInterval(this.tmrMonitor)
   }
 
   initial(){
@@ -169,19 +181,25 @@ export class Dashboard {
       borderWidth: 0,
       backgroundColor: 'rgba(41, 219, 204, 0.79)'
     });
+
   }
 
   getServidor() {
-    this.lstServidores = [];
+    /**
+     * Servidor y lista de usuarios asignados
+     */    
     this.func.showLoading('Cargando');
     this.generalSvc.apiRest("GET", `servidores_usuarios/${this.idservidor}`).subscribe({
       next: (resp: any) => {
         this.func.closeSwal();
-        // console.log(resp);
+        // console.log("→", resp)
         if (resp.status) {
-          // this.lstServidores = resp.data;
+          this.rstServidor = resp.data[0];
+
           this.lstCfg = resp.data[0].cliente.configuracion;
           this.tiempo_refresco = this.lstCfg.tiempo_refresco;
+          this.openWS();
+          this.startMonitor();
         } else {
           this.func.handleErrors("Servidor", resp.message);
         }
@@ -194,20 +212,22 @@ export class Dashboard {
   }
 
   getUsuario() {
-    this.lstServidores = [];
-
+    /**
+     * Usuario y lista de servidores asignados
+     */    
     this.generalSvc.apiRest("GET", `usuarios/${this.user.idusuario}`).subscribe({
       next: (resp: any) => {
         this.func.closeSwal();
-        // console.log(resp);
+        // console.log("█", resp)
         if (resp.status) {
-          this.lstServidoresAsignados = resp.data;
-          this.current_server_name = this.lstServidoresAsignados[0].servidores[0].nombre;
-          this.work = this.lstServidoresAsignados[0].servidores[0];
-          this.idservidor = this.work.idservidor;
-          this.getServidor()
-          this.openWS();
-          this.startMonitor();
+          this.lstServidoresAsignados = resp.data[0].servidores;
+          this.idservidor = this.lstServidoresAsignados[0].idservidor;
+          this.activaServidor(this.idservidor);
+          // this.current_server_name = this.lstServidoresAsignados[0].nombre;
+          // this.work = this.lstServidoresAsignados[0];
+          // this.idservidor = this.work.idservidor;
+          this.refreshAll()
+          
         } else {
           this.func.showMessage('error', 'Usuario', resp.message);
         }
@@ -217,6 +237,18 @@ export class Dashboard {
         this.func.handleErrors('Usuario', err);
       },
     });
+  }
+
+  activaServidor(id:any){
+    this.lstServidoresAsignados.forEach((s:any)=>{
+      if (s.idservidor == id){
+        this.current_server_name = s.nombre;
+        this.work = s;
+        this.idservidor = this.work.idservidor;
+      }
+    })
+    this.getServidor();
+    this.refreshAll();
   }
 
   getAcciones() {
@@ -509,6 +541,106 @@ export class Dashboard {
   }
 
 
+  dataGridStruct() {
+    let that = this;
+    this.gridOptions = {
+      rowData: [],
+      pagination: true,
+      paginationPageSize: this.paginacion,
+      paginationPageSizeSelector: [5, 10, 50, 100, 200, 300, 1000],
+      // rowSelection: 'single',
+      rowHeight: 50,
+      // autoSizeStrategy: {
+      //   type: 'fitCellContents'
+      // },
+      suppressAutoSize:true, 
+      // rowDragEntireRow: true,
+      defaultColDef: {
+        flex: 1,
+        minWidth: 100,
+        filter: true,
+        // enableCellChangeFlash: true,
+        headerClass: 'bold',
+        floatingFilter: true,
+        resizable: false,
+        sortable: true,
+      },
+      onRowClicked: (event: any) => {
+        this.id_selected = event.data.idservidor;
+      },
+      onRowDragEnd: (event) => {
+
+      },
+      rowDragManaged: false,
+      columnDefs: [
+        {
+          headerName: 'ID',
+          headerClass: ["th-center", "th-normal"],
+          field: 'idservidor',
+          filter: false,
+          hide: true,
+        },
+        {
+          headerName: 'Nombre',
+          headerClass: ["th-center", "th-normal"],
+          field: 'nombre',
+          cellClass: 'text-start',
+          filter: true,
+          flex: 2
+        },
+        {
+          headerName: 'Host',
+          headerClass: ["th-center", "th-normal"],
+          field: 'host',
+          cellClass: 'text-start',
+          filter: true,
+        },
+        {
+          headerName: 'Accion',
+          headerClass: ["th-center", "th-normal"],
+          field: 'idservidor',
+          cellClass: 'text-start',
+          cellRenderer: this.renderAccion.bind(this),
+          autoHeight: true,
+          filter: false,
+          maxWidth:100,
+        },
+
+      ],
+    };
+
+    that.gridApi = createGrid(
+      document.querySelector<HTMLElement>('#myGrid')!,
+      this.gridOptions
+    );
+  }
+
+  refreshAll() {
+    var params = {
+      force: true,
+      suppressFlash: true,
+    };
+    this.gridApi!.setGridOption('rowData', this.lstServidoresAsignados);
+    this.gridApi!.refreshCells(params);
+  }
+
+
+  renderAccion(params: ICellRendererParams) {
+    if (params.data.idservidor != this.idservidor){
+      const button = document.createElement('button');
+      button.className = 'btn btn-link text-primary';
+      button.innerHTML = '<i role="img" class="fas fa-plus-circle t30"></i>';
+      button.addEventListener('click', () => {
+        this.stopMonitor();
+        setTimeout(()=>{
+          this.activaServidor(params.data.idservidor);
+        },1000)
+        this.btnClose.nativeElement.click();
+      });
+      return button;
+    }
+    return ""
+  }
 
   
 }

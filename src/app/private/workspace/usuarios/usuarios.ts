@@ -177,7 +177,9 @@ export class Usuarios implements OnInit {
           if (resp.data[0].usuarios.length > 0){
             resp.data[0].usuarios.forEach((e:any)=>{
               e["servidor"] = null;
-              this.lstUsuarios.push(e)
+              if (e.idgrupo_usuario){
+                this.lstUsuarios.push(e)
+              }
             })
           }
           if (resp.data[0].comandos.length > 0){
