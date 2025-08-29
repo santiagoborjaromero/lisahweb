@@ -338,7 +338,11 @@ export class Functions {
 
     const data = [];
     let cabecera = Object.keys(array[0]);
-    data.push(cabecera);
+    let may:any = [];
+    cabecera.forEach(c=>{
+      may.push(this.capital(c.replace(/_/g, " ")));
+    });
+    data.push(may);
 
     let temp = [];
     for (var i = 0; i < array.length; i++) {
@@ -395,6 +399,10 @@ export class Functions {
       showConfirmButton: false,
       timer: 1500
     });
+  }
+
+  capital(str:any){
+    return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
 

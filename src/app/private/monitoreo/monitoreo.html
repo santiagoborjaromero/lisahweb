@@ -19,6 +19,18 @@
         <button role="button" [disabled]="monitoreo_esta_activo"  class="btn btn-primary btn-sm" (click)="startMonitor()"  title="Iniciar Monitoreo"><i role="img" class="fas fa-play"></i> Iniciar</button>
         <button role="button" [disabled]="!monitoreo_esta_activo" class="btn btn-primary btn-sm" (click)="stopMonitor()"  title="Detener Monitoreo"><i role="img" class="fas fa-stop"></i> Detener</button>
         <button role="button" [disabled]="monitoreo_esta_activo"  class="btn btn-primary btn-sm" (click)="sendMonitor()"  title="Monitorear una vez"><i role="img" class="far fa-play-circle"></i> Una vez</button>
+
+        <div class="btn-group" role="group">
+          <button type="button" class="btn btn-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-bars"></i>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="javascript:void(0)" (click)="exportarPDF()"><i class="far fa-file-pdf"></i> Exportar PDF</a></li>
+            <li><a class="dropdown-item" href="javascript:void(0)" (click)="exportarCSV()"><i class="far fa-file-excel"></i> Exportar CSV</a></li>
+            <!-- <li><hr class="dropdown-divider"></li> -->
+            <!-- <li><a class="dropdown-item" href="javascript:void(0)" (click)="getData()"><i role="img" class="fas fa-sync-alt"></i> Refrescar Datos</a></li> -->
+          </ul>
+        </div>
       </div>
     </div>
   </div>

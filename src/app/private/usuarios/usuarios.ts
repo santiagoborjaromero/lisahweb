@@ -34,15 +34,15 @@ export class Usuarios {
 
   user: any = null;
   work: any = null;
-  path:any = [];
-  titulo:any = {icono: "",nombre:""}
+  path: any = [];
+  titulo: any = { icono: '', nombre: '' };
 
   public dtOptions: any = {};
   public gridOptions: GridOptions<any> = {};
   public gridApi?: GridApi<any>;
   public id_selected: string = '';
   public is_deleted: any = null;
-  public is_active:boolean = true;
+  public is_active: boolean = true;
 
   public canR: boolean = false;
   public canW: boolean = false;
@@ -56,11 +56,11 @@ export class Usuarios {
     this.user = JSON.parse(this.sessions.get('user'));
 
     this.path = [
-      {nombre: "Configuración", ruta: ""}, 
-      {nombre: "Usuarios", ruta: "admin/usuarios"}, 
+      { nombre: 'Configuración', ruta: '' },
+      { nombre: 'Usuarios', ruta: 'admin/usuarios' },
     ];
-  
-    this.titulo = {icono: "fas fa-user",nombre: "Usuarios"}
+
+    this.titulo = { icono: 'fas fa-user', nombre: 'Usuarios' };
 
     if (this.user.idrol > 1) {
       let scope = this.user.roles.permisos_crud.split('');
@@ -100,12 +100,12 @@ export class Usuarios {
           this.lstData = resp.data;
           this.refreshAll();
         } else {
-          this.func.handleErrors("Server", resp.message);
+          this.func.handleErrors('Server', resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
-        this.func.handleErrors("Usuarios", err);
+        this.func.handleErrors('Usuarios', err);
       },
     });
   }
@@ -141,7 +141,7 @@ export class Usuarios {
     this.gridOptions.columnDefs?.push({
       headerName: 'ID',
       field: 'idusuario',
-      headerClass: ["th-center", "th-normal"],
+      headerClass: ['th-center', 'th-normal'],
       filter: false,
       hide: true,
     });
@@ -150,7 +150,7 @@ export class Usuarios {
       this.gridOptions.columnDefs?.push({
         headerName: 'Cliente',
         field: 'cliente.nombre',
-        headerClass: ["th-center", "th-normal"],
+        headerClass: ['th-center', 'th-normal'],
         filter: false,
         hide: false,
         sortIndex: 1,
@@ -162,7 +162,7 @@ export class Usuarios {
       this.gridOptions.columnDefs?.push(
         {
           headerName: 'Grupo',
-          headerClass: ["th-center", "th-normal"],
+          headerClass: ['th-center', 'th-normal'],
           field: 'grupo.nombre',
           cellClass: 'text-start',
           sortIndex: 2,
@@ -171,18 +171,17 @@ export class Usuarios {
         },
         {
           headerName: 'Nombre',
-          headerClass: ["th-center", "th-normal"],
+          headerClass: ['th-center', 'th-normal'],
           field: 'nombre',
           cellClass: 'text-start',
           sortIndex: 3,
           sort: 'asc',
           flex: 2,
           cellRenderer: this.renderAccionNombre.bind(this),
-          
         },
         {
           headerName: 'Usuario',
-          headerClass: ["th-center", "th-normal"],
+          headerClass: ['th-center', 'th-normal'],
           field: 'usuario',
           cellClass: 'text-start',
         },
@@ -198,10 +197,10 @@ export class Usuarios {
         // },
         {
           headerName: 'Email',
-          headerClass: ["th-center", "th-normal"],
+          headerClass: ['th-center', 'th-normal'],
           field: 'email',
           cellClass: 'text-start',
-          maxWidth:150,
+          maxWidth: 150,
           cellRenderer: (params: ICellRendererParams) => {
             let data = params.data;
             let email = data.email;
@@ -223,20 +222,20 @@ export class Usuarios {
         },
         {
           headerName: 'Servidores',
-          headerClass: ["th-center", "th-normal"],
+          headerClass: ['th-center', 'th-normal'],
           field: 'servidores.length',
           cellClass: 'text-start',
           maxWidth: 150,
-          cellRenderer: (params: ICellRendererParams)=>{
-            return `<i role="img" class="fas fa-server text-primary t20 mr-2"></i> <span class="t16">${params.value}</span>`
-          }
+          cellRenderer: (params: ICellRendererParams) => {
+            return `<i role="img" class="fas fa-server text-primary t20 mr-2"></i> <span class="t16">${params.value}</span>`;
+          },
         },
         {
           headerName: 'Estado',
-          headerClass: ["th-center", "th-normal"],
+          headerClass: ['th-center', 'th-normal'],
           field: 'estado',
           cellClass: 'text-start',
-          maxWidth:100,
+          maxWidth: 100,
           cellRenderer: (params: ICellRendererParams) => {
             let data = params.data;
             let status = data.estado;
@@ -251,34 +250,33 @@ export class Usuarios {
         },
         {
           headerName: 'Eliminado',
-          headerClass: ["th-center", "th-normal"],
+          headerClass: ['th-center', 'th-normal'],
           field: 'deleted_at',
           cellClass: 'text-start',
           sortIndex: 0,
           sort: 'asc',
-          maxWidth:180,
+          maxWidth: 180,
           cellRenderer: (params: ICellRendererParams) => {
             let data = params.data;
             let fecha = data.deleted_at;
-            let text = "";
-            if (fecha){
-              text = moment(fecha).format("YYYY-MM-DD");
-            }else{
-              text = `<i role="img" class="fas fa-minus text-dark t20"></i>`
+            let text = '';
+            if (fecha) {
+              text = moment(fecha).format('YYYY-MM-DD');
+            } else {
+              text = `<i role="img" class="fas fa-minus text-dark t20"></i>`;
             }
             return text;
-          }
+          },
         },
         {
           headerName: 'Accion',
-          headerClass: ["th-center", "th-normal"],
+          headerClass: ['th-center', 'th-normal'],
           cellClass: 'text-start',
           filter: true,
           flex: 3,
-          maxWidth:80,
+          maxWidth: 80,
           cellRenderer: this.renderAcciones.bind(this),
-        },
-        
+        }
       );
     }
 
@@ -326,25 +324,33 @@ export class Usuarios {
   renderAcciones(params: ICellRendererParams) {
     let button: any | undefined;
 
-    if (params.data.deleted_at === null){
+    if (params.data.deleted_at === null) {
       button = document.createElement('button');
       button.className = 'btn btn-white';
       button.innerHTML = `<i role="img" class="far fa-trash-alt text-danger" title='Eliminar'></i>`;
       button.addEventListener('click', () => {
-        this.procesoEspecial('eliminar un registro', 'eliminar', params.data.idusuario)
+        this.procesoEspecial(
+          'eliminar un registro',
+          'eliminar',
+          params.data.idusuario
+        );
       });
     } else {
       button = document.createElement('button');
       button.className = 'btn btn-white';
       button.innerHTML = `<i role="img" class="fas fa-undo-alt text-warning" title='Recuperar'></i>`;
       button.addEventListener('click', () => {
-        this.procesoEspecial('recuperar un registro', 'recuperar', params.data.idusuario)
+        this.procesoEspecial(
+          'recuperar un registro',
+          'recuperar',
+          params.data.idusuario
+        );
       });
     }
 
     return button;
   }
-  
+
   funcEditGrupo(id: any = null) {
     this.func.goRoute(`admin/grupousuario/${id}`, true);
   }
@@ -352,8 +358,8 @@ export class Usuarios {
     this.func.goRoute(`admin/usuario/${id ? id : this.id_selected}`, true);
   }
 
-  procesoEspecial(action = '', keyword = 'delete', idusuario="") {
-    if (this.id_selected == '' && idusuario=="") {
+  procesoEspecial(action = '', keyword = 'delete', idusuario = '') {
+    if (this.id_selected == '' && idusuario == '') {
       this.func.showMessage(
         'error',
         'Eliminar',
@@ -362,7 +368,7 @@ export class Usuarios {
       return;
     }
 
-    if (idusuario!=""){
+    if (idusuario != '') {
       this.id_selected = idusuario;
     }
 
@@ -400,9 +406,9 @@ export class Usuarios {
         } else if (keyword == 'reset') {
           this.procesoReset();
         } else if (keyword == 'inactivar') {
-          this.procesoInactivar("inactivar");
+          this.procesoInactivar('inactivar');
         } else if (keyword == 'activar') {
-          this.procesoInactivar("activar");
+          this.procesoInactivar('activar');
         }
       }
     });
@@ -418,12 +424,12 @@ export class Usuarios {
         if (resp.status) {
           this.getData();
         } else {
-          this.func.handleErrors("Server", resp.message);
+          this.func.handleErrors('Server', resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
-        this.func.handleErrors("Usuarios", err);
+        this.func.handleErrors('Usuarios', err);
       },
     });
   }
@@ -439,72 +445,120 @@ export class Usuarios {
             this.getData();
           }, 500);
         } else {
-          this.func.handleErrors("Server", resp.message);
+          this.func.handleErrors('Server', resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
-        this.func.handleErrors("Usuarios", err);
+        this.func.handleErrors('Usuarios', err);
       },
     });
   }
 
-  procesoReset(){
+  procesoReset() {
     this.func.showLoading('Reseteando');
 
-    this.generalSvc.apiRest("PUT", `usuario_actualiza_clave/${this.id_selected}`).subscribe({
-      next: (resp: any) => {
-        console.log(resp)
-        this.func.closeSwal();
-        if (resp.status) {
-          this.func.showMessage("info", "Reset", "Se ha enviado la nueva contraseña al usuario")
-          setTimeout(() => {
-            this.getData();
-          }, 500);
-        } else {
-          this.func.handleErrors("Server", resp.message);
-        }
-      },
-      error: (err: any) => {
-        this.func.closeSwal();
-        this.func.handleErrors("Usuarios", err);
-      },
-    });
+    this.generalSvc
+      .apiRest('PUT', `usuario_actualiza_clave/${this.id_selected}`)
+      .subscribe({
+        next: (resp: any) => {
+          console.log(resp);
+          this.func.closeSwal();
+          if (resp.status) {
+            this.func.showMessage(
+              'info',
+              'Reset',
+              'Se ha enviado la nueva contraseña al usuario'
+            );
+            setTimeout(() => {
+              this.getData();
+            }, 500);
+          } else {
+            this.func.handleErrors('Server', resp.message);
+          }
+        },
+        error: (err: any) => {
+          this.func.closeSwal();
+          this.func.handleErrors('Usuarios', err);
+        },
+      });
   }
 
-  procesoInactivar(accion=""){
-    this.func.showLoading(accion == "activar" ? 'Activando' : 'Inactivando');
+  procesoInactivar(accion = '') {
+    this.func.showLoading(accion == 'activar' ? 'Activando' : 'Inactivando');
 
-    this.generalSvc.apiRest("PUT", `usuario_inactivar/${this.id_selected}/${accion}`).subscribe({
-      next: (resp: any) => {
-        // console.log(resp)
-        this.func.closeSwal();
-        if (resp.status) {
+    this.generalSvc
+      .apiRest('PUT', `usuario_inactivar/${this.id_selected}/${accion}`)
+      .subscribe({
+        next: (resp: any) => {
+          // console.log(resp)
+          this.func.closeSwal();
+          if (resp.status) {
+            let html = `<textarea readonly class="form-control h300">${resp.message}</textarea>`;
 
-          let html = `<textarea readonly class="form-control h300">${resp.message}</textarea>`;
+            Swal.fire({
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              title: 'Usuarios',
+              html: html,
+              footer: Global.acronym + ' ' + Global.appversion,
+              showClass: { backdrop: 'swal2-noanimation', popup: '' },
+              hideClass: { popup: '' },
+            }).then((result: any) => {
+              this.getData();
+            });
+            // setTimeout(() => {
+            //   this.getData();
+            // }, 3000);
+          } else {
+            this.func.handleErrors('Server', resp.message);
+          }
+        },
+        error: (err: any) => {
+          this.func.closeSwal();
+          this.func.handleErrors('Usuarios', err);
+        },
+      });
+  }
 
-          Swal.fire({
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            title: "Usuarios",
-            html: html,
-            footer: Global.acronym + " " + Global.appversion,
-            showClass: { backdrop: 'swal2-noanimation', popup: '' },
-            hideClass: { popup: '' },
-          }).then((result: any) => {
-            this.getData();
-          });
-          // setTimeout(() => {
-          //   this.getData();
-          // }, 3000);
-        } else {
-          this.func.handleErrors("Server", resp.message);
-        }
-      },
-      error: (err: any) => {
-        this.func.closeSwal();
-        this.func.handleErrors("Usuarios", err);
-      },
+  exportarPDF() {
+    let data: any = this.prepareToExport();
+    let params = {
+      orientation: 'l',
+      titulo: 'Usuarios',
+      data: data,
+      filename: `lisah_usuarios${moment().format(
+        'YYYYMMDDHHmmss'
+      )}.pdf`,
+    };
+    this.func.exportarPDF(params);
+  }
+
+  exportarCSV() {
+    let data: any = this.prepareToExport();
+    this.func.exportarCSV(
+      data,
+      `lisah_usuarios${moment().format('YYYYMMDDHHmmss')}.csv`
+    );
+  }
+
+  prepareToExport(): Array<any> {
+    let arr: any = [];
+    let rolmenu: any = [];
+    this.lstData.forEach((d: any) => {
+      try {
+        arr.push({
+          nombre: d.nombre,
+          grupo: d.grupo.nombre,
+          email: d.email,
+          email_confirmado: d.email_confirmado ==1 ? 'Confirmado' : 'No confirmado',
+          servidores_asignados: d.servidores ? d.servidores.length : 0,
+          estado: d.estado == 1 ? 'Activo' : 'Inactivo'
+        });
+      } catch (err) {
+        console.log(err, d);
+      }
     });
+    return arr;
   }
 }

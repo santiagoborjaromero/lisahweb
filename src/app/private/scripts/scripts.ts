@@ -323,4 +323,41 @@ export class Scripts {
       },
     });
   }
+
+  exportarPDF() {
+      let data: any = this.prepareToExport();
+      let params = {
+        orientation: 'l',
+        titulo: 'Scripts',
+        data: data,
+        filename: `lisah_scripts_comandos${moment().format('YYYYMMDDHHmmss')}.pdf`,
+      };
+      this.func.exportarPDF(params);
+    }
+  
+    exportarCSV() {
+      let data: any = this.prepareToExport();
+      this.func.exportarCSV(
+        data,
+        `lisah_scripts_comandos${moment().format('YYYYMMDDHHmmss')}.csv`
+      );
+    }
+  
+    prepareToExport(): Array<any> {
+      let arr: any = [];
+      this.lstData.forEach((d: any) => {
+        // console.log(d)
+        d.cmds.forEach((c:any)=>{
+          try {
+            arr.push({
+              script_nombre: d.nombre,
+              linea_comando: c.linea_comando,
+            });
+          } catch (err) {
+            console.log(err, d);
+          }
+        })
+      });
+      return arr;
+    }
 }

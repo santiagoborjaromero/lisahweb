@@ -135,6 +135,8 @@ export class Dashboard {
   ngOnDestroy(): void {
     console.log("Deteniendo Temporizador")
     clearInterval(this.tmrMonitor)
+    this.ws.close(1000);
+    this.ws = null
   }
 
   initial(){

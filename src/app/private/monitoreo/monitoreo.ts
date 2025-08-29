@@ -1,7 +1,14 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AllCommunityModule, createGrid, GridApi, GridOptions, ICellRendererParams, ModuleRegistry } from 'ag-grid-community';
+import {
+  AllCommunityModule,
+  createGrid,
+  GridApi,
+  GridOptions,
+  ICellRendererParams,
+  ModuleRegistry,
+} from 'ag-grid-community';
 import { ServidorService } from '../../core/services/servidor.service';
 import { Functions } from '../../core/helpers/functions.helper';
 import { Sessions } from '../../core/helpers/session.helper';
@@ -10,6 +17,7 @@ import { Titulo } from '../shared/titulo/titulo';
 import { Path } from '../shared/path/path';
 import { GeneralService } from '../../core/services/general.service';
 import { SentinelService } from '../../core/services/sentinel.service';
+import moment from 'moment';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -55,13 +63,13 @@ export class Monitoreo {
   tiempo_restante: number = 0;
 
   tmrMonitor: any | undefined;
-  monitoreo_esta_activo:boolean = false;
+  monitoreo_esta_activo: boolean = false;
   firstTime: boolean = true;
   loadMonitoreo: boolean = false;
 
-  serverIndex:number = 0;
+  serverIndex: number = 0;
   continuar: boolean = false;
-  revisando: string = "";
+  revisando: string = '';
 
   /**
    * Sentinel
@@ -594,78 +602,78 @@ export class Monitoreo {
             },
           ],
         },
-        {
-          headerName: 'Servicios',
-          headerStyle: { color: 'white', backgroundColor: 'SteelBlue' },
-          children: [
-            {
-              headerName: 'HTTPD',
-              headerClass: ['th-center', 'th-normal3'],
-              field: 'servicio_httpd',
-              cellClass: 'text-start',
-              minWidth: 100,
-              cellRenderer: (params: ICellRendererParams) => {
-                let dato = params.value;
-                let text = '';
-                let icono = 'far fa-times-circle t16';
-                let color = 'text-danger';
-                if (!['', '-', '1', 'x'].includes(dato)) {
-                  let d = dato.split('|');
-                  if (d[0] == 'OK') {
-                    color = 'text-success';
-                    icono = 'far fa-check-circle t16';
-                  } else {
-                    color = 'text-danger';
-                    icono = 'far fa-times-circle t16';
-                  }
-                  text = d[1];
-                } else if (dato == '1') {
-                  icono = 'fas fa-spinner fa-spin';
-                  text = 'Revisando';
-                  color = 'text-primary';
-                } else if (dato == '-') {
-                  icono = 'fas fa-minus-circle t16';
-                  text = '';
-                  color = 'text-secondary';
-                }
-                return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
-              },
-            },
-            {
-              headerName: 'SSH',
-              headerClass: ['th-center', 'th-normal4'],
-              field: 'servicio_ssh',
-              cellClass: 'text-start',
-              minWidth: 100,
-              cellRenderer: (params: ICellRendererParams) => {
-                let dato = params.value;
-                let text = '';
-                let icono = 'far fa-times-circle t16';
-                let color = 'text-danger';
-                if (!['', '-', '1', 'x'].includes(dato)) {
-                  let d = dato.split('|');
-                  if (d[0] == 'OK') {
-                    color = 'text-success';
-                    icono = 'far fa-check-circle t16';
-                  } else {
-                    icono = 'far fa-times-circle t16';
-                    color = 'text-danger';
-                  }
-                  text = d[1];
-                } else if (dato == '1') {
-                  icono = 'fas fa-spinner fa-spin';
-                  text = 'Revisando';
-                  color = 'text-primary';
-                } else if (dato == '-') {
-                  icono = 'fas fa-minus-circle t16';
-                  text = '';
-                  color = 'text-secondary';
-                }
-                return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
-              },
-            },
-          ],
-        },
+        // {
+        //   headerName: 'Servicios',
+        //   headerStyle: { color: 'white', backgroundColor: 'SteelBlue' },
+        //   children: [
+        //     {
+        //       headerName: 'HTTPD',
+        //       headerClass: ['th-center', 'th-normal3'],
+        //       field: 'servicio_httpd',
+        //       cellClass: 'text-start',
+        //       minWidth: 100,
+        //       cellRenderer: (params: ICellRendererParams) => {
+        //         let dato = params.value;
+        //         let text = '';
+        //         let icono = 'far fa-times-circle t16';
+        //         let color = 'text-danger';
+        //         if (!['', '-', '1', 'x'].includes(dato)) {
+        //           let d = dato.split('|');
+        //           if (d[0] == 'OK') {
+        //             color = 'text-success';
+        //             icono = 'far fa-check-circle t16';
+        //           } else {
+        //             color = 'text-danger';
+        //             icono = 'far fa-times-circle t16';
+        //           }
+        //           text = d[1];
+        //         } else if (dato == '1') {
+        //           icono = 'fas fa-spinner fa-spin';
+        //           text = 'Revisando';
+        //           color = 'text-primary';
+        //         } else if (dato == '-') {
+        //           icono = 'fas fa-minus-circle t16';
+        //           text = '';
+        //           color = 'text-secondary';
+        //         }
+        //         return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
+        //       },
+        //     },
+        //     {
+        //       headerName: 'SSH',
+        //       headerClass: ['th-center', 'th-normal4'],
+        //       field: 'servicio_ssh',
+        //       cellClass: 'text-start',
+        //       minWidth: 100,
+        //       cellRenderer: (params: ICellRendererParams) => {
+        //         let dato = params.value;
+        //         let text = '';
+        //         let icono = 'far fa-times-circle t16';
+        //         let color = 'text-danger';
+        //         if (!['', '-', '1', 'x'].includes(dato)) {
+        //           let d = dato.split('|');
+        //           if (d[0] == 'OK') {
+        //             color = 'text-success';
+        //             icono = 'far fa-check-circle t16';
+        //           } else {
+        //             icono = 'far fa-times-circle t16';
+        //             color = 'text-danger';
+        //           }
+        //           text = d[1];
+        //         } else if (dato == '1') {
+        //           icono = 'fas fa-spinner fa-spin';
+        //           text = 'Revisando';
+        //           color = 'text-primary';
+        //         } else if (dato == '-') {
+        //           icono = 'fas fa-minus-circle t16';
+        //           text = '';
+        //           color = 'text-secondary';
+        //         }
+        //         return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
+        //       },
+        //     },
+        //   ],
+        // },
       ],
     };
 
@@ -699,20 +707,20 @@ export class Monitoreo {
     return button;
   }
 
-  timerGeneral(){
-    let time = 0
-    this.tmrMonitor = setInterval(()=>{
+  timerGeneral() {
+    let time = 0;
+    this.tmrMonitor = setInterval(() => {
       this.monitoreo_esta_activo = true;
-      if(this.continuar){
-        time ++;
-        if (time == this.tiempo_refresco){
+      if (this.continuar) {
+        time++;
+        if (time == this.tiempo_refresco) {
           this.sendMonitor();
           time = 0;
-        }else{
+        } else {
           this.tiempo_restante = this.tiempo_refresco - time;
         }
       }
-    },1000);
+    }, 1000);
   }
 
   startMonitor() {
@@ -723,30 +731,30 @@ export class Monitoreo {
 
   stopMonitor() {
     this.monitoreo_esta_activo = false;
-    this.revisando = "";
+    this.revisando = '';
     this.serverIndex = 0;
     this.continuar = false;
     clearInterval(this.tmrMonitor);
   }
 
-  unaSolaVez(){
+  unaSolaVez() {
     this.serverIndex = 0;
     this.sendMonitor();
   }
 
   sendMonitor() {
-    if (this.serverIndex == this.lstServidores.length ){
+    if (this.serverIndex == this.lstServidores.length) {
       this.serverIndex = 0;
-      this.revisando = "";
+      this.revisando = '';
       this.continuar = true;
-    }else{
+    } else {
       this.continuar = false;
       this.openWS(this.lstServidores[this.serverIndex]);
     }
   }
 
   verificaServer(server: any) {
-    console.log("Verificar Server", server.idservidor);
+    console.log('Verificar Server', server.idservidor);
     if (server.healthy_agente.split('|')[0] == 'OK') {
       this.lstServidores.forEach((s) => {
         if (s.idservidor == server.idservidor) {
@@ -781,11 +789,14 @@ export class Monitoreo {
         idusuario: this.user.idusuario,
         idservidor: server.idservidor,
         usuario: this.user.usuario,
-        id: Math.floor( Math.random() * (9999999999999999 - 1000000000000000 + 1) ) + 1000000000000000, 
+        id:
+          Math.floor(
+            Math.random() * (9999999999999999 - 1000000000000000 + 1)
+          ) + 1000000000000000,
       },
       data: [],
     };
-    console.log("↑ Enviando")
+    console.log('↑ Enviando');
     this.ws.send(JSON.stringify(param));
   }
 
@@ -793,13 +804,13 @@ export class Monitoreo {
     const token = this.sessions.get('token');
     this.revisando = `${server.nombre}`;
     let url = `ws://${server.host}:${server.agente_puerto}/ws?token=${token}`;
-    try{
+    try {
       this.ws = new WebSocket(url);
       this.ws.onopen = (event: any) => this.onOpenListener(event, server);
       this.ws.onmessage = (event: any) => this.onMessageListener(event, server);
       this.ws.onclose = (event: any) => this.onCloseListener(event, server);
       this.ws.onerror = (event: any) => this.onErrorListener(event, server);
-    }catch(ex){
+    } catch (ex) {
       // console.log(ex)
     }
   }
@@ -820,18 +831,18 @@ export class Monitoreo {
     this.loadMonitoreo = true;
     console.log(`√ LlegoMensaje ${server.idservidor}`);
     let data = JSON.parse(e.data);
-    console.log(data)
-    switch(data.action){
-      case "stats":
+    console.log(data);
+    switch (data.action) {
+      case 'stats':
         let msg = '';
         this.lstServidores.forEach((s: any) => {
-          if (s.idservidor == server.idservidor){
+          if (s.idservidor == server.idservidor) {
             data.data.forEach((r: any) => {
-              let respuesta:any = atob(r.respuesta);
-              console.log(respuesta)
+              let respuesta: any = atob(r.respuesta);
+              console.log(respuesta);
               try {
                 // if (respuesta.returncode == 0) {
-                  msg = `OK|${respuesta}`;
+                msg = `OK|${respuesta}`;
                 // } else {
                 //   msg = `FAIL|${respuesta.stderr}`;
                 // }
@@ -848,7 +859,7 @@ export class Monitoreo {
         this.ws.close(1000);
         this.ws = null;
 
-        this.serverIndex ++;
+        this.serverIndex++;
         this.sendMonitor();
         break;
     }
@@ -856,19 +867,61 @@ export class Monitoreo {
 
   onCloseListener(event: any, server: any) {
     // console.log('onCloseListener', event);
-    if (event.code != 1000){
+    if (event.code != 1000) {
       console.log(`X Desconectado ${server.idservidor}`);
       server.healthy_agente = 'FAIL|Desconectado';
       this.verificaServer(server);
-      this.serverIndex ++;
-      try{
+      this.serverIndex++;
+      try {
         this.sendMonitor();
-      }catch(err){}
+      } catch (err) {}
     }
   }
 
-  onErrorListener(event: any, server: any) {
+  onErrorListener(event: any, server: any) {}
 
+  exportarPDF() {
+    let data: any = this.prepareToExport();
+    let params = {
+      orientation: 'l',
+      titulo: 'Scripts',
+      data: data,
+      filename: `lisah_monitor_servidores${moment().format(
+        'YYYYMMDDHHmmss'
+      )}.pdf`,
+    };
+    this.func.exportarPDF(params);
   }
 
+  exportarCSV() {
+    let data: any = this.prepareToExport();
+    this.func.exportarCSV(
+      data,
+      `lisah_monitor_servidores${moment().format('YYYYMMDDHHmmss')}.csv`
+    );
+  }
+
+  prepareToExport(): Array<any> {
+    let arr: any = [];
+    this.lstServidores.forEach((d: any) => {
+      console.log(d)
+      try {
+        arr.push({
+          servidor: d.nombre,
+          host: d.host,
+          ubicacion: d.ubicacion,
+          agente_puerto: d.agente_puerto,
+          ssh_puerto: d.ssh_puerto,
+          terminal_puerto: d.terminal_puerto,
+          disco: d.disco.split("|")[1],
+          memoria: d.memoria.split("|")[1],
+          cpu: d.cpu.split("|")[1],
+          estado: d.estado == 1 ? 'Activo' : 'Inactivo',
+        });
+      } catch (err) {
+        console.log(err, d);
+      }
+    });
+    return arr;
+  }
 }

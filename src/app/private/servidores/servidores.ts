@@ -1,7 +1,14 @@
 import { Component, inject } from '@angular/core';
 import { Functions } from '../../core/helpers/functions.helper';
 import { Sessions } from '../../core/helpers/session.helper';
-import { AllCommunityModule, createGrid, GridApi, GridOptions, ICellRendererParams, ModuleRegistry } from 'ag-grid-community';
+import {
+  AllCommunityModule,
+  createGrid,
+  GridApi,
+  GridOptions,
+  ICellRendererParams,
+  ModuleRegistry,
+} from 'ag-grid-community';
 import { Global } from '../../core/config/global.config';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
@@ -18,7 +25,7 @@ ModuleRegistry.registerModules([AllCommunityModule]);
   selector: 'app-servidores',
   imports: [Titulo, Path, CommonModule, FormsModule],
   templateUrl: './servidores.html',
-  styleUrl: './servidores.scss'
+  styleUrl: './servidores.scss',
 })
 export class Servidores {
   private readonly serverSvc = inject(ServidorService);
@@ -28,9 +35,9 @@ export class Servidores {
 
   user: any = null;
   work: any = null;
-  ws:any;
-  path:any = [];
-  titulo:any = {icono: "",nombre:""}
+  ws: any;
+  path: any = [];
+  titulo: any = { icono: '', nombre: '' };
   global = Global;
 
   accion: string = 'activos';
@@ -46,23 +53,23 @@ export class Servidores {
   public name_selected: string = '';
   public rows_selected: any = 0;
   public server_selected: any = {};
-  
+
   public titulo_servidor: string | undefined;
-  public agente_test: string = "";
-  public ssh_test: string = "";
+  public agente_test: string = '';
+  public ssh_test: string = '';
 
   lstData: Array<any> = [];
   lstServersToCheck: Array<any> = [];
-  wsConn:any = null;
+  wsConn: any = null;
 
   ngOnInit(): void {
     this.user = JSON.parse(this.sessions.get('user'));
     this.path = [
-      {nombre: "Configuración", ruta: ""}, 
-      {nombre: "Servidores", ruta: "admin/servidores"}, 
+      { nombre: 'Configuración', ruta: '' },
+      { nombre: 'Servidores', ruta: 'admin/servidores' },
     ];
-  
-    this.titulo = {icono: "fas fa-server",nombre: "Servidores"}
+
+    this.titulo = { icono: 'fas fa-server', nombre: 'Servidores' };
 
     if (this.user.idrol > 1) {
       let scope = this.user.roles.permisos_crud.split('');
@@ -103,22 +110,22 @@ export class Servidores {
         this.func.closeSwal();
         if (resp.status) {
           this.lstData = [];
-          if (resp.data.length>0){
-            resp.data.forEach((s:any)=>{
-              s.uptime = "";
+          if (resp.data.length > 0) {
+            resp.data.forEach((s: any) => {
+              s.uptime = '';
               s.healthy_ssh = -2;
               s.healthy_agente = -2;
               this.lstData.push(s);
-            })
+            });
           }
           this.refreshAll();
         } else {
-          this.func.handleErrors("Servidor", resp.message);
+          this.func.handleErrors('Servidor', resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
-        this.func.handleErrors("Servidor", err);
+        this.func.handleErrors('Servidor', err);
       },
     });
   }
@@ -150,13 +157,14 @@ export class Servidores {
         this.id_selected = event.data.idservidor;
         this.is_deleted = event.data.deleted_at;
         this.name_selected = event.data.nombre;
-        if (this.rows_selected==0 && this.id_selected!='') this.rows_selected=1;
+        if (this.rows_selected == 0 && this.id_selected != '')
+          this.rows_selected = 1;
         that.lstServersToCheck = [];
         that.lstServersToCheck.push(event.data);
         // console.log(that.lstServersToCheck)
-        this.server_selected = event.data
+        this.server_selected = event.data;
       },
-      // rowSelection: { 
+      // rowSelection: {
       //   mode: 'multiRow',
       //   enableClickSelection: false,
       //   enableSelectionWithoutKeys: false,
@@ -179,61 +187,60 @@ export class Servidores {
       //   })
       //   // console.log(that.lstServersToCheck)
       // },
-      
+
       columnDefs: [
         {
           headerName: 'ID',
-          headerClass: ["th-center", "th-normal"],
+          headerClass: ['th-center', 'th-normal'],
           field: 'idservidor',
           filter: false,
           hide: true,
         },
         {
           headerName: 'Nombre',
-          headerClass: ["th-center", "th-normal"],
+          headerClass: ['th-center', 'th-normal'],
           field: 'nombre',
           cellClass: 'text-start',
           filter: true,
-          flex:4,
+          flex: 4,
           cellRenderer: this.renderAccionNombre.bind(this),
         },
         {
           headerName: 'Host',
-          headerClass: ["th-center", "th-normal"],
+          headerClass: ['th-center', 'th-normal'],
           field: 'host',
           cellClass: 'text-start',
           filter: true,
-          flex:2
+          flex: 2,
         },
         {
           headerName: 'Ubicacion',
-          headerClass: ["th-center", "th-normal"],
+          headerClass: ['th-center', 'th-normal'],
           field: 'ubicacion',
           cellClass: 'text-start',
           filter: true,
-          flex:2
+          flex: 2,
         },
         {
           headerName: 'Familia',
-          headerClass: ["th-center", "th-normal"],
+          headerClass: ['th-center', 'th-normal'],
           field: 'familia.familia',
           cellClass: 'text-start',
           filter: true,
         },
         {
           headerName: 'Puertos',
-          headerClass: ["th-center", "th-normal2"],
-          children:[
-
+          headerClass: ['th-center', 'th-normal2'],
+          children: [
             {
               headerName: 'SSH',
-              headerClass: ["th-center", "th-normal"],
+              headerClass: ['th-center', 'th-normal'],
               field: 'healthy_ssh',
               cellClass: 'text-start',
               cellRenderer: (params: ICellRendererParams) => {
                 let data = params.data;
                 let dato = data.healthy_ssh;
-                let puerto = data.ssh_puerto ?? "Sin Asignar";
+                let puerto = data.ssh_puerto ?? 'Sin Asignar';
                 let text = 'No responde';
                 let icono = 'far fa-times-circle t20';
                 let color = 'text-danger';
@@ -256,13 +263,13 @@ export class Servidores {
             },
             {
               headerName: 'Agente',
-              headerClass: ["th-center", "th-normal"],
+              headerClass: ['th-center', 'th-normal'],
               field: 'healthy_agente',
               cellClass: 'text-start',
               cellRenderer: (params: ICellRendererParams) => {
                 let data = params.data;
                 let dato = data.healthy_agente;
-                let puerto = data.agente_puerto  ?? "Sin Asignar";
+                let puerto = data.agente_puerto ?? 'Sin Asignar';
                 let text = 'No responde';
                 let icono = 'far fa-times-circle  t20';
                 let color = 'text-danger';
@@ -284,11 +291,11 @@ export class Servidores {
             },
             {
               headerName: 'Terminal',
-              headerClass: ["th-center", "th-normal"],
+              headerClass: ['th-center', 'th-normal'],
               field: 'terminal_puerto',
               cellClass: 'text-start',
             },
-          ]
+          ],
         },
         // {
         //   headerName: 'Tiempo Activo',
@@ -305,7 +312,7 @@ export class Servidores {
         // },
         {
           headerName: 'Usuarios Asignados',
-          headerClass: ["th-center", "th-normal"],
+          headerClass: ['th-center', 'th-normal'],
           field: 'usuarios.length',
           cellClass: 'text-start',
           cellRenderer: (params: ICellRendererParams) => {
@@ -315,7 +322,7 @@ export class Servidores {
         },
         {
           headerName: 'Estado',
-          headerClass: ["th-center", "th-normal"],
+          headerClass: ['th-center', 'th-normal'],
           field: 'estado',
           cellClass: 'text-start',
           cellRenderer: (params: ICellRendererParams) => {
@@ -326,36 +333,35 @@ export class Servidores {
             if (status == 1) {
               color = 'text-success';
               text = `far fa-check-circle`;
-            
             }
             return `<i role="img" class="${color} ${text} t20"></i>`;
           },
         },
         {
           headerName: 'Eliminado',
-          headerClass: ["th-center", "th-normal"],
+          headerClass: ['th-center', 'th-normal'],
           field: 'deleted_at',
           cellClass: 'text-end',
           sortIndex: 0,
           sort: 'asc',
-          maxWidth:120,
+          maxWidth: 120,
           cellRenderer: (params: ICellRendererParams) => {
             let data = params.data;
             let fecha = data.deleted_at;
-            let text = "";
-            if (fecha){
-              text = moment(fecha).format("YYYY-MM-DD");
+            let text = '';
+            if (fecha) {
+              text = moment(fecha).format('YYYY-MM-DD');
             }
             return text;
-          }
+          },
         },
         {
           headerName: 'Accion',
-          headerClass: ["th-center", "th-normal"],
+          headerClass: ['th-center', 'th-normal'],
           cellClass: 'text-start',
           filter: true,
           flex: 3,
-          maxWidth:100,
+          maxWidth: 100,
           cellRenderer: this.renderAcciones.bind(this),
         },
       ],
@@ -389,33 +395,39 @@ export class Servidores {
   renderAcciones(params: ICellRendererParams) {
     let button: any | undefined;
 
-    if (params.data.deleted_at === null){
+    if (params.data.deleted_at === null) {
       button = document.createElement('button');
       button.className = 'btn btn-white';
       button.innerHTML = `<i role="img" class="far fa-trash-alt text-danger" title='Eliminar'></i>`;
       button.addEventListener('click', () => {
-        this.procesoEspecial('eliminar un registro', 'eliminar', params.data.idservidor)
+        this.procesoEspecial(
+          'eliminar un registro',
+          'eliminar',
+          params.data.idservidor
+        );
       });
     } else {
       button = document.createElement('button');
       button.className = 'btn btn-white';
       button.innerHTML = `<i role="img" class="fas fa-undo-alt text-warning" title='Recuperar'></i>`;
       button.addEventListener('click', () => {
-        this.procesoEspecial('recuperar un registro', 'recuperar', params.data.idservidor)
+        this.procesoEspecial(
+          'recuperar un registro',
+          'recuperar',
+          params.data.idservidor
+        );
       });
     }
 
     return button;
   }
 
-
-
   funcEdit(id: any = null) {
     this.func.goRoute(`admin/servidor/${id ? id : this.id_selected}`, true);
   }
 
-  procesoEspecial(action = '', keyword = 'delete', id="") {
-    if (this.id_selected == '' && id=="") {
+  procesoEspecial(action = '', keyword = 'delete', id = '') {
+    if (this.id_selected == '' && id == '') {
       this.func.showMessage(
         'error',
         'Eliminar',
@@ -424,7 +436,7 @@ export class Servidores {
       return;
     }
 
-    if (id!=""){
+    if (id != '') {
       this.id_selected = id;
     }
 
@@ -457,7 +469,7 @@ export class Servidores {
         // console.log('action', keyword);
         if (keyword == 'eliminar') {
           this.procesoDelete();
-        }else if(keyword == "recuperar"){
+        } else if (keyword == 'recuperar') {
           this.procesoRestore();
         }
       }
@@ -472,16 +484,16 @@ export class Servidores {
         // console.log("DELETE", resp);
         this.func.closeSwal();
         if (resp.status) {
-          setTimeout(()=>{
+          setTimeout(() => {
             this.getData();
-          },500)
+          }, 500);
         } else {
-          this.func.handleErrors("Server", resp.message);
+          this.func.handleErrors('Server', resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
-        this.func.handleErrors("Servidor", err);
+        this.func.handleErrors('Servidor', err);
       },
     });
   }
@@ -493,86 +505,131 @@ export class Servidores {
       next: (resp: any) => {
         this.func.closeSwal();
         if (resp.status) {
-          setTimeout(()=>{
+          setTimeout(() => {
             this.getData();
-          },500)
+          }, 500);
         } else {
-          this.func.handleErrors("Server", resp.message);
+          this.func.handleErrors('Server', resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
-        this.func.handleErrors("Server", err);
+        this.func.handleErrors('Server', err);
       },
     });
   }
 
-  testSSH(){
-    this.ssh_test = "-";
-    let param = { 
-      host: this.server_selected.host, 
-      puerto: this.server_selected.ssh_puerto 
-    }
-    this.generalSvc.apiRest("POST", "healthy_server", param).subscribe({
+  testSSH() {
+    this.ssh_test = '-';
+    let param = {
+      host: this.server_selected.host,
+      puerto: this.server_selected.ssh_puerto,
+    };
+    this.generalSvc.apiRest('POST', 'healthy_server', param).subscribe({
       next: (resp: any) => {
         this.func.closeSwal();
-        console.log(resp)
+        console.log(resp);
         if (resp.status) {
-          this.ssh_test = "1";
-          this.putResults(this.server_selected.idservidor, [1, resp.data], "ssh")
+          this.ssh_test = '1';
+          this.putResults(
+            this.server_selected.idservidor,
+            [1, resp.data],
+            'ssh'
+          );
         } else {
-          this.ssh_test = "2";
-          this.putResults(this.server_selected.idservidor, [0,""], "ssh")
-          this.func.showMessage("error", "SSH Test", resp.message)
+          this.ssh_test = '2';
+          this.putResults(this.server_selected.idservidor, [0, ''], 'ssh');
+          this.func.showMessage('error', 'SSH Test', resp.message);
         }
       },
       error: (err: any) => {
-        this.func.handleErrors("TestSSH", err);
+        this.func.handleErrors('TestSSH', err);
         this.func.closeSwal();
       },
     });
   }
 
-  putResults(idservidor: any, result:any, what = "ssh"){
-    this.lstData.forEach(s=>{
-      if (s.idservidor == idservidor){
+  putResults(idservidor: any, result: any, what = 'ssh') {
+    this.lstData.forEach((s) => {
+      if (s.idservidor == idservidor) {
         s[`healthy_${what}`] = result[0];
-        if (what=="ssh") s.uptime = result[1];
+        if (what == 'ssh') s.uptime = result[1];
       }
-    })
+    });
     this.refreshAll();
   }
 
   openWS() {
     const token = this.sessions.get('token');
     let url = `ws://${this.server_selected.host}:${this.server_selected.agente_puerto}/ws?token=${token}`;
-    try{
+    try {
       this.ws = new WebSocket(url);
       this.ws.onopen = (event: any) => this.onOpenListener(event);
       // this.ws.onmessage = (event: any) => this.onMessageListener(event);
       // this.ws.onclose = (event: any) => this.onCloseListener(event);
       this.ws.onerror = (event: any) => this.onErrorListener(event);
-    }catch(ex){}
+    } catch (ex) {}
   }
 
   onOpenListener(event: any) {
     if (event.type == 'open') {
       console.log(`√ Conectado ${this.server_selected.idservidor}`);
-      this.agente_test = "1";
-      this.putResults(this.server_selected.idservidor, [1, ""], "agente")
+      this.agente_test = '1';
+      this.putResults(this.server_selected.idservidor, [1, ''], 'agente');
     } else {
-      this.agente_test = "2";
-      this.putResults(this.server_selected.idservidor, [0, ""], "agente")
+      this.agente_test = '2';
+      this.putResults(this.server_selected.idservidor, [0, ''], 'agente');
       console.log(`X Desconectado ${this.server_selected.idservidor}`);
     }
     this.ws.close(1000);
   }
 
   onErrorListener(event: any) {
-    this.agente_test = "2";
-    this.putResults(this.server_selected.idservidor, [0, ""], "agente")
+    this.agente_test = '2';
+    this.putResults(this.server_selected.idservidor, [0, ''], 'agente');
     console.log(`X No responde Servidor ${this.server_selected.idservidor}`);
   }
 
+  exportarPDF() {
+    let data: any = this.prepareToExport();
+    let params = {
+      orientation: 'l',
+      titulo: 'Servidores',
+      data: data,
+      filename: `lisah_servidores${moment().format('YYYYMMDDHHmmss')}.pdf`,
+    };
+    this.func.exportarPDF(params);
+  }
 
+  exportarCSV() {
+    let data: any = this.prepareToExport();
+    this.func.exportarCSV(
+      data,
+      `lisah_servidores${moment().format('YYYYMMDDHHmmss')}.csv`
+    );
+  }
+
+  prepareToExport(): Array<any> {
+    let arr: any = [];
+    let rolmenu: any = [];
+    this.lstData.forEach((d: any) => {
+      // console.log(d)
+      try {
+        arr.push({
+          nombre: d.nombre,
+          host: d.host,
+          ssh_puerto: d.ssh_puerto,
+          agente_puerto: d.agente_puerto,
+          terminal_puerto: d.terminal_puerto,
+          familia: d.familia.familia,
+          ubicacion: d.ubicacion,
+          usuarios: d.usuarios ? d.usuarios.length : 0,
+          estado: d.estado == 1 ? 'Activo' : 'Inactivo',
+        });
+      } catch (err) {
+        console.log(err, d);
+      }
+    });
+    return arr;
+  }
 }

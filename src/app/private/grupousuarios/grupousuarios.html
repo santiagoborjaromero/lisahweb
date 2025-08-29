@@ -12,11 +12,46 @@
       </div>
     </div>
     <div class="col text-end">
+      @if(canW){
+        <button role="button" (click)="funcEdit(-1)" class="btn btn-primary btn-sm ml-1"><i role="img" class="fas fa-plus"></i> Nuevo</button>
+        @if(is_deleted){
+          <button role="button" (click)="procesoEspecial('recuperar un registro', 'recuperar')" class="btn btn-warning btn-sm ml-1"><i role="img" class="fas fa-undo-alt"></i> Recuperar Registro</button>
+        }
+        @if(!is_deleted){
+          <button role="button" [disabled]="!id_selected" (click)="funcEdit()" class="btn btn-primary btn-sm ml-1"><i role="img" class="far fa-edit"></i> Editar</button>
+        }
+      }
+      @if(canD){
+        @if(!is_deleted){
+          <button role="button" [disabled]="!id_selected" (click)="procesoEspecial('eliminar un registro', 'eliminar')" class="btn btn-danger btn-sm ml-1"><i role="img" class="far fa-trash-alt"></i> Eliminar</button>
+        }
+      }
+      <!-- @if(canR){
+        <button role="button" (click)="getData()" class="btn btn-white btn-sm ml-1"><i role="img" class="fas fa-sync-alt"></i></button> 
+      } -->
+
+      <div class="btn-group" role="group">
+        <button type="button" class="btn btn-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+           <i class="fas fa-bars"></i>
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="javascript:void(0)" (click)="exportarPDF()"><i class="far fa-file-pdf"></i> Exportar PDF</a></li>
+          <li><a class="dropdown-item" href="javascript:void(0)" (click)="exportarCSV()"><i class="far fa-file-excel"></i> Exportar CSV</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="javascript:void(0)" (click)="getData()"><i role="img" class="fas fa-sync-alt"></i> Refrescar Datos</a></li>
+        </ul>
+      </div>
+
+
+      
+
+      <!-- 
       <button role="button" *ngIf="canW" (click)="funcEdit(-1)" class="btn btn-primary btn-sm ml-1"><i role="img" class="fas fa-plus"></i> Nuevo</button>
       <button role="button" *ngIf="canW && !is_deleted" [disabled]="!id_selected" (click)="funcEdit()" class="btn btn-primary btn-sm ml-1"><i role="img" class="far fa-edit"></i> Editar</button>
       <button role="button" *ngIf="canD && !is_deleted" [disabled]="!id_selected" (click)="procesoEspecial('eliminar un registro', 'eliminar')" class="btn btn-danger btn-sm ml-1"><i role="img" class="far fa-trash-alt"></i> Eliminar</button>
       <button role="button" *ngIf="canW && is_deleted" (click)="procesoEspecial('recuperar un registro', 'recuperar')" class="btn btn-warning btn-sm ml-1"><i role="img" class="fas fa-undo-alt"></i> Recuperar Registro</button>
-      <button role="button" *ngIf="canR" (click)="getData()" class="btn btn-white btn-sm ml-1"><i role="img" class="fas fa-sync-alt"></i></button>
+      <button role="button" *ngIf="canR" (click)="getData()" class="btn btn-white btn-sm ml-1"><i role="img" class="fas fa-sync-alt"></i></button> 
+      -->
     </div>
   </div>
 

@@ -5,7 +5,7 @@ import { authGuard } from './core/guards/auth-guard';
 export const routes: Routes = [
     { path: "login", 
         loadComponent: () => import('./public/login/login').then( (c)=> c.Login),
-        // canActivate: [noauthGuard]
+        canActivate: [noauthGuard]
     },
     { path: "secondfactor", 
         loadComponent: () => import('./public/secondfactor/secondfactor').then( (c)=> c.Secondfactor),

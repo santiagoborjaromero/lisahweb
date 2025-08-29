@@ -17,6 +17,7 @@ import { Global } from '../../core/config/global.config';
 import Swal from 'sweetalert2';
 import { Titulo } from '../shared/titulo/titulo';
 import { Path } from '../shared/path/path';
+import moment from 'moment';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -356,4 +357,44 @@ export class Grupousuarios {
       },
     });
   }
+
+    exportarPDF(){
+      let data:any = this.prepareToExport();  
+      let params = {
+        orientation: "l",
+        titulo: "Grupo de Usuarios",
+        data: data,
+        filename: `lisah_grupo_de_usuarios${moment().format("YYYYMMDDHHmmss")}.pdf`
+      }
+      this.func.exportarPDF(params);
+    }
+  
+    exportarCSV(){
+      let data:any = this.prepareToExport();  
+      this.func.exportarCSV(data, `lisah_grupo_de_usuarios${moment().format("YYYYMMDDHHmmss")}.csv`);
+    }
+    
+    prepareToExport(): Array<any>{
+      let arr:any = [];
+      let rolmenu:any = [];
+      this.lstData.forEach((d:any) => {
+        rolmenu = [];
+        d.rolmenugrupos.forEach((r:any)=>{
+          rolmenu.push(r.rolmenu[0].menu[0].nombre)
+        })
+        try{
+          arr.push({
+            nombre: d.nombre,
+            script: d.scripts.nombre,
+            usuarios: d.usuarios ? d.usuarios.length : 0,
+            menu: rolmenu.join(", "),
+            estado: d.deleted_at ? 'Activo' : 'Inactivo',
+            ultima_actualizacion: moment(d.updated_at).format("YYYY-MM-DD HH:mm:ss")
+          })
+        }catch(err){
+          console.log(err, d)
+        }
+      });
+      return arr;
+    }
 }

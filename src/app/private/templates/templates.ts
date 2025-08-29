@@ -1,7 +1,14 @@
 import { Component, inject } from '@angular/core';
 import { Functions } from '../../core/helpers/functions.helper';
 import { Sessions } from '../../core/helpers/session.helper';
-import { AllCommunityModule, createGrid, GridApi, GridOptions, ICellRendererParams, ModuleRegistry } from 'ag-grid-community';
+import {
+  AllCommunityModule,
+  createGrid,
+  GridApi,
+  GridOptions,
+  ICellRendererParams,
+  ModuleRegistry,
+} from 'ag-grid-community';
 import { Global } from '../../core/config/global.config';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
@@ -10,6 +17,7 @@ import { TemplateService } from '../../core/services/template.service';
 import { Titulo } from '../shared/titulo/titulo';
 import { Path } from '../shared/path/path';
 import { GeneralService } from '../../core/services/general.service';
+import moment from 'moment';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -17,17 +25,17 @@ ModuleRegistry.registerModules([AllCommunityModule]);
   selector: 'app-templates',
   imports: [Titulo, Path, CommonModule, FormsModule],
   templateUrl: './templates.html',
-  styleUrl: './templates.scss'
+  styleUrl: './templates.scss',
 })
 export class Templates {
-private readonly tempSvc = inject(TemplateService);
+  private readonly tempSvc = inject(TemplateService);
   private readonly func = inject(Functions);
   private readonly sessions = inject(Sessions);
   private readonly generalSvc = inject(GeneralService);
 
   user: any = null;
-  path:any = [];
-  titulo:any = {icono: "",nombre:""}
+  path: any = [];
+  titulo: any = { icono: '', nombre: '' };
 
   accion: string = 'activos';
   canR: boolean = true;
@@ -46,29 +54,29 @@ private readonly tempSvc = inject(TemplateService);
   lstUsuarios: Array<any> = [];
   lstGrupoUsuarios: Array<any> = [];
   idServidor: number = 0;
-  server:any = {};
-  usuario:any = {};
+  server: any = {};
+  usuario: any = {};
 
-  comando: string = "";
+  comando: string = '';
 
   /**
    * Sentinel
-  */
-  agente_status: string = "Desconectado";
+   */
+  agente_status: string = 'Desconectado';
   ws: any;
   reconnect: boolean = false;
   light_ws: boolean = false;
-  ws_error:number = 0;
-  ws_error_limit:number = 3;
+  ws_error: number = 0;
+  ws_error_limit: number = 3;
 
   ngOnInit(): void {
     this.user = JSON.parse(this.sessions.get('user'));
     this.path = [
-      {nombre: "Configuración", ruta: ""}, 
-      {nombre: "Comandos", ruta: "admin/templates"}, 
+      { nombre: 'Configuración', ruta: '' },
+      { nombre: 'Comandos', ruta: 'admin/templates' },
     ];
-  
-    this.titulo = {icono: "fab fa-wpforms",nombre: "Lista de Comandos"}
+
+    this.titulo = { icono: 'fab fa-wpforms', nombre: 'Lista de Comandos' };
 
     if (this.user.idrol > 1) {
       let scope = this.user.roles.permisos_crud.split('');
@@ -107,11 +115,11 @@ private readonly tempSvc = inject(TemplateService);
 
           this.refreshAll();
         } else {
-          this.func.handleErrors("Templates", resp.message);
+          this.func.handleErrors('Templates', resp.message);
         }
       },
       error: (err: any) => {
-        this.func.handleErrors("Templates", err);
+        this.func.handleErrors('Templates', err);
       },
     });
   }
@@ -119,24 +127,24 @@ private readonly tempSvc = inject(TemplateService);
   getUsuarios() {
     this.lstServidores = [];
 
-    this.generalSvc.apiRest("GET", `usuarios`).subscribe({
+    this.generalSvc.apiRest('GET', `usuarios`).subscribe({
       next: (resp: any) => {
         if (resp.status) {
           this.lstUsuarios = resp.data;
-          this.lstUsuarios.forEach(u=>{
-            if (u.idusuario == this.user.idusuario){
+          this.lstUsuarios.forEach((u) => {
+            if (u.idusuario == this.user.idusuario) {
               this.usuario = u;
-              u.servidores.forEach((s:any)=>{
-                this.lstServidores.push(s)
-              })
+              u.servidores.forEach((s: any) => {
+                this.lstServidores.push(s);
+              });
             }
-          })
+          });
         } else {
-          this.func.showMessage("error", "Usuarios", resp.message);
+          this.func.showMessage('error', 'Usuarios', resp.message);
         }
       },
       error: (err: any) => {
-        this.func.handleErrors("Usuarios", err);
+        this.func.handleErrors('Usuarios', err);
       },
     });
   }
@@ -144,22 +152,19 @@ private readonly tempSvc = inject(TemplateService);
   getGrupoUsuarios() {
     this.lstData = [];
 
-    this.generalSvc.apiRest("GET", "grupousuarios").subscribe({
+    this.generalSvc.apiRest('GET', 'grupousuarios').subscribe({
       next: (resp: any) => {
         if (resp.status) {
           this.lstGrupoUsuarios = resp.data;
         } else {
-          this.func.handleErrors("Grupo Usuarios", resp.message);
+          this.func.handleErrors('Grupo Usuarios', resp.message);
         }
       },
       error: (err: any) => {
-        this.func.handleErrors("Grupo Usuarios", err);
+        this.func.handleErrors('Grupo Usuarios', err);
       },
     });
   }
-
-
-
 
   dataGridStruct() {
     let that = this;
@@ -187,38 +192,41 @@ private readonly tempSvc = inject(TemplateService);
       columnDefs: [
         {
           headerName: 'ID',
-          headerClass: ["th-center", "th-normal"],
+          headerClass: ['th-center', 'th-normal'],
           field: 'idtemplate_comando',
           filter: false,
           hide: true,
         },
         {
           headerName: 'Alias',
-          headerClass: ["th-center", "th-normal"],
+          headerClass: ['th-center', 'th-normal'],
           field: 'alias',
           filter: true,
         },
         {
           headerName: 'Linea de Comando',
-          headerClass: ["th-center", "th-normal"],
+          headerClass: ['th-center', 'th-normal'],
           field: 'linea_comando',
           cellClass: 'text-start',
           filter: true,
-          flex:4,
+          flex: 4,
           cellRenderer: (params: ICellRendererParams) => {
             let data = params.data;
             let linea = data.linea_comando;
-            linea = linea.replace(/{/g, "<kbd class='bg-secondary text-white'>")
-            linea = linea.replace(/}/g, "</kbd>")
+            linea = linea.replace(
+              /{/g,
+              "<kbd class='bg-secondary text-white'>"
+            );
+            linea = linea.replace(/}/g, '</kbd>');
             return `<span>${linea}</span>`;
           },
         },
         {
           headerName: 'Estado',
-          headerClass: ["th-center", "th-normal"],
+          headerClass: ['th-center', 'th-normal'],
           field: 'estado',
           cellClass: 'text-start',
-          maxWidth:100,
+          maxWidth: 100,
           cellRenderer: (params: ICellRendererParams) => {
             let data = params.data;
             let status = data.deleted_at;
@@ -233,20 +241,20 @@ private readonly tempSvc = inject(TemplateService);
         },
         {
           headerName: 'Eliminar',
-          headerClass: ["th-center", "th-normal"],
+          headerClass: ['th-center', 'th-normal'],
           cellClass: 'text-start',
           filter: true,
           flex: 3,
-          maxWidth:80,
+          maxWidth: 80,
           cellRenderer: this.renderAcciones.bind(this),
         },
         {
           headerName: 'Ejecutar',
-          headerClass: ["th-center", "th-normal"],
+          headerClass: ['th-center', 'th-normal'],
           cellClass: 'text-start',
           filter: true,
           flex: 3,
-          maxWidth:80,
+          maxWidth: 80,
           cellRenderer: this.renderEjecutar.bind(this),
         },
       ],
@@ -270,19 +278,27 @@ private readonly tempSvc = inject(TemplateService);
   renderAcciones(params: ICellRendererParams) {
     let button: any | undefined;
 
-    if (params.data.deleted_at === null){
+    if (params.data.deleted_at === null) {
       button = document.createElement('button');
       button.className = 'btn btn-white';
       button.innerHTML = `<i role="img" class="far fa-trash-alt text-danger" title='Eliminar'></i>`;
       button.addEventListener('click', () => {
-        this.procesoEspecial('eliminar un registro', 'eliminar', params.data.idtemplate_comando)
+        this.procesoEspecial(
+          'eliminar un registro',
+          'eliminar',
+          params.data.idtemplate_comando
+        );
       });
     } else {
       button = document.createElement('button');
       button.className = 'btn btn-white';
       button.innerHTML = `<i role="img" class="fas fa-undo-alt text-warning" title='Recuperar'></i>`;
       button.addEventListener('click', () => {
-        this.procesoEspecial('recuperar un registro', 'recuperar', params.data.idtemplate_comando)
+        this.procesoEspecial(
+          'recuperar un registro',
+          'recuperar',
+          params.data.idtemplate_comando
+        );
       });
     }
 
@@ -296,10 +312,14 @@ private readonly tempSvc = inject(TemplateService);
     button.className = 'btn btn-white';
     button.innerHTML = `<i role="img" class="fa fa-play text-info t20" title='Ejecutar'></i>`;
     button.addEventListener('click', () => {
-      this.procesoEspecial('ejecutar un comando', 'ejecutar', params.data.idtemplate_comando)
+      this.procesoEspecial(
+        'ejecutar un comando',
+        'ejecutar',
+        params.data.idtemplate_comando
+      );
       // this.procesoEjecutar(params.data.idtemplate_comando)
     });
-  
+
     return button;
   }
 
@@ -307,8 +327,8 @@ private readonly tempSvc = inject(TemplateService);
     this.func.goRoute(`admin/template/${id ? id : this.id_selected}`, true);
   }
 
-  procesoEspecial(action = '', keyword = 'delete', id="") {
-    if (this.id_selected == '' && id=="") {
+  procesoEspecial(action = '', keyword = 'delete', id = '') {
+    if (this.id_selected == '' && id == '') {
       this.func.showMessage(
         'error',
         'Eliminar',
@@ -317,7 +337,7 @@ private readonly tempSvc = inject(TemplateService);
       return;
     }
 
-    if (id != ""){
+    if (id != '') {
       this.id_selected == id;
     }
 
@@ -350,9 +370,9 @@ private readonly tempSvc = inject(TemplateService);
         // console.log('action', keyword);
         if (keyword == 'eliminar') {
           this.procesoDelete();
-        }else if(keyword == "recuperar"){
+        } else if (keyword == 'recuperar') {
           this.procesoRestore();
-        }else if(keyword == "ejecutar"){
+        } else if (keyword == 'ejecutar') {
           this.procesoEjecutar();
         }
       }
@@ -367,16 +387,16 @@ private readonly tempSvc = inject(TemplateService);
         // console.log("DELETE", resp);
         this.func.closeSwal();
         if (resp.status) {
-          setTimeout(()=>{
+          setTimeout(() => {
             this.getData();
-          },500)
+          }, 500);
         } else {
-          this.func.handleErrors("Server", resp.message);
+          this.func.handleErrors('Server', resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
-        this.func.handleErrors("Templates", err);
+        this.func.handleErrors('Templates', err);
       },
     });
   }
@@ -388,49 +408,48 @@ private readonly tempSvc = inject(TemplateService);
       next: (resp: any) => {
         this.func.closeSwal();
         if (resp.status) {
-          setTimeout(()=>{
+          setTimeout(() => {
             this.getData();
-          },500)
+          }, 500);
         } else {
-          this.func.handleErrors("Server", resp.message);
+          this.func.handleErrors('Server', resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
-        this.func.handleErrors("Templates", err);
+        this.func.handleErrors('Templates', err);
       },
     });
   }
 
   procesoEjecutar() {
     let found = false;
-    this.comando = "";
-    this.lstData.forEach((e:any)=>{
-      if (e.idtemplate_comando == this.id_selected){
+    this.comando = '';
+    this.lstData.forEach((e: any) => {
+      if (e.idtemplate_comando == this.id_selected) {
         this.comando = e.linea_comando;
         found = true;
       }
-    })
+    });
 
-    if (found){
-      this.prepare()
+    if (found) {
+      this.prepare();
     }
   }
 
-  async prepare(){
-    let html = "";
+  async prepare() {
+    let html = '';
 
-    html += `<select class="form-control" id="servidor">`
-    this.lstServidores.forEach(s=>{
+    html += `<select class="form-control" id="servidor">`;
+    this.lstServidores.forEach((s) => {
       html += `<option value="${s.idservidor}">${s.nombre}</option>`;
-    })
+    });
     html += `</select>`;
 
-    
     Swal.fire({
       allowOutsideClick: false,
       allowEscapeKey: false,
-      title: "Seleccione un servidor",
+      title: 'Seleccione un servidor',
       html: html,
       confirmButtonColor: '#33a0d6',
       confirmButtonText: 'Confirmar',
@@ -441,13 +460,17 @@ private readonly tempSvc = inject(TemplateService);
       hideClass: { popup: '' },
       preConfirm: () => {
         let popup = Swal.getPopup();
-        let valDat = "";
-        if (popup){
+        let valDat = '';
+        if (popup) {
           let obj = popup.querySelector('#servidor');
-          if (obj){
+          if (obj) {
             valDat = (obj as HTMLInputElement).value;
           }
-          return valDat ? valDat : Swal.showValidationMessage( `You need to select one o more campaigns` );
+          return valDat
+            ? valDat
+            : Swal.showValidationMessage(
+                `You need to select one o more campaigns`
+              );
         }
       },
     }).then((res) => {
@@ -458,87 +481,85 @@ private readonly tempSvc = inject(TemplateService);
     });
   }
 
-  selectServer(){
+  selectServer() {
     let found = false;
-    this.lstServidores.forEach(s=>{
-      if (s.idservidor == this.idServidor){
+    this.lstServidores.forEach((s) => {
+      if (s.idservidor == this.idServidor) {
         this.server = s;
         found = true;
       }
-    })
+    });
 
-    if (found){
-      
-
+    if (found) {
       this.openWS();
     }
   }
 
   openWS() {
-    this.agente_status = "Conectando ...";
+    this.agente_status = 'Conectando ...';
     const token = this.sessions.get('token');
     let url = `ws://${this.server.host}:${this.server.agente_puerto}/ws?token=${token}`;
-    try{
+    try {
       this.ws = new WebSocket(url);
       this.ws.onopen = (event: any) => this.onOpenListener(event);
       this.ws.onmessage = (event: any) => this.onMessageListener(event);
       this.ws.onclose = (event: any) => this.onCloseListener(event);
       this.ws.onerror = (event: any) => this.onErrorListener(event);
-    }catch(ex){}
+    } catch (ex) {}
   }
 
   onOpenListener(event: any) {
     if (event.type == 'open') {
       console.log(`√ Conectado ${this.idServidor}`);
-      this.agente_status = "Conectado";
+      this.agente_status = 'Conectado';
       this.connState();
-      this.startMonitor()
+      this.startMonitor();
     } else {
-      this.agente_status = "No se estableció conexion con Sentinel";
+      this.agente_status = 'No se estableció conexion con Sentinel';
       console.log(`X Desconectado ${this.idServidor}`);
       this.agente_status = 'FAIL|Desconectado';
     }
   }
 
   onCloseListener(event: any) {
-    console.log("█ Desconectado")
+    console.log('█ Desconectado');
     console.log(`X Desconectado ${this.idServidor}`);
-    if (event.code == 1000){
-      this.agente_status = "Desconectado manualmente";
+    if (event.code == 1000) {
+      this.agente_status = 'Desconectado manualmente';
       this.ws_error = 0;
-    }else{
-      this.agente_status = "Desconectado";
-      if (this.reconnect && this.ws_error < this.ws_error_limit){
-        this.ws_error ++;
-        setTimeout(()=>{
+    } else {
+      this.agente_status = 'Desconectado';
+      if (this.reconnect && this.ws_error < this.ws_error_limit) {
+        this.ws_error++;
+        setTimeout(() => {
           this.startMonitor();
-        },1000)
+        }, 1000);
       }
     }
   }
 
   onErrorListener(event: any) {}
 
-  onMessageListener(e:any){
+  onMessageListener(e: any) {
     console.log(`↓ LlegoMensaje ${this.idServidor}`);
     let evento = JSON.parse(e.data);
     // console.log(evento)
-    let data:any = evento.data;
-    let resp = "";
-    data.forEach( (e:any) => {
-      resp += atob(e.respuesta) + "\n"
+    let data: any = evento.data;
+    let resp = '';
+    data.forEach((e: any) => {
+      resp += atob(e.respuesta) + '\n';
     });
-    this.func.showMessage("info", "Comandos", resp)
+    this.func.showMessage('info', 'Comandos', resp);
   }
 
   connState = () => {
     let m = false;
 
-    if (this.ws === undefined){
-       m = false;
-    }else{
-      try{
-        switch (this.ws.readyState){
+    if (this.ws === undefined) {
+      m = false;
+    } else {
+      try {
+        switch (this.ws.readyState) {
           case 0:
             //m = "Pepper has been created. The connection is not yet open.";
             m = false;
@@ -556,60 +577,104 @@ private readonly tempSvc = inject(TemplateService);
             m = false;
             break;
         }
-      }catch(err){
+      } catch (err) {
         m = false;
       }
     }
 
     this.light_ws = m;
     return m;
-  }
+  };
 
-
-  startMonitor(){
-
-    if (this.comando.indexOf("{nombre_servidor}")>-1){
-      this.comando = this.comando.replace(/{nombre_servidor}/gi, this.server.nombre);
+  startMonitor() {
+    if (this.comando.indexOf('{nombre_servidor}') > -1) {
+      this.comando = this.comando.replace(
+        /{nombre_servidor}/gi,
+        this.server.nombre
+      );
     }
 
-    if (this.comando.indexOf("{usuario}")>-1){
-      this.comando = this.comando.replace(/{nombre_servidor}/gi, this.usuario.usuario);
+    if (this.comando.indexOf('{usuario}') > -1) {
+      this.comando = this.comando.replace(
+        /{nombre_servidor}/gi,
+        this.usuario.usuario
+      );
     }
 
-    if (this.comando.indexOf("{grupo_nombre}")>-1){
-      this.comando = this.comando.replace(/{grupo_nombre}/gi, this.usuario.grupo.nombre);
+    if (this.comando.indexOf('{grupo_nombre}') > -1) {
+      this.comando = this.comando.replace(
+        /{grupo_nombre}/gi,
+        this.usuario.grupo.nombre
+      );
     }
 
-    if (this.comando.indexOf("{usuario_clave}")>-1){
-      this.func.showMessage("error", "Comandos", "No puede enviarse un comando que incluya la contraseña, por favor dirijase a Administracion de servidores.");
-      return
+    if (this.comando.indexOf('{usuario_clave}') > -1) {
+      this.func.showMessage(
+        'error',
+        'Comandos',
+        'No puede enviarse un comando que incluya la contraseña, por favor dirijase a Administracion de servidores.'
+      );
+      return;
     }
-
 
     let params = {
-      action: "comando",
+      action: 'comando',
       identificador: {
         idcliente: this.user.idcliente,
         idusuario: this.user.idusuario,
         usuario: this.user.usuario,
         idservidor: this.idServidor,
-        id: Math.floor(Math.random() * (9999999999999999 - 1000000000000000 + 1)) + 1000000000000000
+        id:
+          Math.floor(
+            Math.random() * (9999999999999999 - 1000000000000000 + 1)
+          ) + 1000000000000000,
       },
-      data: [
-        {"id": "comandos screen", "cmd": this.comando},
-      ]
+      data: [{ id: 'comandos screen', cmd: this.comando }],
     };
     this.onSendCommands(params);
   }
 
-  onSendCommands(params:any=null){
-    if (this.connState()){
-      console.log("↑ Enviando")
+  onSendCommands(params: any = null) {
+    if (this.connState()) {
+      console.log('↑ Enviando');
       this.ws.send(JSON.stringify(params));
     }
   }
 
+  exportarPDF() {
+    let data: any = this.prepareToExport();
+    let params = {
+      orientation: 'l',
+      titulo: 'Comandos',
+      data: data,
+      filename: `lisah_lista_comandos${moment().format('YYYYMMDDHHmmss')}.pdf`,
+    };
+    this.func.exportarPDF(params);
+  }
 
+  exportarCSV() {
+    let data: any = this.prepareToExport();
+    this.func.exportarCSV(
+      data,
+      `lisah_lista_comandos${moment().format('YYYYMMDDHHmmss')}.csv`
+    );
+  }
 
-  
+  prepareToExport(): Array<any> {
+    let arr: any = [];
+    let rolmenu: any = [];
+    this.lstData.forEach((d: any) => {
+      // console.log(d)
+      try {
+        arr.push({
+          alias: d.alias,
+          linea_comando: d.linea_comando,
+          estado: !d.deleted_at ? 'Activo' : 'Inactivo',
+        });
+      } catch (err) {
+        console.log(err, d);
+      }
+    });
+    return arr;
+  }
 }
