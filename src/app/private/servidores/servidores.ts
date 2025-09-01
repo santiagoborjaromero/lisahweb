@@ -18,6 +18,7 @@ import moment from 'moment';
 import { Titulo } from '../shared/titulo/titulo';
 import { Path } from '../shared/path/path';
 import { GeneralService } from '../../core/services/general.service';
+import { AnonymousSubject } from 'rxjs/internal/Subject';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -202,7 +203,7 @@ export class Servidores {
           field: 'nombre',
           cellClass: 'text-start',
           filter: true,
-          flex: 4,
+          flex: 3,
           cellRenderer: this.renderAccionNombre.bind(this),
         },
         {
@@ -211,7 +212,7 @@ export class Servidores {
           field: 'host',
           cellClass: 'text-start',
           filter: true,
-          flex: 2,
+          flex: 3,
         },
         {
           headerName: 'Ubicacion',
@@ -356,13 +357,22 @@ export class Servidores {
           },
         },
         {
-          headerName: 'Accion',
+          headerName: 'Eliminar',
           headerClass: ['th-center', 'th-normal'],
           cellClass: 'text-start',
           filter: true,
           flex: 3,
           maxWidth: 100,
           cellRenderer: this.renderAcciones.bind(this),
+        },
+        {
+          headerName: 'Test',
+          headerClass: ['th-center', 'th-normal'],
+          cellClass: 'text-start',
+          filter: true,
+          flex: 3,
+          maxWidth: 100,
+          cellRenderer: this.renderTest.bind(this),
         },
       ],
     };
@@ -388,6 +398,17 @@ export class Servidores {
     button.innerHTML = `<span class="link" title='Editar Servidor'>${params.data.nombre}</span>`;
     button.addEventListener('click', () => {
       this.funcEdit(params.data.idservidor);
+    });
+    return button;
+  }
+
+  renderTest(params: ICellRendererParams) {
+    const button = document.createElement('button');
+    button.className = 'btn btn-white';
+    button.innerHTML = `<i role="img" class="fas fa-flask text-success" title='Test'></i>`;
+    button.addEventListener('click', () => {
+      // this.funcEdit(params.data.idservidor);
+      this.openWS(params.data);
     });
     return button;
   }
@@ -559,9 +580,18 @@ export class Servidores {
     this.refreshAll();
   }
 
-  openWS() {
+  openWS(servidor:any = null) {
+    if (servidor){
+      this.connectWS(servidor.host, servidor.agente_puerto);
+    }else{
+      this.connectWS(this.server_selected.host, this.server_selected.agente_puerto);
+    }
+  }
+  
+  connectWS(host:any = "", puerto:any = ""){
+    this.func.showLoading(`Conectando ${host}:${puerto}`);
     const token = this.sessions.get('token');
-    let url = `ws://${this.server_selected.host}:${this.server_selected.agente_puerto}/ws?token=${token}`;
+    let url = `ws://${host}:${puerto}/ws?token=${token}`;
     try {
       this.ws = new WebSocket(url);
       this.ws.onopen = (event: any) => this.onOpenListener(event);
@@ -572,6 +602,7 @@ export class Servidores {
   }
 
   onOpenListener(event: any) {
+    this.func.closeSwal();
     if (event.type == 'open') {
       console.log(`√ Conectado ${this.server_selected.idservidor}`);
       this.agente_test = '1';
@@ -585,6 +616,7 @@ export class Servidores {
   }
 
   onErrorListener(event: any) {
+    this.func.closeSwal();
     this.agente_test = '2';
     this.putResults(this.server_selected.idservidor, [0, ''], 'agente');
     console.log(`X No responde Servidor ${this.server_selected.idservidor}`);

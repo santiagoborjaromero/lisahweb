@@ -54,7 +54,6 @@ export class Monitoreo {
   public id_selected: string = '';
   public is_deleted: any = null;
 
-  wsConn: any | undefined;
   lstServidores: Array<any> = [];
 
   playMonitor: boolean = false;
@@ -86,7 +85,7 @@ export class Monitoreo {
       { nombre: 'Monitoreo', ruta: 'admin/monitoreo' },
     ];
 
-    this.titulo = { icono: 'fas fa-chart-bar', nombre: 'Monitoreo' };
+    this.titulo = { icono: 'fas fa-chart-bar', nombre: 'Dashboard Monitoreo Servidores' };
 
     this.tiempo_refresco = this.user.config.tiempo_refresco;
 
@@ -107,6 +106,9 @@ export class Monitoreo {
 
     this.dataGridStruct();
     this.getUsuario();
+    setTimeout(()=>{
+      this.startMonitor();
+    },800)
   }
 
   ngOnDestroy(): void {
@@ -205,9 +207,27 @@ export class Monitoreo {
         {
           headerName: 'Host',
           headerClass: 'th-normal3',
-          field: 'host',
+          field: 'ip',
           cellClass: 'text-start',
           filter: true,
+          cellRenderer: (params: ICellRendererParams) => {
+            let ip = params.value;
+            let host = params.data.host;
+            let data = "";
+            if (ip){
+              if (ip.indexOf("|")>-1){
+                data = ip.split("|")[1];
+                if (ip.split("|")[0]!="OK"){
+                  data = host;
+                }
+              }else{
+                data = host;
+              }
+            }else{
+              data = host;
+            }
+            return data
+          }
         },
         {
           headerName: 'Sentinel',
@@ -282,351 +302,179 @@ export class Monitoreo {
           },
         },
         {
-          headerName: 'Disco',
-          // headerStyle: { color: "white", backgroundColor: "CadetBlue" },
-          headerClass: ['th-center', 'th-grupo1'],
-          children: [
-            {
-              headerName: 'Total',
-              // headerStyle: { color: "black", backgroundColor: "white" },
-              headerClass: ['th-center', 'th-normal4'],
-              field: 'disco',
-              cellClass: 'text-start',
-              cellRenderer: (params: ICellRendererParams) => {
-                let dato = params.data.disco;
-                let text = '';
-                let icono = 'far fa-times-circle t16';
-                let color = 'text-danger';
-                if (!['', '-', '1', 'x'].includes(dato)) {
-                  let d = dato.split('|');
-                  if (d[0] == 'OK') {
-                    color = '';
-                  } else {
-                    color = 'text-danger';
-                  }
-                  // icono = 'fas fa-sd-card t16';
-                  icono = '';
-                  text = d[1].replace('/', '');
-                  text = text.replace('/', '-');
-                  text = text.split(' ')[0];
-                  // text = text.replace(/^\/S+$/, ",")
-                } else if (dato == '1') {
-                  icono = 'fas fa-spinner fa-spin';
-                  text = 'Revisando';
-                  color = 'text-primary';
-                } else if (dato == '-') {
-                  icono = 'fas fa-minus-circle t16';
-                  text = '';
-                  color = 'text-secondary';
-                }
-                return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
-              },
-            },
-            {
-              headerName: 'Usado',
-              headerClass: ['th-center', 'th-normal3'],
-              field: 'disco',
-              cellClass: 'text-start',
-              cellRenderer: (params: ICellRendererParams) => {
-                let dato = params.data.disco;
-                let text = '';
-                let icono = 'far fa-times-circle t16';
-                let color = 'text-danger';
-                if (!['', '-', '1', 'x'].includes(dato)) {
-                  let d = dato.split('|');
-                  if (d[0] == 'OK') {
-                    color = '';
-                  } else {
-                    color = 'text-danger';
-                  }
-                  // icono = 'fas fa-sd-card t16';
-                  icono = '';
-                  text = d[1].replace('/', '');
-                  text = text.replace('/', '-');
-                  text = text.split(' ')[1];
-                  // text = text.replace(/^\/S+$/, ",")
-                } else if (dato == '1') {
-                  icono = 'fas fa-spinner fa-spin';
-                  text = 'Revisando';
-                  color = 'text-primary';
-                } else if (dato == '-') {
-                  icono = 'fas fa-minus-circle t16';
-                  text = '';
-                  color = 'text-secondary';
-                }
-                return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
-              },
-            },
-            {
-              headerName: 'Libre',
-              headerClass: ['th-center', 'th-normal4'],
-              field: 'disco',
-              cellClass: 'text-start',
-              cellRenderer: (params: ICellRendererParams) => {
-                let dato = params.data.disco;
-                let text = '';
-                let icono = 'far fa-times-circle t16';
-                let color = 'text-danger';
-                if (!['', '-', '1', 'x'].includes(dato)) {
-                  let d = dato.split('|');
-                  if (d[0] == 'OK') {
-                    color = '';
-                  } else {
-                    color = 'text-danger';
-                  }
-                  // icono = 'fas fa-sd-card t16';
-                  icono = '';
-                  text = d[1].replace('/', '');
-                  text = text.replace('/', '-');
-                  text = text.split(' ')[2];
-                  // text = text.replace(/^\/S+$/, ",")
-                } else if (dato == '1') {
-                  icono = 'fas fa-spinner fa-spin';
-                  text = 'Revisando';
-                  color = 'text-primary';
-                } else if (dato == '-') {
-                  icono = 'fas fa-minus-circle t16';
-                  text = '';
-                  color = 'text-secondary';
-                }
-                return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
-              },
-            },
-          ],
+          headerName: 'Disco %',
+          // headerStyle: { color: "black", backgroundColor: "white" },
+          headerClass: ['th-center', 'th-normal4'],
+          field: 'disco',
+          cellClass: 'text-start',
+          cellRenderer: (params: ICellRendererParams) => {
+            let porc:number = 0;
+            let dato = params.data.disco;
+            let text:any;
+            let icono = 'far fa-times-circle t16';
+            let color = 'text-danger';
+            if (!['', '-', '1', 'x'].includes(dato)) {
+              let d = dato.split('|');
+              if (d[0] == 'OK') {
+                color = '';
+              } else {
+                color = 'text-danger';
+              }
+              icono = '';
+              text = d[1].replace('/', '');
+              text = text.replace('/', '-');
+              text = text.split(' ');
+              let total = parseFloat(text[0].replace("G",""));
+              let usado = parseFloat(text[1].replace("G",""));
+              let libre = parseFloat(text[2].replace("G",""));
+              porc = parseFloat(this.func.numberFormat((usado / total) * 100,2));
+
+              // text = text.replace(/^\/S+$/, ",")
+              switch (true){
+                case porc > 0 && porc <=30:
+                  color = "bg-light";
+                  break;
+                case porc > 31 && porc <=60:
+                  color = "bg-info";
+                  break;
+                case porc > 61 && porc <=90:
+                  color = "bg-warning";
+                  break;
+                case porc > 91 && porc <=100:
+                  color = "bg-danger";
+                  break;
+              }
+              color = "bg-success";
+            } else if (dato == '1') {
+              icono = 'fas fa-spinner fa-spin';
+              text = 'Revisando';
+              color = 'text-primary';
+            } else if (dato == '-') {
+              icono = 'fas fa-minus-circle t16';
+              text = '';
+              color = 'text-secondary';
+            }
+            return `<kbd class="${color} p-2">${porc} %</kbd>`;
+          },
         },
         {
-          headerName: 'Load / CPU',
-          // headerStyle: { color: "white", backgroundColor: "DarkCyan" },
-          headerClass: ['th-center', 'th-normal'],
-          children: [
-            {
-              headerName: '1 min',
-              // headerStyle: { color: "black", backgroundColor: "Gainsboro" },
-              headerClass: ['th-center', 'th-normal3'],
-              field: 'cpu',
-              cellClass: 'text-start',
-              cellRenderer: (params: ICellRendererParams) => {
-                let dato = params.value;
-                let text = '';
-                let icono = 'far fa-times-circle t16';
-                let color = 'text-danger';
-                if (!['', '-', '1', 'x'].includes(dato)) {
-                  let d = dato.split('|');
-                  if (d[0] == 'OK') {
-                    color = '';
-                  } else {
-                    color = 'text-danger';
-                  }
-                  // icono = 'fas fa-microchip t16';
-                  icono = '';
-                  text = d[1].split(' ')[0];
-                } else if (dato == '1') {
-                  icono = 'fas fa-spinner fa-spin';
-                  text = 'Revisando';
-                  color = 'text-primary';
-                } else if (dato == '-') {
-                  icono = 'fas fa-minus-circle t16';
-                  text = '';
-                  color = 'text-secondary';
-                }
-                return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
-              },
-            },
-            {
-              headerName: '5 mins',
-              // headerStyle: { color: "black", backgroundColor: "white" },
-              headerClass: ['th-center', 'th-normal4'],
-              field: 'cpu',
-              cellClass: 'text-start',
-              cellRenderer: (params: ICellRendererParams) => {
-                let dato = params.value;
-                let text = '';
-                let icono = 'far fa-times-circle t16';
-                let color = 'text-danger';
-                if (!['', '-', '1', 'x'].includes(dato)) {
-                  let d = dato.split('|');
-                  if (d[0] == 'OK') {
-                    color = '';
-                  } else {
-                    color = 'text-danger';
-                  }
-                  // icono = 'fas fa-microchip t16';
-                  icono = '';
-                  text = d[1].split(' ')[1];
-                } else if (dato == '1') {
-                  icono = 'fas fa-spinner fa-spin';
-                  text = 'Revisando';
-                  color = 'text-primary';
-                } else if (dato == '-') {
-                  icono = 'fas fa-minus-circle t16';
-                  text = '';
-                  color = 'text-secondary';
-                }
-                return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
-              },
-            },
-            {
-              headerName: '15 mins',
-              headerClass: ['th-center', 'th-normal3'],
-              field: 'cpu',
-              cellClass: 'text-start',
-              cellRenderer: (params: ICellRendererParams) => {
-                let dato = params.value;
-                let text = '';
-                let icono = 'far fa-times-circle t16';
-                let color = 'text-danger';
-                if (!['', '-', '1', 'x'].includes(dato)) {
-                  let d = dato.split('|');
-                  if (d[0] == 'OK') {
-                    color = '';
-                  } else {
-                    color = 'text-danger';
-                  }
-                  // icono = 'fas fa-microchip t16';
-                  icono = '';
-                  text = d[1].split(' ')[2];
-                } else if (dato == '1') {
-                  icono = 'fas fa-spinner fa-spin';
-                  text = 'Revisando';
-                  color = 'text-primary';
-                } else if (dato == '-') {
-                  icono = 'fas fa-minus-circle t16';
-                  text = '';
-                  color = 'text-secondary';
-                }
-                return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
-              },
-            },
-          ],
+          headerName: 'CPU %',
+          // headerStyle: { color: "black", backgroundColor: "white" },
+          headerClass: ['th-center', 'th-normal3'],
+          field: 'cpu_usado',
+          cellClass: 'text-start',
+          cellRenderer: (params: ICellRendererParams) => {
+            let porc:number = 0;
+            let dato = params.data.cpu_usado;
+            let color = "bg-light text-dark";
+
+            if (dato){
+              porc = parseFloat(this.func.numberFormat(parseFloat(dato.split("|")[1]),2));
+              switch (true){
+                case porc > 0 && porc <=30:
+                  color = "bg-success";
+                  break;
+                case porc > 31 && porc <=60:
+                  color = "bg-info";
+                  break;
+                case porc > 61 && porc <=90:
+                  color = "bg-warning";
+                  break;
+                case porc > 91 && porc <=100:
+                  color = "bg-danger";
+                  break;
+              }
+            }
+            return `<kbd class="${color} p-2">${porc} %</kbd>`;
+          },
         },
         {
-          headerName: 'Memoria',
-          // headerStyle: { color: "white", backgroundColor: "CadetBlue" },
-          headerClass: ['th-center', 'th-grupo1'],
-          children: [
-            {
-              headerName: 'Total',
-              headerClass: ['th-center', 'th-normal4'],
-              field: 'memoria',
-              cellClass: 'text-start',
-              cellRenderer: (params: ICellRendererParams) => {
-                let dato = params.value;
-                let text = '';
-                let icono = 'far fa-times-circle t16';
-                let color = 'text-danger';
-                if (!['', '-', '1', 'x'].includes(dato)) {
-                  let d = dato.split('|');
-                  if (d[0] == 'OK') {
-                    color = '';
-                  } else {
-                    color = 'text-danger';
-                  }
-                  // icono = 'fas fa-memory t16';
-                  icono = '';
-                  text = d[1].split(' ')[0];
-                } else if (dato == '1') {
-                  icono = 'fas fa-spinner fa-spin';
-                  text = 'Revisando';
-                  color = 'text-primary';
-                } else if (dato == '-') {
-                  icono = 'fas fa-minus-circle t16';
-                  text = '';
-                  color = 'text-secondary';
-                }
-                return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
-              },
-            },
-            {
-              headerName: 'Usado',
-              headerClass: ['th-center', 'th-normal3'],
-              field: 'memoria',
-              cellClass: 'text-start',
-              cellRenderer: (params: ICellRendererParams) => {
-                let dato = params.value;
-                let text = '';
-                let icono = 'far fa-times-circle t16';
-                let color = 'text-danger';
-                if (!['', '-', '1', 'x'].includes(dato)) {
-                  let d = dato.split('|');
-                  if (d[0] == 'OK') {
-                    color = '';
-                  } else {
-                    color = 'text-danger';
-                  }
-                  // icono = 'fas fa-memory t16';
-                  icono = '';
-                  text = d[1].split(' ')[1];
-                } else if (dato == '1') {
-                  icono = 'fas fa-spinner fa-spin';
-                  text = 'Revisando';
-                  color = 'text-primary';
-                } else if (dato == '-') {
-                  icono = 'fas fa-minus-circle t16';
-                  text = '';
-                  color = 'text-secondary';
-                }
-                return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
-              },
-            },
-            {
-              headerName: 'Libre',
-              headerClass: ['th-center', 'th-normal4'],
-              field: 'memoria',
-              cellClass: 'text-start',
-              cellRenderer: (params: ICellRendererParams) => {
-                let dato = params.value;
-                let text = '';
-                let icono = 'far fa-times-circle t16';
-                let color = 'text-danger';
-                if (!['', '-', '1', 'x'].includes(dato)) {
-                  let d = dato.split('|');
-                  if (d[0] == 'OK') {
-                    color = '';
-                  } else {
-                    color = 'text-danger';
-                  }
-                  // icono = 'fas fa-memory t16';
-                  icono = '';
-                  text = d[1].split(' ')[2];
-                } else if (dato == '1') {
-                  icono = 'fas fa-spinner fa-spin';
-                  text = 'Revisando';
-                  color = 'text-primary';
-                } else if (dato == '-') {
-                  icono = 'fas fa-minus-circle t16';
-                  text = '';
-                  color = 'text-secondary';
-                }
-                return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
-              },
-            },
-          ],
+          headerName: 'RAM %',
+          // headerStyle: { color: "black", backgroundColor: "white" },
+          headerClass: ['th-center', 'th-normal4'],
+          field: 'memoria',
+          cellClass: 'text-start',
+          cellRenderer: (params: ICellRendererParams) => {
+            let porc:number = 0;
+            let dato = params.data.memoria;
+            let text:any;
+            let icono = 'far fa-times-circle t16';
+            let color = 'text-danger';
+            if (!['', '-', '1', 'x'].includes(dato)) {
+              let d = dato.split('|');
+              if (d[0] == 'OK') {
+                color = '';
+              } else {
+                color = 'text-danger';
+              }
+              icono = '';
+              text = d[1].replace('/', '');
+              text = text.replace('/', '-');
+              text = text.split(' ');
+              let total = parseFloat(text[0].replace("Gi",""));
+              let usado = parseFloat(text[1].replace("Gi",""));
+              let libre = parseFloat(text[2].replace("Gi",""));
+              porc = parseFloat(this.func.numberFormat((usado / total) * 100,2));
+
+              // text = text.replace(/^\/S+$/, ",")
+              switch (true){
+                case porc > 0 && porc <=30:
+                  color = "bg-light";
+                  break;
+                case porc > 31 && porc <=60:
+                  color = "bg-info";
+                  break;
+                case porc > 61 && porc <=90:
+                  color = "bg-warning";
+                  break;
+                case porc > 91 && porc <=100:
+                  color = "bg-danger";
+                  break;
+              }
+              color = "bg-success";
+            } else if (dato == '1') {
+              icono = 'fas fa-spinner fa-spin';
+              text = 'Revisando';
+              color = 'text-primary';
+            } else if (dato == '-') {
+              icono = 'fas fa-minus-circle t16';
+              text = '';
+              color = 'text-secondary';
+            }
+            return `<kbd class="${color} p-2">${porc} %</kbd>`;
+          },
         },
+
+
         // {
-        //   headerName: 'Servicios',
-        //   headerStyle: { color: 'white', backgroundColor: 'SteelBlue' },
+        //   headerName: 'Disco',
+        //   // headerStyle: { color: "white", backgroundColor: "CadetBlue" },
+        //   headerClass: ['th-center', 'th-grupo1'],
         //   children: [
         //     {
-        //       headerName: 'HTTPD',
-        //       headerClass: ['th-center', 'th-normal3'],
-        //       field: 'servicio_httpd',
+        //       headerName: 'Total',
+        //       // headerStyle: { color: "black", backgroundColor: "white" },
+        //       headerClass: ['th-center', 'th-normal4'],
+        //       field: 'disco',
         //       cellClass: 'text-start',
-        //       minWidth: 100,
         //       cellRenderer: (params: ICellRendererParams) => {
-        //         let dato = params.value;
+        //         let dato = params.data.disco;
         //         let text = '';
         //         let icono = 'far fa-times-circle t16';
         //         let color = 'text-danger';
         //         if (!['', '-', '1', 'x'].includes(dato)) {
         //           let d = dato.split('|');
         //           if (d[0] == 'OK') {
-        //             color = 'text-success';
-        //             icono = 'far fa-check-circle t16';
+        //             color = '';
         //           } else {
         //             color = 'text-danger';
-        //             icono = 'far fa-times-circle t16';
         //           }
-        //           text = d[1];
+        //           // icono = 'fas fa-sd-card t16';
+        //           icono = '';
+        //           text = d[1].replace('/', '');
+        //           text = text.replace('/', '-');
+        //           text = text.split(' ')[0];
+        //           // text = text.replace(/^\/S+$/, ",")
         //         } else if (dato == '1') {
         //           icono = 'fas fa-spinner fa-spin';
         //           text = 'Revisando';
@@ -640,26 +488,63 @@ export class Monitoreo {
         //       },
         //     },
         //     {
-        //       headerName: 'SSH',
-        //       headerClass: ['th-center', 'th-normal4'],
-        //       field: 'servicio_ssh',
+        //       headerName: 'Usado',
+        //       headerClass: ['th-center', 'th-normal3'],
+        //       field: 'disco',
         //       cellClass: 'text-start',
-        //       minWidth: 100,
         //       cellRenderer: (params: ICellRendererParams) => {
-        //         let dato = params.value;
+        //         let dato = params.data.disco;
         //         let text = '';
         //         let icono = 'far fa-times-circle t16';
         //         let color = 'text-danger';
         //         if (!['', '-', '1', 'x'].includes(dato)) {
         //           let d = dato.split('|');
         //           if (d[0] == 'OK') {
-        //             color = 'text-success';
-        //             icono = 'far fa-check-circle t16';
+        //             color = '';
         //           } else {
-        //             icono = 'far fa-times-circle t16';
         //             color = 'text-danger';
         //           }
-        //           text = d[1];
+        //           // icono = 'fas fa-sd-card t16';
+        //           icono = '';
+        //           text = d[1].replace('/', '');
+        //           text = text.replace('/', '-');
+        //           text = text.split(' ')[1];
+        //           // text = text.replace(/^\/S+$/, ",")
+        //         } else if (dato == '1') {
+        //           icono = 'fas fa-spinner fa-spin';
+        //           text = 'Revisando';
+        //           color = 'text-primary';
+        //         } else if (dato == '-') {
+        //           icono = 'fas fa-minus-circle t16';
+        //           text = '';
+        //           color = 'text-secondary';
+        //         }
+        //         return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
+        //       },
+        //     },
+        //     {
+        //       headerName: 'Libre',
+        //       headerClass: ['th-center', 'th-normal4'],
+        //       field: 'disco',
+        //       cellClass: 'text-start',
+        //       cellRenderer: (params: ICellRendererParams) => {
+        //         let dato = params.data.disco;
+        //         let text = '';
+        //         let icono = 'far fa-times-circle t16';
+        //         let color = 'text-danger';
+        //         if (!['', '-', '1', 'x'].includes(dato)) {
+        //           let d = dato.split('|');
+        //           if (d[0] == 'OK') {
+        //             color = '';
+        //           } else {
+        //             color = 'text-danger';
+        //           }
+        //           // icono = 'fas fa-sd-card t16';
+        //           icono = '';
+        //           text = d[1].replace('/', '');
+        //           text = text.replace('/', '-');
+        //           text = text.split(' ')[2];
+        //           // text = text.replace(/^\/S+$/, ",")
         //         } else if (dato == '1') {
         //           icono = 'fas fa-spinner fa-spin';
         //           text = 'Revisando';
@@ -674,6 +559,326 @@ export class Monitoreo {
         //     },
         //   ],
         // },
+        // {
+        //   headerName: 'Load / CPU',
+        //   // headerStyle: { color: "white", backgroundColor: "DarkCyan" },
+        //   headerClass: ['th-center', 'th-normal'],
+        //   children: [
+        //     {
+        //       headerName: '1 min',
+        //       // headerStyle: { color: "black", backgroundColor: "Gainsboro" },
+        //       headerClass: ['th-center', 'th-normal3'],
+        //       field: 'cpu',
+        //       cellClass: 'text-start',
+        //       cellRenderer: (params: ICellRendererParams) => {
+        //         let dato = params.value;
+        //         let text = '';
+        //         let icono = 'far fa-times-circle t16';
+        //         let color = 'text-danger';
+        //         if (!['', '-', '1', 'x'].includes(dato)) {
+        //           let d = dato.split('|');
+        //           if (d[0] == 'OK') {
+        //             color = '';
+        //           } else {
+        //             color = 'text-danger';
+        //           }
+        //           // icono = 'fas fa-microchip t16';
+        //           icono = '';
+        //           text = d[1].split(' ')[0];
+        //         } else if (dato == '1') {
+        //           icono = 'fas fa-spinner fa-spin';
+        //           text = 'Revisando';
+        //           color = 'text-primary';
+        //         } else if (dato == '-') {
+        //           icono = 'fas fa-minus-circle t16';
+        //           text = '';
+        //           color = 'text-secondary';
+        //         }
+        //         return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
+        //       },
+        //     },
+        //     {
+        //       headerName: '5 mins',
+        //       // headerStyle: { color: "black", backgroundColor: "white" },
+        //       headerClass: ['th-center', 'th-normal4'],
+        //       field: 'cpu',
+        //       cellClass: 'text-start',
+        //       cellRenderer: (params: ICellRendererParams) => {
+        //         let dato = params.value;
+        //         let text = '';
+        //         let icono = 'far fa-times-circle t16';
+        //         let color = 'text-danger';
+        //         if (!['', '-', '1', 'x'].includes(dato)) {
+        //           let d = dato.split('|');
+        //           if (d[0] == 'OK') {
+        //             color = '';
+        //           } else {
+        //             color = 'text-danger';
+        //           }
+        //           // icono = 'fas fa-microchip t16';
+        //           icono = '';
+        //           text = d[1].split(' ')[1];
+        //         } else if (dato == '1') {
+        //           icono = 'fas fa-spinner fa-spin';
+        //           text = 'Revisando';
+        //           color = 'text-primary';
+        //         } else if (dato == '-') {
+        //           icono = 'fas fa-minus-circle t16';
+        //           text = '';
+        //           color = 'text-secondary';
+        //         }
+        //         return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
+        //       },
+        //     },
+        //     {
+        //       headerName: '15 mins',
+        //       headerClass: ['th-center', 'th-normal3'],
+        //       field: 'cpu',
+        //       cellClass: 'text-start',
+        //       cellRenderer: (params: ICellRendererParams) => {
+        //         let dato = params.value;
+        //         let text = '';
+        //         let icono = 'far fa-times-circle t16';
+        //         let color = 'text-danger';
+        //         if (!['', '-', '1', 'x'].includes(dato)) {
+        //           let d = dato.split('|');
+        //           if (d[0] == 'OK') {
+        //             color = '';
+        //           } else {
+        //             color = 'text-danger';
+        //           }
+        //           // icono = 'fas fa-microchip t16';
+        //           icono = '';
+        //           text = d[1].split(' ')[2];
+        //         } else if (dato == '1') {
+        //           icono = 'fas fa-spinner fa-spin';
+        //           text = 'Revisando';
+        //           color = 'text-primary';
+        //         } else if (dato == '-') {
+        //           icono = 'fas fa-minus-circle t16';
+        //           text = '';
+        //           color = 'text-secondary';
+        //         }
+        //         return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
+        //       },
+        //     },
+        //   ],
+        // },
+        // {
+        //   headerName: 'Memoria',
+        //   // headerStyle: { color: "white", backgroundColor: "CadetBlue" },
+        //   headerClass: ['th-center', 'th-grupo1'],
+        //   children: [
+        //     {
+        //       headerName: 'Total',
+        //       headerClass: ['th-center', 'th-normal4'],
+        //       field: 'memoria',
+        //       cellClass: 'text-start',
+        //       cellRenderer: (params: ICellRendererParams) => {
+        //         let dato = params.value;
+        //         let text = '';
+        //         let icono = 'far fa-times-circle t16';
+        //         let color = 'text-danger';
+        //         if (!['', '-', '1', 'x'].includes(dato)) {
+        //           let d = dato.split('|');
+        //           if (d[0] == 'OK') {
+        //             color = '';
+        //           } else {
+        //             color = 'text-danger';
+        //           }
+        //           // icono = 'fas fa-memory t16';
+        //           icono = '';
+        //           text = d[1].split(' ')[0];
+        //         } else if (dato == '1') {
+        //           icono = 'fas fa-spinner fa-spin';
+        //           text = 'Revisando';
+        //           color = 'text-primary';
+        //         } else if (dato == '-') {
+        //           icono = 'fas fa-minus-circle t16';
+        //           text = '';
+        //           color = 'text-secondary';
+        //         }
+        //         return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
+        //       },
+        //     },
+        //     {
+        //       headerName: 'Usado',
+        //       headerClass: ['th-center', 'th-normal3'],
+        //       field: 'memoria',
+        //       cellClass: 'text-start',
+        //       cellRenderer: (params: ICellRendererParams) => {
+        //         let dato = params.value;
+        //         let text = '';
+        //         let icono = 'far fa-times-circle t16';
+        //         let color = 'text-danger';
+        //         if (!['', '-', '1', 'x'].includes(dato)) {
+        //           let d = dato.split('|');
+        //           if (d[0] == 'OK') {
+        //             color = '';
+        //           } else {
+        //             color = 'text-danger';
+        //           }
+        //           // icono = 'fas fa-memory t16';
+        //           icono = '';
+        //           text = d[1].split(' ')[1];
+        //         } else if (dato == '1') {
+        //           icono = 'fas fa-spinner fa-spin';
+        //           text = 'Revisando';
+        //           color = 'text-primary';
+        //         } else if (dato == '-') {
+        //           icono = 'fas fa-minus-circle t16';
+        //           text = '';
+        //           color = 'text-secondary';
+        //         }
+        //         return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
+        //       },
+        //     },
+        //     {
+        //       headerName: 'Libre',
+        //       headerClass: ['th-center', 'th-normal4'],
+        //       field: 'memoria',
+        //       cellClass: 'text-start',
+        //       cellRenderer: (params: ICellRendererParams) => {
+        //         let dato = params.value;
+        //         let text = '';
+        //         let icono = 'far fa-times-circle t16';
+        //         let color = 'text-danger';
+        //         if (!['', '-', '1', 'x'].includes(dato)) {
+        //           let d = dato.split('|');
+        //           if (d[0] == 'OK') {
+        //             color = '';
+        //           } else {
+        //             color = 'text-danger';
+        //           }
+        //           // icono = 'fas fa-memory t16';
+        //           icono = '';
+        //           text = d[1].split(' ')[2];
+        //         } else if (dato == '1') {
+        //           icono = 'fas fa-spinner fa-spin';
+        //           text = 'Revisando';
+        //           color = 'text-primary';
+        //         } else if (dato == '-') {
+        //           icono = 'fas fa-minus-circle t16';
+        //           text = '';
+        //           color = 'text-secondary';
+        //         }
+        //         return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
+        //       },
+        //     },
+        //   ],
+        // },
+        {
+          headerName: 'Servicios',
+          headerStyle: { color: 'white', backgroundColor: 'SteelBlue' },
+          children: [
+            // {
+            //   headerName: 'HTTPD',
+            //   headerClass: ['th-center', 'th-normal3'],
+            //   field: 'servicio_httpd',
+            //   cellClass: 'text-start',
+            //   minWidth: 100,
+            //   cellRenderer: (params: ICellRendererParams) => {
+            //     let dato = params.value;
+            //     let text = '';
+            //     let icono = 'far fa-times-circle t16';
+            //     let color = 'text-danger';
+            //     if (!['', '-', '1', 'x'].includes(dato)) {
+            //       let d = dato.split('|');
+            //       if (d[0] == 'OK') {
+            //         color = 'text-success';
+            //         icono = 'far fa-check-circle t16';
+            //       } else {
+            //         color = 'text-danger';
+            //         icono = 'far fa-times-circle t16';
+            //       }
+            //       text = d[1];
+            //     } else if (dato == '1') {
+            //       icono = 'fas fa-spinner fa-spin';
+            //       text = 'Revisando';
+            //       color = 'text-primary';
+            //     } else if (dato == '-') {
+            //       icono = 'fas fa-minus-circle t16';
+            //       text = '';
+            //       color = 'text-secondary';
+            //     }
+            //     return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
+            //   },
+            // },
+            {
+              headerName: 'SSH',
+              headerClass: ['th-center', 'th-normal3'],
+              field: 'servicio_ssh',
+              cellClass: 'text-start',
+              minWidth: 100,
+              cellRenderer: (params: ICellRendererParams) => {
+                let dato = params.value;
+                let text = '';
+                let icono = 'far fa-times-circle t16';
+                let color = 'text-danger';
+                if (!['', '-', '1', 'x'].includes(dato)) {
+                  let d = dato.split('|');
+                  if (d[0] == 'OK') {
+                    color = 'text-success';
+                    icono = 'far fa-check-circle t16';
+                  } else {
+                    icono = 'far fa-times-circle t16';
+                    color = 'text-danger';
+                  }
+                  text = d[1];
+                } else if (dato == '1') {
+                  icono = 'fas fa-spinner fa-spin';
+                  text = 'Revisando';
+                  color = 'text-primary';
+                } else if (dato == '-') {
+                  icono = 'fas fa-minus-circle t16';
+                  text = '';
+                  color = 'text-secondary';
+                }
+                return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
+              },
+            },
+            {
+              headerName: 'Terminal',
+              headerClass: ['th-center', 'th-normal4'],
+              field: 'servicio_terminal',
+              cellClass: 'text-start',
+              minWidth: 100,
+              cellRenderer: (params: ICellRendererParams) => {
+                let dato = params.value;
+                // console.log(dato)
+                let text = '';
+                let icono = 'far fa-times-circle t16';
+                let color = 'text-danger';
+                if (!['', '-', '1', 'x', undefined].includes(dato)) {
+                  let d = dato.split('|');
+                  if (d[0] == 'OK') {
+                    if (d[1].trim() == 'active') {
+                      color = 'text-success';
+                      icono = 'far fa-check-circle t16';
+                    }else{
+                      icono = 'far fa-times-circle t16';
+                      color = 'text-danger';
+                    }
+                  } else {
+                    icono = 'far fa-times-circle t16';
+                    color = 'text-danger';
+                  }
+                  text = d[1];
+                } else if (dato == '1') {
+                  icono = 'fas fa-spinner fa-spin';
+                  text = 'Revisando';
+                  color = 'text-primary';
+                } else if (dato == '-' || dato !== undefined) {
+                  icono = 'fas fa-minus-circle t16';
+                  text = '';
+                  color = 'text-secondary';
+                }
+                return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
+              },
+            },
+          ],
+        },
+        
       ],
     };
 
@@ -734,6 +939,7 @@ export class Monitoreo {
     this.revisando = '';
     this.serverIndex = 0;
     this.continuar = false;
+    this.ws = null;
     clearInterval(this.tmrMonitor);
   }
 
@@ -754,7 +960,7 @@ export class Monitoreo {
   }
 
   verificaServer(server: any) {
-    console.log('Verificar Server', server.idservidor);
+    // console.log('Verificar Server', server.idservidor);
     if (server.healthy_agente.split('|')[0] == 'OK') {
       this.lstServidores.forEach((s) => {
         if (s.idservidor == server.idservidor) {
@@ -774,6 +980,8 @@ export class Monitoreo {
           s.disco = 'x';
           s.servicio_httpd = 'x';
           s.servicio_ssh = 'x';
+          s.host = 'localhost';
+          s.servicio_terminal = 'x';
           this.refreshAll();
           return;
         }
@@ -783,7 +991,7 @@ export class Monitoreo {
 
   enviaStats(server: any) {
     let param = {
-      action: 'stats',
+      action: 'comando',
       identificador: {
         idcliente: this.user.idcliente,
         idusuario: this.user.idusuario,
@@ -794,7 +1002,18 @@ export class Monitoreo {
             Math.random() * (9999999999999999 - 1000000000000000 + 1)
           ) + 1000000000000000,
       },
-      data: [],
+      data: [
+        {"id": "disco", "cmd":" df -hT | grep -E 'ext4|xfs|btrfs' | awk '{print $3, $4, $5}'"},
+        {"id": "cpu", "cmd":"cat /proc/loadavg | awk '{print $1, $2, $3}'"},
+        {"id": "cpu_usado", "cmd":`sar -u | grep '^[0-9]' | awk '{sum+=$3; count++} END {if(count>0) print sum/count}'`},
+        {"id": "memoria", "cmd":"free -h | grep -E 'Mem' | awk '{print $2, $3, $4}'"},
+        {"id": "uptime", "cmd":'sec=$(( $(date +%s) - $(date -d "$(ps -p 1 -o lstart=)" +%s) )); d=$((sec/86400)); h=$(( (sec%86400)/3600 )); m=$(( (sec%3600)/60 )); s=$((sec%60)); printf "%02d:%02d:%02d:%02d\n" $d $h $m $s'},
+        {"id": "servicio_httpd", "cmd":"systemctl is-active httpd"},
+        {"id": "servicio_ssh", "cmd":"systemctl is-active sshd"},
+        {"id": "servicio_sentinel", "cmd":"systemctl is-active sentinel"},
+        {"id": "servicio_terminal", "cmd":"systemctl is-active webssh2"},
+        {"id": "ip", "cmd":`hostname -i`},
+      ],
     };
     console.log('↑ Enviando');
     this.ws.send(JSON.stringify(param));
@@ -831,15 +1050,15 @@ export class Monitoreo {
     this.loadMonitoreo = true;
     console.log(`√ LlegoMensaje ${server.idservidor}`);
     let data = JSON.parse(e.data);
-    console.log(data);
+    // console.log(data);
     switch (data.action) {
-      case 'stats':
+      case 'comando':
         let msg = '';
         this.lstServidores.forEach((s: any) => {
           if (s.idservidor == server.idservidor) {
             data.data.forEach((r: any) => {
               let respuesta: any = atob(r.respuesta);
-              console.log(respuesta);
+              // console.log(respuesta);
               try {
                 // if (respuesta.returncode == 0) {
                 msg = `OK|${respuesta}`;

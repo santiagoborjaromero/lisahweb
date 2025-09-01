@@ -32,10 +32,6 @@
           <small><i>Usuarios Asignados:</i></small> &nbsp;
           <span class="bold">{{rstServidor.usuarios.length}}</span> 
         </span>
-        <span class="avgS">  
-          <small><i>Timepo activo:</i></small> &nbsp;
-          <span class="bold">{{lstDatos.uptime}}</span> 
-        </span>
       </div>
       <div class="stats" style="width: 50%">
         <span class="icono icono-morado">
@@ -43,7 +39,7 @@
         </span>
         <span class="seccion">TIEMPO ACTIVO</span>
         <span class="valor valor-morado">{{lstDatos.uptime}}</span>
-        <span class="avg"><i>Hora del servidor {{lstDatos.hora}}</i></span>
+        <span class="avg"><i>DD:HH:MM:SS</i></span>
       </div>
     </div>
 
@@ -151,14 +147,44 @@
     </div>
   </section>
 
-  <div class="col col-sm-12 col-md-12 col-lg-6 col-xl-12 content-statss ">
-    <h5>Procesos <small class="t12 text-secondary">(limit=10)</small>  </h5> 
-    <div #myGridProc id="myGridProc" class="ag-theme-quartz" style="height: 300px; min-height: 300px"></div>
-  </div>
-<!--
   <section class="row">
-    <div class="col-12 h300">
-     <span class="bold"><i>Procesos activos</i></span>
+    <div class="col-12 col-md-3 h300" >
+      <span class="bold"><i>Auditoría de acciones por agrupación </i></span>
+
+      <ul class="list-group list-group-flush" >
+        @for (item of lstAcciones; track $index) {
+          <li class="list-group-item mt-1">
+            <span class="bold text-danger t30">{{item.total}}</span>
+            <br>
+            <span class="t16">{{item.descripcion}}</span>
+          </li>
+        }
+      </ul>
+    </div>
+    <div class="col-12 col-md-3 h300">
+      <span class="bold"><i>Actividad reciente</i></span>
+
+      <ul class="list-group list-group-flush" >
+        @for (item of lstUltimasAcciones; track $index) {
+          <li class="list-group-item mt-1">
+            @if (item.metodo == "POST") {
+              <span class="bold text-danger">{{item.metodo}}</span>
+            }
+            @if (item.metodo == "PUT") {
+              <span class="bold text-success">{{item.metodo}}</span>
+            }
+            @if (item.metodo == "DELETE") {
+              <span class="bold text-danger">{{item.metodo}}</span>
+            }
+            <span class="t16">{{item.ruta}}</span>
+            <br>
+            <span class="t12 text-secondary bold">{{item.fecha}}</span>
+          </li>
+        }
+      </ul>
+    </div>
+    <div class="col-12 col-md-6 h300">
+      <span class="bold"><i>Procesos activos</i></span>
       <table class="table striped-rows table-bordered ">
         <thead>
           <tr>
@@ -197,7 +223,6 @@
       </table>
     </div>
   </section>
-   -->
 </div>
 
 

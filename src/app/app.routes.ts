@@ -16,18 +16,21 @@ export const routes: Routes = [
         loadComponent: () => import('./private/skeleton/skeleton').then( (c)=> c.Skeleton),
         canActivate: [authGuard],
         children:[
-            {path:"dashboard", loadComponent: () => import('./private/dashboard/dashboard').then((c)=> c.Dashboard)},
             
             /** Eclusivos Owner */
             {path:"menus", loadComponent: () => import('./private/menu/menu').then((c)=> c.Menu)},
             {path:"menu/:id", loadComponent: () => import('./private/menu/edit/edit').then((c)=> c.Edit)},
-
+            
             {path:"roles", loadComponent: () => import('./private/roles/roles').then((c)=> c.Roles)},
             {path:"variables", loadComponent: () => import('./private/variables/variables').then((c)=> c.Variables)},
             {path:"clientes", loadComponent: () => import('./private/clientes/clientes').then((c)=> c.Clientes)},
             {path:"generalidades", loadComponent: () => import('./private/generalidades/generalidades').then((c)=> c.Generalidades)},
-
+            
             /** Para clientes */
+            {path:"monitoreo", loadComponent: () => import('./private/monitoreo/monitoreo').then((c)=> c.Monitoreo)},
+            {path:"dashboard", loadComponent: () => import('./private/dashboard/dashboard').then((c)=> c.Dashboard)},
+            {path:"dashusuario", loadComponent: () => import('./private/dashusuario/dashusuario').then((c)=> c.Dashusuario)},
+
             {path:"profile", loadComponent: () => import('./private/profile/profile').then((c)=> c.Profile)},
             {path:"configs", loadComponent: () => import('./private/config/config').then((c)=> c.Config)},
             {path:"usuarios", loadComponent: () => import('./private/usuarios/usuarios').then((c)=> c.Usuarios)},
@@ -42,7 +45,6 @@ export const routes: Routes = [
             {path:"script/:id", loadComponent: () => import('./private/scripts/edit/edit').then((c)=> c.Edit)},
             {path:"procesos", loadComponent: () => import('./private/procesos/procesos').then((c)=> c.Procesos)},
             {path:"audits", loadComponent: () => import('./private/audit/audit').then((c)=> c.Audit)},
-            {path:"monitoreo", loadComponent: () => import('./private/monitoreo/monitoreo').then((c)=> c.Monitoreo)},
             {path:"hardening", loadComponent: () => import('./private/hardening/hardening').then((c)=> c.Hardening)},
             {path:"terminal", loadComponent: () => import('./private/terminal/terminal').then((c)=> c.Terminal)},
             {path:"hardeningssh", loadComponent: () => import('./private/hardeningssh/hardeningssh').then((c)=> c.Hardeningssh)},
