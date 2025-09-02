@@ -251,7 +251,7 @@ export class Functions {
 
           objValida[key].validacion.resultado = "";
           
-          console.log(objValida[key].etiqueta)
+          // console.log(objValida[key].etiqueta)
           if (objValida[key].etiqueta == "Lógico"){
           }else{
             if ( Array.isArray(campos[key]) ){

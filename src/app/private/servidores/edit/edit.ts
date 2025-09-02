@@ -52,6 +52,9 @@ export class Edit {
   lstScripts: Array<any> = [];
   lstFamilia: Array<any> = [];
 
+  lstServicios: Array<any> = [];
+  txtServicio:string = "";
+
   public canR: boolean = false;
   public canW: boolean = false;
   public canD: boolean = false;
@@ -126,6 +129,7 @@ export class Edit {
           this.idservidores_familia = this.rstData.idservidores_familia;
           // this.idscript_monitoreo = this.rstData.idscript_monitoreo;
           this.estado = this.rstData.estado;
+          this.lstServicios = this.rstData.servicios ? this.rstData.servicios.split(",") : [];
         } else {
           this.func.showMessage("error", "Usuario", resp.message);
         }
@@ -178,7 +182,8 @@ export class Edit {
       terminal_puerto: this.terminal_puerto,
       estado: this.estado,
       comentarios: this.comentarios,
-      idservidores_familia: this.idservidores_familia
+      idservidores_familia: this.idservidores_familia,
+      servicios: this.lstServicios.join(",")
       // idscript_monitoreo: parseInt(this.idscript_monitoreo),
     };
 
@@ -219,6 +224,32 @@ export class Edit {
     this.func.goRoute(`admin/servidores`, false, true);
   }
 
+  addServicio(){
+    if (this.txtServicio.trim()==""){
+      this.func.showMessage("error", "Servicios", "No puede dejar en blanco el servicio")
+      return
+    }
+
+    this.txtServicio = this.txtServicio.trim();
+    this.txtServicio = this.txtServicio.toLowerCase();
+    this.txtServicio = this.txtServicio.replace(/ /g, "");
+
+    this.lstServicios.push(this.txtServicio)
+    this.txtServicio = "";
+    
+  }
+
+  deleteServicio(servicio=""){
+    let index = -1;
+    this.lstServicios.forEach((s, idx)=>{
+      if (s == servicio){
+        index = idx
+      }
+    })
+
+    this.lstServicios.splice(index, 1);
+  }
+
 
   // testSSH(){
   //   if (this.func.validaCampos(this.validador, {host: this.host}, "host")){
@@ -252,4 +283,8 @@ export class Edit {
   //     },
   //   });
   // }
+
+
+
+  
 }

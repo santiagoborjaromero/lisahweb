@@ -70,6 +70,8 @@ export class Monitoreo {
   continuar: boolean = false;
   revisando: string = '';
 
+  arrServicios: any = [];
+
   /**
    * Sentinel
    */
@@ -125,6 +127,7 @@ export class Monitoreo {
       next: (resp: any) => {
         this.func.closeSwal();
         // console.log(resp);
+        this.arrServicios = [];
         if (resp.status) {
           if (resp.data[0].servidores && resp.data[0].servidores.length > 0) {
             resp.data[0].servidores.forEach((s: any) => {
@@ -134,22 +137,73 @@ export class Monitoreo {
               s['cpu'] = '-';
               s['memoria'] = '-';
               s['disco'] = '-';
-              s['servicio_httpd'] = '-';
-              s['servicio_ssh'] = '-';
+              // s['servicio_httpd'] = '-';
+              // s['servicio_ssh'] = '-';
+              if (s.servicios && s.servicios!=""){
+                let arrS = s.servicios.split(",")
+                arrS.forEach((ss:any)=>{
+                  s[`servicio_${ss}`] = '';
+                  this.arrServicios.push(ss);
+                })
+              }
               this.lstServidores.push(s);
-              this.server.set(s.idservidor, s);
             });
+            
+            // this.dataGridStruct();
+            const currentColumnDefs:any = this.gridApi?.getGridOption('columnDefs');
+            let newColumn:any;
+            this.arrServicios.forEach((ss:any)=>{
+              console.log(ss)
+              newColumn = {
+                headerName: this.func.capital(ss) + " Servicio" ,
+                field: `servicio_${ss}`, 
+                headerClass: ['th-center', 'th-normal'],
+                maxWidth: 100,
+                cellRenderer: this.renderServicios
+              };
+              currentColumnDefs.push(newColumn)
+              // updatedColumnDefs = [...currentColumnDefs, newColumn];
+            })
+            // this.gridApi?.setGridOption('columnDefs', updatedColumnDefs);
+            this.gridApi?.setGridOption('columnDefs', currentColumnDefs);
+            this.gridApi!.autoSizeAllColumns();
           }
+          // console.log(this.lstServidores)
         } else {
           this.func.showMessage('error', 'Usuario', resp.message);
         }
+        // setTimeout(()=>{
         this.refreshAll();
+        // },1000)
       },
       error: (err: any) => {
         this.func.closeSwal();
         this.func.handleErrors('Usuario', err);
       },
     });
+  }
+
+  procesarDato(dato:any){
+    // console.log("dato", dato)
+    let d = dato.split('|');
+    let color:any;
+    let icono:any;
+    let text:any;
+    let porc:any;
+
+    if (d[0] == 'OK') {
+      color = '';
+    } else {
+      color = 'text-danger';
+    }
+    icono = '';
+    text = d[1].split(' ');
+    let total = parseFloat(text[0].replace("G","").replace("Gi",""));
+    let usado = parseFloat(text[1].replace("G","").replace("Gi",""));
+    let libre = parseFloat(text[2].replace("G","").replace("Gi",""));
+    porc = parseFloat(this.func.numberFormat((usado / total) * 100,2));
+
+    return {color, icono, text, porc}
   }
 
   dataGridStruct() {
@@ -162,14 +216,14 @@ export class Monitoreo {
       // rowSelection: 'single',
       rowHeight: 35,
       groupHeaderHeight: 35,
-      headerHeight: 35,
+      headerHeight: 55,
       defaultColDef: {
         minWidth: 90,
-        filter: false,
+        filter: true,
         headerClass: 'bold',
         floatingFilter: false,
         resizable: false,
-        sortable: false,
+        sortable: true,
         wrapText: false,
         wrapHeaderText: true,
         suppressAutoSize: false,
@@ -177,6 +231,7 @@ export class Monitoreo {
         suppressSizeToFit: false,
         // autoHeight: true,
         cellDataType: 'text',
+        flex: 1
       },
 
       skipHeaderOnAutoSize: true,
@@ -206,7 +261,7 @@ export class Monitoreo {
         },
         {
           headerName: 'Host',
-          headerClass: 'th-normal3',
+          headerClass: 'th-normal',
           field: 'ip',
           cellClass: 'text-start',
           filter: true,
@@ -232,7 +287,7 @@ export class Monitoreo {
         {
           headerName: 'Sentinel',
           // headerStyle: { color: "black", backgroundColor: "Gainsboro" },
-          headerClass: ['th-center', 'th-normal4'],
+          headerClass: ['th-center', 'th-normal'],
           field: 'healthy_agente',
           cellClass: 'text-start',
           cellRenderer: (params: ICellRendererParams) => {
@@ -269,7 +324,7 @@ export class Monitoreo {
         {
           headerName: 'UpTime',
           // headerStyle: { color: "black", backgroundColor: "Gainsboro" },
-          headerClass: ['th-center', 'th-normal3'],
+          headerClass: ['th-center', 'th-normal'],
           field: 'uptime',
           filter: true,
           cellClass: 'text-start',
@@ -304,7 +359,7 @@ export class Monitoreo {
         {
           headerName: 'Disco %',
           // headerStyle: { color: "black", backgroundColor: "white" },
-          headerClass: ['th-center', 'th-normal4'],
+          headerClass: ['th-center', 'th-normal'],
           field: 'disco',
           cellClass: 'text-start',
           cellRenderer: (params: ICellRendererParams) => {
@@ -314,21 +369,11 @@ export class Monitoreo {
             let icono = 'far fa-times-circle t16';
             let color = 'text-danger';
             if (!['', '-', '1', 'x'].includes(dato)) {
-              let d = dato.split('|');
-              if (d[0] == 'OK') {
-                color = '';
-              } else {
-                color = 'text-danger';
-              }
-              icono = '';
-              text = d[1].replace('/', '');
-              text = text.replace('/', '-');
-              text = text.split(' ');
-              let total = parseFloat(text[0].replace("G",""));
-              let usado = parseFloat(text[1].replace("G",""));
-              let libre = parseFloat(text[2].replace("G",""));
-              porc = parseFloat(this.func.numberFormat((usado / total) * 100,2));
-
+              let f = this.procesarDato(dato);
+              color = f.color;
+              icono = f.icono;
+              text = f.text;
+              porc = f.porc;
               // text = text.replace(/^\/S+$/, ",")
               switch (true){
                 case porc > 0 && porc <=30:
@@ -360,7 +405,7 @@ export class Monitoreo {
         {
           headerName: 'CPU %',
           // headerStyle: { color: "black", backgroundColor: "white" },
-          headerClass: ['th-center', 'th-normal3'],
+          headerClass: ['th-center', 'th-normal'],
           field: 'cpu_usado',
           cellClass: 'text-start',
           cellRenderer: (params: ICellRendererParams) => {
@@ -391,7 +436,7 @@ export class Monitoreo {
         {
           headerName: 'RAM %',
           // headerStyle: { color: "black", backgroundColor: "white" },
-          headerClass: ['th-center', 'th-normal4'],
+          headerClass: ['th-center', 'th-normal'],
           field: 'memoria',
           cellClass: 'text-start',
           cellRenderer: (params: ICellRendererParams) => {
@@ -401,20 +446,25 @@ export class Monitoreo {
             let icono = 'far fa-times-circle t16';
             let color = 'text-danger';
             if (!['', '-', '1', 'x'].includes(dato)) {
-              let d = dato.split('|');
-              if (d[0] == 'OK') {
-                color = '';
-              } else {
-                color = 'text-danger';
-              }
-              icono = '';
-              text = d[1].replace('/', '');
-              text = text.replace('/', '-');
-              text = text.split(' ');
-              let total = parseFloat(text[0].replace("Gi",""));
-              let usado = parseFloat(text[1].replace("Gi",""));
-              let libre = parseFloat(text[2].replace("Gi",""));
-              porc = parseFloat(this.func.numberFormat((usado / total) * 100,2));
+              // let d = dato.split('|');
+              // if (d[0] == 'OK') {
+              //   color = '';
+              // } else {
+              //   color = 'text-danger';
+              // }
+              // icono = '';
+              // text = d[1].replace('/', '');
+              // text = text.replace('/', '-');
+              // text = text.split(' ');
+              // let total = parseFloat(text[0].replace("Gi",""));
+              // let usado = parseFloat(text[1].replace("Gi",""));
+              // let libre = parseFloat(text[2].replace("Gi",""));
+              let f = this.procesarDato(dato);
+              color = f.color;
+              icono = f.icono;
+              text = f.text;
+              porc = f.porc;
+              // porc = parseFloat(this.func.numberFormat((usado / total) * 100,2));
 
               // text = text.replace(/^\/S+$/, ",")
               switch (true){
@@ -454,7 +504,7 @@ export class Monitoreo {
         //     {
         //       headerName: 'Total',
         //       // headerStyle: { color: "black", backgroundColor: "white" },
-        //       headerClass: ['th-center', 'th-normal4'],
+        //       headerClass: ['th-center', 'th-normal'],
         //       field: 'disco',
         //       cellClass: 'text-start',
         //       cellRenderer: (params: ICellRendererParams) => {
@@ -489,7 +539,7 @@ export class Monitoreo {
         //     },
         //     {
         //       headerName: 'Usado',
-        //       headerClass: ['th-center', 'th-normal3'],
+        //       headerClass: ['th-center', 'th-normal'],
         //       field: 'disco',
         //       cellClass: 'text-start',
         //       cellRenderer: (params: ICellRendererParams) => {
@@ -524,7 +574,7 @@ export class Monitoreo {
         //     },
         //     {
         //       headerName: 'Libre',
-        //       headerClass: ['th-center', 'th-normal4'],
+        //       headerClass: ['th-center', 'th-normal'],
         //       field: 'disco',
         //       cellClass: 'text-start',
         //       cellRenderer: (params: ICellRendererParams) => {
@@ -567,7 +617,7 @@ export class Monitoreo {
         //     {
         //       headerName: '1 min',
         //       // headerStyle: { color: "black", backgroundColor: "Gainsboro" },
-        //       headerClass: ['th-center', 'th-normal3'],
+        //       headerClass: ['th-center', 'th-normal'],
         //       field: 'cpu',
         //       cellClass: 'text-start',
         //       cellRenderer: (params: ICellRendererParams) => {
@@ -600,7 +650,7 @@ export class Monitoreo {
         //     {
         //       headerName: '5 mins',
         //       // headerStyle: { color: "black", backgroundColor: "white" },
-        //       headerClass: ['th-center', 'th-normal4'],
+        //       headerClass: ['th-center', 'th-normal'],
         //       field: 'cpu',
         //       cellClass: 'text-start',
         //       cellRenderer: (params: ICellRendererParams) => {
@@ -632,7 +682,7 @@ export class Monitoreo {
         //     },
         //     {
         //       headerName: '15 mins',
-        //       headerClass: ['th-center', 'th-normal3'],
+        //       headerClass: ['th-center', 'th-normal'],
         //       field: 'cpu',
         //       cellClass: 'text-start',
         //       cellRenderer: (params: ICellRendererParams) => {
@@ -671,7 +721,7 @@ export class Monitoreo {
         //   children: [
         //     {
         //       headerName: 'Total',
-        //       headerClass: ['th-center', 'th-normal4'],
+        //       headerClass: ['th-center', 'th-normal'],
         //       field: 'memoria',
         //       cellClass: 'text-start',
         //       cellRenderer: (params: ICellRendererParams) => {
@@ -703,7 +753,7 @@ export class Monitoreo {
         //     },
         //     {
         //       headerName: 'Usado',
-        //       headerClass: ['th-center', 'th-normal3'],
+        //       headerClass: ['th-center', 'th-normal'],
         //       field: 'memoria',
         //       cellClass: 'text-start',
         //       cellRenderer: (params: ICellRendererParams) => {
@@ -735,7 +785,7 @@ export class Monitoreo {
         //     },
         //     {
         //       headerName: 'Libre',
-        //       headerClass: ['th-center', 'th-normal4'],
+        //       headerClass: ['th-center', 'th-normal'],
         //       field: 'memoria',
         //       cellClass: 'text-start',
         //       cellRenderer: (params: ICellRendererParams) => {
@@ -767,13 +817,13 @@ export class Monitoreo {
         //     },
         //   ],
         // },
-        {
-          headerName: 'Servicios',
-          headerStyle: { color: 'white', backgroundColor: 'SteelBlue' },
-          children: [
+        // {
+        //   headerName: 'Servicios',
+        //   headerStyle: { color: 'white', backgroundColor: 'SteelBlue' },
+        //   children: [
             // {
             //   headerName: 'HTTPD',
-            //   headerClass: ['th-center', 'th-normal3'],
+            //   headerClass: ['th-center', 'th-normal'],
             //   field: 'servicio_httpd',
             //   cellClass: 'text-start',
             //   minWidth: 100,
@@ -804,83 +854,72 @@ export class Monitoreo {
             //     return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
             //   },
             // },
-            {
-              headerName: 'SSH',
-              headerClass: ['th-center', 'th-normal3'],
-              field: 'servicio_ssh',
-              cellClass: 'text-start',
-              minWidth: 100,
-              cellRenderer: (params: ICellRendererParams) => {
-                let dato = params.value;
-                let text = '';
-                let icono = 'far fa-times-circle t16';
-                let color = 'text-danger';
-                if (!['', '-', '1', 'x'].includes(dato)) {
-                  let d = dato.split('|');
-                  if (d[0] == 'OK') {
-                    color = 'text-success';
-                    icono = 'far fa-check-circle t16';
-                  } else {
-                    icono = 'far fa-times-circle t16';
-                    color = 'text-danger';
-                  }
-                  text = d[1];
-                } else if (dato == '1') {
-                  icono = 'fas fa-spinner fa-spin';
-                  text = 'Revisando';
-                  color = 'text-primary';
-                } else if (dato == '-') {
-                  icono = 'fas fa-minus-circle t16';
-                  text = '';
-                  color = 'text-secondary';
-                }
-                return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
-              },
-            },
-            {
-              headerName: 'Terminal',
-              headerClass: ['th-center', 'th-normal4'],
-              field: 'servicio_terminal',
-              cellClass: 'text-start',
-              minWidth: 100,
-              cellRenderer: (params: ICellRendererParams) => {
-                let dato = params.value;
-                // console.log(dato)
-                let text = '';
-                let icono = 'far fa-times-circle t16';
-                let color = 'text-danger';
-                if (!['', '-', '1', 'x', undefined].includes(dato)) {
-                  let d = dato.split('|');
-                  if (d[0] == 'OK') {
-                    if (d[1].trim() == 'active') {
-                      color = 'text-success';
-                      icono = 'far fa-check-circle t16';
-                    }else{
-                      icono = 'far fa-times-circle t16';
-                      color = 'text-danger';
-                    }
-                  } else {
-                    icono = 'far fa-times-circle t16';
-                    color = 'text-danger';
-                  }
-                  text = d[1];
-                } else if (dato == '1') {
-                  icono = 'fas fa-spinner fa-spin';
-                  text = 'Revisando';
-                  color = 'text-primary';
-                } else if (dato == '-' || dato !== undefined) {
-                  icono = 'fas fa-minus-circle t16';
-                  text = '';
-                  color = 'text-secondary';
-                }
-                return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
-              },
-            },
-          ],
+            // {
+            //   headerName: 'SSH',
+            //   headerClass: ['th-center', 'th-normal'],
+            //   field: 'servicio_ssh',
+            //   cellClass: 'text-start',
+            //   minWidth: 100,
+            //   cellRenderer: (params: ICellRendererParams) => {
+            //     let dato = params.value;
+            //     let text = '';
+            //     let icono = 'far fa-times-circle t16';
+            //     let color = 'text-danger';
+            //     if (!['', '-', '1', 'x'].includes(dato)) {
+            //       let d = dato.split('|');
+            //       if (d[0] == 'OK') {
+            //         color = 'text-success';
+            //         icono = 'far fa-check-circle t16';
+            //       } else {
+            //         icono = 'far fa-times-circle t16';
+            //         color = 'text-danger';
+            //       }
+            //       text = d[1];
+            //     } else if (dato == '1') {
+            //       icono = 'fas fa-spinner fa-spin';
+            //       text = 'Revisando';
+            //       color = 'text-primary';
+            //     } else if (dato == '-') {
+            //       icono = 'fas fa-minus-circle t16';
+            //       text = '';
+            //       color = 'text-secondary';
+            //     }
+            //     return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
+            //   },
+            // },
+          // },
+        // ],
+        {
+          headerName: 'Terminal Servicio',
+          headerClass: ['th-center', 'th-normal'],
+          field: 'servicio_terminal',
+          cellClass: 'text-start',
+          minWidth: 100,
+          cellRenderer: this.renderServicios
+        },
+        {
+          headerName: 'Sentinel Servicio',
+          headerClass: ['th-center', 'th-normal'],
+          field: 'servicio_sentinel',
+          cellClass: 'text-start',
+          minWidth: 100,
+          cellRenderer: this.renderServicios
         },
         
       ],
     };
+
+    this.lstServidores.forEach(s=>{
+      s.servicios.spli(",").forEach((ss:any)=>{
+        this.gridOptions.columnDefs?.push({
+          headerName: this.func.capital(ss),
+          headerClass: ['th-center', 'th-normal'],
+          field: `servicio_${ss}`,
+          cellClass: 'text-start',
+          minWidth: 100,
+        })
+      })
+    })
 
     that.gridApi = createGrid(
       document.querySelector<HTMLElement>('#myGrid')!,
@@ -910,6 +949,38 @@ export class Monitoreo {
       // this.funcEdit();
     });
     return button;
+  }
+
+  renderServicios(params: ICellRendererParams) {
+    let dato = params.value;
+    let text = '';
+    let icono = '';
+    let color = 'text-dark';
+    if (!['', '-', '1', 'x', undefined].includes(dato)) {
+      let d = dato.split('|');
+      if (d[0] == 'OK') {
+        if (d[1].trim() == 'active') {
+          color = 'text-success';
+          icono = 'far fa-check-circle t16';
+        }else{
+          icono = 'far fa-times-circle t16';
+          color = 'text-danger';
+        }
+      } else {
+        icono = 'far fa-times-circle t16';
+        color = 'text-danger';
+      }
+      text = d[1];
+    } else if (dato == '1') {
+      icono = 'fas fa-spinner fa-spin';
+      text = 'Revisando';
+      color = 'text-primary';
+    } else if (dato == '-' || dato !== undefined) {
+      icono = 'fas fa-minus-circle t16';
+      text = '';
+      color = 'text-secondary';
+    }
+    return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
   }
 
   timerGeneral() {
@@ -1008,14 +1079,23 @@ export class Monitoreo {
         {"id": "cpu_usado", "cmd":`sar -u | grep '^[0-9]' | awk '{sum+=$3; count++} END {if(count>0) print sum/count}'`},
         {"id": "memoria", "cmd":"free -h | grep -E 'Mem' | awk '{print $2, $3, $4}'"},
         {"id": "uptime", "cmd":'sec=$(( $(date +%s) - $(date -d "$(ps -p 1 -o lstart=)" +%s) )); d=$((sec/86400)); h=$(( (sec%86400)/3600 )); m=$(( (sec%3600)/60 )); s=$((sec%60)); printf "%02d:%02d:%02d:%02d\n" $d $h $m $s'},
-        {"id": "servicio_httpd", "cmd":"systemctl is-active httpd"},
-        {"id": "servicio_ssh", "cmd":"systemctl is-active sshd"},
         {"id": "servicio_sentinel", "cmd":"systemctl is-active sentinel"},
         {"id": "servicio_terminal", "cmd":"systemctl is-active webssh2"},
         {"id": "ip", "cmd":`hostname -i`},
       ],
     };
+
+    if (server.servicios && server.servicios!=""){
+      let arrS = server.servicios.split(",");
+      arrS.forEach( (ss:any) => {
+        param.data.push({"id": `servicio_${ss}`, "cmd":`systemctl is-active ${ss}`},)
+      });
+    }
+
+    console.log(`Servidor ${server.idservidor} data = ${param.data.length}`)
+
     console.log('↑ Enviando');
+    // console.log(param);
     this.ws.send(JSON.stringify(param));
   }
 
@@ -1103,7 +1183,7 @@ export class Monitoreo {
     let data: any = this.prepareToExport();
     let params = {
       orientation: 'l',
-      titulo: 'Scripts',
+      titulo: 'Monitoreo',
       data: data,
       filename: `lisah_monitor_servidores${moment().format(
         'YYYYMMDDHHmmss'
@@ -1123,20 +1203,40 @@ export class Monitoreo {
   prepareToExport(): Array<any> {
     let arr: any = [];
     this.lstServidores.forEach((d: any) => {
-      console.log(d)
+      let disco = this.procesarDato(d.disco);
+      let memoria = this.procesarDato(d.memoria);
+
       try {
-        arr.push({
+        let dat:any = {
           servidor: d.nombre,
-          host: d.host,
-          ubicacion: d.ubicacion,
-          agente_puerto: d.agente_puerto,
-          ssh_puerto: d.ssh_puerto,
-          terminal_puerto: d.terminal_puerto,
-          disco: d.disco.split("|")[1],
-          memoria: d.memoria.split("|")[1],
-          cpu: d.cpu.split("|")[1],
-          estado: d.estado == 1 ? 'Activo' : 'Inactivo',
-        });
+          // host: d.host,
+          // ubicacion: d.ubicacion,
+          // agente_puerto: d.agente_puerto,
+          // ssh_puerto: d.ssh_puerto,
+          // terminal_puerto: d.terminal_puerto,
+          disco: disco.porc + "%",
+          memoria: memoria.porc + "%",
+          cpu: this.func.numberFormat(parseFloat(d.cpu_usado.split("|")[1])) + "%",
+          sentinel: this.func.capital(d.servicio_terminal.replace("OK|","")),
+          terminal: this.func.capital(d.servicio_sentinel.replace("OK|","")),
+          // memoria: d.memoria.split("|")[1],
+          // cpu: d.cpu.split("|")[1],
+        }
+
+        this.arrServicios.forEach((s:any)=>{
+            dat[s] = "";
+        })
+
+        if (d.servicios && d.servicios!=""){
+          let serv = d.servicios.split(",");
+          serv.forEach((s:any)=>{
+            dat[s] = this.func.capital(d["servicio_" + s].replace("OK|",""));
+          })
+        }
+
+        // dat.estado = d.estado == 1 ? 'Activo' : 'Inactivo';
+        
+        arr.push(dat);
       } catch (err) {
         console.log(err, d);
       }

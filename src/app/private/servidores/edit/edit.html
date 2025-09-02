@@ -75,7 +75,7 @@
 
 
           <div class="col-4 col-md-2 td2 text-end">
-            <label for="host">Host</label> <small *ngIf="validador.host.requerido"><i role="img" class="text-danger">*</i></small>
+            <label for="host">Host/IP</label> <small *ngIf="validador.host.requerido"><i role="img" class="text-danger">*</i></small>
             <br />
             <small><i role="img" class="text-secondary">{{validador.host.etiqueta}}</i></small>
           </div>
@@ -89,7 +89,73 @@
             </sup>
           </div>
 
+          <!-- <div class="col-4 col-md-2 td2 text-end">
+            Script Monitoreo <small *ngIf="validador.idscript_monitoreo.requerido"><i role="img" class="text-danger">*</i></small>
+            <br />
+            <small><i role="img" class="text-secondary">{{validador.idscript_monitoreo.etiqueta}}</i></small>
+          </div>
+          <div class="col-8 col-md-4 td2">
+            <select [(ngModel)]="idscript_monitoreo" name="idscript_monitoreo" id="idscript_monitoreo" 
+              class="form-control {{validador.idscript_monitoreo.validacion.resultado == '' ? '' : 'input-danger'}}">
+              @if(lstScripts.length>0){
+                @for (item of lstScripts; track $index) {
+                  <option value="{{item.idscript}}">{{item.nombre}}</option>
+                }
+              }@else {
+                <option value=""> -- No hay scripts asignados --</option>
+              }
+            </select>
+            <sup>
+              <i role="img" class=" {{validador.idscript_monitoreo.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
+                {{validador.idscript_monitoreo.validacion.resultado == '' ? validador.idscript_monitoreo.descripcion : validador.idscript_monitoreo.validacion.resultado}} </i>
+            </sup>
+          </div> -->
 
+          <div class="col-4 col-md-2 td2 text-end">
+            <label for="estado">Estado</label> <small *ngIf="validador.estado.requerido"><i role="img" class="text-danger">*</i></small>
+            <br />
+            <small><i role="img" class="text-secondary">{{validador.estado.etiqueta}}</i></small>
+          </div>
+          <div class="col-8 col-md-4 td2">
+            <select [(ngModel)]="estado" name="estado" id="estado" class="form-control">
+                <option value="1">Activo</option>
+                <option value="0">Inactivo</option>
+              </select>
+            <sup>
+              <i role="img" class=" {{validador.estado.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
+                {{validador.estado.validacion.resultado == '' ? validador.estado.descripcion : validador.estado.validacion.resultado}}
+              </i>
+            </sup>
+          </div>
+
+          <div class="col-4 col-md-2 td2 text-end">
+            <label for="comentarios">Observaciones</label><small *ngIf="validador.comentarios.requerido"><i role="img" class="text-danger">*</i></small>
+            <br />
+            <small><i role="img" class="text-secondary">{{validador.comentarios.etiqueta}}</i></small>
+          </div>
+  
+          <div class="col-8 col-md-4 td2">
+            <textarea name="comentarios" id="comentarios"
+              class="form-control"
+              [(ngModel)]="comentarios"
+              rows="5"></textarea>
+            <sup>
+              <i role="img" class=" {{validador.comentarios.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
+                {{validador.comentarios.validacion.resultado == '' ? validador.comentarios.descripcion : validador.comentarios.validacion.resultado}} </i>
+            </sup>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-md-12">
+      <div class="card mt-3">
+        <div class="card-header th d-flex justify-content-between">
+          <span> Puertos </span>
+        </div>
+
+        <div class="p-1 row">
           <div class="col-4 col-md-2 td2 text-end">
             <label for="ssh_puerto">Puerto SSH</label><small *ngIf="validador.ssh_puerto.requerido"><i role="img" class="text-danger">*</i></small>
             <br />
@@ -135,70 +201,56 @@
             </sup>
           </div>
           
-
-
-          <!-- <div class="col-4 col-md-2 td2 text-end">
-            Script Monitoreo <small *ngIf="validador.idscript_monitoreo.requerido"><i role="img" class="text-danger">*</i></small>
-            <br />
-            <small><i role="img" class="text-secondary">{{validador.idscript_monitoreo.etiqueta}}</i></small>
-          </div>
-          <div class="col-8 col-md-4 td2">
-            <select [(ngModel)]="idscript_monitoreo" name="idscript_monitoreo" id="idscript_monitoreo" 
-              class="form-control {{validador.idscript_monitoreo.validacion.resultado == '' ? '' : 'input-danger'}}">
-              @if(lstScripts.length>0){
-                @for (item of lstScripts; track $index) {
-                  <option value="{{item.idscript}}">{{item.nombre}}</option>
-                }
-              }@else {
-                <option value=""> -- No hay scripts asignados --</option>
-              }
-            </select>
-            <sup>
-              <i role="img" class=" {{validador.idscript_monitoreo.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
-                {{validador.idscript_monitoreo.validacion.resultado == '' ? validador.idscript_monitoreo.descripcion : validador.idscript_monitoreo.validacion.resultado}} </i>
-            </sup>
-          </div> -->
-
-
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-md-12">
+      <div class="card mt-3">
+        <div class="card-header th">
+          <span> Servicios a Monitorear </span>
+        </div>
+        <div class="card-body p-1 row align-top">
           <div class="col-4 col-md-2 td2 text-end">
-            <label for="estado">Estado</label> <small *ngIf="validador.estado.requerido"><i role="img" class="text-danger">*</i></small>
+            <label for="ssh_puerto">Servicio</label>
             <br />
-            <small><i role="img" class="text-secondary">{{validador.estado.etiqueta}}</i></small>
+            <small><i role="img" class="text-secondary">Alfabético</i></small>
           </div>
           <div class="col-8 col-md-4 td2">
-            <select [(ngModel)]="estado" name="estado" id="estado" class="form-control">
-                <option value="1">Activo</option>
-                <option value="0">Inactivo</option>
-              </select>
+            <div class="input-group mb-3">
+              <input type="text" name="ssh_puerto" id="ssh_puerto" class="form-control" [(ngModel)]="txtServicio"/>
+              <span class="input-group-text" id="basic-addon2">.service</span>
+              <button class="btn btn-primary"(click)="addServicio()">
+                <i class="fas fa-plus"></i> Añadir
+              </button>
+            </div>
             <sup>
-              <i role="img" class=" {{validador.estado.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}">
-                {{validador.estado.validacion.resultado == '' ? validador.estado.descripcion : validador.estado.validacion.resultado}}
+              <i role="img" class="text-secondary" >
+                Servicio que se revisa si se encuentra activo o inactiva con el objetivo de notificar al usuario
               </i>
             </sup>
           </div>
-
-        </div>
-        <div class="p-1 row">
-          <div class="col-4 col-md-2 td2 text-end">
-            <label for="comentarios">Observaciones</label><small *ngIf="validador.comentarios.requerido"><i role="img" class="text-danger">*</i></small>
-            <br />
-            <small><i role="img" class="text-secondary">{{validador.comentarios.etiqueta}}</i></small>
+          <div class="col-8 col-md-6 td2 d-flex justify-content-center">
+            <div>
+              @for (item of lstServicios; track $index) {
+                <span class="m-1 badge bg-info t14">
+                  {{item}}
+                  <button role="bottom" (click)="deleteServicio(item)" class="btn btn-link text-white" title="Eliminar servicio">
+                    <i class="fas fa-times-circle t16"></i>
+                  </button>
+                </span>
+              }
+            </div>
           </div>
-          <div class="col-8 col-md-4 td2">
-            <textarea name="comentarios" id="comentarios"
-              class="form-control"
-              [(ngModel)]="comentarios"
-              rows="5"
-            ></textarea>
- 
-            <sup>
-              <i role="img" class=" {{validador.comentarios.validacion.resultado == '' ? 'text-secondary' : 'text-danger' }}" >
-                {{validador.comentarios.validacion.resultado == '' ? validador.comentarios.descripcion : validador.comentarios.validacion.resultado}} </i>
-            </sup>
-          </div>
-
-
         </div>
+
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
       </div>
     </div>
   </div>

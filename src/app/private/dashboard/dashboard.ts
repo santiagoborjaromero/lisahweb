@@ -368,6 +368,10 @@ export class Dashboard {
       this.func.closeSwal()
       console.log(`X Desconectado ${this.work.idservidor}`);
       this.work.agente_status = 'FAIL|Desconectado';
+      setTimeout(()=>{
+        console.log("Reintentando conexion")
+        this.initial();
+      },10000)
     }
   }
 
