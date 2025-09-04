@@ -239,14 +239,10 @@ export class Dashusuario {
         {
           label: 'Interacciones',
           data: conteo,
-          // borderColor: Utils.CHART_COLORS.red,
-          // backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red, 0.5),
         },
         {
           label: 'Total',
           data: total,
-          // borderColor: Utils.CHART_COLORS.blue,
-          // backgroundColor: Utils.transparentize(Utils.CHART_COLORS.blue, 0.5),
         }
       ];
   }
@@ -284,15 +280,16 @@ export class Dashusuario {
     this.index ++;
     if (this.index == this.lstServidoresAsignados.length){
       this.index = -1 ;
-      console.log("se acabo")
-      // this.graph();
-      this.lstServidoresAsignados.sort((a:any, b:any) =>
-        b.conteo.toString().localeCompare(a.conteo.toString())
-      );
+      // console.log("se acabo")
+      try{
+        this.lstServidoresAsignados.sort((a:any, b:any) =>
+          b.conteo.toString().localeCompare(a.conteo.toString())
+        );
+      }catch(err){
+        console.log(err)
+      }
       return
     }
-
-    // this.index = 0;
 
     this.id_selected = this.lstServidoresAsignados[this.index].idservidor;
     let host = this.lstServidoresAsignados[this.index].host;
@@ -323,8 +320,6 @@ export class Dashusuario {
   }
 
   onCloseListener(event: any) {
-    // console.log('onCloseListener', event);
-    console.log("█ Desconectado")
     console.log(`X Desconectado ${this.id_selected}`);
     if (event.code == 1000){
       this.agente_status = "Desconectado manualmente";
@@ -335,16 +330,18 @@ export class Dashusuario {
       if (this.reconnect && this.ws_error < this.ws_error_limit){
         this.ws_error ++;
       }
-      this.buscarSevidor(this.id_selected, 0,0)
+      this.buscarSevidor(this.id_selected, 0,0, "Deconectado")
     }
   }
 
-  buscarSevidor(idservidor:any, conteo:any, total:any ){
+  buscarSevidor(idservidor:any, conteo:any, total:any, status="OK" ){
     this.lstServidoresAsignados.forEach((s:any) => {
         if (s.idservidor == idservidor){
           s["conteo"] = conteo;
           s["total"] = total;
           s["porcentaje"] = ((conteo / total) * 100);
+          s["estatus"] = status;
+
           // s["porcentaje"] = 65;
         }
     });
@@ -355,7 +352,6 @@ export class Dashusuario {
   onMessageListener(e:any){
     console.log(`↓ LlegoMensaje ${this.id_selected}`);
     let evento = JSON.parse(e.data);
-    // console.log(evento)
     let data = [0,0];
     if (evento.data) {
       data = evento.data;
@@ -365,20 +361,6 @@ export class Dashusuario {
 
     this.ws.close(1000);
     this.openWS();
-    
-    // this.lstData = [];
-    // if (evento.status){
-    //   data.forEach( (d:any) => {
-    //     d.data.forEach((e:any) => {
-    //       this.lstData.push({
-    //         fecha: d.fecha,
-    //         usuario: d.usuario,
-    //         accion: e.id,
-    //         comando: atob(e.cmd)
-    //       })
-    //     });
-    //   });
-    // }
   }
 
   connState = () => {
@@ -434,12 +416,6 @@ export class Dashusuario {
     if (this.connState()){
       console.log("↑ Enviando")
       this.ws.send(JSON.stringify(params));
-    // }else{
-    //    this.index -- ;
-    //   this.openWS();
-    //   setTimeout(()=>{
-    //     this.onSendCommands()
-    //   },1000)
     }
   }
 

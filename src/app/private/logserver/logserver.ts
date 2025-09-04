@@ -397,7 +397,7 @@ export class Logserver {
           field: 'accion',
           cellClass: 'text-start',
           filter: true,
-          maxWidth: 100,
+          maxWidth: 200,
         },
         {
           headerName: 'Comando',

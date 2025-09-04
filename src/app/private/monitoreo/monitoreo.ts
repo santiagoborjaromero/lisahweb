@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -29,6 +29,7 @@ ModuleRegistry.registerModules([AllCommunityModule]);
   standalone: true,
 })
 export class Monitoreo {
+  @ViewChild('btnModal') btnModal:any;
   private readonly userSvc = inject(UsuarioService);
   private readonly serverSvc = inject(ServidorService);
   private readonly generalSvc = inject(GeneralService);
@@ -38,7 +39,8 @@ export class Monitoreo {
 
   aqui: any | undefined;
 
-  private server = new Map<number, any>();
+  private connection = new Map<number, any>();
+  private connection_status = new Map<number, any>();
 
   user: any = null;
   path: any = [];
@@ -53,8 +55,9 @@ export class Monitoreo {
   public gridApi?: GridApi<any>;
   public id_selected: string = '';
   public is_deleted: any = null;
-
+  
   lstServidores: Array<any> = [];
+  server_select: any ;
 
   playMonitor: boolean = false;
   funcionaAgente: boolean = false;
@@ -115,6 +118,8 @@ export class Monitoreo {
 
   ngOnDestroy(): void {
     this.stopMonitor();
+    this.connection.clear();
+    this.connection_status.clear();
   }
 
   getUsuario() {
@@ -153,7 +158,6 @@ export class Monitoreo {
             const currentColumnDefs:any = this.gridApi?.getGridOption('columnDefs');
             let newColumn:any;
             this.arrServicios.forEach((ss:any)=>{
-              console.log(ss)
               newColumn = {
                 headerName: this.func.capital(ss) + " Servicio" ,
                 field: `servicio_${ss}`, 
@@ -181,29 +185,6 @@ export class Monitoreo {
         this.func.handleErrors('Usuario', err);
       },
     });
-  }
-
-  procesarDato(dato:any){
-    // console.log("dato", dato)
-    let d = dato.split('|');
-    let color:any;
-    let icono:any;
-    let text:any;
-    let porc:any;
-
-    if (d[0] == 'OK') {
-      color = '';
-    } else {
-      color = 'text-danger';
-    }
-    icono = '';
-    text = d[1].split(' ');
-    let total = parseFloat(text[0].replace("G","").replace("Gi",""));
-    let usado = parseFloat(text[1].replace("G","").replace("Gi",""));
-    let libre = parseFloat(text[2].replace("G","").replace("Gi",""));
-    porc = parseFloat(this.func.numberFormat((usado / total) * 100,2));
-
-    return {color, icono, text, porc}
   }
 
   dataGridStruct() {
@@ -237,6 +218,7 @@ export class Monitoreo {
       skipHeaderOnAutoSize: true,
       onRowClicked: (event: any) => {
         this.id_selected = event.data.idservidor;
+        this.server_select = event.data;
         this.is_deleted = event.data.deleted_at;
       },
       autoSizeStrategy: {
@@ -270,7 +252,7 @@ export class Monitoreo {
             let host = params.data.host;
             let data = "";
             if (ip){
-              if (ip.indexOf("|")>-1){
+              if (ip.indexOf("|")>-1 && ip.indexOf(":")==-1){
                 data = ip.split("|")[1];
                 if (ip.split("|")[0]!="OK"){
                   data = host;
@@ -322,26 +304,28 @@ export class Monitoreo {
           },
         },
         {
-          headerName: 'UpTime',
+          headerName: 'Tiempo Activo',
           // headerStyle: { color: "black", backgroundColor: "Gainsboro" },
           headerClass: ['th-center', 'th-normal'],
           field: 'uptime',
           filter: true,
           cellClass: 'text-start',
+          minWidth: 100,
           cellRenderer: (params: ICellRendererParams) => {
             let dato = params.value;
             let text = '';
-            let icono = 'far fa-times-circle t16';
-            let color = 'text-danger';
+            let icono = '';
+            let color = '';
             if (!['', '-', '1', 'x'].includes(dato)) {
               let d = dato.split('|');
-              if (d[0] == 'OK') {
-                color = '';
-              } else {
-                color = 'text-danger';
-              }
-              let st = d[1].trim().split(':');
-              text = `${st[0]}d ${st[1]}h${st[2]}m${st[3]}s`;
+              // if (d[0] == 'OK') {
+              //   color = '';
+              // } else {
+              //   color = 'text-danger';
+              // }
+              text = dato
+              // let st = d[1].trim().split(':');
+              // text = `${st[0]}d ${st[1]}h${st[2]}m${st[3]}s`;
               // icono = 'far fa-clock t16';
               icono = '';
             } else if (dato == '1') {
@@ -358,537 +342,99 @@ export class Monitoreo {
         },
         {
           headerName: 'Disco %',
-          // headerStyle: { color: "black", backgroundColor: "white" },
           headerClass: ['th-center', 'th-normal'],
           field: 'disco',
           cellClass: 'text-start',
+          minWidth: 100,
           cellRenderer: (params: ICellRendererParams) => {
             let porc:number = 0;
-            let dato = params.data.disco;
-            let text:any;
-            let icono = 'far fa-times-circle t16';
-            let color = 'text-danger';
-            if (!['', '-', '1', 'x'].includes(dato)) {
-              let f = this.procesarDato(dato);
-              color = f.color;
-              icono = f.icono;
-              text = f.text;
-              porc = f.porc;
-              // text = text.replace(/^\/S+$/, ",")
+            let dato = params.value;
+            let color = '';
+            if (dato!="-"){
+              porc = parseFloat(dato);
+              if (isNaN(porc)) porc = 0;
+              dato = this.func.numberFormat(porc,2);
               switch (true){
-                case porc > 0 && porc <=30:
+                case porc >= 0 && porc <=30:
                   color = "bg-light";
                   break;
-                case porc > 31 && porc <=60:
+                case porc >=31 && porc <=60:
                   color = "bg-info";
                   break;
-                case porc > 61 && porc <=90:
+                case porc >=61 && porc <=90:
                   color = "bg-warning";
                   break;
-                case porc > 91 && porc <=100:
+                case porc >=91 && porc <=100:
                   color = "bg-danger";
                   break;
               }
               color = "bg-success";
-            } else if (dato == '1') {
-              icono = 'fas fa-spinner fa-spin';
-              text = 'Revisando';
-              color = 'text-primary';
-            } else if (dato == '-') {
-              icono = 'fas fa-minus-circle t16';
-              text = '';
-              color = 'text-secondary';
             }
-            return `<kbd class="${color} p-2">${porc} %</kbd>`;
+            return `<kbd class="${color} p-2">${dato} %</kbd>`;
           },
         },
         {
           headerName: 'CPU %',
-          // headerStyle: { color: "black", backgroundColor: "white" },
           headerClass: ['th-center', 'th-normal'],
           field: 'cpu_usado',
           cellClass: 'text-start',
+          minWidth: 100,
           cellRenderer: (params: ICellRendererParams) => {
             let porc:number = 0;
-            let dato = params.data.cpu_usado;
-            let color = "bg-light text-dark";
-
+            let dato = params.value;
+            if (dato === undefined) dato = "100";
+            let color = "";
             if (dato){
-              porc = parseFloat(this.func.numberFormat(parseFloat(dato.split("|")[1]),2));
+              porc = 100 - parseFloat(dato);
+              dato = this.func.numberFormat(porc,2);
+              if (isNaN(porc)) porc = 0;
               switch (true){
-                case porc > 0 && porc <=30:
+                case porc >= 0 && porc <=30:
                   color = "bg-success";
                   break;
-                case porc > 31 && porc <=60:
+                case porc >= 31 && porc <=60:
                   color = "bg-info";
                   break;
-                case porc > 61 && porc <=90:
+                case porc >= 61 && porc <=90:
                   color = "bg-warning";
                   break;
-                case porc > 91 && porc <=100:
+                case porc >= 91 && porc <=100:
                   color = "bg-danger";
                   break;
               }
             }
-            return `<kbd class="${color} p-2">${porc} %</kbd>`;
+            return `<kbd class="${color} p-2">${dato} %</kbd>`;
           },
         },
         {
           headerName: 'RAM %',
-          // headerStyle: { color: "black", backgroundColor: "white" },
           headerClass: ['th-center', 'th-normal'],
           field: 'memoria',
           cellClass: 'text-start',
           cellRenderer: (params: ICellRendererParams) => {
             let porc:number = 0;
-            let dato = params.data.memoria;
-            let text:any;
-            let icono = 'far fa-times-circle t16';
-            let color = 'text-danger';
-            if (!['', '-', '1', 'x'].includes(dato)) {
-              // let d = dato.split('|');
-              // if (d[0] == 'OK') {
-              //   color = '';
-              // } else {
-              //   color = 'text-danger';
-              // }
-              // icono = '';
-              // text = d[1].replace('/', '');
-              // text = text.replace('/', '-');
-              // text = text.split(' ');
-              // let total = parseFloat(text[0].replace("Gi",""));
-              // let usado = parseFloat(text[1].replace("Gi",""));
-              // let libre = parseFloat(text[2].replace("Gi",""));
-              let f = this.procesarDato(dato);
-              color = f.color;
-              icono = f.icono;
-              text = f.text;
-              porc = f.porc;
-              // porc = parseFloat(this.func.numberFormat((usado / total) * 100,2));
-
-              // text = text.replace(/^\/S+$/, ",")
-              switch (true){
-                case porc > 0 && porc <=30:
-                  color = "bg-light";
-                  break;
-                case porc > 31 && porc <=60:
-                  color = "bg-info";
-                  break;
-                case porc > 61 && porc <=90:
-                  color = "bg-warning";
-                  break;
-                case porc > 91 && porc <=100:
-                  color = "bg-danger";
-                  break;
-              }
-              color = "bg-success";
-            } else if (dato == '1') {
-              icono = 'fas fa-spinner fa-spin';
-              text = 'Revisando';
-              color = 'text-primary';
-            } else if (dato == '-') {
-              icono = 'fas fa-minus-circle t16';
-              text = '';
-              color = 'text-secondary';
+            let dato = params.value;
+            let color = '';
+            porc = parseFloat(dato);
+            if (isNaN(porc)) porc = 0;
+            dato = this.func.numberFormat(porc,2);
+            switch (true){
+              case porc > 0 && porc <=30:
+                color = "bg-success";
+                break;
+              case porc > 31 && porc <=60:
+                color = "bg-info";
+                break;
+              case porc > 61 && porc <=90:
+                color = "bg-warning";
+                break;
+              case porc > 91 && porc <=100:
+                color = "bg-danger";
+                break;
             }
-            return `<kbd class="${color} p-2">${porc} %</kbd>`;
+            return `<kbd class="${color} p-2">${dato} %</kbd>`;
           },
         },
-
-
-        // {
-        //   headerName: 'Disco',
-        //   // headerStyle: { color: "white", backgroundColor: "CadetBlue" },
-        //   headerClass: ['th-center', 'th-grupo1'],
-        //   children: [
-        //     {
-        //       headerName: 'Total',
-        //       // headerStyle: { color: "black", backgroundColor: "white" },
-        //       headerClass: ['th-center', 'th-normal'],
-        //       field: 'disco',
-        //       cellClass: 'text-start',
-        //       cellRenderer: (params: ICellRendererParams) => {
-        //         let dato = params.data.disco;
-        //         let text = '';
-        //         let icono = 'far fa-times-circle t16';
-        //         let color = 'text-danger';
-        //         if (!['', '-', '1', 'x'].includes(dato)) {
-        //           let d = dato.split('|');
-        //           if (d[0] == 'OK') {
-        //             color = '';
-        //           } else {
-        //             color = 'text-danger';
-        //           }
-        //           // icono = 'fas fa-sd-card t16';
-        //           icono = '';
-        //           text = d[1].replace('/', '');
-        //           text = text.replace('/', '-');
-        //           text = text.split(' ')[0];
-        //           // text = text.replace(/^\/S+$/, ",")
-        //         } else if (dato == '1') {
-        //           icono = 'fas fa-spinner fa-spin';
-        //           text = 'Revisando';
-        //           color = 'text-primary';
-        //         } else if (dato == '-') {
-        //           icono = 'fas fa-minus-circle t16';
-        //           text = '';
-        //           color = 'text-secondary';
-        //         }
-        //         return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
-        //       },
-        //     },
-        //     {
-        //       headerName: 'Usado',
-        //       headerClass: ['th-center', 'th-normal'],
-        //       field: 'disco',
-        //       cellClass: 'text-start',
-        //       cellRenderer: (params: ICellRendererParams) => {
-        //         let dato = params.data.disco;
-        //         let text = '';
-        //         let icono = 'far fa-times-circle t16';
-        //         let color = 'text-danger';
-        //         if (!['', '-', '1', 'x'].includes(dato)) {
-        //           let d = dato.split('|');
-        //           if (d[0] == 'OK') {
-        //             color = '';
-        //           } else {
-        //             color = 'text-danger';
-        //           }
-        //           // icono = 'fas fa-sd-card t16';
-        //           icono = '';
-        //           text = d[1].replace('/', '');
-        //           text = text.replace('/', '-');
-        //           text = text.split(' ')[1];
-        //           // text = text.replace(/^\/S+$/, ",")
-        //         } else if (dato == '1') {
-        //           icono = 'fas fa-spinner fa-spin';
-        //           text = 'Revisando';
-        //           color = 'text-primary';
-        //         } else if (dato == '-') {
-        //           icono = 'fas fa-minus-circle t16';
-        //           text = '';
-        //           color = 'text-secondary';
-        //         }
-        //         return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
-        //       },
-        //     },
-        //     {
-        //       headerName: 'Libre',
-        //       headerClass: ['th-center', 'th-normal'],
-        //       field: 'disco',
-        //       cellClass: 'text-start',
-        //       cellRenderer: (params: ICellRendererParams) => {
-        //         let dato = params.data.disco;
-        //         let text = '';
-        //         let icono = 'far fa-times-circle t16';
-        //         let color = 'text-danger';
-        //         if (!['', '-', '1', 'x'].includes(dato)) {
-        //           let d = dato.split('|');
-        //           if (d[0] == 'OK') {
-        //             color = '';
-        //           } else {
-        //             color = 'text-danger';
-        //           }
-        //           // icono = 'fas fa-sd-card t16';
-        //           icono = '';
-        //           text = d[1].replace('/', '');
-        //           text = text.replace('/', '-');
-        //           text = text.split(' ')[2];
-        //           // text = text.replace(/^\/S+$/, ",")
-        //         } else if (dato == '1') {
-        //           icono = 'fas fa-spinner fa-spin';
-        //           text = 'Revisando';
-        //           color = 'text-primary';
-        //         } else if (dato == '-') {
-        //           icono = 'fas fa-minus-circle t16';
-        //           text = '';
-        //           color = 'text-secondary';
-        //         }
-        //         return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
-        //       },
-        //     },
-        //   ],
-        // },
-        // {
-        //   headerName: 'Load / CPU',
-        //   // headerStyle: { color: "white", backgroundColor: "DarkCyan" },
-        //   headerClass: ['th-center', 'th-normal'],
-        //   children: [
-        //     {
-        //       headerName: '1 min',
-        //       // headerStyle: { color: "black", backgroundColor: "Gainsboro" },
-        //       headerClass: ['th-center', 'th-normal'],
-        //       field: 'cpu',
-        //       cellClass: 'text-start',
-        //       cellRenderer: (params: ICellRendererParams) => {
-        //         let dato = params.value;
-        //         let text = '';
-        //         let icono = 'far fa-times-circle t16';
-        //         let color = 'text-danger';
-        //         if (!['', '-', '1', 'x'].includes(dato)) {
-        //           let d = dato.split('|');
-        //           if (d[0] == 'OK') {
-        //             color = '';
-        //           } else {
-        //             color = 'text-danger';
-        //           }
-        //           // icono = 'fas fa-microchip t16';
-        //           icono = '';
-        //           text = d[1].split(' ')[0];
-        //         } else if (dato == '1') {
-        //           icono = 'fas fa-spinner fa-spin';
-        //           text = 'Revisando';
-        //           color = 'text-primary';
-        //         } else if (dato == '-') {
-        //           icono = 'fas fa-minus-circle t16';
-        //           text = '';
-        //           color = 'text-secondary';
-        //         }
-        //         return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
-        //       },
-        //     },
-        //     {
-        //       headerName: '5 mins',
-        //       // headerStyle: { color: "black", backgroundColor: "white" },
-        //       headerClass: ['th-center', 'th-normal'],
-        //       field: 'cpu',
-        //       cellClass: 'text-start',
-        //       cellRenderer: (params: ICellRendererParams) => {
-        //         let dato = params.value;
-        //         let text = '';
-        //         let icono = 'far fa-times-circle t16';
-        //         let color = 'text-danger';
-        //         if (!['', '-', '1', 'x'].includes(dato)) {
-        //           let d = dato.split('|');
-        //           if (d[0] == 'OK') {
-        //             color = '';
-        //           } else {
-        //             color = 'text-danger';
-        //           }
-        //           // icono = 'fas fa-microchip t16';
-        //           icono = '';
-        //           text = d[1].split(' ')[1];
-        //         } else if (dato == '1') {
-        //           icono = 'fas fa-spinner fa-spin';
-        //           text = 'Revisando';
-        //           color = 'text-primary';
-        //         } else if (dato == '-') {
-        //           icono = 'fas fa-minus-circle t16';
-        //           text = '';
-        //           color = 'text-secondary';
-        //         }
-        //         return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
-        //       },
-        //     },
-        //     {
-        //       headerName: '15 mins',
-        //       headerClass: ['th-center', 'th-normal'],
-        //       field: 'cpu',
-        //       cellClass: 'text-start',
-        //       cellRenderer: (params: ICellRendererParams) => {
-        //         let dato = params.value;
-        //         let text = '';
-        //         let icono = 'far fa-times-circle t16';
-        //         let color = 'text-danger';
-        //         if (!['', '-', '1', 'x'].includes(dato)) {
-        //           let d = dato.split('|');
-        //           if (d[0] == 'OK') {
-        //             color = '';
-        //           } else {
-        //             color = 'text-danger';
-        //           }
-        //           // icono = 'fas fa-microchip t16';
-        //           icono = '';
-        //           text = d[1].split(' ')[2];
-        //         } else if (dato == '1') {
-        //           icono = 'fas fa-spinner fa-spin';
-        //           text = 'Revisando';
-        //           color = 'text-primary';
-        //         } else if (dato == '-') {
-        //           icono = 'fas fa-minus-circle t16';
-        //           text = '';
-        //           color = 'text-secondary';
-        //         }
-        //         return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
-        //       },
-        //     },
-        //   ],
-        // },
-        // {
-        //   headerName: 'Memoria',
-        //   // headerStyle: { color: "white", backgroundColor: "CadetBlue" },
-        //   headerClass: ['th-center', 'th-grupo1'],
-        //   children: [
-        //     {
-        //       headerName: 'Total',
-        //       headerClass: ['th-center', 'th-normal'],
-        //       field: 'memoria',
-        //       cellClass: 'text-start',
-        //       cellRenderer: (params: ICellRendererParams) => {
-        //         let dato = params.value;
-        //         let text = '';
-        //         let icono = 'far fa-times-circle t16';
-        //         let color = 'text-danger';
-        //         if (!['', '-', '1', 'x'].includes(dato)) {
-        //           let d = dato.split('|');
-        //           if (d[0] == 'OK') {
-        //             color = '';
-        //           } else {
-        //             color = 'text-danger';
-        //           }
-        //           // icono = 'fas fa-memory t16';
-        //           icono = '';
-        //           text = d[1].split(' ')[0];
-        //         } else if (dato == '1') {
-        //           icono = 'fas fa-spinner fa-spin';
-        //           text = 'Revisando';
-        //           color = 'text-primary';
-        //         } else if (dato == '-') {
-        //           icono = 'fas fa-minus-circle t16';
-        //           text = '';
-        //           color = 'text-secondary';
-        //         }
-        //         return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
-        //       },
-        //     },
-        //     {
-        //       headerName: 'Usado',
-        //       headerClass: ['th-center', 'th-normal'],
-        //       field: 'memoria',
-        //       cellClass: 'text-start',
-        //       cellRenderer: (params: ICellRendererParams) => {
-        //         let dato = params.value;
-        //         let text = '';
-        //         let icono = 'far fa-times-circle t16';
-        //         let color = 'text-danger';
-        //         if (!['', '-', '1', 'x'].includes(dato)) {
-        //           let d = dato.split('|');
-        //           if (d[0] == 'OK') {
-        //             color = '';
-        //           } else {
-        //             color = 'text-danger';
-        //           }
-        //           // icono = 'fas fa-memory t16';
-        //           icono = '';
-        //           text = d[1].split(' ')[1];
-        //         } else if (dato == '1') {
-        //           icono = 'fas fa-spinner fa-spin';
-        //           text = 'Revisando';
-        //           color = 'text-primary';
-        //         } else if (dato == '-') {
-        //           icono = 'fas fa-minus-circle t16';
-        //           text = '';
-        //           color = 'text-secondary';
-        //         }
-        //         return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
-        //       },
-        //     },
-        //     {
-        //       headerName: 'Libre',
-        //       headerClass: ['th-center', 'th-normal'],
-        //       field: 'memoria',
-        //       cellClass: 'text-start',
-        //       cellRenderer: (params: ICellRendererParams) => {
-        //         let dato = params.value;
-        //         let text = '';
-        //         let icono = 'far fa-times-circle t16';
-        //         let color = 'text-danger';
-        //         if (!['', '-', '1', 'x'].includes(dato)) {
-        //           let d = dato.split('|');
-        //           if (d[0] == 'OK') {
-        //             color = '';
-        //           } else {
-        //             color = 'text-danger';
-        //           }
-        //           // icono = 'fas fa-memory t16';
-        //           icono = '';
-        //           text = d[1].split(' ')[2];
-        //         } else if (dato == '1') {
-        //           icono = 'fas fa-spinner fa-spin';
-        //           text = 'Revisando';
-        //           color = 'text-primary';
-        //         } else if (dato == '-') {
-        //           icono = 'fas fa-minus-circle t16';
-        //           text = '';
-        //           color = 'text-secondary';
-        //         }
-        //         return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
-        //       },
-        //     },
-        //   ],
-        // },
-        // {
-        //   headerName: 'Servicios',
-        //   headerStyle: { color: 'white', backgroundColor: 'SteelBlue' },
-        //   children: [
-            // {
-            //   headerName: 'HTTPD',
-            //   headerClass: ['th-center', 'th-normal'],
-            //   field: 'servicio_httpd',
-            //   cellClass: 'text-start',
-            //   minWidth: 100,
-            //   cellRenderer: (params: ICellRendererParams) => {
-            //     let dato = params.value;
-            //     let text = '';
-            //     let icono = 'far fa-times-circle t16';
-            //     let color = 'text-danger';
-            //     if (!['', '-', '1', 'x'].includes(dato)) {
-            //       let d = dato.split('|');
-            //       if (d[0] == 'OK') {
-            //         color = 'text-success';
-            //         icono = 'far fa-check-circle t16';
-            //       } else {
-            //         color = 'text-danger';
-            //         icono = 'far fa-times-circle t16';
-            //       }
-            //       text = d[1];
-            //     } else if (dato == '1') {
-            //       icono = 'fas fa-spinner fa-spin';
-            //       text = 'Revisando';
-            //       color = 'text-primary';
-            //     } else if (dato == '-') {
-            //       icono = 'fas fa-minus-circle t16';
-            //       text = '';
-            //       color = 'text-secondary';
-            //     }
-            //     return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
-            //   },
-            // },
-            // {
-            //   headerName: 'SSH',
-            //   headerClass: ['th-center', 'th-normal'],
-            //   field: 'servicio_ssh',
-            //   cellClass: 'text-start',
-            //   minWidth: 100,
-            //   cellRenderer: (params: ICellRendererParams) => {
-            //     let dato = params.value;
-            //     let text = '';
-            //     let icono = 'far fa-times-circle t16';
-            //     let color = 'text-danger';
-            //     if (!['', '-', '1', 'x'].includes(dato)) {
-            //       let d = dato.split('|');
-            //       if (d[0] == 'OK') {
-            //         color = 'text-success';
-            //         icono = 'far fa-check-circle t16';
-            //       } else {
-            //         icono = 'far fa-times-circle t16';
-            //         color = 'text-danger';
-            //       }
-            //       text = d[1];
-            //     } else if (dato == '1') {
-            //       icono = 'fas fa-spinner fa-spin';
-            //       text = 'Revisando';
-            //       color = 'text-primary';
-            //     } else if (dato == '-') {
-            //       icono = 'fas fa-minus-circle t16';
-            //       text = '';
-            //       color = 'text-secondary';
-            //     }
-            //     return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
-            //   },
-            // },
-          // },
-        // ],
         {
           headerName: 'Terminal Servicio',
           headerClass: ['th-center', 'th-normal'],
@@ -941,46 +487,62 @@ export class Monitoreo {
     let data = params.data;
     let nombre = data.nombre;
     this.id_selected = data.idservidor;
+    this.server_select = data;
 
     const button = document.createElement('button');
     button.className = 'btn btn-white';
-    button.innerHTML = `<span class="link" title='Editar'>${nombre}</span>`;
+    button.innerHTML = `<span class="link" title='Mas Info'>${nombre}</span>`;
     button.addEventListener('click', () => {
-      // this.funcEdit();
+      this.btnModal?.nativeElement.click();
     });
     return button;
   }
 
   renderServicios(params: ICellRendererParams) {
     let dato = params.value;
+    if (dato == undefined) dato = "";
     let text = '';
     let icono = '';
     let color = 'text-dark';
-    if (!['', '-', '1', 'x', undefined].includes(dato)) {
-      let d = dato.split('|');
-      if (d[0] == 'OK') {
-        if (d[1].trim() == 'active') {
-          color = 'text-success';
-          icono = 'far fa-check-circle t16';
-        }else{
-          icono = 'far fa-times-circle t16';
-          color = 'text-danger';
-        }
-      } else {
-        icono = 'far fa-times-circle t16';
-        color = 'text-danger';
-      }
-      text = d[1];
-    } else if (dato == '1') {
-      icono = 'fas fa-spinner fa-spin';
-      text = 'Revisando';
-      color = 'text-primary';
-    } else if (dato == '-' || dato !== undefined) {
-      icono = 'fas fa-minus-circle t16';
-      text = '';
-      color = 'text-secondary';
+
+    // console.log(`→${dato}←`)
+
+    if (dato == 'active') {
+      color = 'text-success';
+      icono = 'far fa-check-circle t16';
+    }else if (dato == 'inactive') {
+      color = 'text-danger';
+      icono = 'far fa-times-circle t16';
+    }else{
+      // icono = 'far fa-times-circle t16';
+      // color = 'text-danger';
     }
-    return `<span class="${color}"><i role="img" class='${icono}'></i> ${text}</span>`;
+    // if (!['', '-', '1', 'x', undefined].includes(dato)) {
+    //   let d = dato.split('|');
+    //   if (d[0] == 'OK') {
+    //     if (d[1].trim() == 'active') {
+    //       color = 'text-success';
+    //       icono = 'far fa-check-circle t16';
+    //     }else{
+    //       icono = 'far fa-times-circle t16';
+    //       color = 'text-danger';
+    //     }
+    //   } else {
+    //     icono = 'far fa-times-circle t16';
+    //     color = 'text-danger';
+    //   }
+    //   text = d[1];
+    // } else if (dato == '1') {
+    //   icono = 'fas fa-spinner fa-spin';
+    //   text = 'Revisando';
+    //   color = 'text-primary';
+    // } else if (dato == '-' || dato !== undefined) {
+    //   icono = 'fas fa-minus-circle t16';
+    //   text = '';
+    //   color = 'text-secondary';
+    // }
+    
+    return `<span class="${color}"><i role="img" class='${icono}'></i> ${dato}</span>`;
   }
 
   timerGeneral() {
@@ -1031,7 +593,6 @@ export class Monitoreo {
   }
 
   verificaServer(server: any) {
-    // console.log('Verificar Server', server.idservidor);
     if (server.healthy_agente.split('|')[0] == 'OK') {
       this.lstServidores.forEach((s) => {
         if (s.idservidor == server.idservidor) {
@@ -1074,14 +635,21 @@ export class Monitoreo {
           ) + 1000000000000000,
       },
       data: [
-        {"id": "disco", "cmd":" df -hT | grep -E 'ext4|xfs|btrfs' | awk '{print $3, $4, $5}'"},
-        {"id": "cpu", "cmd":"cat /proc/loadavg | awk '{print $1, $2, $3}'"},
-        {"id": "cpu_usado", "cmd":`sar -u | grep '^[0-9]' | awk '{sum+=$3; count++} END {if(count>0) print sum/count}'`},
-        {"id": "memoria", "cmd":"free -h | grep -E 'Mem' | awk '{print $2, $3, $4}'"},
-        {"id": "uptime", "cmd":'sec=$(( $(date +%s) - $(date -d "$(ps -p 1 -o lstart=)" +%s) )); d=$((sec/86400)); h=$(( (sec%86400)/3600 )); m=$(( (sec%3600)/60 )); s=$((sec%60)); printf "%02d:%02d:%02d:%02d\n" $d $h $m $s'},
+        {"id": "top", "cmd":"top -b -n1 -em"},
+        {"id": "disco", "cmd":" df -hT | grep -E 'ext4|xfs|btrfs' | awk '{print $3, $4, $5, $6}'"},
+        // {"id": "ip", "cmd":`hostname -i`},
+        {"id": "ip", "cmd":`ip route | column -t | awk '{print $1","$2","$3","$4","$5","$6","$7","$8","$9}'`},
+        {"id": "release", "cmd":`cat /etc/os-release`},
+        {"id": "cpuinfo", "cmd":`cat /proc/cpuinfo`},
+
+        // {"id": "disco", "cmd":" df -hT | grep -E 'ext4|xfs|btrfs' | awk '{print $3, $4, $5}'"},
+        // {"id": "cpu", "cmd":"cat /proc/loadavg | awk '{print $1, $2, $3}'"},
+        // {"id": "cpu_usado", "cmd":`sar -u | grep '^[0-9]' | awk '{sum+=$3; count++} END {if(count>0) print sum/count}'`},
+        // {"id": "memoria", "cmd":"free -h | grep -E 'Mem' | awk '{print $2, $3, $4}'"},
+        // {"id": "uptime", "cmd":'sec=$(( $(date +%s) - $(date -d "$(ps -p 1 -o lstart=)" +%s) )); d=$((sec/86400)); h=$(( (sec%86400)/3600 )); m=$(( (sec%3600)/60 )); s=$((sec%60)); printf "%02d:%02d:%02d:%02d\n" $d $h $m $s'},
         {"id": "servicio_sentinel", "cmd":"systemctl is-active sentinel"},
         {"id": "servicio_terminal", "cmd":"systemctl is-active webssh2"},
-        {"id": "ip", "cmd":`hostname -i`},
+        // {"id": "ip", "cmd":`hostname -i`},
       ],
     };
 
@@ -1091,9 +659,7 @@ export class Monitoreo {
         param.data.push({"id": `servicio_${ss}`, "cmd":`systemctl is-active ${ss}`},)
       });
     }
-
-    console.log(`Servidor ${server.idservidor} data = ${param.data.length}`)
-
+    // console.log(`Servidor ${server.idservidor} data = ${param.data.length}`)
     console.log('↑ Enviando');
     // console.log(param);
     this.ws.send(JSON.stringify(param));
@@ -1102,15 +668,36 @@ export class Monitoreo {
   openWS(server: any) {
     const token = this.sessions.get('token');
     this.revisando = `${server.nombre}`;
+    // console.log(this.revisando)
     let url = `ws://${server.host}:${server.agente_puerto}/ws?token=${token}`;
+    let accion = false;
     try {
-      this.ws = new WebSocket(url);
-      this.ws.onopen = (event: any) => this.onOpenListener(event, server);
-      this.ws.onmessage = (event: any) => this.onMessageListener(event, server);
-      this.ws.onclose = (event: any) => this.onCloseListener(event, server);
-      this.ws.onerror = (event: any) => this.onErrorListener(event, server);
+      if (!this.connection.has(server.idservidor)){
+        accion = true
+      }else{
+        if (this.connection_status.get(server.idservidor) == "" || this.connection_status.get(server.idservidor) == "Desconectado"){
+          accion = true;
+        }
+      }
+      // console.log("Accion", accion)
+      // console.log("Estado WS", this.connection_status.get(server.idservidor))
+      if (accion){
+        // console.log("NUEVO")
+        this.ws = new WebSocket(url);
+        this.connection.set(server.idservidor, this.ws)
+        this.connection_status.set(server.idservidor, "");
+        
+        this.ws.onopen = (event: any) => this.onOpenListener(event, server);
+        this.ws.onmessage = (event: any) => this.onMessageListener(event, server);
+        this.ws.onclose = (event: any) => this.onCloseListener(event, server);
+        this.ws.onerror = (event: any) => this.onErrorListener(event, server);
+      }else{
+        // console.log("USADO")
+        this.ws = this.connection.get(server.idservidor);
+        this.verificaServer(server);
+      }
     } catch (ex) {
-      // console.log(ex)
+      console.log("♫", ex)
     }
   }
 
@@ -1118,9 +705,11 @@ export class Monitoreo {
     let status = '';
     if (event.type == 'open') {
       console.log(`√ Conectado ${server.idservidor}`);
+      this.connection_status.set(server.idservidor, "Conectado");
       server.healthy_agente = 'OK|Conectado';
     } else {
       console.log(`X Desconectado ${server.idservidor}`);
+      this.connection_status.set(server.idservidor, "Desconectado");
       server.healthy_agente = 'FAIL|Desconectado';
     }
     this.verificaServer(server);
@@ -1130,43 +719,162 @@ export class Monitoreo {
     this.loadMonitoreo = true;
     console.log(`√ LlegoMensaje ${server.idservidor}`);
     let data = JSON.parse(e.data);
-    // console.log(data);
-    switch (data.action) {
-      case 'comando':
-        let msg = '';
-        this.lstServidores.forEach((s: any) => {
-          if (s.idservidor == server.idservidor) {
-            data.data.forEach((r: any) => {
-              let respuesta: any = atob(r.respuesta);
-              // console.log(respuesta);
-              try {
-                // if (respuesta.returncode == 0) {
-                msg = `OK|${respuesta}`;
-                // } else {
-                //   msg = `FAIL|${respuesta.stderr}`;
-                // }
-                s[r.id] = msg;
-              } catch (ex) {}
-            });
+    let identificador = data.identificador;
+    let r = "";
+    let drep:any;
+    let daux:any;
+    data.data.forEach((d:any)=>{
+      r = atob(d.respuesta);
+      switch (d.id) {
+        case "top":
+          
+          let datatop = r.split("\n");
+          datatop.forEach((dt:any, idx:any)=>{
+            switch(idx){
+              case 0: //top
+                drep = dt.replace(/,/g,"");
+                daux = drep.replace(/-/g,"").split(" ");
+                // console.log(daux)
+                // this.lstDatos.hora = daux[2]; //hora
+                this.buscaServidor(identificador.idservidor,"uptime", daux[4]+ " " + daux[5]) //uptime
+                // this.lstDatos.cpu.t1 = daux[12]; //T1
+                // this.lstDatos.cpu.t5 = daux[13]; //T1
+                // this.lstDatos.cpu.t15 = daux[14]; //T1
+                // this.graphCPU(daux[12], daux[13], daux[14]);
+                break;
+              case 1: // Tasks
+                drep = dt.replace(/,/g,"");
+                daux = drep.replace(/-/g,"").split(" ");
+                this.buscaServidor(identificador.idservidor,"tareas", {
+                  total: daux[2],
+                  running: daux[6],
+                  sleeping: daux[9],
+                  stopped: daux[13],
+                  zombie: daux[17],
+                })
+                break;
+              case 2: // %CPU
+                dt = dt.replace("%Cpu(s): ", "");
+                dt = dt.replace(/ /g, "");
+                dt = dt.replace("us,", "|");
+                dt = dt.replace("sy,", "|");
+                dt = dt.replace("ni,", "|");
+                dt = dt.replace("id,", "|");
+                dt = dt.replace("wa,", "|");
+                dt = dt.replace("hi,", "|");
+                dt = dt.replace("si,", "|");
+                dt = dt.replace("st", "|");
+                daux = dt.split("|");
+                drep = daux[3].replace(",",".");
+                // console.log(identificador.idservidor, drep)
+                this.buscaServidor(identificador.idservidor,"cpu_usado", drep) 
+                break;
+              case 3: //MIB MEM
+                  daux = dt.replace("MiB Mem :  ", "");
+                  daux = daux.replace("total", "");
+                  daux = daux.replace("free", "");
+                  daux = daux.replace("used", "");
+                  daux = daux.replace("buff/cache", "");
+                  daux = daux.replace(/\ /g, "");
+                  drep = daux.split(",");
+                  this.buscaServidor(identificador.idservidor,"memoria",this.func.numberFormat( (   (parseFloat(drep[2]) / parseFloat(drep[0]))*100  ),2));
+                  // this.lstDatos.memoria.total = drep[0]; 
+                  // this.lstDatos.memoria.usado = drep[2]; 
+                  // this.lstDatos.memoria.libre = drep[1]; 
+                  // this.lstDatos.memoria.porcentaje = this.func.numberFormat( (   (parseFloat(drep[2]) / parseFloat(drep[0]))*100  ),2); 
+                //  console.log(drep);
+                break;
+              case 4: // Swap
+                break;
+              case 5: //vacio
+                break;
+              case 6: //Tituloprocesos
+                break;
+              default: //Procesos
+                daux = dt.split(" ");
+                drep = [];
+                daux.forEach((d:any)=>{
+                  if (d.trim() != ""){
+                    drep.push(d)
+                  }
+                })
+                if (drep.length>0){
+                  let command = drep.slice(11, 15).join(" ");
+                  // this.lstDatos.procesos.push({
+                  //   "PID" : drep[0],
+                  //   "USER" : drep[1],
+                  //   "PR" : drep[2],
+                  //   "NI" : drep[3],
+                  //   "VIRT" : drep[4],
+                  //   "RES" : drep[5],
+                  //   "SHR" : drep[6],
+                  //   "S" : drep[7],
+                  //   "CPU" : parseFloat(drep[8]),
+                  //   "MEM" : parseFloat(drep[9]),
+                  //   "TIME" : drep[10],
+                  //   "COMMAND" : command
+                  // })
+                }
+                break;
+
+            }
+          })
+          break;
+        case "disco":
+          // this.lstDatos.disco.total = r[0];
+          // this.lstDatos.disco.usado = r[1];
+          // this.lstDatos.disco.libre = r[2];
+          // this.lstDatos.disco.porcentaje = r[3]
+          daux = r.split(" ");
+          drep = daux[3].replace("%", "");
+          this.buscaServidor(identificador.idservidor,"disco",drep);
+          break;
+        case "ip":
+          daux = r.split("\n");
+          drep =  daux[1].split(",")[8];
+          this.buscaServidor(identificador.idservidor,"host",drep);
+          break;
+        case "release":
+          daux = r.split("\n");
+          // daux = r.replace(/\n/g, "<br>");
+          this.buscaServidor(identificador.idservidor,"release",daux);
+          break;
+        case "cpuinfo":
+          daux = r.split("\n");
+          // daux = r.replace(/\n/g, "<br>");
+          this.buscaServidor(identificador.idservidor,"cpuinfo",daux);
+          break;
+        default:
+          if (d.id.indexOf("servicio") >-1 ){
+            this.buscaServidor(identificador.idservidor, d.id, r.replace("\n", ""));
           }
-        });
-        this.refreshAll();
-        setTimeout(() => {
-          this.loadMonitoreo = false;
-        }, 500);
+          break
+      }
+    });
 
-        this.ws.close(1000);
-        this.ws = null;
+    this.refreshAll();
+    setTimeout(() => {
+      this.loadMonitoreo = false;
+    }, 500);
 
-        this.serverIndex++;
-        this.sendMonitor();
-        break;
-    }
+    this.serverIndex++;
+    this.sendMonitor();
+  }
+
+
+  buscaServidor(idservidor:any, field:any, value:any){
+    this.lstServidores.forEach((s: any) => {
+      // console.log(s.idservidor, idservidor, s.idservidor == idservidor)
+      if (s.idservidor == idservidor) {
+        s[field] = value
+      }
+    });
   }
 
   onCloseListener(event: any, server: any) {
     // console.log('onCloseListener', event);
     if (event.code != 1000) {
+      this.connection_status.set(server.idservidor, "Desconectado");
       console.log(`X Desconectado ${server.idservidor}`);
       server.healthy_agente = 'FAIL|Desconectado';
       this.verificaServer(server);
@@ -1174,6 +882,8 @@ export class Monitoreo {
       try {
         this.sendMonitor();
       } catch (err) {}
+    } else{
+      console.log(`X Desconectado manualmente ${server.idservidor}`);
     }
   }
 
@@ -1203,20 +913,17 @@ export class Monitoreo {
   prepareToExport(): Array<any> {
     let arr: any = [];
     this.lstServidores.forEach((d: any) => {
-      let disco = this.procesarDato(d.disco);
-      let memoria = this.procesarDato(d.memoria);
-
       try {
         let dat:any = {
           servidor: d.nombre,
-          // host: d.host,
+          host: d.host,
           // ubicacion: d.ubicacion,
           // agente_puerto: d.agente_puerto,
           // ssh_puerto: d.ssh_puerto,
           // terminal_puerto: d.terminal_puerto,
-          disco: disco.porc + "%",
-          memoria: memoria.porc + "%",
-          cpu: this.func.numberFormat(parseFloat(d.cpu_usado.split("|")[1])) + "%",
+          disco: d.disco + "%",
+          memoria: d.memoria + "%",
+          cpu: d.cpu_usado + "%",
           sentinel: this.func.capital(d.servicio_terminal.replace("OK|","")),
           terminal: this.func.capital(d.servicio_sentinel.replace("OK|","")),
           // memoria: d.memoria.split("|")[1],

@@ -35,20 +35,35 @@
         >
         </canvas> -->
         @for (item of lstServidoresAsignados; track $index) {
-          @if($index < 3){
+          @if($index <= 3){
             <div class="cardS col-6 col-md-3 p-1 " >
               <div class="card-body text-center">
-                <div class="porcentajes" style="--porcentaje: {{item.porcentaje}}%; --color: forestgreen">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="150" height="150" viewbox="0 0 150 150">
-                    <circle r="65" cx="50%" cy="50%" pathLength="928.32"></circle>
-                    <circle r="65" cx="50%" cy="50%" pathLength="928.32"></circle>
-                  </svg>
-                  <span>{{item.porcentaje | number:'1.2-2'}}%</span>
-                </div>
-                <p class="card-text t12">
-                  Interacciones {{item.conteo}} de total {{item.total}}
-                </p>
-                <p class="card-text t18 text-uppercase bold"><i class="fas fa-server"></i> {{item.nombre}}</p>
+                @if(item.estatus!="OK"){
+                  <div class="porcentajes" style="--porcentaje: {{item.porcentaje}}%; --color: red">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="150" height="150" viewbox="0 0 150 150">
+                      <circle r="65" cx="50%" cy="50%" pathLength="928.32"></circle>
+                      <circle r="65" cx="50%" cy="50%" pathLength="928.32"></circle>
+                    </svg>
+                    <span>0%</span>
+                  </div>
+                  <p class="card-text t12 text-danger bold">
+                    {{item.estatus}}
+                  </p>
+                  <p class="card-text t18 text-uppercase bold"><i class="fas fa-server"></i> {{item.nombre}}</p>
+
+                }@else {
+                  <div class="porcentajes" style="--porcentaje: {{item.porcentaje}}%; --color: forestgreen">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="150" height="150" viewbox="0 0 150 150">
+                      <circle r="65" cx="50%" cy="50%" pathLength="928.32"></circle>
+                      <circle r="65" cx="50%" cy="50%" pathLength="928.32"></circle>
+                    </svg>
+                    <span>{{item.porcentaje | number:'1.2-2'}}%</span>
+                  </div>
+                  <p class="card-text t12">
+                      Interacciones {{item.conteo}} de total {{item.total}}
+                  </p>
+                  <p class="card-text t18 text-uppercase bold"><i class="fas fa-server"></i> {{item.nombre}}</p>
+                }
               </div>
             </div>
           }

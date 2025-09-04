@@ -5,7 +5,6 @@ import { ActivatedRoute } from '@angular/router';
 import { Sessions } from '../../../core/helpers/session.helper';
 import { Functions } from '../../../core/helpers/functions.helper';
 import { ServidorService } from '../../../core/services/servidor.service';
-import { WSService } from '../../../core/services/ws.service';
 import iconsData from '../../../core/data/icons.data';
 import { Workspace } from '../workspace';
 import { Global } from '../../../core/config/global.config';
@@ -20,11 +19,9 @@ import { createGrid, GridApi, GridOptions, ICellRendererParams } from 'ag-grid-c
   styleUrl: './updates.scss'
 })
 export class Updates implements OnInit{
-  private readonly route = inject(ActivatedRoute);
   private readonly sessions = inject(Sessions);
   private readonly func = inject(Functions);
   private readonly serverSvc = inject(ServidorService);
-  // private readonly agente = inject(WSService);
   private readonly parent = inject(Workspace);
 
   Title = "Actualizaciones";
@@ -193,22 +190,22 @@ export class Updates implements OnInit{
     Swal.close()
     console.log(`↓ LlegoMensaje ${this.work.idservidor}`);
     let data = JSON.parse(e.data);
-    console.log(data)
+    // console.log(data)
     let r = "";
     let acum:any = [];
     let aux:any | undefined;
     data.data.forEach((d:any)=>{
-      d.respuesta= atob(d.respuesta);
+      let r = atob(d.respuesta);
       switch(d.id){
         case `${this.area}|ver_actualizaciones`:
           //let rd:any = (d.respuesta.split("\n"));
-          console.log("→", d.respuesta)
-          if (d.respuesta == ""){
+          // console.log("→", r)
+          if (r == ""){
             this.func.showMessage("info", "Actualizaciones",  "No hay paquetes que actualizar");
             this.lstData = [];
             this.refreshAll()
           }else{
-            aux = (d.respuesta.split("\n"));
+            aux = (r.split("\n"));
             acum = [];
             aux.forEach((rs:any, idx:any)=>{
               if (rs != ""){
@@ -225,10 +222,11 @@ export class Updates implements OnInit{
           }
           break;
         case `${this.area}|actualizar_sistema`:
-          this.func.showMessage("info", "Actualización de Sistema",  d.respuesta);
+          this.func.showMessage("info", "Actualización de Sistema",  r);
           break;
         default:
-          console.log("->>>>", d.respuesta)
+          console.log("Error", r)
+          this.func.toast("error", r);
           this.initial();
           break;
       }
@@ -427,7 +425,7 @@ export class Updates implements OnInit{
           break;
       }
     })
-    console.log("↑", cmds)
+    // console.log("↑", cmds)
     if (!cmds) return 
     let params = {
       action: "comando",

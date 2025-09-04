@@ -100,25 +100,22 @@ export class Functions {
       }
     }
 
-    // console.log(msgError)
+    console.log(msgError)
 
     let errs = [
       {
         message: 'http failure response',
-        messageResult:
-          '<strong>Unable to connect the server !!!</strong><br>Http failure response',
+        messageResult: '<strong>Unable to connect the server !!!</strong><br>Http failure response',
         action: '',
       },
       {
         message: 'unknown error',
-        messageResult:
-          '<strong>Unable to connect the server !!!</strong><br>Unknown error',
+        messageResult: '<strong>Unable to connect the server !!!</strong><br>Unknown error',
         action: '',
       },
       {
         message: 'httperrorresponse',
-        messageResult:
-          '<strong>Unable to connect the server !!!</strong><br>HttpErrorResponse',
+        messageResult: '<strong>Unable to connect the server !!!</strong><br>HttpErrorResponse',
         action: '',
       },
       {

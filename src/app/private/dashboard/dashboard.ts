@@ -155,7 +155,7 @@ export class Dashboard {
     }
 
     this.lstDatos = {
-      uptime: "0d 00:00:00",
+      uptime: "00:00",
       hora: "",
       tasks:{
         total: 0,
@@ -247,7 +247,7 @@ export class Dashboard {
           this.refreshAll()
           
         } else {
-          this.func.showMessage('error', 'Usuario', resp.message);
+          this.func.handleErrors('Usuario', resp.message);
         }
       },
       error: (err: any) => {
@@ -278,7 +278,7 @@ export class Dashboard {
         if (resp.status) {
           this.lstAcciones = resp.data;
         } else {
-          this.func.showMessage('error', 'Usuario', resp.message);
+          this.func.handleErrors('Usuario', resp.message);
         }
       },
       error: (err: any) => {
@@ -298,7 +298,7 @@ export class Dashboard {
             this.lstUltimasAcciones.push(e);
           });
         } else {
-          this.func.showMessage('error', 'Usuario', resp.message);
+          this.func.handleErrors( 'Usuario', resp.message);
         }
       },
       error: (err: any) => {
@@ -405,13 +405,13 @@ export class Dashboard {
     let acum:any = [];
     let rd:any = [];
     let aux:any | undefined;
+    let drep:any;
+    let daux:any;
     data.data.forEach((d:any)=>{
       d.respuesta= atob(d.respuesta);
       switch(d.id){
         case "top":
           this.lstDatos.procesos = [];
-          let drep:any;
-          let daux:any;
           let datatop = d.respuesta.split("\n");
           datatop.forEach((dt:any, idx:any)=>{
             switch(idx){
@@ -421,10 +421,22 @@ export class Dashboard {
                 // console.log(daux)
                 this.lstDatos.hora = daux[2]; //hora
                 this.lstDatos.uptime = daux[4]+ " " + daux[5]; //uptime
-                this.lstDatos.cpu.t1 = daux[12]; //T1
-                this.lstDatos.cpu.t5 = daux[13]; //T1
-                this.lstDatos.cpu.t15 = daux[14]; //T1
-                this.graphCPU(daux[12], daux[13], daux[14]);
+                let t1;
+                let t5;
+                let t15;
+                if (daux[10].indexOf("average")>-1){
+                  t1 =  daux[11];
+                  t5 =  daux[12];
+                  t15 =  daux[13];
+                }else if (daux[11].indexOf("average")>-1){
+                  t1 =  daux[12];
+                  t5 =  daux[13];
+                  t15 =  daux[14];
+                }
+                this.lstDatos.cpu.t1 = t1;
+                this.lstDatos.cpu.t5 = t5;
+                this.lstDatos.cpu.t15 = t15;
+                this.graphCPU(t1, t5, t15);
                 break;
               case 1: // Tasks
                 drep = dt.replace(/,/g,"");
@@ -583,7 +595,9 @@ export class Dashboard {
           this.refreshAllProc();
           break;
         case "ip":
-          this.work.host = d.respuesta;
+          daux = d.respuesta.split("\n");
+          drep = daux[1].split(",")[8];
+          this.work.host = drep;
           break;
       }
     });
@@ -607,7 +621,7 @@ export class Dashboard {
         // {"id": "memoria", "cmd":"free -h | grep -E 'Mem' | awk '{print $2, $3, $4}'"},
         // {"id": "uptime", "cmd":'sec=$(( $(date +%s) - $(date -d "$(ps -p 1 -o lstart=)" +%s) )); d=$((sec/86400)); h=$(( (sec%86400)/3600 )); m=$(( (sec%3600)/60 )); s=$((sec%60)); printf "%02d:%02d:%02d:%02d\n" $d $h $m $s'},
         // {"id": "procesos", "cmd":`top -b -n1 -em | grep -E "^( *PID| *[0-9]+)" | sed 's/  */ /g' | sed 's/^ *//' | tr ' ' ',' | sed 's/^,*//' | sed 's/,$//'`},
-        {"id": "ip", "cmd":`hostname -i`},
+        {"id": "ip", "cmd":`ip route | column -t | awk '{print $1","$2","$3","$4","$5","$6","$7","$8","$9}'`},
         {"id": "release", "cmd":`cat /etc/os-release`},
         // {"id": "procesos", "cmd":`top -b -n1 -em | grep -E "^( *PID| *[0-9]+)" | sed 's/  */ /g' | sed 's/^ *//' | sort -t' ' -k5 -nr | tr ' ' ',' | sed 's/^,*//' | sed 's/,$//'`},
       ]

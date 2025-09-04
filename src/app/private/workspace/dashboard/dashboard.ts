@@ -13,6 +13,7 @@ import { ChartConfiguration, ChartOptions, Chart, registerables } from "chart.js
 import { BaseChartDirective } from 'ng2-charts';
 import { color } from 'chart.js/helpers';
 import { AllCommunityModule, createGrid, GridApi, GridOptions, ModuleRegistry } from 'ag-grid-community';
+import { GeneralService } from '../../../core/services/general.service';
 
 Chart.register(...registerables);
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -28,8 +29,8 @@ export class Dashboard {
   private readonly route = inject(ActivatedRoute);
   private readonly sessions = inject(Sessions);
   private readonly func = inject(Functions);
-  private readonly serverSvc = inject(ServidorService);
-  private readonly agente = inject(WSService);
+  private readonly generalSvc = inject(GeneralService);
+  // private readonly agente = inject(WSService);
   private readonly parent = inject(Workspace);
 
   Title = "Dashboard";
@@ -39,6 +40,8 @@ export class Dashboard {
   work:any | undefined;
   icono = iconsData;
   global = Global;
+
+  rstServidor: any = { usuarios: [] };
 
   loading:boolean = false;
   playMonitor:boolean = false;
@@ -109,11 +112,13 @@ export class Dashboard {
     this.user = JSON.parse(this.sessions.get("user"));
     this.work = JSON.parse(this.sessions.get("work"));
 
+    // console.log(this.work)
+
     this.tiempo_refresco = this.user.config.tiempo_refresco;
 
     this.initial();
     this.dataGridStruct();
-    this.startMonitor();
+    this.getServidor();
   }
 
   ngOnDestroy(): void {
@@ -122,9 +127,33 @@ export class Dashboard {
     this.ws = null
   }
 
+  getServidor() {
+    /**
+     * Servidor y lista de usuarios asignados
+     */    
+    this.func.showLoading('Cargando');
+    this.generalSvc.apiRest("GET", `servidores_usuarios/${this.work.idservidor}`).subscribe({
+      next: (resp: any) => {
+        this.func.closeSwal();
+        if (resp.status) {
+          this.rstServidor = resp.data[0];
+          console.log("Abriendo Puerto")
+          this.openWS();
+        } else {
+          this.func.handleErrors("Servidor", resp.message);
+        }
+      },
+      error: (err: any) => {
+        this.func.closeSwal();
+        this.func.handleErrors("Servidor", err);
+      },
+    });
+  }
+
   initial(){
     this.lstDatos = {
       uptime: "0d 00:00:00",
+      hora:"",
       
       ssh_status: "",
       disco: {
@@ -145,6 +174,13 @@ export class Dashboard {
         t15:"0",
         porcentaje: "0"
       },
+      tareas: {
+        total: "",
+        running: "",
+        sleeping: "",
+        stopped: "",
+        zombie: "",
+      },
       release: [],
       servicios: [],
       infocpu: [],
@@ -160,8 +196,6 @@ export class Dashboard {
       borderWidth: 0,
       backgroundColor: 'rgba(41, 219, 204, 0.79)'
     });
-
-    this.openWS();
   }
 
   go(ruta=""){
@@ -296,7 +330,7 @@ export class Dashboard {
           {
             headerName: '%CPU',
             headerClass: ["th-center", "th-normal"],
-            field: '%CPU',
+            field: 'CPU',
             cellClass: 'text-start',
             filter: true,
             sortable: true
@@ -304,7 +338,7 @@ export class Dashboard {
           {
             headerName: '%MEM',
             headerClass: ["th-center", "th-normal"],
-            field: '%MEM',
+            field: 'MEM',
             cellClass: 'text-start',
             filter: true,
             sortable: true
@@ -312,7 +346,7 @@ export class Dashboard {
           {
             headerName: 'TIME+',
             headerClass: ["th-center", "th-normal"],
-            field: 'TIME+',
+            field: 'TIME',
             cellClass: 'text-start',
             filter: true,
             sortable: true
@@ -413,22 +447,118 @@ export class Dashboard {
   onErrorListener(event: any) {}
 
   onMessageListener(e: any) {
-    console.log(`√ LlegoMensaje ${this.work.idservidor}`);
+    console.log(`↓ LlegoMensaje ${this.work.idservidor}`);
     let data = JSON.parse(e.data);
     // console.log(data)
     let r = "";
     let acum:any = [];
     let rd:any = [];
     let aux:any | undefined;
+    let drep:any;
+    let daux:any;
     data.data.forEach((d:any)=>{
       d.respuesta= atob(d.respuesta);
       switch(d.id){
+        case "top":
+          this.lstDatos.procesos = [];
+          let datatop = d.respuesta.split("\n");
+          datatop.forEach((dt:any, idx:any)=>{
+            switch(idx){
+              //top - 00:59:48 up 12:41,  6 users,  load average: 0,00, 0,02, 0,02
+              case 0: //top
+                // console.log(dt)
+                drep = dt.replace(/,/g,"");
+                daux = drep.replace(/-/g,"").split(" ");
+                this.lstDatos.hora = daux[2]; //hora
+                this.lstDatos.uptime = daux[4]+ " " + daux[5]; //uptime
+                let t1;
+                let t5;
+                let t15;
+                if (daux[10].indexOf("average")>-1){
+                  t1 =  daux[11];
+                  t5 =  daux[12];
+                  t15 =  daux[13];
+                }else if (daux[11].indexOf("average")>-1){
+                  t1 =  daux[12];
+                  t5 =  daux[13];
+                  t15 =  daux[14];
+                }
+                this.lstDatos.cpu.t1 = t1;
+                this.lstDatos.cpu.t5 = t5;
+                this.lstDatos.cpu.t15 = t15;
+                this.graphCPU(t1, t5, t15);
+                break;
+              case 1: // Tasks
+                drep = dt.replace(/,/g,"");
+                daux = drep.replace(/-/g,"").split(" ");
+                // console.log(daux)
+                this.lstDatos.tareas.total = daux[2];
+                this.lstDatos.tareas.running = daux[6];
+                this.lstDatos.tareas.sleeping = daux[9];
+                this.lstDatos.tareas.stopped = daux[13];
+                this.lstDatos.tareas.zombie = daux[17];
+                break;
+              case 2: // %CPU
+                daux = dt.split(",")[3].replace(" id", "");
+                this.lstDatos.cpu.porcentaje = this.func.numberFormat(100 - parseFloat(daux),2); 
+                break;
+              case 3: //MIB MEM
+                 daux = dt.replace("MiB Mem :  ", "");
+                 daux = daux.replace("total", "");
+                 daux = daux.replace("free", "");
+                 daux = daux.replace("used", "");
+                 daux = daux.replace("buff/cache", "");
+                 daux = daux.replace(/\ /g, "");
+                 drep = daux.split(",");
+                 this.lstDatos.memoria.total = drep[0]; 
+                 this.lstDatos.memoria.usado = drep[2]; 
+                 this.lstDatos.memoria.libre = drep[1]; 
+                 this.lstDatos.memoria.porcentaje = this.func.numberFormat( (   (parseFloat(drep[2]) / parseFloat(drep[0]))*100  ),2); 
+                //  console.log(drep);
+                break;
+              case 4: // Swap
+                break;
+              case 5: //vacio
+                break;
+              case 6: //Tituloprocesos
+                break;
+              default: //Procesos
+                daux = dt.split(" ");
+                drep = [];
+                daux.forEach((d:any)=>{
+                  if (d.trim() != ""){
+                    drep.push(d)
+                  }
+                })
+                if (drep.length>0){
+                  let command = drep.slice(11, 15).join(" ");
+                  this.lstDatos.procesos.push({
+                    "PID" : drep[0],
+                    "USER" : drep[1],
+                    "PR" : drep[2],
+                    "NI" : drep[3],
+                    "VIRT" : drep[4],
+                    "RES" : drep[5],
+                    "SHR" : drep[6],
+                    "S" : drep[7],
+                    "CPU" : parseFloat(drep[8]),
+                    "MEM" : parseFloat(drep[9]),
+                    "TIME" : drep[10],
+                    "COMMAND" : command
+                  })
+                }
+                this.refreshAllProc();
+                break;
+
+            }
+          })
+          break;
         case "disco":
           r = d.respuesta.split(" ")
           this.lstDatos.disco.total = r[0];
           this.lstDatos.disco.usado = r[1];
           this.lstDatos.disco.libre = r[2];
-          this.lstDatos.disco.porcentaje = r[3]
+          this.lstDatos.disco.porcentaje = r[3].split("\n")[0]
           break;
         case "memoria":
           r = d.respuesta.split(" ")
@@ -513,6 +643,11 @@ export class Dashboard {
           this.lstDatos.procesos = acum;
           this.refreshAll()
           break;
+        case "ip":
+          daux = d.respuesta.split("\n");
+          drep = daux[1].split(",")[8];
+          this.work.host = drep;
+          break;
       }
     });
   }
@@ -530,16 +665,23 @@ export class Dashboard {
         id: Math.floor(Math.random() * (9999999999999999 - 1000000000000000 + 1)) + 1000000000000000
       },
       data: [
+        {"id": "top", "cmd":"LC_NUMERIC=C top -b -n1 -em -c"},
         {"id": "disco", "cmd":" df -hT | grep -E 'ext4|xfs|btrfs' | awk '{print $3, $4, $5, $6}'"},
-        {"id": "cpu", "cmd":"cat /proc/loadavg | awk '{print $1, $2, $3}'"},
-        {"id": "cpu_usado", "cmd":`sar -u | grep '^[0-9]' | awk '{sum+=$3; count++} END {if(count>0) print sum/count}'`},
-        {"id": "memoria", "cmd":"free -h | grep -E 'Mem' | awk '{print $2, $3, $4}'"},
-        {"id": "uptime", "cmd":'sec=$(( $(date +%s) - $(date -d "$(ps -p 1 -o lstart=)" +%s) )); d=$((sec/86400)); h=$(( (sec%86400)/3600 )); m=$(( (sec%3600)/60 )); s=$((sec%60)); printf "%02d:%02d:%02d:%02d\n" $d $h $m $s'},
-        {"id": "procesos", "cmd":`top -b -n1 -em | grep -E "^( *PID| *[0-9]+)" | sed 's/  */ /g' | sed 's/^ *//' | sort -t' ' -k5 -nr | tr ' ' ',' | sed 's/^,*//' | sed 's/,$//'`},
+        {"id": "ip", "cmd":`ip route | column -t | awk '{print $1","$2","$3","$4","$5","$6","$7","$8","$9}'`},
+        {"id": "release", "cmd":`cat /etc/os-release`},
+        // {"id": "ip", "cmd":`hostname -i`},
+
+        // {"id": "disco", "cmd":" df -hT | grep -E 'ext4|xfs|btrfs' | awk '{print $3, $4, $5, $6}'"},
+        // {"id": "cpu", "cmd":"cat /proc/loadavg | awk '{print $1, $2, $3}'"},
+        // {"id": "cpu_usado", "cmd":`sar -u | grep '^[0-9]' | awk '{sum+=$3; count++} END {if(count>0) print sum/count}'`},
+        // {"id": "memoria", "cmd":"free -h | grep -E 'Mem' | awk '{print $2, $3, $4}'"},
+        // {"id": "uptime", "cmd":'sec=$(( $(date +%s) - $(date -d "$(ps -p 1 -o lstart=)" +%s) )); d=$((sec/86400)); h=$(( (sec%86400)/3600 )); m=$(( (sec%3600)/60 )); s=$((sec%60)); printf "%02d:%02d:%02d:%02d\n" $d $h $m $s'},
+        // {"id": "procesos", "cmd":`top -b -n1 -em | grep -E "^( *PID| *[0-9]+)" | sed 's/  */ /g' | sed 's/^ *//' | sort -t' ' -k5 -nr | tr ' ' ',' | sed 's/^,*//' | sed 's/,$//'`},
       ]
 
     };
     if (this.connState()){
+      console.log("↑ Enviando")
       this.ws.send(JSON.stringify(params));
     }
   }
@@ -576,6 +718,16 @@ export class Dashboard {
 
     this.light_ws = m;
     return m;
+  }
+
+
+  refreshAllProc() {
+    var params = {
+      force: true,
+      suppressFlash: true,
+    };
+    this.gridApi!.refreshCells(params);
+    this.gridApi!.setGridOption('rowData', this.lstDatos.procesos);
   }
 
 }

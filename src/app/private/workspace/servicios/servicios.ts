@@ -148,6 +148,7 @@ export class Servicios implements OnInit {
     this.lstComandos.forEach((c:any)=>{
       if (c.area == area && c.accion == accion){
         arr.push({
+          // id: `${c.area}|${c.accion}`,
           id: `${c.area}|${c.accion}`,
           cmd: this.parser(c.comando, servicio)
         });
@@ -209,27 +210,50 @@ export class Servicios implements OnInit {
           headerClass: 'th-normal',
           field: 'servicio',
           cellClass: 'text-start',
-          filter: false,
+          filter: true,
         },
         {
-          headerName: 'Inicio Automatico',
+          headerName: 'Inicio',
           headerClass: 'th-normal',
           field: 'load',
           cellClass: 'text-start',
           filter: true,
           editable: true,
-          maxWidth:200,
-          cellRenderer: this.renderLoad.bind(this),
+          maxWidth:120,
+          cellRenderer: (params:ICellRendererParams)=>{
+            let valor = params.value;
+            let icono = 'far fa-times-circle text-danger';
+            if (valor == "loaded"){
+              icono = 'far fa-check-circle text-success'; 
+            }
+            return `<i role="img" class="${icono}"></i> ${this.func.capital(valor)}`
+          },
         },
         {
-          headerName: 'Estado',
+          headerName: 'Activo',
           headerClass: 'th-normal',
           field: 'active',
           cellClass: 'text-start',
           filter: true,
-          maxWidth:120,
+          maxWidth:150,
           cellRenderer: this.renderEstado.bind(this),
           sort: "asc"
+        },
+        {
+          headerName: 'Estado',
+          headerClass: 'th-normal',
+          field: 'sub',
+          cellClass: 'text-start',
+          filter: true,
+          maxWidth:150,
+          cellRenderer: (params:ICellRendererParams)=>{
+            let valor = params.value;
+            let icono = 'far fa-times-circle text-danger';
+            if (valor == "running"){
+              icono = 'far fa-check-circle text-success'; 
+            }
+            return `<i role="img" class="${icono}"></i> ${this.func.capital(valor)}`
+          },
         },
       ],
     };
@@ -246,37 +270,30 @@ export class Servicios implements OnInit {
     this.gridApi!.setGridOption('rowData', this.lstServicios);
   }
 
-  renderAcciones(params: ICellRendererParams) {
-    let button: any | undefined;
-    if (params.data.servidor == null){
-      button = document.createElement('button');
-      button.className = 'btn btn-white';
-      button.innerHTML = `<i role="img" class="fas fa-plus text-primary" title='Crear Usuario'></i>`;
-      button.addEventListener('click', () => {
-        // this.creaUsuario(params.data);
-      });
-    }
-    return button;
-  }
 
-  renderLoad(params: ICellRendererParams) {
-    let button: any | undefined;
-    let icono = 'far fa-times-circle text-danger';
-    let help =  'Habilitar';
-    let accion =  'habilitar';
-    if (params.value.trim() == "enabled"){
-      icono = 'far fa-check-circle text-success'; 
-      help =  'Deshabilitar';
-      accion =  'deshabilitar';
-    }
-    button = document.createElement('button');
-    button.className = "btn btn-link";
-    button.innerHTML = `<i role="img" class="${icono}" title='Cambiar'></i> <span class="link" title="Cambia a ${help}">${params.value.trim()}</span>`;
-    button.addEventListener('click', () => {
-      this.operaciones(accion, params.data.servicio.trim())
-    });
-    return button;
-  }
+
+  // renderLoad(params: ICellRendererParams) {
+  //   let button: any | undefined;
+  //   let icono = 'far fa-times-circle text-danger';
+  //   let help =  'Habilitar';
+  //   let accion =  'habilitar';
+  //   if (["alias","","-","not-found"].includes(params.value)){
+  //     return params.value;
+  //   }else{
+  //     if (params.value == "loaded"){
+  //       icono = 'far fa-check-circle text-success'; 
+  //       help =  'Deshabilitar';
+  //       accion =  'deshabilitar';
+  //     }
+  //     button = document.createElement('button');
+  //     button.className = "btn btn-link";
+  //     button.innerHTML = `<i role="img" class="${icono}" title='Cambiar'></i> <span class="link" title="Cambia a ${help}">${params.value.trim()}</span>`;
+  //     button.addEventListener('click', () => {
+  //       this.operaciones(accion, params.data.servicio.trim())
+  //     });
+  //     return button;
+  //   }
+  // }
 
   renderEstado(params: ICellRendererParams) {
     let button: any | undefined;
@@ -289,8 +306,8 @@ export class Servicios implements OnInit {
       accion =  'detener';
     }
     button = document.createElement('button');
-    button.className = "btn btn-link";
-    button.innerHTML = `<i role="img" class="${icono}" title='Cambiar'></i> <span class="link" title="Cambia a ${help}">${params.value.trim()}</span>`;
+    button.className = "btn btn-link btm-sm";
+    button.innerHTML = `<i role="img" class="${icono}" title='Cambiar'></i> <span class="link" title="Cambia a ${help}">${this.func.capital(params.value.trim())}</span>`;
     button.addEventListener('click', () => {
       this.operaciones(accion, params.data.servicio.trim())
     });
@@ -416,40 +433,79 @@ export class Servicios implements OnInit {
   onErrorListener(event: any) {}
 
   onMessageListener(e: any) {
+    this.func.closeSwal();
     console.log(`↓ LlegoMensaje ${this.work.idservidor}`);
     let data = JSON.parse(e.data);
     console.log(data)
-    this.func.closeSwal();
     let r = "";
-    let acum:any = [];
-    let rd:any = [];
+    let acum:any ;
+    let rd:any;
     let aux:any | undefined;
+    let paux:any | undefined;
+    let daux:any | undefined;
     data.data.forEach((d:any)=>{
       d.respuesta= atob(d.respuesta);
       switch(d.id){
         // case `${this.area}|listar_todo`:
-        case `lista_servicios`:
-          let dat = d.respuesta.replace(/\n/g, ',');
-          let rd:any = (dat.split("|"));
-          acum = [];
-          rd.forEach((rs:any)=>{
-            let rss = rs.split(",");
-            if (rss[0]!="") acum.push(rss)
-          })
-          // console.log(acum)
-          acum.forEach((e:any)=>{
-            if (!["static","alias","masked","indirect"].includes(e[2])){
+        case "servicios":
+          this.lstServicios = [];
+          // console.log(d.respuesta);
+          aux = d.respuesta.split("\n");
+          daux = [];
+          
+          aux.forEach((c:any)=>{
+            if (c!=""){
+              paux = c.replace(/"/g, '').split('');
+              let esp = false;
+              acum = "";
+              paux.forEach((l:any)=>{
+                if (l != " "){
+                  acum += l;
+                  esp = false;
+                }else if (l == " " && !esp){
+                  acum += l;
+                  esp = true;
+                }
+              });
+              daux = acum.split(" ");
+              let desc = daux[5] + " " + daux[6] + " " + daux[7] + " " + daux[8] + " " + daux[9] + " " + daux[10] + " " + daux[11] + " " + daux[12] + " " + daux[13] + " " + daux[14] + " " + daux[15] + " " + daux[16] + " " + daux[17] + " " + daux[18] + " " + daux[19] + " " + daux[20];
+              desc = desc.replace(/undefined/g, "");
+              desc = desc.trim();
+              // console.log(daux)
               this.lstServicios.push({
-                servicio: e[0],
-                description: e[1],
-                load: e[2],
-                active: e[3],
+                servicio: daux[1],
+                load: daux[2], 
+                active: daux[3], 
+                sub: daux[4], 
+                description: desc,
               })
             }
           })
           this.refreshAll();
           this.func.closeSwal();
           break;
+        // case `lista_servicios`:
+        //   let dat = d.respuesta.replace(/\n/g, ',');
+        //   let rd:any = (dat.split("|"));
+        //   acum = [];
+        //   rd.forEach((rs:any)=>{
+        //     let rss = rs.split(",");
+        //     if (rss[0]!="") acum.push(rss)
+        //   })
+        //   // console.log(acum)
+        //   acum.forEach((e:any)=>{
+        //     if (!["static","alias","masked","indirect"].includes(e[2])){
+        //       this.lstServicios.push({
+        //         servicio: e[0],
+        //         description: e[1],
+        //         load: e[2],
+        //         active: e[3],
+        //       })
+        //     }
+        //   })
+        //   this.refreshAll();
+        //   this.func.closeSwal();
+        //   break;
         default:
           this.func.closeSwal();
           setTimeout(()=>{
@@ -463,6 +519,7 @@ export class Servicios implements OnInit {
   onSendCommands(params:any=null){
     this.func.showLoading("Cargando");
     if (this.connState()){
+      console.log("↑ Enviando");
       this.ws.send(JSON.stringify(params));
     }else{
       this.openWS();
@@ -474,7 +531,8 @@ export class Servicios implements OnInit {
 
   traerListaDeServicios(){
     let params = {
-      action: "lista_servicios",
+      // action: "lista_servicios",
+      action: "comando",
       identificador: {
         idcliente: this.user.idcliente,
         idusuario: this.user.idusuario,
@@ -482,7 +540,10 @@ export class Servicios implements OnInit {
         usuario: this.user.usuario,
         id: Math.floor(Math.random() * (9999999999999999 - 1000000000000000 + 1)) + 1000000000000000
       },
-      data: []
+      data: [
+        // {id: "servicios", "cmd": "systemctl list-units --type=service --no-legend --all"}
+        {id: "servicios", "cmd": "systemctl list-units --type=service --no-legend --all | grep -v 'not-found'"}
+      ]
     };
     // this.func.showLoading('Cargando');
     this.onSendCommands(params);
