@@ -14,4 +14,32 @@
   </div>
 </div>
 
-<div #myGrid id="myGrid" class="ag-theme-quartz mt-3" style="height: 500px; min-height: 500px"></div>
+<section class="row">
+  <article class="col-12 col-md-6 col-lg-8">
+    <div #myGrid id="myGrid" class="ag-theme-quartz mt-3" style="height: 500px; min-height: 500px"></div>
+  </article>
+  <article class="col-12 col-md-6 col-lg-4">
+    <div class="row">
+      <h6>Logs</h6>
+    </div>
+    <ul #divLogs class="list-group list-group-flush h500 p-3 border rounded">
+      @for (item of lstLogs; track $index) {
+        @if(item.status){
+          <li class="list-group-item ">
+            <span class="bold t12">{{item.id}}</span><br>
+            <span class="t16 text-info">{{item.cmd}}</span><br>
+            <span class="t10">{{item.respuesta}}</span>
+          </li>
+        }@else {
+          <li class="list-group-item bg-danger text-white">
+            <span class="bold t12">{{item.id}}</span><br>
+            <span class="t16">{{item.cmd}}</span><br>
+            <span class="t10">{{item.respuesta}}</span>
+          </li>
+
+        }
+      }
+    </ul>
+  </article>
+
+</section>

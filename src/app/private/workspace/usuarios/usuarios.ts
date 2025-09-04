@@ -74,15 +74,16 @@ export class Usuarios implements OnInit {
   lstAcciones: Array<any> = [];
   lstNotificaciones: Array<any> = [];
 
+  ws_error:number = 0;
+  ws_error_limit:number = 3;
+
   /**
    * Sentinel
   */
   agente_status: string = "Desconectado";
   ws: any;
-  reconnect: boolean = false;
+  reconnect: boolean = true;
   light_ws: boolean = false;
-  ws_error:number = 0;
-  ws_error_limit:number = 3;
 
   constructor() {
     this.parent.findTab(this.TAB);
@@ -492,10 +493,14 @@ export class Usuarios implements OnInit {
   }
 
   ejecutaOperaciones(acciones:any=[]){
+
+    let acc = "";
+
     let cmds:any = [];
     let cmd:any ;
     acciones.forEach((cmp:any)=>{
       console.log(`→ ${cmp.accion} ←`)
+      acc = cmp.accion;
       switch(cmp.accion){
         case "crear":
           cmds = this.creaUsuario(this.user_selected);
@@ -527,8 +532,11 @@ export class Usuarios implements OnInit {
       },
       data: cmds
     };
-    // this.openConn(params);
-    this.onSendCommands(params);
+    let time = 0;
+    if (["suspender"].includes(acc)){
+      time = 10;
+    }
+    this.onSendCommands(params, time);
   }
 
 
@@ -592,26 +600,29 @@ export class Usuarios implements OnInit {
       this.work.healthy_agente = 'OK|Conectado';
     } else {
       this.agente_status = "No se estableció conexion con Sentinel";
-      console.log(`X Desconectado ${this.work.idservidor}`);
+      console.log(`1X Desconectado ${this.work.idservidor}`);
       this.work.agente_status = 'FAIL|Desconectado';
     }
   }
 
   onCloseListener(event: any) {
     // console.log('onCloseListener', event);
-    console.log("█ Desconectado")
     console.log(`X Desconectado ${this.work.idservidor}`);
+
     if (event.code == 1000){
       this.agente_status = "Desconectado manualmente";
       this.ws_error = 0;
     }else{
+      this.ws_error ++;
+      console.log(this.ws_error)
+      this.func.closeSwal();
       this.work.healthy_agente = 'FAIL|Desconectado';
       this.agente_status = "Desconectado";
-      if (this.reconnect && this.ws_error < this.ws_error_limit){
-        this.ws_error ++;
-        setTimeout(()=>{
-          this.startMonitor();
-        },1000)
+      if (this.ws_error < this.ws_error_limit){
+        console.log("AJAJAJAJA", this.ws_error)
+        // setTimeout(()=>{
+        //   // this.startMonitor();
+        // },3000)
       }
     }
   }
@@ -623,11 +634,18 @@ export class Usuarios implements OnInit {
     let data = JSON.parse(e.data);
     console.log(data)
     this.func.closeSwal()
+    let status = data.status;
+    
     let r = "";
     let acum:any = [];
     let aux:any | undefined;
     data.data.forEach((d:any)=>{
       d.respuesta= atob(d.respuesta);
+
+      if (!status){
+        this.func.showMessage("error", "Usuarios", d.respuesta);
+        return
+      }
 
       switch(d.id){
         case `${this.area}|listar`:
@@ -703,16 +721,19 @@ export class Usuarios implements OnInit {
     this.ejecutaOperaciones([{accion: "listar", usuario: ""}]);
   }
 
-  onSendCommands(params:any=null){
-    this.func.showLoading("Cargando");
+  onSendCommands(params:any=null, time:number = 5){
+    this.func.showLoading("Cargando", 10);
+
+    console.log(this.connState())
     if (this.connState()){
-      console.log("↑ Enviando")
+      console.log("↑ Enviando");
+      console.log(JSON.stringify(params));
       this.ws.send(JSON.stringify(params));
     }else{
-      this.openWS();
-      setTimeout(()=>{
-        this.onSendCommands(params)
-      },1000)
+      // this.openWS();
+      // setTimeout(()=>{
+      //   this.onSendCommands(params, time)
+      // },1000)
     }
   }
 

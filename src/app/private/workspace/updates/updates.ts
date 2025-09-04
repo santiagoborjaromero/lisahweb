@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -19,6 +19,7 @@ import { createGrid, GridApi, GridOptions, ICellRendererParams } from 'ag-grid-c
   styleUrl: './updates.scss'
 })
 export class Updates implements OnInit{
+  @ViewChild('divLogs', { static: false }) public divLogs!: ElementRef;
   private readonly sessions = inject(Sessions);
   private readonly func = inject(Functions);
   private readonly serverSvc = inject(ServidorService);
@@ -34,6 +35,7 @@ export class Updates implements OnInit{
 
   agente_status:string = "Desconectado";
   global = Global;
+  lstLogs:any  = [];
   lstUsuarios:any  = [];
   lstComandos:any  = [];
   lstAcciones:any  = [];
@@ -151,13 +153,10 @@ export class Updates implements OnInit{
   }
 
   onOpenListener(event: any) {
-    let status = '';
     if (event.type == 'open') {
       console.log(`√ Conectado ${this.work.idservidor}`);
       this.agente_status = "Conectado";
       this.work.healthy_agente = 'OK|Conectado';
-      // this.onSendCommands();
-      // this.startMonitor();
     } else {
       this.agente_status = "No se estableció conexion con Sentinel";
       console.log(`X Desconectado ${this.work.idservidor}`);
@@ -166,8 +165,6 @@ export class Updates implements OnInit{
   }
 
   onCloseListener(event: any) {
-    // console.log('onCloseListener', event);
-    console.log("█ Desconectado")
     console.log(`X Desconectado ${this.work.idservidor}`);
     if (event.code == 1000){
       this.agente_status = "Desconectado manualmente";
@@ -190,16 +187,26 @@ export class Updates implements OnInit{
     Swal.close()
     console.log(`↓ LlegoMensaje ${this.work.idservidor}`);
     let data = JSON.parse(e.data);
-    // console.log(data)
+    console.log(data)
+    let status = data.status;
     let r = "";
     let acum:any = [];
     let aux:any | undefined;
+
     data.data.forEach((d:any)=>{
       let r = atob(d.respuesta);
+      
+      if (d.id != `${this.area}|ver_actualizaciones`){
+        this.lstLogs.push({
+          id: d.id,
+          cmd: atob(d.cmd),
+          respuesta: atob(d.respuesta),
+          status: status
+        });
+      }
+
       switch(d.id){
         case `${this.area}|ver_actualizaciones`:
-          //let rd:any = (d.respuesta.split("\n"));
-          // console.log("→", r)
           if (r == ""){
             this.func.showMessage("info", "Actualizaciones",  "No hay paquetes que actualizar");
             this.lstData = [];
@@ -222,15 +229,26 @@ export class Updates implements OnInit{
           }
           break;
         case `${this.area}|actualizar_sistema`:
-          this.func.showMessage("info", "Actualización de Sistema",  r);
+          this.func.showMessage("info","Actualización","Actualización de Sistema realizado con éxito");
+          setTimeout(()=>{
+            this.initial();
+          })
+          break;
+        case `${this.area}|actualizar_paquete`:
+          this.func.showMessage("info","Actualización","Actualización de paquete realizado con éxito");
+          setTimeout(()=>{
+            this.initial();
+          })
           break;
         default:
-          console.log("Error", r)
-          this.func.toast("error", r);
           this.initial();
           break;
       }
+
+
     })
+
+    this.gotoBottom();
   }
 
 
@@ -383,7 +401,6 @@ export class Updates implements OnInit{
   }
 
   updatePack(data:any = null){
-    
     this.operaciones("actualizar_paquete", data.paquete);
   }
 
@@ -394,7 +411,9 @@ export class Updates implements OnInit{
   onSendCommands(params:any=null){
     this.func.showLoading("Cargando");
     if (this.connState()){
+      console.log("↑ Enviando");
       this.ws.send(JSON.stringify(params));
+      
     }else{
       this.openWS();
       setTimeout(()=>{
@@ -409,9 +428,10 @@ export class Updates implements OnInit{
   }
 
   ejecutaOperaciones(acciones:any=[]){
+    // console.log(acciones)
     let cmds:any = [];
     acciones.forEach((cmp:any)=>{
-      console.log(`→ ${cmp.accion} ←`)
+      // console.log(`→ ${cmp.accion} ←`)
       switch(cmp.accion){
         default:
           let cmd:any = this.buscarComando(this.area, cmp.accion, cmp.paquete);
@@ -438,6 +458,13 @@ export class Updates implements OnInit{
       },
       data: cmds
     };
+    if(acciones == "actualizar_paquete"){
+      console.log("inicia tiempo ")
+      setTimeout(()=>{
+        this.func.closeSwal();
+        this.startMonitor();
+      },10000)
+    }
     this.onSendCommands(params);
   }
 
@@ -474,6 +501,12 @@ export class Updates implements OnInit{
     this.light_ws = m;
     return m;
   }
+
+  gotoBottom = () => {
+    setTimeout(() => {
+      this.divLogs.nativeElement.scrollTop = this.divLogs.nativeElement.scrollHeight;
+    }, 300);
+  };
 
 
 }
