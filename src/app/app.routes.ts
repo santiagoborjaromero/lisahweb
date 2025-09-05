@@ -43,7 +43,6 @@ export const routes: Routes = [
             {path:"template/:id", loadComponent: () => import('./private/templates/edit/edit').then((c)=> c.Edit)},
             {path:"scripts", loadComponent: () => import('./private/scripts/scripts').then((c)=> c.Scripts)},
             {path:"script/:id", loadComponent: () => import('./private/scripts/edit/edit').then((c)=> c.Edit)},
-            {path:"procesos", loadComponent: () => import('./private/procesos/procesos').then((c)=> c.Procesos)},
             {path:"audits", loadComponent: () => import('./private/audit/audit').then((c)=> c.Audit)},
             {path:"hardening", loadComponent: () => import('./private/hardening/hardening').then((c)=> c.Hardening)},
             {path:"terminal", loadComponent: () => import('./private/terminal/terminal').then((c)=> c.Terminal)},
@@ -51,13 +50,14 @@ export const routes: Routes = [
             {path:"terminalssh", loadComponent: () => import('./private/terminalssh/terminalssh').then((c)=> c.Terminalssh)},
             {path:"logs", loadComponent: () => import('./private/logs/logs').then((c)=> c.Logs)},
             {path:"logs/:id", loadComponent: () => import('./private/logserver/logserver').then((c)=> c.Logserver)},
-
+            
             {path:"administracion", loadComponent: () => import('./private/administracion/administracion').then((c)=> c.Administracion)},
             {
                 path: 'administracion/workspace',
                 loadComponent: () => import('./private/workspace/workspace').then( (c)=> c.Workspace),
                 canActivate: [authGuard],
                 children:[
+                    {path:"procesos", loadComponent: () => import('./private/workspace/procesos/procesos').then((c)=> c.Procesos)},
                     {path:"dashboard", loadComponent: () => import('./private/workspace/dashboard/dashboard').then((c)=> c.Dashboard)},
                     {path:"servicios", loadComponent: () => import('./private/workspace/servicios/servicios').then((c)=> c.Servicios)},
                     {path:"usuarios", loadComponent: () => import('./private/workspace/usuarios/usuarios').then((c)=> c.Usuarios)},

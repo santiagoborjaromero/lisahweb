@@ -48,13 +48,13 @@ ngOnInit(): void {
   this.user = JSON.parse(this.sessions.get("user"));
   if (this.user){
     if (this.user.grupo && this.user.grupo.rolmenugrupos){
-      console.log("Por grupo de Usuarios el Menu")
+      // console.log("Por grupo de Usuarios el Menu")
       this.user.grupo.rolmenugrupos.forEach( (rm:any)=>{
         this.lstMenuOriginal.push(rm.rolmenu[0].menu[0])
       })
       // this.lstMenuOriginal = this.user.grupo.rolmenugrupos;
     }else{
-      console.log("Por Roles el Menu")
+      // console.log("Por Roles el Menu")
       this.lstMenuOriginal = this.user.roles.menu;
     }
 

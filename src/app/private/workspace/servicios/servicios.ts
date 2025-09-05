@@ -517,9 +517,10 @@ export class Servicios implements OnInit {
   }
 
   onSendCommands(params:any=null){
-    this.func.showLoading("Cargando");
+    this.func.showLoading("Cargando",10);
     if (this.connState()){
       console.log("↑ Enviando");
+      console.log(params);
       this.ws.send(JSON.stringify(params));
     }else{
       this.openWS();
@@ -542,7 +543,9 @@ export class Servicios implements OnInit {
       },
       data: [
         // {id: "servicios", "cmd": "systemctl list-units --type=service --no-legend --all"}
-        {id: "servicios", "cmd": "systemctl list-units --type=service --no-legend --all | grep -v 'not-found'"}
+        // {id: "servicios", "cmd": "systemctl list-units --type=service --no-legend --all | grep -v 'not-found'"}
+        // {id: "servicios", "cmd": "systemctl --plain list-units --type=service --no-legend --all | grep -v 'not-found'  | grep -v 'dead' | sed 's/^[[:space:]]*[-●○]//'"}
+        {id: "servicios", "cmd": "LC_ALL=C systemctl list-units --type=service --no-legend --all | grep -v 'not-found' | grep -v 'dead'"}
       ]
     };
     // this.func.showLoading('Cargando');

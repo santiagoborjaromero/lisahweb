@@ -632,7 +632,7 @@ export class Usuarios implements OnInit {
   onMessageListener(e:any){
     console.log(`↓ LlegoMensaje ${this.work.idservidor}`);
     let data = JSON.parse(e.data);
-    console.log(data)
+    // console.log(data)
     this.func.closeSwal()
     let status = data.status;
     
@@ -727,7 +727,7 @@ export class Usuarios implements OnInit {
     console.log(this.connState())
     if (this.connState()){
       console.log("↑ Enviando");
-      console.log(JSON.stringify(params));
+      // console.log(JSON.stringify(params));
       this.ws.send(JSON.stringify(params));
     }else{
       // this.openWS();

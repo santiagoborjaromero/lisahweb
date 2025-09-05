@@ -71,6 +71,7 @@ export class Administracion {
           'Usuarios',
           'No tiene permisos para leer'
         );
+        return; 
       }
     }
   }
@@ -86,7 +87,7 @@ export class Administracion {
     this.userSvc.getOne(this.user.idusuario).subscribe({
       next: (resp: any) => {
         this.func.closeSwal();
-        console.log(resp);
+        // console.log(resp);
         if (resp.status) {
           if (resp.data[0].servidores && resp.data[0].servidores.length > 0) {
             resp.data[0].servidores.forEach((s:any)=>{

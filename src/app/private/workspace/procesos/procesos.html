@@ -1,0 +1,62 @@
+<div class="row">
+  <div class="col  d-flex justify-content-between align-items-center">
+    <h5>{{Title}}</h5>
+    <div>
+        <span class="mr-2 sentinel">{{global.agent}}</span>
+        <span class="ml-2 {{light_ws  ? 'text-success bold' : 'text-danger bold'}}">{{agente_status}}</span>
+    </div>
+    <button role="button" (click)="initial()" class="btn btn-primary btn-sm"><i role="img" class="fas fa-repeat"></i> Recargar</button>
+  </div>
+</div>
+
+<section class="row mt-2">
+  <div class="col-6 col-md-8 col-lg-9 h500">
+    <div class="row">
+      <label for="" class="col-4 col-md-1 ">Buscar</label>
+      <div class="col-4 col-md-5">
+        <input type="text" class="form-control" >
+      </div>
+    </div>
+    <div class="row mt-2">
+      @for (item of lstComandos; track $index) {
+        <article class="col-12 col-md-6 col-lg-3 card p-2">
+          @if(item.area == "firewall"){
+            <i class="fas fa-network-wired"></i>
+          }@else {
+            <i class="fas fa-terminal"></i>
+          }
+          <span class="card-titlesss text-primary t12 text-uppercase">{{item.area}}</span>
+          <span class="card-titlesss bold text-primary ">{{item.titulo}}</span>
+          <span class="card-bodysss t14"><i>{{item.descripcion}}</i>
+          <br><button role="button" (click)="ejecutar(item.idcomando)" class="btn btn-outline-primary btn-sm">Ejecutar</button>
+          </span>
+        </article>
+      }
+
+    </div>
+
+  </div>
+  <div class="col-6 col-md-4  col-lg-3">
+    <div class="row">
+      <h6>Logs</h6>
+    </div>
+    <ul #divLogs class="list-group list-group-flush h500 p-3 border rounded">
+      @for (item of lstLogs; track $index) {
+        @if(item.status){
+          <li class="list-group-item ">
+            <span class="bold t12">{{item.id}}</span><br>
+            <span class="t16 text-info">{{item.cmd}}</span><br>
+            <span class="t10">{{item.respuesta}}</span>
+          </li>
+        }@else {
+          <li class="list-group-item bg-danger text-white">
+            <span class="bold t12">{{item.id}}</span><br>
+            <span class="t16">{{item.cmd}}</span><br>
+            <span class="t10">{{item.respuesta}}</span>
+          </li>
+
+        }
+      }
+    </ul>
+  </div>
+</section>

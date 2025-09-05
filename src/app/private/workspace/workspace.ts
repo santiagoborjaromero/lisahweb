@@ -89,6 +89,7 @@ export class Workspace implements OnInit  {
       { id:"grupousuarios",     active: false, icon:"fa fa-users",          title: "Grupo de Usuarios"},
       { id:"usuarios",          active: false, icon:"fa fa-user",           title: "Usuarios"},
       // { id:"terminal",          active: false, icon:"fas fa-terminal",      title: "Comandos"},
+      { id:"procesos",          active: false, icon:"fas fa-terminal",      title: "Procesos"},
     ]
 
     this.tabactive = this.links[0].id;
