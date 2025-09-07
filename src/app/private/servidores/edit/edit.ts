@@ -180,7 +180,7 @@ export class Edit {
       ssh_puerto: this.ssh_puerto,
       agente_puerto: this.agente_puerto,
       terminal_puerto: this.terminal_puerto,
-      estado: this.estado,
+      estado: parseInt(this.estado.toString()),
       comentarios: this.comentarios,
       idservidores_familia: this.idservidores_familia,
       servicios: this.lstServicios.join(",")
@@ -201,6 +201,8 @@ export class Edit {
     }
 
     this.func.showLoading('Guardando');
+
+    console.log(param)
 
     // this.srvSvc.save(param, this.idservidor).subscribe({
     this.generalSvc.apiRest(method,  url,  param).subscribe({

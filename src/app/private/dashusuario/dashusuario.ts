@@ -189,7 +189,11 @@ export class Dashusuario {
           this.func.closeSwal();
           // console.log("█", resp)
           if (resp.status) {
-            this.lstServidoresAsignados = resp.data[0].servidores;
+            resp.data[0].servidores.forEach((e:any) => {
+              if (e.estado == 1){
+                this.lstServidoresAsignados.push(e);
+              }
+            });
             this.idservidor = this.lstServidoresAsignados[0].idservidor;
             this.openWS()
           } else {
@@ -258,10 +262,16 @@ export class Dashusuario {
               e['fecha'] = moment(e.created_at).format('YYYY-MM-DD HH:mm:ss');
               e['back'] =
                 e.metodo == 'DELETE'
-                  ? 'bg-light-danger'
+                  ? 'bg-danger'
                   : e.metodo == 'POST'
-                  ? 'bg-light-primary'
-                  : 'bg-light-warning';
+                  ? 'bg-primary'
+                  : 'bg-warning';
+              // e['back'] =
+              //   e.metodo == 'DELETE'
+              //     ? 'bg-light-danger'
+              //     : e.metodo == 'POST'
+              //     ? 'bg-light-primary'
+              //     : 'bg-light-warning';
               this.lstUltimasAcciones.push(e);
             });
           } else {
@@ -314,8 +324,8 @@ export class Dashusuario {
       this.connState();
       this.onSendCommands();
     } else {
-      this.agente_status = "No se estableció conexion con Sentinel";
-      console.log(`X Desconectado ${this.id_selected}`);
+      // this.agente_status = "No se estableció conexion con Sentinel";
+      // console.log(`X Desconectado ${this.id_selected}`);
     }
   }
 
@@ -325,13 +335,15 @@ export class Dashusuario {
       this.agente_status = "Desconectado manualmente";
       this.ws_error = 0;
     }else{
-      this.work.healthy_agente = 'FAIL|Desconectado';
-      this.agente_status = "Desconectado";
-      if (this.reconnect && this.ws_error < this.ws_error_limit){
-        this.ws_error ++;
-      }
-      this.buscarSevidor(this.id_selected, 0,0, "Deconectado")
+      // this.work.healthy_agente = 'FAIL|Desconectado';
+      // this.agente_status = "Desconectado";
+      // if (this.reconnect && this.ws_error < this.ws_error_limit){
+      //   this.ws_error ++;
+      // }
+      this.buscarSevidor(this.id_selected, 0,0, "Deconectado");
+      
     }
+    this.openWS();
   }
 
   buscarSevidor(idservidor:any, conteo:any, total:any, status="OK" ){
@@ -341,7 +353,6 @@ export class Dashusuario {
           s["total"] = total;
           s["porcentaje"] = ((conteo / total) * 100);
           s["estatus"] = status;
-
           // s["porcentaje"] = 65;
         }
     });
@@ -360,7 +371,7 @@ export class Dashusuario {
     this.buscarSevidor(idservidor, data[0],data[1])
 
     this.ws.close(1000);
-    this.openWS();
+    
   }
 
   connState = () => {

@@ -136,22 +136,24 @@ export class Monitoreo {
         if (resp.status) {
           if (resp.data[0].servidores && resp.data[0].servidores.length > 0) {
             resp.data[0].servidores.forEach((s: any) => {
-              s['healthy_ssh'] = '-';
-              s['healthy_agente'] = '-';
-              s['uptime'] = '-';
-              s['cpu'] = '-';
-              s['memoria'] = '-';
-              s['disco'] = '-';
-              // s['servicio_httpd'] = '-';
-              // s['servicio_ssh'] = '-';
-              if (s.servicios && s.servicios!=""){
-                let arrS = s.servicios.split(",")
-                arrS.forEach((ss:any)=>{
-                  s[`servicio_${ss}`] = '';
-                  this.arrServicios.push(ss);
-                })
+              if (s.estado == 1){
+                s['healthy_ssh'] = '-';
+                s['healthy_agente'] = '-';
+                s['uptime'] = '-';
+                s['cpu'] = '-';
+                s['memoria'] = '-';
+                s['disco'] = '-';
+                // s['servicio_httpd'] = '-';
+                // s['servicio_ssh'] = '-';
+                if (s.servicios && s.servicios!=""){
+                  let arrS = s.servicios.split(",")
+                  arrS.forEach((ss:any)=>{
+                    s[`servicio_${ss}`] = '';
+                    this.arrServicios.push(ss);
+                  })
+                }
+                this.lstServidores.push(s);
               }
-              this.lstServidores.push(s);
             });
             
             // this.dataGridStruct();
