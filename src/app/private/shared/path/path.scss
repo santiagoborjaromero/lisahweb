@@ -1,27 +1,27 @@
+
 .bread{
-    color: #e22808 !important;
-    background-color: #fff;
+    color: var(--breadcrum-letra) !important;
+    background-color: var(--breadcrum-fondo);
     width: 100%;
     font-size: 14px;
-    padding: 10px;
-    border-bottom: 1px solid #dadada9a;
+    padding-left: 20px;
+    border-bottom: 1px solid var(--breadcrum-borde);
 }
 
 .bread-item{
     font-size: 10px;
-    color: #681b1b !important;
+    color: var(--breadcrum-letra) !important;
     text-decoration: none !important;
-    margin-right: 4px;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     text-transform: uppercase;
     font-weight: 600;
 }
 .bread-item2{
     font-size: 10px;
-    color: #681b1b !important;
-    text-decoration: underline !important;
+    color: var(--breadcrum-letra) !important;
+    text-decoration: none !important;
     margin-right: 4px;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     text-transform: uppercase;
     font-weight: 600;
     cursor: pointer;
@@ -30,5 +30,6 @@
 @media (max-width:360px){
     .bread-item, .bread-item2{
         font-size: 8px;
+        letter-spacing: 1px;
     }
 }

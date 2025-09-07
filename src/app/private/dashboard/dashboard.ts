@@ -128,9 +128,9 @@ export class Dashboard {
     this.user = JSON.parse(this.sessions.get('user'));
     this.path = [
       {nombre: "Dashboards", ruta: ""}, 
-      {nombre: "Dashboard General", ruta: "admin/dashboard"}, 
+      {nombre: "Dashboard Servidor", ruta: "admin/dashboard"}, 
     ];
-    this.titulo = {icono: "fas fa-chart-bar",nombre: "Dashboard General"}
+    this.titulo = {icono: "fas fa-chart-bar",nombre: "Dashboard Servidor"}
 
     this.initial();
     this.dataGridStruct();

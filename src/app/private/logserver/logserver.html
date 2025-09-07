@@ -5,11 +5,22 @@
   <section class="row barra-menu">
     <div class="col d-flex justify-content-between">
       <div>
-        <span class="mr-2 sentinel">{{global.agent}}</span>
-        <span class="ml-2 {{light_ws  ? 'text-success bold' : 'text-danger bold'}}">{{agente_status}}</span>
+        <!-- <span class="mr-2 sentinel">{{global.agent}}</span>
+        <span class="ml-2 {{light_ws  ? 'text-success bold' : 'text-danger bold'}}">{{agente_status}}</span> -->
       </div>
       <div class="text-end mr-2">
-        <button (click)="exportarPDF()"  [disabled]="lstData.length==0" role="button" aria-label="Editar configuracion" class="btn btn-info  btn-sm ml-1 text-white">
+        @if(lstData.length>0){
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fas fa-bars"></i>
+            </button>
+            <ul class="dropdown-menu">
+              <li ><a class="dropdown-item" href="javascript:void(0)" (click)="exportarPDF()"><i class="far fa-file-pdf"></i> Exportar PDF</a></li>
+              <li ><a class="dropdown-item" href="javascript:void(0)" (click)="exportarCSV()"><i class="far fa-file-excel"></i> Exportar CSV</a></li>
+            </ul>
+          </div>
+        }
+        <!-- <button (click)="exportarPDF()"  [disabled]="lstData.length==0" role="button" aria-label="Editar configuracion" class="btn btn-info  btn-sm ml-1 text-white">
           <i class="fas fa-file-export"></i> PDF
         </button>
         <button (click)="exportarCSV()" [disabled]="lstData.length==0" role="button" aria-label="Editar configuracion" class="btn btn-info  btn-sm ml-1 text-white">
@@ -17,7 +28,7 @@
         </button>
         <button role="button" (click)="funcBack()" class="btn btn-danger btn-sm ml-1">
             <i role="img" class="fas fa-reply"></i> Regresar
-        </button>
+        </button> -->
       </div>
     </div>
   </section>
@@ -26,10 +37,10 @@
     <div class="row mt-2 mb-2">
     
       <div class="col-4 col-md-1 td2 text-end">
-        <label for="nombre">Servidor</label>
+        <label for="idservidor_select" aria-label="Seleccione servidor">Servidor</label>
       </div>
       <div class="col-8 col-md-2 td2">
-        <select [(ngModel)]="idservidor_select" name="idservidor_select" id="idservidor_select" class="form-control">
+        <select [(ngModel)]="idservidor_select" (change)="cambiaServidor()" name="idservidor_select" id="idservidor_select" class="form-control">
           @for (item of lstServidores; track $index) {
             <option value="{{item.idservidor}}">{{item.nombre}}</option>
           }
@@ -37,14 +48,28 @@
       </div>
   
       <div class="col-4 col-md-1 td2 text-end">
-        <label for="fecha_select">Fecha</label>
+        <label for="idusuario_select" aria-label="seleccione usuario">Usuarios</label>
+      </div>
+      <div class="col-8 col-md-2 td2">
+        <select [(ngModel)]="idusuario_select" name="idusuario_select" id="idusuario" class="form-control">
+          <option value="0">-- Todos --</option>
+          @for (item of lstUsuarios; track $index) {
+            @if(item.idgrupo_usuario!==null && item.estado == 1){
+              <option value="{{item.idusuario}}">{{item.nombre}}</option>
+            }
+          }
+        </select>
+      </div>
+  
+      <div class="col-4 col-md-1 td2 text-end">
+        <label for="fecha_select" aria-label="seleccione la fecha">Fecha</label>
       </div>
       <div class="col-8 col-md-2 td2">
         <input type="date" class="form-control" id="fecha_select" [(ngModel)]="fecha_select" />
       </div>
       
       <div class="col-8 col-md-2 td2">
-        <button class="btn btn-primary" (click)="startMonitor()">Buscar</button>
+        <button class="btn btn-primary" (click)="openWS()">Buscar</button>
       </div>
         
       </div>

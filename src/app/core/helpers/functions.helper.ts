@@ -154,9 +154,9 @@ export class Functions {
   };
 
 
-  showMessage(type: any, title: any, msg: any) {
+  showMessage(type: any, title: any, msg: any, width=0) {
     let that = this;
-    Swal.fire({
+    let params:any = {
       allowOutsideClick: false,
       allowEscapeKey: false,
       title: title,
@@ -165,7 +165,11 @@ export class Functions {
       footer: Global.acronym + " " + Global.appversion,
       showClass: { backdrop: 'swal2-noanimation', popup: '' },
       hideClass: { popup: '' },
-    });
+    };
+    if (width>0){
+      params.width = `${width}px`;
+    }
+    Swal.fire(params);
   }
 
   closeSwal() {

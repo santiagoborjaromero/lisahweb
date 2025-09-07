@@ -5,12 +5,23 @@
 
 <section class="row barra-menu">
   <div class="col text-end mr-2">
-    <button (click)="exportarPDF()"  [disabled]="lstData.length==0" role="button" aria-label="Editar configuracion" class="btn btn-info  btn-sm ml-1 text-white">
+    @if(lstData.length>0){
+      <div class="btn-group" role="group">
+        <button type="button" class="btn btn-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fas fa-bars"></i>
+        </button>
+        <ul class="dropdown-menu">
+          <li ><a class="dropdown-item" href="javascript:void(0)" (click)="exportarPDF()"><i class="far fa-file-pdf"></i> Exportar PDF</a></li>
+          <li ><a class="dropdown-item" href="javascript:void(0)" (click)="exportarCSV()"><i class="far fa-file-excel"></i> Exportar CSV</a></li>
+        </ul>
+      </div>
+    }
+    <!-- <button (click)="exportarPDF()"  [disabled]="lstData.length==0" role="button" aria-label="Editar configuracion" class="btn btn-info  btn-sm ml-1 text-white">
       <i class="fas fa-file-export"></i> PDF
     </button>
     <button (click)="exportarCSV()" [disabled]="lstData.length==0" role="button" aria-label="Editar configuracion" class="btn btn-info  btn-sm ml-1 text-white">
       <i  class="fas fa-file-export"></i> CSV
-    </button>
+    </button> -->
   </div>
 </section>
 
@@ -22,9 +33,11 @@
     </div>
     <div class="col-8 col-md-4 col-lg-2 td2 mt-1">
       <select [(ngModel)]="idusuario" name="idusuario" id="idusuario" class="form-control" >
-        <option value="T">Todos</option>
+        <option value="T">-- Todos --</option>
         @for (item of lstUsuarios; track $index) {
-        <option value="{{item.idusuario}}">{{item.nombre}}</option>
+          @if(item.idgrupo_usuario!==null && item.estado == 1){
+            <option value="{{item.idusuario}}">{{item.nombre}}</option>
+          }
         }
       </select>
     </div>
@@ -33,7 +46,7 @@
     </div>
     <div class="col-8 col-md-4 col-lg-1 td2 mt-1">
       <select [(ngModel)]="metodo" name="metodo" id="metodo" class="form-control" >
-        <option value="T">Todos</option>
+        <option value="T">-- Todos --</option>
         <!-- <option value="GET">GET</option> -->
         <option value="POST">POST</option>
         <option value="PUT">PUT</option>

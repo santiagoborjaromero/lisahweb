@@ -48,8 +48,9 @@ export const routes: Routes = [
             {path:"terminal", loadComponent: () => import('./private/terminal/terminal').then((c)=> c.Terminal)},
             {path:"hardeningssh", loadComponent: () => import('./private/hardeningssh/hardeningssh').then((c)=> c.Hardeningssh)},
             {path:"terminalssh", loadComponent: () => import('./private/terminalssh/terminalssh').then((c)=> c.Terminalssh)},
-            {path:"logs", loadComponent: () => import('./private/logs/logs').then((c)=> c.Logs)},
-            {path:"logs/:id", loadComponent: () => import('./private/logserver/logserver').then((c)=> c.Logserver)},
+            {path:"logs", loadComponent: () => import('./private/logserver/logserver').then((c)=> c.Logserver)},
+            // {path:"logs", loadComponent: () => import('./private/logs/logs').then((c)=> c.Logs)},
+            // {path:"logs/:id", loadComponent: () => import('./private/logserver/logserver').then((c)=> c.Logserver)},
             
             {path:"administracion", loadComponent: () => import('./private/administracion/administracion').then((c)=> c.Administracion)},
             {

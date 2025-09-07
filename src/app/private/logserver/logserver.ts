@@ -25,9 +25,6 @@ ModuleRegistry.registerModules([AllCommunityModule]);
   standalone: true
 })
 export class Logserver {
-// @ViewChild('terminal', { static: false }) public terminal!: ElementRef;
-// @ViewChild('divterminal', { static: false }) public divterminal!: ElementRef;
-
   private readonly route = inject(ActivatedRoute);
   private readonly sessions = inject(Sessions);
   private readonly func = inject(Functions);
@@ -55,12 +52,14 @@ export class Logserver {
   tab: number = 0;
 
   lstData: Array<any> = [];
+  lstUsuarios: Array<any> = [];
   lstServidores: Array<any> = [];
   lstServidores_Original: Array<any> = [];
   idservidor:string = "";
   idscript:string = "";
   fecha_select:string = "";
   idservidor_select:string = "";
+  idusuario_select: string = "0";
 
   oBuscarHistorico:string = "";
   oBuscarComandos:string = "";
@@ -113,20 +112,20 @@ export class Logserver {
 
   webssh2!:SafeResourceUrl ;
 
-  constructor() {
-  }
-
+  constructor() {}
 
   ngOnInit(): void {
     this.user = JSON.parse(this.sessions.get('user'));
-    this.work = JSON.parse(this.sessions.get("work"));
+    // this.work = JSON.parse(this.sessions.get("work"));
+
+    
     this.path = [
       {nombre: "Admin & Hardening", ruta: ""}, 
       {nombre: "Auditoría de Logs", ruta: "admin/logs"}, 
-      {nombre: `Logs ${this.work.nombre}`, ruta: ""}, 
+      // {nombre: `Logs ${this.work.nombre}`, ruta: ""}, 
     ];
   
-    this.titulo = {icono: "fas fa-traffic-light",nombre: `Logs ${this.work.nombre}`}
+    this.titulo = {icono: "fas fa-traffic-light",nombre: `Auditoría de Logs`}
 
     if (this.user.idrol > 1) {
       let scope = this.user.roles.permisos_crud.split('');
@@ -147,9 +146,9 @@ export class Logserver {
     this.getUsuario();
     this.getServidores();
     this.dataGridStruct();
-    setTimeout(()=>{
-      this.initial();
-    },800)
+  }
+
+  ngOnDestroy(): void {
   }
 
   getUsuario() {
@@ -186,6 +185,8 @@ export class Logserver {
         if (resp.status) {
           this.lstServidores = resp.data;
           this.idservidor_select = this.lstServidores[0].idservidor;
+          this.lstUsuarios = this.lstServidores[0].usuarios
+
         } else {
           this.func.handleErrors("Servidor", resp.message);
         }
@@ -197,15 +198,32 @@ export class Logserver {
     });
   }
 
-  initial(){
-    this.openWS();
+  cambiaServidor(){
+     this.lstServidores.forEach((s,idx)=>{
+      if (s.idservidor == this.idservidor_select){
+         this.lstUsuarios = this.lstServidores[idx].usuarios
+      }
+     })
+     this.idusuario_select = "0";
   }
+
+  // initial(){
+  //   this.openWS();
+  // }
 
   funcBack(){
     this.func.irRuta(`admin/logs`);
   }
 
+  
+
   openWS() {
+    this.lstServidores.forEach(s=>{
+      if (s.idservidor == this.idservidor_select){
+        this.work = s;
+      }
+    })
+
     this.agente_status = "Conectando ...";
     const token = this.sessions.get('token');
     let url = `ws://${this.work.host}:${this.work.agente_puerto}/ws?token=${token}`;
@@ -224,6 +242,7 @@ export class Logserver {
       this.agente_status = "Conectado";
       this.work.healthy_agente = 'OK|Conectado';
       this.connState();
+      this.onSendCommands();
     } else {
       this.agente_status = "No se estableció conexion con Sentinel";
       console.log(`X Desconectado ${this.work.idservidor}`);
@@ -233,7 +252,6 @@ export class Logserver {
 
   onCloseListener(event: any) {
     // console.log('onCloseListener', event);
-    console.log("█ Desconectado")
     console.log(`X Desconectado ${this.work.idservidor}`);
     if (event.code == 1000){
       this.agente_status = "Desconectado manualmente";
@@ -241,12 +259,7 @@ export class Logserver {
     }else{
       this.work.healthy_agente = 'FAIL|Desconectado';
       this.agente_status = "Desconectado";
-      if (this.reconnect && this.ws_error < this.ws_error_limit){
-        this.ws_error ++;
-        setTimeout(()=>{
-          this.startMonitor();
-        },1000)
-      }
+      this.func.showMessage("error", "Logs", `El servidor ${this.work.nombre} no se encuentra disponible. Contacte con el administrador.`)
     }
   }
 
@@ -255,22 +268,33 @@ export class Logserver {
   onMessageListener(e:any){
     console.log(`↓ LlegoMensaje ${this.work.idservidor}`);
     let evento = JSON.parse(e.data);
-    let data = evento.data;
     
-    this.lstData = [];
-    if (evento.status){
-      data.forEach( (d:any) => {
-        d.data.forEach((e:any) => {
-          this.lstData.push({
-            fecha: d.fecha,
-            usuario: d.usuario,
-            accion: e.id,
-            comando: atob(e.cmd)
-          })
-        });
-      });
-      this.refreshAll();
+    let data = evento.data;
+    let status = evento.status;
+
+    if (!status) {
+      this.func.showMessage("error", "Logs", data)
+      return
     }
+
+    this.lstData = [];
+    data.forEach( (d:any) => {
+      d.data.forEach((e:any) => {
+        let cmd = "";
+        try{
+          cmd = atob(e.cmd);
+        }catch(err){
+          cmd = "";
+        }
+        this.lstData.push({
+          fecha: d.fecha,
+          usuario: d.usuario,
+          accion: e.id,
+          comando: cmd
+        })
+      });
+    });
+    this.refreshAll();
   }
 
   connState = () => {
@@ -308,7 +332,7 @@ export class Logserver {
   }
 
 
-  startMonitor(){
+  onSendCommands(){
     let params = {
       action: "logs",
       identificador: {
@@ -317,23 +341,15 @@ export class Logserver {
         usuario: this.user.usuario,
         idservidor: this.idservidor_select,
         fecha: this.fecha_select,
+        idusuario_select: this.idusuario_select,
         id: Math.floor(Math.random() * (9999999999999999 - 1000000000000000 + 1)) + 1000000000000000
       },
       data: []
     };
-    this.onSendCommands(params);
-  }
-
-  onSendCommands(params:any=null){
-    // this.func.showLoading("Cargando");
+    console.log(params)
     if (this.connState()){
       console.log("↑ Enviando")
       this.ws.send(JSON.stringify(params));
-    }else{
-      this.openWS();
-      setTimeout(()=>{
-        this.onSendCommands(params)
-      },1000)
     }
   }
 

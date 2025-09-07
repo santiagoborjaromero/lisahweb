@@ -82,8 +82,12 @@ export class Audit {
         console.log(resp)
         this.func.closeSwal();
         if (resp.status) {
-          this.lstData = resp.data;
-          this.refreshAll();
+          if (resp.data.length==0){
+            this.func.showMessage("info", "Auditoría", "No existen registros con los parametros seleccionados.")
+          }else{
+            this.lstData = resp.data;
+            this.refreshAll();
+          }
         } else {
           this.func.handleErrors("Server", resp.message);
         }
@@ -107,7 +111,6 @@ export class Audit {
       // rowSelection: 'single',
       rowHeight: 40,
       defaultColDef: {
-        flex: 1,
         minWidth: 50,
         filter: false,
         headerClass: 'bold',
@@ -119,6 +122,7 @@ export class Audit {
         suppressAutoSize: true,
         autoHeaderHeight: true,
         suppressSizeToFit: true,
+        flex: 1
       },
       onRowClicked: (event: any) => {
         this.id_selected = event.data.idauditoria_uso;
@@ -148,7 +152,7 @@ export class Audit {
           field: 'usuario.nombre',
           cellClass: 'text-start',
           filter: true,
-          // flex: 1
+          flex: 1
         },
         {
           headerName: 'Metodo',
@@ -179,7 +183,7 @@ export class Audit {
           field: 'ruta',
           cellClass: 'text-start',
           filter: true,
-          // flex: 3
+          // flex: 1
         },
         {
           headerName: 'Data',
@@ -187,7 +191,16 @@ export class Audit {
           field: 'json',
           cellClass: 'text-start',
           filter: false,
-          maxWidth:100
+          maxWidth:100,
+          cellRenderer: (params: ICellRendererParams) => {
+            let icono = 'fas fa-minus-circle t16';
+            let color = 'text-secondary';
+            if (params.value && params.value!=""){
+              icono = "far fa-check-circle t16";
+              color = "text-success";
+            }
+            return `<i class="${icono} ${color}"></i>`;
+          },
         },
         {
           headerName: 'Texto',
@@ -195,7 +208,26 @@ export class Audit {
           field: 'mensaje',
           cellClass: 'text-start',
           filter: false,
-          maxWidth:100
+          maxWidth:100,
+          cellRenderer: (params: ICellRendererParams) => {
+            let texto = '';
+            let icono = 'fas fa-minus-circle t16';
+            let color = 'text-secondary';
+            texto = `<i class="${icono} ${color}"></i>`;
+            if (params.value && params.value!=""){
+              icono = "far fa-check-circle t16";
+              color = "text-success";
+              texto = params.value;
+            }
+            // return `<i class="${icono} ${color}"></i>`;
+            return texto;
+          },
+        },
+        {
+          headerName: 'Accion',
+          headerClass: ["th-center", "th-normal"],
+          maxWidth:100,
+          cellRenderer: this.renderAccion.bind(this),
         },
       ],
     };
@@ -213,6 +245,48 @@ export class Audit {
     };
     this.gridApi!.refreshCells(params);
     this.gridApi!.setGridOption('rowData', this.lstData);
+    // this.gridApi!.autoSizeAllColumns();
+  }
+  
+  renderAccion(params: ICellRendererParams) {
+    const button = document.createElement('button');
+    button.className = 'btn btn-link text-primary';
+    button.innerHTML = '<i role="img" class="far fa-eye t20"></i>';
+    button.addEventListener('click', () => {
+      this.mostrarData(params.data.idauditoria_uso)
+    });
+    return button;
+  }
+
+  mostrarData(idauditoria_uso:any){
+    let found = false;
+    let obj:any = null;
+    this.lstData.forEach( (d:any) => {
+      if (d.idauditoria_uso == idauditoria_uso){
+        found = true;
+        obj = d;
+      }
+    });
+
+    if (found){
+      let html = `
+        <div class="text-start">
+          <h6>${obj.metodo}${obj.ruta}</h6>
+          <br><br>  
+          <div class="row">
+            <div class="col-12 col-md-6 h300  bg-light">
+              <h6>Data que se envió</h6>
+              <code class="t12">${obj.json ?? ''}</code>
+            </div>
+            <div class="col-12 col-md-6 h300  bg-light">
+              <h6>Mensaje</h6>
+              <p class="t14">${obj.mensaje ?? ''}</p>
+            </div>
+          </div>
+        </div>
+      `;
+      this.func.showMessage("", obj.descripcion, html, 1000);
+    }
   }
 
   exportarPDF(){
