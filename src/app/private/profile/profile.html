@@ -13,7 +13,7 @@
             @if(edit){
               <input type="text" class="form-control mt-2 text-center" [(ngModel)]="nombre" id="nombre" name="nombre" aria-label="Ingrese el nombre del usuario">
             }
-            <small class="t12 bold text-secondary text-uppercase">{{user.grupo.nombre}}</small>
+            <small class="t12 bold text-secondary text-uppercase">{{user.grupo ? user.grupo.nombre : 'SuperUser'}}</small>
             <br>
             <div class="text-center d-flexXX justify-content-betweenXXX">
                @if (!edit) {

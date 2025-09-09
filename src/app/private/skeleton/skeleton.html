@@ -126,7 +126,7 @@
           <i role="img" class="fas fa-user fa-fw t30 mt-2 mr-2 col1"></i>
           <div class="col2">
             <span>{{user.nombre}}</span> <br />
-            <small class="bold">{{user.grupo.nombre}}</small>
+            <small class="bold">{{user.grupo ? user.grupo.nombre : 'Super User'}}</small>
           </div>
           <div class="text-center p-1 col1">
             <button role="button" class="btn btn-link" (click)="profile()" >

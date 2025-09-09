@@ -1,0 +1,160 @@
+<app-path [lstRutas]="path" />
+<div class="content">
+  <app-titulo [lstHeader]="titulo" />
+
+  <!-- <section class="row barra-menu">
+    <div class="col d-flex justify-content-between">
+      <div class="d-flex justify-content-start">
+      </div>
+      <div>
+        <button
+          role="button"
+          role="button"
+          (click)="initial()"
+          aria-label="Refrescar"
+          class="btn btn-white btn-sm ml-1"
+          title="Refrescar"
+        >
+          <i role="img" class="fas fa-sync-alt"></i>
+        </button>
+      </div>
+    </div>
+  </section> -->
+
+  <div class="row mb-3 mt-3">
+    <h4>Operaciones con {{global.agent}} <kbd>{{totalSentinel}}</kbd></h4>
+  </div>
+
+  <div class="row bg-white bg-white p-2 border rounded">
+
+    <section class="h120 d-flex scrollx pb-2">
+      @for (item of lstServidoresAsignados; track $index) {
+        <div class="mr-2 border p-2 text-end" style="min-width:200px; border-radius: 10px; background-color: #aff8e6;">
+          <span class="t30 bold text-black">{{item.total_actual  ?? 0 }}</span> <br>
+          @if (item.total_actual > item.total_anterior) {
+            <span class="text-success t18"><i class="fas fa-caret-up"></i></span> &nbsp;
+            <span class="text-success t16">{{item.total_anterior  ?? 0 }}</span> <br>
+          }@else {
+            <span class="text-danger t18"><i class="fas fa-caret-down"></i></span> &nbsp;
+            <span class="text-danger t16">{{item.total_anterior  ?? 0 }}</span> <br>
+  
+          }
+          <span class="bold t16">{{item.nombre}} </span> <br>
+          <!-- <span class="t10 text-secondary bold">Total Interacciones </span>  -->
+        </div>
+      }
+      @if (lstServidoresAsignados.length < 20) {
+        @for (item of [].constructor(20 - lstServidoresAsignados.length); track $index) {
+          <div class="bg-white mr-2 border p-2 text-end" style="min-width:200px; opacity: .5;">
+            <span class="t30 bold text-secondary">0</span> <br><br>
+            <span class="bold t16 text-secondary">NO ASIGNADO</span> <br>
+          </div>
+        }
+      }
+    </section>
+    <div class="mb-3">
+      <span class="bold">Comandos ejecutados por servidor</span> <br />
+      <small><i>Número total de comandos enviados a {{global.agent}} por cada servidor respecto al mes anterior.</i></small>
+    </div>
+  </div>
+
+  <div class="row mb-3 mt-3">
+    <h4> Operaciones con la base de datos <kbd>{{totalBase}}</kbd></h4>
+  </div>
+  <section class="row ">
+    <div class="col-12 col-lg-6 bg-white p-2 border rounded">
+      <div class="row">
+        <div class="col-12 col-lg-6">
+          <div class=" ">
+            <canvas
+              baseChart
+              [type]="'bar'"
+              width="800"
+              height="750"
+              [data]="metodosChartData"
+              [options]="metodosChartOptions"
+              [legend]="chartLegend"
+              >
+            </canvas>
+          </div>
+           <div class="row">
+            <span class="bold">Tipo de Operaciones</span> <br />
+            <small><i>Clasificación de operaciones realizadas por método</i></small>
+          </div>  
+        </div>
+        <div class="col-12 col-lg-6">
+          <div class="row">
+            <span class="bold">TOP 10 - Actividad reciente</span> <br />
+            <small><i>Número de acciones realizadas en el sistema por area</i></small>
+          </div>
+           <ul class="list-group list-group-flush  h350" >
+              @for (item of lstUltimasAcciones; track $index) {
+              <li class="list-group-item mt-1">
+                <div class="row">
+                  <div class="col-6 col-lg-2">
+                    <div class="badge bold {{item.back}}">{{item.metodo}}</div>
+                  </div>
+                  <div class="col-6 col-lg-10">
+                    <span class="t16">{{item.descripcion}}</span> <br>
+                    <!-- &nbsp; <span class="t16">{{item.ruta}}</span>  -->
+                    <span class="t12 text-secondary bold">por <i class="fa fa-user"></i> {{item.usuario}}</span> - 
+                    <span class="t12 text-secondary bold">{{item.fecha}}</span>
+                  </div>
+                </div>
+              </li>
+              }
+            </ul>
+    
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-12 col-lg-6 bg-white p-2 border rounded">
+      <div class="row">
+        <div class="col-12 col-lg-6">
+          <canvas
+                baseChart
+                [type]="'line'"
+                width="1200"
+                height="1100"
+                [data]="descripcionChartData"
+                [options]="descripcionChartOptions"
+                [legend]="false"
+            >
+          </canvas>
+          <div class="row">
+          <span class="bold">Top 5 - Operaciones por la Descripción de la Ruta</span> <br />
+          <small><i>Número total de llamadas a travez del apirest </i></small>
+        </div>
+        </div>
+        <div class="col-12 col-lg-6 ">
+          <div class="row">
+            <span class="bold">Total de Operaciones por Descripción de la Ruta</span> <br />
+            <small><i>LIstado de operaciones agrupados por la descripción de la operación </i></small>
+          </div>
+          <ul class="list-group list-group-flush h350" >
+            @for (item of lstPorDescripcion; track $index) {
+              <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div class="ms-2 me-auto">
+                  <div class="fw-bolds">{{item.orden}}. {{item.descripcion}}</div>
+                </div>
+                <span class="badge text-bg-success rounded-pill">{{item.valor}}</span>
+              </li>
+            }
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+
+  </section>
+
+
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+</div>

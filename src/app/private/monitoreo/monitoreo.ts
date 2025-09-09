@@ -110,10 +110,12 @@ export class Monitoreo {
     }
 
     this.dataGridStruct();
-    this.getUsuario();
-    setTimeout(()=>{
-      this.startMonitor();
-    },800)
+    if (this.user.grupo && this.user.cliente){
+      this.getUsuario();
+    }else if (!this.user.grupo && this.user.cliente){
+      this.listaTodosServidores();
+    }
+    
   }
 
   ngOnDestroy(): void {
@@ -134,59 +136,93 @@ export class Monitoreo {
         // console.log(resp);
         this.arrServicios = [];
         if (resp.status) {
-          if (resp.data[0].servidores && resp.data[0].servidores.length > 0) {
-            resp.data[0].servidores.forEach((s: any) => {
-              if (s.estado == 1){
-                s['healthy_ssh'] = '-';
-                s['healthy_agente'] = '-';
-                s['uptime'] = '-';
-                s['cpu'] = '-';
-                s['memoria'] = '-';
-                s['disco'] = '-';
-                // s['servicio_httpd'] = '-';
-                // s['servicio_ssh'] = '-';
-                if (s.servicios && s.servicios!=""){
-                  let arrS = s.servicios.split(",")
-                  arrS.forEach((ss:any)=>{
-                    s[`servicio_${ss}`] = '';
-                    this.arrServicios.push(ss);
-                  })
-                }
-                this.lstServidores.push(s);
-              }
-            });
-            
-            // this.dataGridStruct();
-            const currentColumnDefs:any = this.gridApi?.getGridOption('columnDefs');
-            let newColumn:any;
-            this.arrServicios.forEach((ss:any)=>{
-              newColumn = {
-                headerName: this.func.capital(ss) + " Servicio" ,
-                field: `servicio_${ss}`, 
-                headerClass: ['th-center', 'th-normal'],
-                maxWidth: 100,
-                cellRenderer: this.renderServicios
-              };
-              currentColumnDefs.push(newColumn)
-              // updatedColumnDefs = [...currentColumnDefs, newColumn];
-            })
-            // this.gridApi?.setGridOption('columnDefs', updatedColumnDefs);
-            this.gridApi?.setGridOption('columnDefs', currentColumnDefs);
-            this.gridApi!.autoSizeAllColumns();
-          }
-          // console.log(this.lstServidores)
+          resp.data[0].servidores.forEach((e:any) => {
+            if (e.estado == 1){
+              this.lstServidores.push(e);
+            }
+          });
+          this.seteaGrdiStructure();
         } else {
           this.func.showMessage('error', 'Usuario', resp.message);
         }
-        // setTimeout(()=>{
-        this.refreshAll();
-        // },1000)
+        
       },
       error: (err: any) => {
         this.func.closeSwal();
         this.func.handleErrors('Usuario', err);
       },
     });
+  }
+
+  listaTodosServidores() {
+    /**
+     * lista de todos los servidores
+     */    
+    this.func.showLoading('Cargando');
+    this.generalSvc.apiRest("GET", `servidores`).subscribe({
+      next: (resp: any) => {
+        this.func.closeSwal();
+        // console.log("→1←", resp)
+        if (resp.status) {
+          resp.data.forEach((e:any) => {
+            if (e.estado == 1){
+              this.lstServidores.push(e);
+            }
+          });
+          this.seteaGrdiStructure();
+        } else {
+          this.func.handleErrors("Servidor", resp.message);
+        }
+      },
+      error: (err: any) => {
+        this.func.closeSwal();
+        this.func.handleErrors("Servidor", err);
+      },
+    });
+  }
+
+  seteaGrdiStructure(){
+    this.lstServidores.forEach((s: any) => {
+      if (s.estado == 1){
+        s['healthy_ssh'] = '-';
+        s['healthy_agente'] = '-';
+        s['uptime'] = '-';
+        s['cpu'] = '-';
+        s['memoria'] = '-';
+        s['disco'] = '-';
+        // s['servicio_httpd'] = '-';
+        // s['servicio_ssh'] = '-';
+        if (s.servicios && s.servicios!=""){
+          let arrS = s.servicios.split(",")
+          arrS.forEach((ss:any)=>{
+            s[`servicio_${ss}`] = '';
+            this.arrServicios.push(ss);
+          })
+        }
+      }
+    });
+    
+    // this.dataGridStruct();
+    const currentColumnDefs:any = this.gridApi?.getGridOption('columnDefs');
+    let newColumn:any;
+    this.arrServicios.forEach((ss:any)=>{
+      newColumn = {
+        headerName: this.func.capital(ss) + " Servicio" ,
+        field: `servicio_${ss}`, 
+        headerClass: ['th-center', 'th-normal'],
+        maxWidth: 100,
+        cellRenderer: this.renderServicios
+      };
+      currentColumnDefs.push(newColumn)
+    })
+    this.gridApi?.setGridOption('columnDefs', currentColumnDefs);
+    this.gridApi!.autoSizeAllColumns();
+
+    this.refreshAll();
+
+    // setTimeout(()=>{
+    this.startMonitor();
+    // },800)
   }
 
   dataGridStruct() {

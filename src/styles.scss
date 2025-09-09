@@ -315,7 +315,7 @@ ul.menu{
 }
 
 .scrolly{ overflow-y: scroll !important; overflow-x: hidden;}
-.scrollx{ overflow-x: scroll !important; overflow-y: hidden; }
+.scrollx{ overflow-x: auto !important; overflow-y: hidden; }
 
 .h100 {height: 100px !important; overflow-y: visible !important; overflow-x: hidden;}
 .h150 {height: 150px !important; overflow-y: visible !important; overflow-x: hidden;}
@@ -585,4 +585,9 @@ ul.menu{
 
 .hide{
     display: none;
+}
+
+
+.courier{
+    font-family: 'Courier New', Courier, monospace;
 }

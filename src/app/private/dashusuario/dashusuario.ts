@@ -6,22 +6,10 @@ import { Path } from '../shared/path/path';
 import { Titulo } from '../shared/titulo/titulo';
 import { Functions } from '../../core/helpers/functions.helper';
 import { GeneralService } from '../../core/services/general.service';
-import {
-  Chart,
-  ChartConfiguration,
-  ChartOptions,
-  registerables,
-} from 'chart.js';
+import { Chart, ChartConfiguration, ChartOptions, registerables} from 'chart.js';
 import iconsData from '../../core/data/icons.data';
 import { Global } from '../../core/config/global.config';
-import {
-  AllCommunityModule,
-  createGrid,
-  GridApi,
-  GridOptions,
-  ICellRendererParams,
-  ModuleRegistry,
-} from 'ag-grid-community';
+import { AllCommunityModule, createGrid, GridApi, GridOptions, ICellRendererParams, ModuleRegistry, } from 'ag-grid-community';
 import { BaseChartDirective } from 'ng2-charts';
 import moment from 'moment';
 
@@ -133,7 +121,12 @@ export class Dashusuario {
       icono: 'fas fa-chart-bar',
       nombre: 'Dashboard del Usuario',
     };
-    this.initial()
+
+    // if (this.user.grupo){
+      this.initial()
+    // }else{
+    //   this.func.goRoute("admin/dashsuperusuario")
+    // }
   }
   
   ngOnDestroy(): void {}

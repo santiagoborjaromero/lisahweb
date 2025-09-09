@@ -94,10 +94,27 @@ export class Usuarios {
 
     this.userSvc.getAllFilters(this.accion).subscribe({
       next: (resp: any) => {
-        // console.log(resp);
+        console.log(resp);
         this.func.closeSwal();
         if (resp.status) {
-          this.lstData = resp.data;
+          if (this.user.grupo && this.user.cliente){
+            //Si tiene cliente y grupo es usuario
+            resp.data.forEach((u:any)=>{
+              if (this.user.grupo && this.user.cliente){
+                this.lstData.push(u)
+              }
+            })
+          }else if (!this.user.grupo && this.user.cliente){
+            //Si tiene cliente y pero no grupo es super usuario
+            this.lstData = resp.data;
+          }else{
+            //Si no tiene cliente y  no grupo es owner
+            resp.data.forEach((u:any)=>{
+              if (!this.user.grupo){
+                this.lstData.push(u)
+              }
+            })
+          }
           this.refreshAll();
         } else {
           this.func.handleErrors('Server', resp.message);
@@ -167,7 +184,8 @@ export class Usuarios {
           cellClass: 'text-start',
           sortIndex: 2,
           sort: 'asc',
-          // cellRenderer: this.renderAccionGrupo.bind(this),
+          // cellRenderer: (params: ICellRendererParams) => {}
+          
         },
         {
           headerName: 'Nombre',

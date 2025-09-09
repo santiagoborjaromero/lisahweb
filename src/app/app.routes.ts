@@ -30,6 +30,7 @@ export const routes: Routes = [
             {path:"monitoreo", loadComponent: () => import('./private/monitoreo/monitoreo').then((c)=> c.Monitoreo)},
             {path:"dashboard", loadComponent: () => import('./private/dashboard/dashboard').then((c)=> c.Dashboard)},
             {path:"dashusuario", loadComponent: () => import('./private/dashusuario/dashusuario').then((c)=> c.Dashusuario)},
+            {path:"dashsentinel", loadComponent: () => import('./private/dashsuperusuario/dashsuperusuario').then((c)=> c.Dashsuperusuario)},
 
             {path:"profile", loadComponent: () => import('./private/profile/profile').then((c)=> c.Profile)},
             {path:"configs", loadComponent: () => import('./private/config/config').then((c)=> c.Config)},

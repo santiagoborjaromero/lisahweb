@@ -135,9 +135,20 @@ export class Dashboard {
     this.initial();
     this.dataGridStruct();
     this.dataGridStructProc();
-    this.getUsuario();
-    this.getAcciones();
-    this.getUltimasAcciones();
+
+    console.log(this.user)
+    if (this.user.grupo){
+      this.getUsuario();
+      this.getAcciones();
+    }else{
+      if (this.user.cliente){
+        //superuser
+        this.listaTodosServidores();
+
+      }
+    }
+
+    // this.getUltimasAcciones();
   }
 
   ngOnDestroy(): void {
@@ -209,15 +220,42 @@ export class Dashboard {
     this.generalSvc.apiRest("GET", `servidores_usuarios/${this.idservidor}`).subscribe({
       next: (resp: any) => {
         this.func.closeSwal();
-        // console.log("→", resp)
+        // console.log("→getServidor", resp)
         if (resp.status) {
           this.rstServidor = resp.data[0];
-
           this.lstCfg = resp.data[0].cliente.configuracion;
           this.tiempo_refresco = this.lstCfg.tiempo_refresco;
           console.log("Abriendo Puerto")
           this.openWS();
           
+        } else {
+          this.func.handleErrors("Servidor", resp.message);
+        }
+      },
+      error: (err: any) => {
+        this.func.closeSwal();
+        this.func.handleErrors("Servidor", err);
+      },
+    });
+  }
+
+  listaTodosServidores() {
+    /**
+     * lista de todos los servidores
+     */    
+    this.func.showLoading('Cargando');
+    this.generalSvc.apiRest("GET", `servidores`).subscribe({
+      next: (resp: any) => {
+        this.func.closeSwal();
+        // console.log("→1←", resp)
+        if (resp.status) {
+          resp.data.forEach((e:any) => {
+            if (e.estado == 1){
+              this.lstServidoresAsignados.push(e);
+            }
+          });
+          this.idservidor = this.lstServidoresAsignados[0].idservidor;
+          this.activaServidor(this.idservidor);
         } else {
           this.func.handleErrors("Servidor", resp.message);
         }
@@ -241,9 +279,6 @@ export class Dashboard {
           this.lstServidoresAsignados = resp.data[0].servidores;
           this.idservidor = this.lstServidoresAsignados[0].idservidor;
           this.activaServidor(this.idservidor);
-          // this.current_server_name = this.lstServidoresAsignados[0].nombre;
-          // this.work = this.lstServidoresAsignados[0];
-          // this.idservidor = this.work.idservidor;
           this.refreshAll()
           
         } else {

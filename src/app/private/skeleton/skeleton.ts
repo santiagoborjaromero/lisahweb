@@ -47,6 +47,7 @@ export class Skeleton {
 ngOnInit(): void {
   this.user = JSON.parse(this.sessions.get("user"));
   if (this.user){
+    // console.log(this.user)
     if (this.user.grupo && this.user.grupo.rolmenugrupos){
       // console.log("Por grupo de Usuarios el Menu")
       this.user.grupo.rolmenugrupos.forEach( (rm:any)=>{
