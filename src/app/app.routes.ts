@@ -27,11 +27,12 @@ export const routes: Routes = [
             {path:"generalidades", loadComponent: () => import('./private/generalidades/generalidades').then((c)=> c.Generalidades)},
             
             /** Para clientes */
-            {path:"monitoreo", loadComponent: () => import('./private/monitoreo/monitoreo').then((c)=> c.Monitoreo)},
+            {path:"dashmonitoreo", loadComponent: () => import('./private/monitoreo/monitoreo').then((c)=> c.Monitoreo)},
             {path:"dashboard", loadComponent: () => import('./private/dashboard/dashboard').then((c)=> c.Dashboard)},
-            {path:"dashusuario", loadComponent: () => import('./private/dashusuario/dashusuario').then((c)=> c.Dashusuario)},
-            {path:"dashsentinel", loadComponent: () => import('./private/dashsuperusuario/dashsuperusuario').then((c)=> c.Dashsuperusuario)},
-
+            // {path:"dashusuario", loadComponent: () => import('./private/dashusuario/dashusuario').then((c)=> c.Dashusuario)},
+            // {path:"dashsentinel", loadComponent: () => import('./private/dashsuperusuario/dashsuperusuario').then((c)=> c.Dashsuperusuario)},
+            {path:"dashoperaciones", loadComponent: () => import('./private/dashsuperusuario/dashsuperusuario').then((c)=> c.Dashsuperusuario)},
+            
             {path:"profile", loadComponent: () => import('./private/profile/profile').then((c)=> c.Profile)},
             {path:"configs", loadComponent: () => import('./private/config/config').then((c)=> c.Config)},
             {path:"usuarios", loadComponent: () => import('./private/usuarios/usuarios').then((c)=> c.Usuarios)},

@@ -82,6 +82,8 @@ export class Dashsuperusuario {
   totalSentinel = 0;
   totalBase = 0;
 
+  idusuario: any = 0;
+
   /**
    * Sentinel
    */
@@ -178,7 +180,7 @@ export class Dashsuperusuario {
     this.user = JSON.parse(this.sessions.get('user'));
     this.path = [
       { nombre: 'Dashboards', ruta: '' },
-      { nombre: 'Dashboard de Operaciones', ruta: 'admin/dashsentinel' },
+      { nombre: 'Dashboard de Operaciones', ruta: 'admin/dashoperaciones' },
     ];
     this.titulo = {
       icono: 'fas fa-grip-vertical',
@@ -187,7 +189,7 @@ export class Dashsuperusuario {
 
     this.colores = this.func.colores();
 
-    this.initial()
+    this.initial();
   }
   
   ngOnDestroy(): void {}
@@ -200,10 +202,6 @@ export class Dashsuperusuario {
     this.lstUsuarios = [];
     this.lstServidores = [];
     this.lstServidoresAsignados = [];
-    // this.getUsuario(); 
-    this.listaTodosServidores();
-    this.getAcciones();
-    this.getUltimasAcciones();
 
     this.dataset1.push({
       data: [],
@@ -229,6 +227,17 @@ export class Dashsuperusuario {
       borderWidth: 0,
       backgroundColor: this.colores
     });
+
+    if (this.user.grupo){
+      this.idusuario = this.user.idusuario;
+      this.getUsuario(); 
+    }else{
+      this.idusuario = 0;
+      this.listaTodosServidores();
+    }
+
+    this.getAcciones();
+    this.getUltimasAcciones();
   }
 
   // getServidor() {
@@ -263,7 +272,7 @@ export class Dashsuperusuario {
      * Usuario y lista de servidores asignados
      */
     this.generalSvc
-      .apiRest('GET', `usuarios/${this.user.idusuario}`)
+      .apiRest('GET', `usuarios/${this.idusuario}`)
       .subscribe({
         next: (resp: any) => {
           this.func.closeSwal();
@@ -296,7 +305,7 @@ export class Dashsuperusuario {
     this.generalSvc.apiRest("GET", `servidores`).subscribe({
       next: (resp: any) => {
         this.func.closeSwal();
-        console.log("→1←", resp)
+        // console.log("→1←", resp)
         if (resp.status) {
           resp.data.forEach((e:any) => {
             if (e.estado == 1){
@@ -304,7 +313,6 @@ export class Dashsuperusuario {
             }
           });
           this.graphServerInteraccionCabecera();
-          // this.idservidor = this.lstServidoresAsignados[0].idservidor;
           this.openWS();
         } else {
           this.func.handleErrors("Servidor", resp.message);
@@ -319,11 +327,9 @@ export class Dashsuperusuario {
 
   getAcciones() {
     this.lstAcciones = [];
-    this.generalSvc
-      .apiRest('GET', `acciones_audit/0`)
-      .subscribe({
+    this.generalSvc.apiRest('GET', `acciones_audit/${this.idusuario}`).subscribe({
         next: (resp: any) => {
-          console.log("↓sss", resp);
+          // console.log("↓sss", resp);
           this.func.closeSwal();
           if (resp.status) {
             this.lstAcciones = resp.data;
@@ -412,22 +418,16 @@ export class Dashsuperusuario {
 
   getUltimasAcciones() {
     this.generalSvc
-      .apiRest('GET', `ultimas_acciones_audit/0`)
+      .apiRest('GET', `ultimas_acciones_audit/${this.idusuario}`)
       .subscribe({
         next: (resp: any) => {
-          console.log("↓-", resp);
+          // console.log("↓-", resp);
           this.func.closeSwal();
           if (resp.status) {
             resp.data.forEach((e: any) => {
               e['fecha'] = moment(e.created_at).format('YYYY-MM-DD HH:mm:ss');
               e['back'] = e.metodo == 'DELETE' ? 'bg-danger' : e.metodo == 'POST' ? 'bg-primary' : 'bg-warning';
               e['usuario'] = e.usuario ? e.usuario.nombre : '';
-              // e['back'] =
-              //   e.metodo == 'DELETE'
-              //     ? 'bg-light-danger'
-              //     : e.metodo == 'POST'
-              //     ? 'bg-light-primary'
-              //     : 'bg-light-warning';
               this.lstUltimasAcciones.push(e);
             });
           } else {
@@ -446,14 +446,7 @@ export class Dashsuperusuario {
     this.index ++;
     if (this.index == this.lstServidoresAsignados.length){
       this.index = -1 ;
-      console.log("se acabo")
-      // try{
-      //   this.lstServidoresAsignados.sort((a:any, b:any) =>
-      //     b.total.toString().localeCompare(a.total.toString())
-      //   );
-      // }catch(err){
-      //   console.log(err)
-      // }
+      console.log("Fin de lectura de servidores")
       return
     }
 
@@ -501,8 +494,6 @@ export class Dashsuperusuario {
     }
     this.openWS();
   }
-
-  
 
   onErrorListener(event: any) {}
 
@@ -564,7 +555,8 @@ export class Dashsuperusuario {
         usuario: this.user.usuario,
         idservidor: this.id_selected,
         fecha: moment().format("YYYYMM"), 
-        id: Math.floor(Math.random() * (9999999999999999 - 1000000000000000 + 1)) + 1000000000000000
+        idusuario_filtro: this.idusuario,
+        id: Math.floor(Math.random() * (9999999999999999 - 1000000000000000 + 1)) + 1000000000000000,
       },
       data: []
     };
@@ -583,20 +575,24 @@ export class Dashsuperusuario {
 
     this.totalSentinel += data[1];
 
+    //[count, total, count_antes, total_antes]
+
     this.lstServidoresAsignados.forEach((s:any, idx:any) => {
       if (s.idservidor == idservidor){
         s.status = "OK";
+        s.conteo_actual = data[0];
         s.total_actual = data[1];
+        s.conteo_anterior = data[2];
         s.total_anterior = data[3];
         valores[idx] = data[1];
       }
     });
 
-    this.dataset1[0].data = valores;
+    // this.dataset1[0].data = valores;
 
-    this.polarChartData  = {
-      datasets: this.dataset1
-    }
+    // this.polarChartData  = {
+    //   datasets: this.dataset1
+    // }
   }
 
   graphServerInteraccionCabecera(){

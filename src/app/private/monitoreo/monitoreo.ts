@@ -87,7 +87,7 @@ export class Monitoreo {
     this.user = JSON.parse(this.sessions.get('user'));
     this.path = [
       { nombre: 'Admin & Hardening', ruta: '' },
-      { nombre: 'Monitoreo', ruta: 'admin/monitoreo' },
+      { nombre: 'Dashboard Monitoreo', ruta: 'admin/dashmonitoreo' },
     ];
 
     this.titulo = { icono: 'fas fa-chart-bar', nombre: 'Dashboard Monitoreo Servidores' };

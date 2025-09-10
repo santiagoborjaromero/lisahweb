@@ -29,15 +29,15 @@
 
     <section class="h120 d-flex scrollx pb-2">
       @for (item of lstServidoresAsignados; track $index) {
-        <div class="mr-2 border p-2 text-end" style="min-width:200px; border-radius: 10px; background-color: #aff8e6;">
-          <span class="t30 bold text-black">{{item.total_actual  ?? 0 }}</span> <br>
-          @if (item.total_actual > item.total_anterior) {
+        <div class="mr-2 border p-2 text-end" style="min-width:200px; border-radius: 10px; background-color: #ccf5eb;">
+
+          <span class="t30 bold text-black">{{item.conteo_actual  ?? 0 }}</span> <br>
+          @if (item.conteo_actual > item.conteo_anterior) {
             <span class="text-success t18"><i class="fas fa-caret-up"></i></span> &nbsp;
-            <span class="text-success t16">{{item.total_anterior  ?? 0 }}</span> <br>
+            <span class="text-success t16">{{item.conteo_anterior  ?? 0 }}</span> <br>
           }@else {
             <span class="text-danger t18"><i class="fas fa-caret-down"></i></span> &nbsp;
-            <span class="text-danger t16">{{item.total_anterior  ?? 0 }}</span> <br>
-  
+            <span class="text-danger t16">{{item.conteo_anterior  ?? 0 }}</span> <br>
           }
           <span class="bold t16">{{item.nombre}} </span> <br>
           <!-- <span class="t10 text-secondary bold">Total Interacciones </span>  -->
