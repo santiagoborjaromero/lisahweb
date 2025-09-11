@@ -57,7 +57,7 @@ export class Dashboard {
   public rows_selected: any = 0;
   public server_selected: any = {};
 
-
+  alto:string =  ((screen.height / 2)-225).toString();
   rstServidor: any = { usuarios: [] };
 
   lstCfg: any;
@@ -122,7 +122,10 @@ export class Dashboard {
   lstServidoresAsignados: Array<any> = [];
   current_server_name:string ="";
 
-  constructor(){}
+  constructor(){
+
+    console.log(this.alto)
+  }
 
   ngOnInit(): void {
     this.user = JSON.parse(this.sessions.get('user'));
@@ -193,6 +196,7 @@ export class Dashboard {
         t15:"0",
         porcentaje: "0"
       },
+      ip: "",
       release: [],
       servicios: [],
       infocpu: [],
@@ -299,6 +303,7 @@ export class Dashboard {
         this.idservidor = this.work.idservidor;
       }
     })
+
     this.getServidor();
     this.refreshAll();
   }
@@ -372,6 +377,8 @@ export class Dashboard {
     console.log("Deteniendo")
     this.agente_status = "Deteniendo ...";
     this.playMonitor = false;
+    this.lstDatos.procesos = [];
+    this.initial();
     clearInterval(this.tmrMonitor);
     this.ws.close(1000)
   }
@@ -631,7 +638,7 @@ export class Dashboard {
         case "ip":
           daux = d.respuesta.split("\n");
           drep = daux[1].split(",")[8];
-          this.work.host = drep;
+          this.lstDatos.ip = drep;
           break;
       }
     });
@@ -793,6 +800,7 @@ export class Dashboard {
       button.innerHTML = '<i role="img" class="fas fa-plus-circle t30"></i>';
       button.addEventListener('click', () => {
         this.stopMonitor();
+            
         setTimeout(()=>{
           this.activaServidor(params.data.idservidor);
         },1000)
@@ -809,7 +817,7 @@ export class Dashboard {
     this.gridOptionsProc = {
       rowData: [],
       pagination: true,
-      paginationPageSize: 5,
+      paginationPageSize: this.paginacion,
       paginationPageSizeSelector: [5, 10, 50, 100, 200, 300, 1000],
       // rowSelection: 'single',
       rowHeight: 40,

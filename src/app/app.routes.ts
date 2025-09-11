@@ -26,8 +26,8 @@ export const routes: Routes = [
             {path:"clientes", loadComponent: () => import('./private/clientes/clientes').then((c)=> c.Clientes)},
             {path:"generalidades", loadComponent: () => import('./private/generalidades/generalidades').then((c)=> c.Generalidades)},
             
-            /** Para clientes */
-            {path:"dashmonitoreo", loadComponent: () => import('./private/monitoreo/monitoreo').then((c)=> c.Monitoreo)},
+            /** Para todos */
+            {path:"dashmonitoreo", loadComponent: () => import('./private/dashmonitor/dashmonitor').then((c)=> c.Dashmonitor)},
             {path:"dashboard", loadComponent: () => import('./private/dashboard/dashboard').then((c)=> c.Dashboard)},
             // {path:"dashusuario", loadComponent: () => import('./private/dashusuario/dashusuario').then((c)=> c.Dashusuario)},
             // {path:"dashsentinel", loadComponent: () => import('./private/dashsuperusuario/dashsuperusuario').then((c)=> c.Dashsuperusuario)},

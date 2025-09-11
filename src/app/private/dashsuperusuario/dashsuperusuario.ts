@@ -284,7 +284,7 @@ export class Dashsuperusuario {
               }
             });
             this.idservidor = this.lstServidoresAsignados[0].idservidor;
-            this.openWS()
+            this.openWS();
           } else {
             this.func.showMessage('error', 'Usuario', resp.message);
           }
@@ -312,7 +312,7 @@ export class Dashsuperusuario {
               this.lstServidoresAsignados.push(e);
             }
           });
-          this.graphServerInteraccionCabecera();
+          // this.graphServerInteraccionCabecera();
           this.openWS();
         } else {
           this.func.handleErrors("Servidor", resp.message);

@@ -257,6 +257,7 @@ export class Logserver {
 
     this.serverSvc.getAllFilters("activos").subscribe({
       next: (resp: any) => {
+         this.func.closeSwal();
         // console.log(resp)
         if (resp.status) {
           resp.data.forEach((s:any) => {

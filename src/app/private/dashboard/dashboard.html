@@ -26,15 +26,15 @@
           <i class="fas fa-server"></i>
         </span>
         <span class="seccion">HOST</span>
-        <span class="valor valor-rojo">{{work.host}}</span>
+        @if(lstDatos.ip!=''){
+          <span class="valor valor-rojo">{{lstDatos.ip}}</span>
+        }@else {
+          <span class="valor valor-rojo">{{work.host}}</span>
+        }
         <span class="avgS">  
           <small><i>Usuarios Asignados:</i></small> &nbsp;
           <span class="bold">{{rstServidor.usuarios.length}}</span> 
         </span>
-        <!-- <span class="avgS">  
-          <small><i>Tiempo activo:</i></small> &nbsp;
-          <span class="bold">{{lstDatos.uptime}}</span> 
-        </span> -->
       </div>
       <div class="stats" style="width: 50%">
         <span class="icono icono-morado">
@@ -152,7 +152,7 @@
 
   <div class="col col-sm-12 col-md-12 col-lg-6 col-xl-12 content-statss ">
     <h5>Procesos <small class="t12 text-secondary">(limit=10)</small>  </h5> 
-    <div #myGridProc id="myGridProc" class="ag-theme-quartz" style="height: 300px; min-height: 300px"></div>
+    <div #myGridProc id="myGridProc" class="ag-theme-quartz" style="height: {{alto}}px; min-height: {{alto}}px"></div>
   </div>
 <!--
   <section class="row">

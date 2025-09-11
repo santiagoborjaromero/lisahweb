@@ -93,9 +93,6 @@ export class Login {
       this.generalSvc.apiRest("POST", "login", param, false).subscribe({
         next: (resp:any) => {
           this.func.closeSwal();
-          // console.log(resp)
-          // return
-
           this.usuario = "";
           this.clave = "";
           if (environment.debug) console.log(resp)
@@ -132,7 +129,6 @@ export class Login {
     })
 
     }catch(err){
-      // console.log("█", err)
     }
     
   }

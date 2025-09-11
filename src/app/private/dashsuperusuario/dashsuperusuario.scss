@@ -1,0 +1,176 @@
+// .carrusel-contenedor {
+//   overflow-x: hidden; /* Oculta el contenido que se sale */
+//   width: 100%;
+//   position: relative;
+//   /* ... otros estilos ... */
+// }
+
+// .carrusel-logos {
+//   display: flex; /* Coloca los logos en fila */
+//   width: 100%; /* Ancho total de todos los logos */
+//   animation: scroll 60s infinite linear; /* Aplica la animación */
+//   /* ... otros estilos ... */
+// }
+
+// .carrusel-logos img {
+//   width: 100%; /* Asegura que el contenido se ajuste bien */
+//   object-fit: contain; /* Mantiene la proporción de la imagen */
+//   height: 200px; /* Altura de las imágenes */
+//   /* ... otros estilos ... */
+// }
+
+// @keyframes scroll {
+//   0% {
+//     transform: translateX(100%);
+//   }
+//   100% {
+//     transform: translateX(-100%); /* Mueve al 50% para un efecto infinito */
+//   }
+// }
+
+
+
+
+
+
+
+// body {
+// 	align-items: center;
+// 	background: #E3E3E3;
+// 	display: flex;
+// 	height: 100vh;
+// 	justify-content: center;
+// }
+
+// @mixin white-gradient {
+// 	background: linear-gradient(to right,  rgba(255,255,255,1) 0%,rgba(255,255,255,0) 100%);
+// }
+
+// $animationSpeed: 40s;
+
+// // Animation
+// @keyframes scroll {
+// 	0% { transform: translateX(0); }
+// 	100% { transform: translateX(calc(-250px * 7))}
+// }
+
+
+// // Styling
+// .slider {
+// 	background: white;
+// 	box-shadow: 0 10px 20px -5px rgba(0, 0, 0, .125);
+// 	height: 100px;
+// 	margin: auto;
+// 	overflow:hidden;
+// 	position: relative;
+// 	width: 960px;
+	
+// 	&::before,
+// 	&::after {
+// 		@include white-gradient;
+// 		content: "";
+// 		height: 100px;
+// 		position: absolute;
+// 		width: 200px;
+// 		z-index: 2;
+// 	}
+	
+// 	&::after {
+// 		right: 0;
+// 		top: 0;
+// 		transform: rotateZ(180deg);
+// 	}
+
+// 	&::before {
+// 		left: 0;
+// 		top: 0;
+// 	}
+	
+// 	.slide-track {
+// 		animation: scroll $animationSpeed linear infinite;
+// 		display: flex;
+// 		width: calc(250px * 14);
+// 	}
+	
+// 	.slide {
+// 		height: 100px;
+// 		width: 250px;
+// 	}
+// }
+
+// html,
+// body {
+//   font-family: 'Droid Serif', serif;
+// }
+
+
+
+
+
+
+
+// .slider {
+//   background: transparent;
+//   height: 100px;
+//   width: 100vw;
+//   overflow: hidden;
+// }
+
+// .slider .move {
+//   display: flex;
+//   width: calc(250px * 14);
+//   animation: animacion 50s linear infinite;
+// }
+
+// @keyframes animacion {
+//   0% {
+//     transform: translateX(0);
+//   }
+//   100% {
+//     transform: translateX(calc(-250px * 7));
+//   }
+// }
+
+// .slider .box {
+//   height: 100px;
+//   width: 250px;
+// }
+
+// img{
+//   width: 200px;
+//   height: 100px;
+// }
+
+.carousel {
+    margin: 0 auto;
+    padding: 20px 0;
+    max-width: 100vw;
+    overflow: hidden;
+    display: flex;
+    > * {
+      flex: 0 0 100%;
+    }
+
+    &:hover .group {
+      animation-play-state: paused;
+    }
+
+}
+
+.group {
+    display: flex;
+    gap: 20px;
+    /* Agrega padding a la derecha para crear un espacio entre la última y la primera tarjeta. */
+    padding-right: 20px;
+    will-change: transform; /* Deberíamos ser amables con el navegador: hazle saber qué vamos a animar. */
+    animation: scrolling var(--numero-items) linear infinite;
+}
+
+@keyframes scrolling {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
