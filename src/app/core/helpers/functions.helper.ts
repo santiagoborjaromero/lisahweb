@@ -317,19 +317,21 @@ export class Functions {
         theme: 'plain',
       });
   
-      let records = this.transformarDatosPDF(params.data)
+      const [records, columnStyles] = this.transformarDatosPDF(params.data)
+      // console.log(columnStyles)
   
       autoTable(doc, {
           head: [records[0]],
           body: records.slice(1),
-          theme: 'striped',
+          theme: 'striped',   //grid (con lineas), striped (la mejor), plain (plano todo)
           headStyles:{
             fillColor: '#dadada',
             textColor: '#000'
           },
           styles:{
             textColor: '#000'
-          }
+          },
+          // columnStyles: columnStyles
       });
   
       doc.save(params.filename);
@@ -337,23 +339,37 @@ export class Functions {
 
   transformarDatosPDF(array:any = []){
 
-    const data = [];
+    const data:any = [];
+    const columnStyles:any = [];
     let cabecera = Object.keys(array[0]);
     let may:any = [];
-    cabecera.forEach(c=>{
+    let head:any ;
+    cabecera.forEach((c:any, idx:any)=>{
+      columnStyles.push({
+          halign: 'left',
+          tableWidth: 100,
+      })
       may.push(this.capital(c.replace(/_/g, " ")));
     });
     data.push(may);
 
     let temp = [];
+    let d = "";
     for (var i = 0; i < array.length; i++) {
         temp = [];
         for (var index in array[i]) {
-            temp.push(array[i][index] == null ? '' : array[i][index]);
+          d = this.textosLargos(array[i][index] == null ? '' : array[i][index]);
+          temp.push(d);
         }
         data.push(temp)
     }
-    return data;
+    return [data,columnStyles];
+  }
+
+  textosLargos(texto:any){
+    let textoTratado = texto;
+    textoTratado = textoTratado.replace(/,/g, ", ")
+    return textoTratado
   }
 
   exportarCSV(data:any= [], filename:string ="data.csv"){

@@ -14,12 +14,15 @@ import { Path } from '../shared/path/path';
 import { AllCommunityModule, createGrid, GridApi, GridOptions, ModuleRegistry } from 'ag-grid-community';
 import { MongoService } from '../../core/services/mongo.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { Chart, ChartConfiguration, ChartOptions, Colors, registerables } from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
 
+Chart.register(...registerables, Colors);
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 @Component({
   selector: 'app-logserver',
-  imports: [Titulo, Path, CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [Titulo, Path, CommonModule, FormsModule, ReactiveFormsModule, BaseChartDirective],
   templateUrl: './logserver.html',
   styleUrl: './logserver.scss',
   standalone: true
@@ -37,7 +40,7 @@ export class Logserver {
   aqui: any | undefined;
 
   // private webSockets = new Map<number, WebSocket>();
-  private server = new Map<number, any>();
+  // private server = new Map<number, any>();
 
   user:any | undefined;
   work:any | undefined;
@@ -48,23 +51,26 @@ export class Logserver {
   canR: boolean = true;
   canW: boolean = true;
   canD: boolean = true;
-
+  
   tab: number = 0;
-
+  
   lstData: Array<any> = [];
+  lstAccionStats: Array<any> = [];
+  lstUsuariosStats: Array<any> = [];
   lstUsuarios: Array<any> = [];
   lstServidores: Array<any> = [];
   lstServidores_Original: Array<any> = [];
   idservidor:string = "";
   idscript:string = "";
-  fecha_select:string = "";
+  fecha_desde:string = "";
+  fecha_hasta:string = "";
   idservidor_select:string = "";
   idusuario_select: string = "0";
-
+  
   oBuscarHistorico:string = "";
   oBuscarComandos:string = "";
   oBuscarScripts:string = "";
-
+  
   public dtOptions: any = {};
   public gridOptions: GridOptions<any> = {};
   public gridApi?: GridApi<any>;
@@ -73,6 +79,38 @@ export class Logserver {
   public name_selected: string = '';
   public rows_selected: any = 0;
   public server_selected: any = {};
+  
+  colores: any = [];
+  dataset1: any = [];
+  verStats: boolean = false;
+  totalAcciones: number = 0;
+  
+  public graChartData: ChartConfiguration['data'] = {
+    labels: [],
+      datasets: [],
+      
+    }
+  
+    public graChartOptions: ChartOptions = {
+      responsive: true,
+      plugins: {
+        // colors: {
+        //   // forceOverride: true
+        // },
+        legend: {
+          display: false,
+          position: 'right',
+          align: "start",
+          labels: {
+            color: 'rgb(0, 0, 0)'
+          }
+        },
+        title: {
+          display: false,
+          text: 'Gráfico de operaciones por servidor por Sentinel'
+        },
+      }
+    };
 
   /**
    * Sentinel
@@ -141,11 +179,26 @@ export class Logserver {
         );
       }
     }
-    this.fecha_select = moment().format("YYYY-MM-DD")
+    this.fecha_desde= moment().format("YYYY-MM-DD");
+    this.fecha_hasta= moment().format("YYYY-MM-DD");
 
-    this.getUsuario();
-    this.getServidores();
+    if (this.user.grupo){
+      this.getUsuario();
+      this.getUsuarios()
+    }else{
+      this.getServidores();
+    }
     this.dataGridStruct();
+
+    this.colores = this.func.colores();
+    this.dataset1.push({
+      data: [],
+      // label: "Interacciones totales por server",
+      fill: true,
+      tension: 0.1,
+      borderWidth: 0,
+      backgroundColor: this.colores
+    });
   }
 
   ngOnDestroy(): void {
@@ -159,12 +212,34 @@ export class Logserver {
         if (resp.status) {
           if (resp.data[0].servidores && resp.data[0].servidores.length > 0) {
             resp.data[0].servidores.forEach((s:any)=>{
-              this.lstServidores.push(s)
-              this.server.set(s.idservidor, s);
+              if (s.estado == 1){
+                this.lstServidores.push(s)
+                this.idservidor_select = this.lstServidores[0].idservidor;
+                // this.lstUsuarios = this.lstServidores[0].usuarios
+                // this.server.set(s.idservidor, s);
+              }
             })
           }
 
-          this.lstServidores_Original = Array.from(this.lstServidores);
+          // this.lstServidores_Original = Array.from(this.lstServidores);
+        } else {
+          this.func.handleErrors("Hardening", resp.message);
+        }
+      },
+      error: (err: any) => {
+        this.func.closeSwal();
+        this.func.handleErrors("Hardening", err);
+      },
+    });
+  }
+
+  getUsuarios() {
+    this.lstUsuarios = [];
+    this.generalSvc.apiRest("GET", `usuarios`).subscribe({
+      next: (resp: any) => {
+        this.func.closeSwal();
+        if (resp.status) {
+          this.lstUsuarios = resp.data;
         } else {
           this.func.handleErrors("Hardening", resp.message);
         }
@@ -182,11 +257,14 @@ export class Logserver {
 
     this.serverSvc.getAllFilters("activos").subscribe({
       next: (resp: any) => {
+        // console.log(resp)
         if (resp.status) {
-          this.lstServidores = resp.data;
-          this.idservidor_select = this.lstServidores[0].idservidor;
-          this.lstUsuarios = this.lstServidores[0].usuarios
-
+          resp.data.forEach((s:any) => {
+            if (s.estado == 1){
+              this.lstServidores = resp.data;
+              this.idservidor_select = this.lstServidores[0].idservidor;
+            }
+          });
         } else {
           this.func.handleErrors("Servidor", resp.message);
         }
@@ -268,7 +346,7 @@ export class Logserver {
   onMessageListener(e:any){
     console.log(`↓ LlegoMensaje ${this.work.idservidor}`);
     let evento = JSON.parse(e.data);
-    
+
     let data = evento.data;
     let status = evento.status;
 
@@ -278,23 +356,81 @@ export class Logserver {
     }
 
     this.lstData = [];
-    data.forEach( (d:any) => {
-      d.data.forEach((e:any) => {
-        let cmd = "";
-        try{
-          cmd = atob(e.cmd);
-        }catch(err){
-          cmd = "";
-        }
-        this.lstData.push({
-          fecha: d.fecha,
-          usuario: d.usuario,
-          accion: e.id,
-          comando: cmd
-        })
+    this.lstUsuariosStats = [];
+    this.lstAccionStats = [];
+    this.totalAcciones = 0;
+
+    if (data.length == 0){
+      this.func.showMessage("info", "Logs", "Con los parametros seleccionados no exitieron resultados.")
+    }else{
+      // console.log(data);
+      data.forEach( (d:any) => {
+        d.data.forEach((e:any) => {
+          let cmd = "";
+          try{
+            cmd = atob(e.cmd);
+          }catch(err){
+            cmd = "";
+          }
+          this.lstData.push({
+            fecha: d.fecha,
+            usuario: d.usuario,
+            accion: e.id,
+            comando: cmd
+          })
+          this.statsUsuario(d.usuario);
+          this.statsAccion(e.id);
+          this.totalAcciones ++;
+          
+        });
       });
-    });
+    }
+
     this.refreshAll();
+  }
+
+  statsUsuario(usuario: any){
+    let found = false;
+    this.lstUsuariosStats.forEach((u:any)=>{
+      if (u.usuario == usuario){
+        found = true;
+        u.total ++
+      }
+    })
+    if (!found){
+      this.lstUsuariosStats.push({
+        usuario: usuario,
+        total: 1
+      })
+    }
+
+    this.lstUsuariosStats.sort((a:any, b:any) =>
+      b.total.toString().padStart(10, "0").localeCompare(a.total.toString().padStart(10, "0"))
+    );
+  }
+
+  statsAccion(accion: any){
+    let found = false;
+    // console.log(this.lstAccionStats)
+    this.lstAccionStats.forEach((u:any)=>{
+      if (u.accion == accion){
+        found = true;
+        u.total ++
+      }
+      
+    })
+    if (!found){
+      this.lstAccionStats.push({
+        accion: accion,
+        total: 1
+      })
+    }
+
+    this.lstAccionStats.sort((a:any, b:any) =>
+      b.total.toString().padStart(10, "0").localeCompare(a.total.toString().padStart(10, "0"))
+    );
+
+    // this.graphAcciones();
   }
 
   connState = () => {
@@ -340,13 +476,14 @@ export class Logserver {
         idusuario: this.user.idusuario,
         usuario: this.user.usuario,
         idservidor: this.idservidor_select,
-        fecha: this.fecha_select,
-        idusuario_select: this.idusuario_select,
+        fecha_desde: this.fecha_desde,
+        fecha_hasta: this.fecha_hasta,
+        idusuario_select: parseInt(this.idusuario_select),
         id: Math.floor(Math.random() * (9999999999999999 - 1000000000000000 + 1)) + 1000000000000000
       },
       data: []
     };
-    console.log(params)
+    // console.log(params)
     if (this.connState()){
       console.log("↑ Enviando")
       this.ws.send(JSON.stringify(params));
@@ -442,10 +579,11 @@ export class Logserver {
   }
 
   exportarPDF(){
-    let data:any = this.prepareToExport();  
+    let data:any = this.prepareToExport();
+    
     let params = {
-      orientation: "p",
-      titulo: this.work.nombre + " - Logs",
+      orientation: "l",
+      titulo: this.work.nombre + " - Auditoria Logs",
       data: data,
       filename: `lisah_${this.work.nombre}_logs_${moment().format("YYYYMMDDHHmmss")}.pdf`
     }
@@ -463,7 +601,7 @@ export class Logserver {
       try{
         arr.push({
           fecha: moment(d.fecha).format("YYYY-MM-DD HH:mm:ss"),
-          usuario: d.usuario ,
+          usuario: d.usuario,
           accion: d.accion,
           comando: d.comando,
         })
@@ -472,6 +610,33 @@ export class Logserver {
       }
     });
     return arr;
+  }
+
+
+  graphAcciones(){
+    let labels:any =  [];
+    let valores:any =  [];
+
+    let count = 0;
+
+    this.lstAccionStats.forEach((s:any, idx:any) => {
+      count++;
+      // if (count<=10){
+        labels.push(s.accion);
+        valores.push(s.total);
+      // }
+    });
+
+
+    // this.dataset1.label = labels;
+    this.dataset1.label = "Acciones";
+    this.dataset1[0].data = valores;
+    // this.dataset1[0].label = labels;
+
+    this.graChartData  = {
+      labels: labels,
+      datasets: this.dataset1
+    }
   }
 
 

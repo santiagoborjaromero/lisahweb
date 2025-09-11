@@ -136,7 +136,6 @@ export class Dashboard {
     this.dataGridStruct();
     this.dataGridStructProc();
 
-    console.log(this.user)
     if (this.user.grupo){
       this.getUsuario();
       this.getAcciones();

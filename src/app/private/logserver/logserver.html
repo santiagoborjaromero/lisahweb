@@ -2,14 +2,14 @@
 <div class="content">
   <app-titulo [lstHeader]="titulo" />
 
+
   <section class="row barra-menu">
     <div class="col d-flex justify-content-between">
       <div>
-        <!-- <span class="mr-2 sentinel">{{global.agent}}</span>
-        <span class="ml-2 {{light_ws  ? 'text-success bold' : 'text-danger bold'}}">{{agente_status}}</span> -->
       </div>
       <div class="text-end mr-2">
         @if(lstData.length>0){
+          <button class="btn btn-link" (click)="verStats = !verStats"><i class="fas fa-chart-area"></i></button>
           <div class="btn-group" role="group">
             <button type="button" class="btn btn-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="fas fa-bars"></i>
@@ -20,60 +20,116 @@
             </ul>
           </div>
         }
-        <!-- <button (click)="exportarPDF()"  [disabled]="lstData.length==0" role="button" aria-label="Editar configuracion" class="btn btn-info  btn-sm ml-1 text-white">
-          <i class="fas fa-file-export"></i> PDF
-        </button>
-        <button (click)="exportarCSV()" [disabled]="lstData.length==0" role="button" aria-label="Editar configuracion" class="btn btn-info  btn-sm ml-1 text-white">
-          <i  class="fas fa-file-export"></i> CSV
-        </button>
-        <button role="button" (click)="funcBack()" class="btn btn-danger btn-sm ml-1">
-            <i role="img" class="fas fa-reply"></i> Regresar
-        </button> -->
       </div>
     </div>
   </section>
 
-  <div class="card">
-    <div class="row mt-2 mb-2">
-    
-      <div class="col-4 col-md-1 td2 text-end">
-        <label for="idservidor_select" aria-label="Seleccione servidor">Servidor</label>
+  <section class="card ">
+    <div class="row">
+      <div class="col-12">
+        <div class="row">
+          
+            <div class="col-4 col-md-2 td2 text-end p-1">
+              <label for="idservidor_select" aria-label="Seleccione servidor">Servidor</label>
+            </div>
+            <div class="col-8 col-md-4 td2 mt-1 pr-4">
+              <select [(ngModel)]="idservidor_select" (change)="cambiaServidor()" name="idservidor_select" id="idservidor_select" class="form-control">
+                @for (item of lstServidores; track $index) {
+                  <option value="{{item.idservidor}}">{{item.nombre}}</option>
+                }
+              </select>
+            </div>
+
+            <div class="col-4 col-md-2 td2 text-end p-1">
+              <label for="idusuario_select" aria-label="seleccione usuario">Usuarios</label>
+            </div>
+            <div class="col-8 col-md-4 td2 mt-1 pr-4">
+              <select [(ngModel)]="idusuario_select" name="idusuario_select" id="idusuario" class="form-control">
+                <option value="0">-- Todos --</option>
+                @for (item of lstUsuarios; track $index) {
+                  @if(item.idgrupo_usuario!==null && item.estado == 1){
+                    <option value="{{item.idusuario}}">{{item.nombre}}</option>
+                  }
+                }
+              </select>
+            </div>
+            <div class="col-4 col-md-2 td2 text-end p-1">
+              <label for="fecha_desde" aria-label="seleccione la fecha">Fecha Desde</label>
+              <br>
+            </div>
+            <div class="col-8 col-md-4 td2 mt-1 pr-4">
+              <input type="date" class="form-control" id="fecha_desde" [(ngModel)]="fecha_desde" />
+            </div>
+            <div class="col-4 col-md-2 td2 text-end p-1">
+              <label for="fecha_hasta" aria-label="seleccione la fecha">Fecha Hasta</label>
+              <br>
+            </div>
+            <div class="col-8 col-md-4 td2 mt-1 pr-4">
+              <input type="date" class="form-control" id="fecha_hasta" [(ngModel)]="fecha_hasta" />
+            </div>
+
+            <div class="col-12 mt-2 mb-2 text-end">
+              <button class="btn btn-primary" (click)="openWS()">Buscar</button> &nbsp;
+            </div>
+
+        </div>
       </div>
-      <div class="col-8 col-md-2 td2">
-        <select [(ngModel)]="idservidor_select" (change)="cambiaServidor()" name="idservidor_select" id="idservidor_select" class="form-control">
-          @for (item of lstServidores; track $index) {
-            <option value="{{item.idservidor}}">{{item.nombre}}</option>
+      <!-- <div class="{{verStats ? 'col-12 col-lg-8' : 'hide'}}">
+        <canvas
+          baseChart
+          [type]="'bar'"
+          width="800"
+          height="200"
+          [data]="graChartData"
+          [options]="graChartOptions"
+          [legend]="false"
+          >
+        </canvas>
+      </div> -->
+    </div>
+  </section>
+
+  @if (verStats) {
+    <section class="row">
+      <div class="col-12 col-md-6">
+         <div class="row">
+            <span class="bold">Actividad por usuario</span> <br />
+            <small><i>Número de acciones realizadas por el usuario</i></small>
+          </div>
+        <section class="h120 d-flex scrollx pb-2 mt-2">
+          <div class="mr-2 border p-2 text-end" style="min-width:150px; border-radius: 10px; background-color: #dda50a;">
+            <span class="t30 bold text-white">{{lstData.length}}</span> <br>
+            <span class="bold t16 text-white">Total</span> <br>
+          </div>
+          @for (item of lstUsuariosStats; track $index) {
+            <div class="mr-2 border p-2 text-end" style="min-width:150px; border-radius: 10px; background-color: #ebee3946;">
+              <span class="t30 bold text-black">{{item.total  ?? 0 }}</span> <br>
+              <span class="bold t16 text-warning">{{item.usuario}} </span> <br>
+            </div>
           }
-        </select>
-      </div>
-  
-      <div class="col-4 col-md-1 td2 text-end">
-        <label for="idusuario_select" aria-label="seleccione usuario">Usuarios</label>
-      </div>
-      <div class="col-8 col-md-2 td2">
-        <select [(ngModel)]="idusuario_select" name="idusuario_select" id="idusuario" class="form-control">
-          <option value="0">-- Todos --</option>
-          @for (item of lstUsuarios; track $index) {
-            @if(item.idgrupo_usuario!==null && item.estado == 1){
-              <option value="{{item.idusuario}}">{{item.nombre}}</option>
-            }
-          }
-        </select>
-      </div>
-  
-      <div class="col-4 col-md-1 td2 text-end">
-        <label for="fecha_select" aria-label="seleccione la fecha">Fecha</label>
-      </div>
-      <div class="col-8 col-md-2 td2">
-        <input type="date" class="form-control" id="fecha_select" [(ngModel)]="fecha_select" />
+        </section>
       </div>
       
-      <div class="col-8 col-md-2 td2">
-        <button class="btn btn-primary" (click)="openWS()">Buscar</button>
+      <div class="col-12 col-md-6">
+         <div class="row">
+            <span class="bold">Actividad por acción</span> <br />
+            <small><i>Número de acciones realizadas por área</i></small>
+          </div>
+        <section class="h120 d-flex scrollx pb-2 mt-2">
+          <!-- <div class="mr-2 border p-2 text-end" style="min-width:150px; border-radius: 10px; background-color: #1c94da;">
+            <span class="t30 bold text-white">{{totalAcciones}}</span> <br>
+            <span class="bold t16 text-white">Total</span> <br>
+          </div> -->
+          @for (item of lstAccionStats; track $index) {
+            <div class="mr-2 border p-2 text-end" style="min-width:150px; border-radius: 10px; background-color: #1c94da42;">
+              <span class="t30 bold text-black">{{item.total  ?? 0 }}</span> <br>
+              <span class="bold t16 text-primary">{{item.accion}} </span> <br>
+            </div>
+          }
+        </section>
       </div>
-        
-      </div>
-  </div>
+    </section>
+  }
 
   <div #myGrid id="myGrid" class="ag-theme-quartz mt-2" style="height: 500px; min-height: 500px"></div>
 
