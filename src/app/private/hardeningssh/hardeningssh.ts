@@ -83,12 +83,14 @@ export class Hardeningssh {
     this.userSvc.getOne(this.user.idusuario).subscribe({
       next: (resp: any) => {
         this.func.closeSwal();
-        console.log(resp);
+        // console.log(resp);
         if (resp.status) {
           if (resp.data[0].servidores && resp.data[0].servidores.length > 0) {
             resp.data[0].servidores.forEach((s:any)=>{
-              this.lstServidores.push(s)
-              this.server.set(s.idservidor, s);
+              if (s.estado == 1){
+                this.lstServidores.push(s)
+                this.server.set(s.idservidor, s);
+              }
             })
           }
 

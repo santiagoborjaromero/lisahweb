@@ -86,8 +86,10 @@ export class Hardening {
         if (resp.status) {
           if (resp.data[0].servidores && resp.data[0].servidores.length > 0) {
             resp.data[0].servidores.forEach((s:any)=>{
-              this.lstServidores.push(s)
-              this.server.set(s.idservidor, s);
+              if (s.estado == 1){
+                this.lstServidores.push(s)
+                this.server.set(s.idservidor, s);
+              }
             })
           }
 
