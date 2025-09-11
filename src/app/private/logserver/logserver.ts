@@ -22,7 +22,7 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 
 @Component({
   selector: 'app-logserver',
-  imports: [Titulo, Path, CommonModule, FormsModule, ReactiveFormsModule, BaseChartDirective],
+  imports: [Titulo, Path, CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './logserver.html',
   styleUrl: './logserver.scss',
   standalone: true
