@@ -363,24 +363,27 @@ export class Logserver {
     if (data.length == 0){
       this.func.showMessage("info", "Logs", "Con los parametros seleccionados no exitieron resultados.")
     }else{
-      // console.log(data);
+      let accion = "";
       data.forEach( (d:any) => {
         d.data.forEach((e:any) => {
-          let cmd = "";
-          try{
-            cmd = atob(e.cmd);
-          }catch(err){
-            cmd = "";
+          accion = e.id ? e.id.replace("|", ", ") : e.action;
+          if (e.id !== undefined){
+            let cmd = "";
+            try{
+              cmd = atob(e.cmd);
+            }catch(err){
+              cmd = "";
+            }
+            this.lstData.push({
+              fecha: d.fecha,
+              usuario: d.usuario,
+              accion: accion,
+              comando: cmd
+            })
+            this.statsUsuario(d.usuario);
+            this.statsAccion(accion);
+            this.totalAcciones ++;
           }
-          this.lstData.push({
-            fecha: d.fecha,
-            usuario: d.usuario,
-            accion: e.id,
-            comando: cmd
-          })
-          this.statsUsuario(d.usuario);
-          this.statsAccion(e.id);
-          this.totalAcciones ++;
           
         });
       });
