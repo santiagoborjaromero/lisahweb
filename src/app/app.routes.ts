@@ -46,10 +46,15 @@ export const routes: Routes = [
             {path:"scripts", loadComponent: () => import('./private/scripts/scripts').then((c)=> c.Scripts)},
             {path:"script/:id", loadComponent: () => import('./private/scripts/edit/edit').then((c)=> c.Edit)},
             {path:"audits", loadComponent: () => import('./private/audit/audit').then((c)=> c.Audit)},
+            
             {path:"hardening", loadComponent: () => import('./private/hardening/hardening').then((c)=> c.Hardening)},
             {path:"terminal", loadComponent: () => import('./private/terminal/terminal').then((c)=> c.Terminal)},
+
             {path:"hardeningssh", loadComponent: () => import('./private/hardeningssh/hardeningssh').then((c)=> c.Hardeningssh)},
             {path:"terminalssh", loadComponent: () => import('./private/terminalssh/terminalssh').then((c)=> c.Terminalssh)},
+            
+            {path:"block", loadComponent: () => import('./private/block/block').then((c)=> c.Block)},
+
             {path:"logs", loadComponent: () => import('./private/logserver/logserver').then((c)=> c.Logserver)},
             // {path:"logs", loadComponent: () => import('./private/logs/logs').then((c)=> c.Logs)},
             // {path:"logs/:id", loadComponent: () => import('./private/logserver/logserver').then((c)=> c.Logserver)},
@@ -68,7 +73,7 @@ export const routes: Routes = [
                     {path:"networking", loadComponent: () => import('./private/workspace/networking/networking').then((c)=> c.Networking)},
                     {path:"update", loadComponent: () => import('./private/workspace/updates/updates').then((c)=> c.Updates)},
                     {path:"store", loadComponent: () => import('./private/workspace/store/store').then((c)=> c.Store)},
-                    {path:"terminal", loadComponent: () => import('./private/workspace/terminal/terminal').then((c)=> c.Terminals)},
+                    // {path:"terminal", loadComponent: () => import('./private/workspace/terminal/terminal').then((c)=> c.Terminals)},
                     {path:"", redirectTo: "dashboard", pathMatch: "full"},
                     {path:"**", redirectTo: "dashboard"},
                 ]

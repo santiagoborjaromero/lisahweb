@@ -444,11 +444,11 @@ webssh2: any;
     console.log("↓→", data)
 
     if (this.metodo_seleccionado == 2){ //Cuando es SSH debe enviarse lo generado a base transaccional
-      await this.mongoSvc.apiMongo("POST", "savecmd", data).subscribe({
-        next: resp => {
-          console.log("Mongo", resp)
-        },
-      });
+      // await this.mongoSvc.apiMongo("POST", "savecmd", data).subscribe({
+      //   next: resp => {
+      //     console.log("Mongo", resp)
+      //   },
+      // });
     }
 
     this.procesando = false;
