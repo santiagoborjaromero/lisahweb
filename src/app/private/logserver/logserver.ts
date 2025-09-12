@@ -367,7 +367,14 @@ export class Logserver {
       let accion = "";
       data.forEach( (d:any) => {
         d.data.forEach((e:any) => {
-          accion = e.id ? e.id.replace("|", ", ") : e.action;
+          if (e.id){
+            accion = e.id.toString();
+            if (accion.indexOf("|")>-1){
+              accion = accion.replace(/|/g, ", ");
+            }
+          }else{
+            accion = e.accion;
+          }
           if (e.id !== undefined){
             let cmd = "";
             try{

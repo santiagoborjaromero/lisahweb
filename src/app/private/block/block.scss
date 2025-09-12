@@ -1,0 +1,46 @@
+.timeline-container {
+  position: relative;
+  padding-top: 50px; /* Space for the line and badges */
+}
+
+.timeline-line {
+  position: absolute;
+  top: 70px; /* Adjust based on badge size */
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #ccc;
+  z-index: 1;
+}
+
+.timeline-events {
+  display: flex; /* Makes items align horizontally */
+  justify-content: space-around; /* Distributes items evenly */
+  position: relative;
+  z-index: 2;
+}
+
+.timeline-item {
+  position: relative;
+  text-align: center;
+}
+
+.timeline-badge {
+  width: 30px;
+  height: 30px;
+  background-color: var(--active);
+  // background-color: #919191;
+  color: white;
+  font-weight: 600;
+  padding-top: 2px;
+  border-radius: 50%;
+  position: absolute;
+  top: -15px; /* Adjust to sit on the line */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+}
+
+.timeline-panel {
+  margin-top: 20px; /* Space between badge and content */
+}

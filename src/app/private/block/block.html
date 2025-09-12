@@ -2,7 +2,239 @@
 <div class="content">
   <app-titulo [lstHeader]="titulo" />
 
-  <section class="card">
+  <div class="container timeline-container">
+    <div class="row timeline-line"></div>
+    <div class="row timeline-events">
+      @for (item of timeline; track $index) {
+        <div class="col-md-2 timeline-item cursor" (click)="movimiento($index)">
+          <div class="timeline-badge" style="--active: {{item.status ? '#1162b9' : '#919191'}}">{{$index + 1}}</div>
+          <div class="timeline-panel p-3">
+            <h6>{{item.nombre}}</h6> 
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  @if(timeline[0].status){
+    <div class="container">
+      <section class="row justify-content-center">
+        <div class="col-12 col-md-6">
+          <div class="d-flex justify-content-between mb-2">
+            <button class="btn btn-info btn-sm text-white" (click)="movimiento(0)" [disabled]="true">Anterior</button>
+            <button class="btn btn-info btn-sm text-white" (click)="movimiento(1)">Siguiente</button>
+          </div>
+          <div class="card p-3">
+            <label for="buscarServer"><i class="fas fa-server text-primary"></i><i> Lista de Servidores</i></label>
+            <input type="text" [(ngModel)]="oBuscarServer" (keyup)="buscarServer($event)"  id="buscarServer" name="buscarServer" class="form-control" placeholder="Texto a buscar">
+            <ul class="list-group list-group-flush h300 border mt-3" >
+              @for (item of lstServidores; track $index) {
+                <li class="list-group-item d-flex justify-content-between" (click)="checkServer(item.idservidor)">
+                  <span><i class="fas fa-server text-primary"></i> {{item.nombre}}</span>
+                  @if(item.checked){
+                    <i class="far fa-check-circle t16 text-success"></i> 
+                  }@else {
+                    <i class="fas fa-minus-circle t16 text-secondary"></i> 
+                  }
+                </li>
+              }
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+  }
+
+  @if(timeline[1].status){
+    <div class="container">
+      <section class="row justify-content-center">
+        <div class="col-12 col-md-6">
+          <div class="d-flex justify-content-between mb-2">
+            <button class="btn btn-info btn-sm text-white" (click)="movimiento(0)" >Anterior</button>
+            <button class="btn btn-info btn-sm text-white" (click)="movimiento(2)" >Siguiente</button>
+          </div>
+          <div class="card p-3">
+            <label for="buscarScript"><i class="fas fa-superscript text-primary"></i> <i> Lista de Scripts</i></label>
+            <input type="text" [(ngModel)]="oBuscarScripts" (keyup)="buscarScripts($event)"  id="buscarScript" name="buscarScript" class="form-control" placeholder="Texto a buscar">
+            <ul class="list-group list-group-flush h200 border mt-3">
+              @for (item of this.lstScripts; track $index) {
+                <li class="list-group-item d-flex justify-content-between" (click)="checkScript(item.idscript)">
+                  <span><i class="fas fa-superscript text-primary"></i> {{item.nombre}}</span>
+
+                  @if(item.checked){
+                    <i class="far fa-check-circle t16 text-success"></i> 
+                  }@else {
+                    <i class="fas fa-minus-circle t16 text-secondary"></i> 
+                  }
+                </li>
+              }
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+  }
+
+  @if(timeline[2].status){
+    <div class="container">
+      <section class="row justify-content-center">
+        <div class="col-12 col-md-6">
+          <div class="d-flex justify-content-between mb-2">
+            <button class="btn btn-info btn-sm text-white" (click)="movimiento(1)" >Anterior</button>
+            <button class="btn btn-info btn-sm text-white" (click)="movimiento(3)" >Siguiente</button>
+          </div>
+          <div class="card p-3">
+            <label for="buscarComandos"><i class="fab fa-wpforms text-primary"></i> <i> Lista de Comandos</i></label>
+            <input type="text" [(ngModel)]="oBuscarComandos" (keyup)="buscarComandos($event)"  id="buscarComandos" name="buscarComandos" class="form-control" placeholder="Texto a buscar">
+            <ul class="list-group list-group-flush h200 border mt-3">
+              @for (item of this.lstComandos; track $index) {
+                <li class="list-group-item d-flex justify-content-between" (click)="checkComandos(item.idtemplate_comando)">
+                  <span><i class="fab fa-wpforms text-primary"></i> {{item.linea_comando}}</span>
+                  @if(item.checked){
+                    <i class="far fa-check-circle t16 text-success"></i> 
+                  }@else {
+                    <i class="fas fa-minus-circle t16 text-secondary"></i> 
+                  }
+                </li>
+              }
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+  }
+
+  @if(timeline[3].status){
+    <div class="container h500">
+      <section class="row justify-content-center">
+        <div class="col-12 col-md-12">
+          <div class="d-flex justify-content-between mb-2">
+            <button class="btn btn-info btn-sm text-white" (click)="movimiento(2)" >Anterior</button>
+            <button class="btn btn-info btn-sm text-white" (click)="movimiento(4)" >Siguiente</button>
+          </div>
+          <div class="card p-3">
+            <label for="buscarComandos"><i class="fab fa-wpforms text-primary"></i> <i> Resumen de recursos seleccionados</i></label>
+            <div class="row mb-2">
+              <label class="bold" for="buscarServer"> <i class="fas fa-server text-primary"></i> <i> Lista de Servidores</i></label>
+            </div>
+            <ul class="list-group" >
+              @for (item of lstServidores; track $index) {
+                @if(item.checked){
+                  <li class="list-group-item d-flex justify-content-between" >
+                    <span class="text-black">{{item.nombre}} </span>
+                    <button (click)="checkServer(item.idservidor)" class="btn btn-link text-white">
+                    <i class="far fa-times-circle t20 text-dark"></i>
+                  </button>
+                  </li>
+                }
+              }
+            </ul>
+
+            <div class="row mb-2 mt-3">
+              <label class="bold" for="buscarServer"><i class="fas fa-superscript text-primary"></i><i> Lista de Scripts</i></label>
+            </div>
+            <ul class="list-group" >
+              @for (item of lstScripts; track $index) {
+                @if(item.checked){
+                  <li class="list-group-item d-flex justify-content-between" >
+                    <span class="text-black">{{item.nombre}} </span>
+                    <button (click)="checkScript(item.idscript)" class="btn btn-link text-white">
+                    <i class="far fa-times-circle t20 text-dark"></i>
+                  </button>
+                  </li>
+                }
+              }
+            </ul>
+
+            <div class="row mb-2 mt-3">
+              <label class="bold" for="buscarServer"><i class="fab fa-wpforms text-primary"></i> <i> Lista de Comandos</i></label>
+            </div>
+            <ul class="list-group" >
+              @for (item of lstComandos; track $index) {
+                @if(item.checked){
+                  <li class="list-group-item d-flex justify-content-between" >
+                    <span class="text-black">{{item.linea_comando}} </span>
+                    <button (click)="checkComandos(item.idtemplate_comando)" class="btn btn-link text-white">
+                    <i class="far fa-times-circle t20 text-dark"></i>
+                  </button>
+                  </li>
+                }
+              }
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+    <br><br><br><br>
+  }
+
+  @if(timeline[4].status){
+    <div class="container-fluid ">
+      <section class="row justify-content-center ">
+        <div class="col-12 col-md-12">
+          <div class="d-flex justify-content-between mb-2">
+            <button class="btn btn-info btn-sm text-white" (click)="movimiento(3)" >Anterior</button>
+            <button class="btn btn-info btn-sm text-white" (click)="movimiento(1)" [disabled]="true" >Siguiente</button>
+          </div>
+          <div class="card p-3">
+            <div class="d-flex justify-content-between mb-2">
+              <label for="buscarComandos"><i class="fab fa-wpforms text-primary"></i> <i> Ejecución de comandos en servidores</i></label>
+              <div>
+                <button class="btn btn-info btn-sm text-white mt-1 mr-1" (click)="ejecutar()" >Ejecutar</button>
+                @if(displayExporta){
+                  <button class="btn btn-info btn-sm text-white mt-1 mr-1" (click)="exportarPDF()" >PDF</button>
+                  <button class="btn btn-info btn-sm text-white mt-1 mr-1" (click)="exportarCSV()" >CSV</button>
+                }
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 h500">
+                <table class="table table-striped mt-1 ">
+                  <thead>
+                    <tr>
+                      <th class="th-normal text-white">Servidor</th>
+                      <th class="th-normal text-white">Comando</th>
+                      <th class="th-normal text-white">Respuesta</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (item of lstProgreso; track $index) {
+                      <tr>
+                        <td>{{item.nombre}}</td>
+                        <td>{{item.comando}}</td>
+                        <td (click)="mirarTexto(item)"><span class="link cursor" >{{item.resultado}}</span></td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+              <!-- <div class="col-12 col-md-3 col-lg-3">
+                <div class="">
+                  <label for="buscarComandos"><i class="fab fa-wpforms text-primary"></i> <i> Registro de logs</i></label>
+                  <div class="h500">
+                    @for (item of lstLogs; track $index) {
+                      <p class="card m-1 p-3">
+                        {{item.fecha}}<br>
+                        {{item.texto}}
+                      </p>
+                    }
+                  </div>
+                </div>
+              </div> -->
+            </div>
+
+          </div>
+        </div>
+      </section>
+    </div>
+  }
+
+
+
+<!-- 
+
+
+   <section class="card">
     <div class="row">
       <div class="col-12 col-md-4 p-5 ">
         <label for="buscarServer"><i class="fas fa-server text-primary"></i><i> Lista de Servidores</i></label>
@@ -130,7 +362,7 @@
       </thead>
     </table>
     <br><br><br><br>
-  </section>
+  </section> -->
 
 
 </div>

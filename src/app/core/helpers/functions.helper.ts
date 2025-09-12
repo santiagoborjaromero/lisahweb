@@ -366,9 +366,13 @@ export class Functions {
     return [data,columnStyles];
   }
 
-  textosLargos(texto:any){
-    let textoTratado = texto;
-    textoTratado = textoTratado.replace(/,/g, ", ")
+  textosLargos(texto:string = ""){
+    let textoTratado:string = texto;
+    try{
+      textoTratado = textoTratado.replace(/,/g, ", ")
+    }catch(err){
+      // console.log("Error textosLargos", err)
+    }
     return textoTratado
   }
 
