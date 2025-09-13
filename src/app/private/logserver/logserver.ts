@@ -28,19 +28,12 @@ ModuleRegistry.registerModules([AllCommunityModule]);
   standalone: true
 })
 export class Logserver {
-  private readonly route = inject(ActivatedRoute);
   private readonly sessions = inject(Sessions);
   private readonly func = inject(Functions);
   private readonly serverSvc = inject(ServidorService);
   private readonly generalSvc = inject(GeneralService);
-  private readonly viewportScroller = inject(ViewportScroller);
-  private readonly mongoSvc = inject(MongoService);
-  private readonly sanitizer = inject(DomSanitizer);
 
   aqui: any | undefined;
-
-  // private webSockets = new Map<number, WebSocket>();
-  // private server = new Map<number, any>();
 
   user:any | undefined;
   work:any | undefined;
@@ -348,6 +341,8 @@ export class Logserver {
     console.log(`↓ LlegoMensaje ${this.work.idservidor}`);
     let evento = JSON.parse(e.data);
 
+    // console.log(evento)
+
     let data = evento.data;
     let status = evento.status;
 
@@ -370,11 +365,15 @@ export class Logserver {
           if (e.id){
             accion = e.id.toString();
             if (accion.indexOf("|")>-1){
-              accion = accion.replace(/|/g, ", ");
             }
+            accion = accion.replace(/[|]/g, " ");
+            accion = accion.replace(/[_]/g, " ");
           }else{
             accion = e.accion;
           }
+          try{
+            accion = this.func.capital(accion);
+          }catch(ex){}
           if (e.id !== undefined){
             let cmd = "";
             try{
