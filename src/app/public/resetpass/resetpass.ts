@@ -1,6 +1,16 @@
+import { Component, inject } from '@angular/core';
+import moment from 'moment';
+import {Global} from '../../core/config/global.config';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Sessions } from '../../core/helpers/session.helper';
+import { Functions } from '../../core/helpers/functions.helper';
+import { environment } from '../../../environments/environment';
+import { Auth } from '../../core/services/auth.service';
+import { NotificationService } from '../../core/services/notification.service';
+import { Encryption } from '../../core/helpers/encryption.helper';
+import { GeneralService } from '../../core/services/general.service';
+
 
 @Component({
   selector: 'app-resetpass',
@@ -10,5 +20,96 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   standalone: true
 })
 export class Resetpass {
+  private readonly sessions = inject(Sessions);
+  private readonly func = inject(Functions);
+  private readonly authSvc = inject(Auth);
+  private readonly notiSvc = inject(NotificationService);
+  private readonly encrypt = inject(Encryption);
+  private readonly generalSvc = inject(GeneralService);
 
-}
+
+  current_year = moment().format("YYYY");
+  costumer = Global.costumer;
+  product = Global.product;
+  acronym = Global.acronym;
+  version = Global.appversion;
+  entorno = environment.production ? "" : "Desarrollo"
+  // remember = signal<boolean>(false);
+  remember: boolean = false;
+  
+  usuario:string =  "";
+  clave:string =  "";
+
+  ngOnInit(): void {
+    this.sessions.set('statusLogged', 'false');
+    this.sessions.set('user',"");
+    this.sessions.set('token',"");
+    this.sessions.set('form',"");
+
+  }
+
+  ngOnDestroy(): void {
+    this.usuario =  "";
+    this.clave =  "";
+  }
+
+  // funcRemember(){
+  //   this.remember = !this.remember
+  //   if (this.remember){
+  //     this.sessions.set("remember", JSON.stringify({usuario:this.formData.usuario, clave:this.formData.clave}))
+  //   }else{
+  //     this.sessions.set("remember",JSON.stringify({usuario:"", clave:""}))
+  //   }
+  // }
+
+  funcSubmit(){
+    // console.log(this.encrypt.decrypt("O6R31xHWQEtXPxTRwEd0sy5T0+Hg67R4+iQAuuxXJ1U="))
+    // return 
+    let msgErr = "";
+    let error = false;
+
+    if (!error && this.usuario.trim() == ''){
+      msgErr = "Debe ingresar el nombre del usuario";
+      error = true;
+    }
+
+    if (error){
+      this.func.showMessage("error", "Autorización", msgErr);
+      return
+    }
+
+    let param = {
+      usuario: this.usuario
+    }
+    this.func.showLoading("Cargando");
+    try{
+      this.generalSvc.apiRest("POST", "sendcod", param, false).subscribe({
+        next: (resp:any) => {
+          this.func.closeSwal();
+          if (resp.status){
+            this.sessions.set('user',"");
+            this.sessions.set('form', JSON.stringify(param));
+            this.sessions.set('caso', "reset");
+            this.func.goRoute("secondfactor");
+          }else{
+            this.func.handleErrors("Autenticacion", resp.message)
+          }
+        },
+        error: (err:any) => {
+          this.func.closeSwal();
+          this.sessions.set('statusLogged', 'false');
+          this.notiSvc.showError(err);
+        }
+    })
+
+    }catch(err){
+    }
+    
+  }
+
+
+  return(){
+    this.func.goRoute("login")
+  }
+
+} 

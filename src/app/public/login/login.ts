@@ -63,8 +63,6 @@ export class Login {
   // }
 
   funcSubmit(){
-    // console.log(this.encrypt.decrypt("O6R31xHWQEtXPxTRwEd0sy5T0+Hg67R4+iQAuuxXJ1U="))
-    // return 
     let msgErr = "";
     let error = false;
 
@@ -103,6 +101,7 @@ export class Login {
               this.sessions.set("user", JSON.stringify(data));
               this.sessions.set('token', data.token);
               this.sessions.set('form', JSON.stringify(param));
+              this.sessions.set('caso', "login");
 
               if (data.config && data.config.segundo_factor_activo == 1){
                 this.func.goRoute("secondfactor")
@@ -131,6 +130,11 @@ export class Login {
     }catch(err){
     }
     
+  }
+
+
+  forgot(){
+    this.func.goRoute("resetpass")
   }
 
 

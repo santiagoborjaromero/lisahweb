@@ -7,6 +7,10 @@ export const routes: Routes = [
         loadComponent: () => import('./public/login/login').then( (c)=> c.Login),
         canActivate: [noauthGuard]
     },
+    { path: "resetpass", 
+        loadComponent: () => import('./public/resetpass/resetpass').then( (c)=> c.Resetpass),
+        canActivate: [noauthGuard]
+    },
     { path: "secondfactor", 
         loadComponent: () => import('./public/secondfactor/secondfactor').then( (c)=> c.Secondfactor),
         canActivate: [noauthGuard]

@@ -10,6 +10,8 @@ import { Titulo } from '../shared/titulo/titulo';
 import { Path } from '../shared/path/path';
 import { Sessions } from '../../core/helpers/session.helper';
 import { GeneralService } from '../../core/services/general.service';
+import Swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-profile',
@@ -93,6 +95,65 @@ export class Profile {
         this.func.closeSwal();
         if (resp.status) {
           this.func.toast("info", "Perfil actualizado con éxito")
+        } else {
+          this.func.showMessage('error', 'Perfil', resp.message);
+        }
+      },
+      error: (err: any) => {
+        this.func.closeSwal();
+        this.func.handleErrors("Scripts", err);
+      },
+    });
+  }
+
+  procesoEspecial(action = '', keyword = 'delete') {
+      Swal.fire({
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        title: 'Pregunta',
+        text: `Para ${action}, debe escribir la palabra ${keyword}.`,
+        icon: 'question',
+        input: 'text',
+        inputPlaceholder: keyword,
+        showCancelButton: true,
+        confirmButtonColor: '#33a0d6',
+        confirmButtonText: 'Confirmar',
+        cancelButtonColor: '#f63c3a',
+        cancelButtonText: 'Cancelar',
+        showClass: { backdrop: 'swal2-noanimation', popup: '' },
+        hideClass: { popup: '' },
+        inputValidator: (text) => {
+          return new Promise((resolve) => {
+            if (text.trim() !== '' && text.trim() == keyword) {
+              resolve('');
+            } else {
+              resolve(`Para ${action}, debe ingresar ${keyword}.`);
+            }
+          });
+        },
+      }).then((res) => {
+        if (res.isConfirmed) {
+          // console.log('action', keyword);
+          if (keyword == 'resetear') {
+            this.procesoResetear();
+          }
+        }
+      });
+    }
+
+  procesoResetear(){
+    let param = {
+      idusuario: this.user.idusuario
+    }
+    this.generalSvc.apiRest("POST", `reset`, param).subscribe({
+      next: (resp: any) => {
+        this.func.closeSwal();
+        if (resp.status) {
+          this.func.showMessage('info', 'Perfil', "Contraseña generada con éxito, redirigiendo al login");
+          setTimeout(()=>{
+            this.sessions.set("statusLogged", "false")
+            this.func.goRoute("login");
+          },3000);
         } else {
           this.func.showMessage('error', 'Perfil', resp.message);
         }

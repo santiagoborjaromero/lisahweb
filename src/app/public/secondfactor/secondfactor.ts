@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Auth } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
+import { GeneralService } from '../../core/services/general.service';
 
 @Component({
   selector: 'app-secondfactor',
@@ -20,6 +21,7 @@ export class Secondfactor {
   private readonly func = inject(Functions);
   private readonly authSvc = inject(Auth);
   private readonly notiSvc = inject(NotificationService);
+  private readonly generalSvc = inject(GeneralService);
 
   current_year = moment().format("YYYY");
   costumer = Global.costumer;
@@ -31,7 +33,13 @@ export class Secondfactor {
   codigo:string = "";
   elapsed: any ;
 
+  caso: any ;
+  form: any ;
+
   ngOnInit(): void {
+    this.form = JSON.parse(this.sessions.get("form"));
+    this.caso = this.sessions.get("caso");
+
     this.onTime();
   }
 
@@ -55,32 +63,57 @@ export class Secondfactor {
 
     this.func.showLoading("Verificando");
 
-    try{
-      this.authSvc.verifyCode(this.codigo).subscribe({
+    if (this.caso == "reset"){  
+      let param = {
+        codigo: this.codigo,
+        usuario: this.form.usuario
+      }
+      this.generalSvc.apiRest("POST", `verificador`, param, false).subscribe({
         next: (resp:any) => {
           this.func.closeSwal();
-          this.codigo= "";
           if (resp.status){
-            this.sessions.set("statusLogged", "true")
-            this.func.goRoute("admin");
+            this.func.showMessage("info", "Verificación", resp.message);
           } else {
             this.func.showMessage("error", "Verificación", resp.message);
-            this.sessions.set('statusLogged', 'false');
-            if (resp.message == "El código de verificación ha expirado"){
-              clearInterval(this.timer);
-              this.func.goRoute("login");
-            }
           }
+          this.sessions.set('statusLogged', 'false');
+          clearInterval(this.timer);
+          this.func.goRoute("login");
         },
         error: (err:any) => {
           this.func.closeSwal();
-          this.sessions.set('statusLogged', 'false');
-          this.notiSvc.showError(err);
+          this.func.handleErrors("Autenticacion", err)
         }
       })
-    }catch(err){
-      // console.log("█", err)
+    }else if (this.caso == "login"){
+      try{
+        this.authSvc.verifyCode(this.codigo).subscribe({
+          next: (resp:any) => {
+            this.func.closeSwal();
+            this.codigo= "";
+            if (resp.status){
+              this.sessions.set("statusLogged", "true")
+              this.func.goRoute("admin");
+            } else {
+              this.func.showMessage("error", "Verificación", resp.message);
+              this.sessions.set('statusLogged', 'false');
+              if (resp.message == "El código de verificación ha expirado"){
+                clearInterval(this.timer);
+                this.func.goRoute("login");
+              }
+            }
+          },
+          error: (err:any) => {
+            this.func.closeSwal();
+            this.sessions.set('statusLogged', 'false');
+            this.notiSvc.showError(err);
+          }
+        })
+      }catch(err){
+        // console.log("█", err)
+      }
     }
+
     
   }
 
