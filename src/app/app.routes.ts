@@ -25,7 +25,6 @@ export const routes: Routes = [
             {path:"menus", loadComponent: () => import('./private/menu/menu').then((c)=> c.Menu)},
             {path:"menu/:id", loadComponent: () => import('./private/menu/edit/edit').then((c)=> c.Edit)},
             
-            {path:"roles", loadComponent: () => import('./private/roles/roles').then((c)=> c.Roles)},
             {path:"variables", loadComponent: () => import('./private/variables/variables').then((c)=> c.Variables)},
             {path:"clientes", loadComponent: () => import('./private/clientes/clientes').then((c)=> c.Clientes)},
             {path:"generalidades", loadComponent: () => import('./private/generalidades/generalidades').then((c)=> c.Generalidades)},
@@ -33,6 +32,7 @@ export const routes: Routes = [
             /** Para todos */
             {path:"dashmonitoreo", loadComponent: () => import('./private/dashmonitor/dashmonitor').then((c)=> c.Dashmonitor)},
             {path:"dashboard", loadComponent: () => import('./private/dashboard/dashboard').then((c)=> c.Dashboard)},
+            {path:"dashmaps", loadComponent: () => import('./private/dashmaps/dashmaps').then((c)=> c.Dashmaps)},
             // {path:"dashusuario", loadComponent: () => import('./private/dashusuario/dashusuario').then((c)=> c.Dashusuario)},
             // {path:"dashsentinel", loadComponent: () => import('./private/dashsuperusuario/dashsuperusuario').then((c)=> c.Dashsuperusuario)},
             {path:"dashoperaciones", loadComponent: () => import('./private/dashsuperusuario/dashsuperusuario').then((c)=> c.Dashsuperusuario)},

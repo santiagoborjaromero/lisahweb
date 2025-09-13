@@ -124,7 +124,7 @@ export class Dashboard {
 
   constructor(){
 
-    console.log(this.alto)
+    // console.log(this.alto)
   }
 
   ngOnInit(): void {
