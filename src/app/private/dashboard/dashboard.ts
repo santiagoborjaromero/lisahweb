@@ -1,5 +1,5 @@
 import { CommonModule, DecimalPipe } from '@angular/common';
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, computed, EventEmitter, inject, output, Output, OutputEmitterRef, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Sessions } from '../../core/helpers/session.helper';
 import { Path } from '../shared/path/path';
@@ -12,19 +12,25 @@ import { Global } from '../../core/config/global.config';
 import { AllCommunityModule, createGrid, GridApi, GridOptions, ICellRendererParams, ModuleRegistry } from 'ag-grid-community';
 import { BaseChartDirective } from 'ng2-charts';
 import moment from 'moment';
+import { Shareddashboard } from '../shared/shareddashboard/shareddashboard';
+
 
 Chart.register(...registerables);
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, Titulo, Path, BaseChartDirective],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, Titulo, Path, Shareddashboard ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
   standalone: true
 })
 export class Dashboard {
   @ViewChild('btnClose') btnClose:any;
+  // @Output() rstServidor = new EventEmitter();
+  // rstServidor: OutputEmitterRef<string> = output<string>();
+
+  rstServidor: any;
 
   private readonly sessions = inject(Sessions);
   private readonly func = inject(Functions);
@@ -58,7 +64,7 @@ export class Dashboard {
   public server_selected: any = {};
 
   alto:string =  ((screen.height / 2)-225).toString();
-  rstServidor: any = { usuarios: [] };
+  
 
   lstCfg: any;
   lstAcciones: Array<any> = [];
@@ -122,10 +128,12 @@ export class Dashboard {
   lstServidoresAsignados: Array<any> = [];
   current_server_name:string ="";
 
-  constructor(){
-
+  constructor(){  
+    this.rstServidor = { usuarios: [] };
     // console.log(this.alto)
   }
+  
+
 
   ngOnInit(): void {
     this.user = JSON.parse(this.sessions.get('user'));
@@ -135,13 +143,10 @@ export class Dashboard {
     ];
     this.titulo = {icono: "fas fa-chart-bar",nombre: "Dashboard Servidor"}
 
-    this.initial();
     this.dataGridStruct();
-    this.dataGridStructProc();
 
     if (this.user.grupo){
       this.getUsuario();
-      this.getAcciones();
     }else{
       if (this.user.cliente){
         //superuser
@@ -150,70 +155,15 @@ export class Dashboard {
       }
     }
 
-    // this.getUltimasAcciones();
   }
 
   ngOnDestroy(): void {
-    console.log("Deteniendo Temporizador")
-    clearInterval(this.tmrMonitor)
-    this.ws.close(1000);
-    this.ws = null
+    // console.log("Deteniendo Temporizador")
+    // clearInterval(this.tmrMonitor)
+    // this.ws.close(1000);
+    // this.ws = null
   }
 
-  initial(){
-    this.work = {
-      host:"",
-      ssh_puerto: 0,
-      agente_puerto:0,
-    }
-
-    this.lstDatos = {
-      uptime: "00:00",
-      hora: "",
-      tasks:{
-        total: 0,
-        running: 0,
-        sleeping: 0,
-        stopped: 0,
-        zombie: 0,
-      },
-      ssh_status: "",
-      disco: {
-        total: "0",
-        usado: "0",
-        libre: "0",
-        porcentaje: "0"
-      },
-      memoria: {
-        total: "0",
-        usado: "0",
-        libre: "0",
-        porcentaje: "0"
-      },
-      cpu: {
-        t1: "0",
-        t5: "0",
-        t15:"0",
-        porcentaje: "0"
-      },
-      ip: "",
-      release: [],
-      servicios: [],
-      infocpu: [],
-      procesos: []
-    }
-
-    this.dataset1.push({
-      data: [],
-      label: "minuto 1",
-      fill: true,
-      tension: 0.1,
-      borderColor: 'black',
-      borderWidth: 0,
-      backgroundColor: 'rgba(41, 219, 204, 0.79)'
-    });
-
-  }
 
   getServidor() {
     /**
@@ -223,14 +173,12 @@ export class Dashboard {
     this.generalSvc.apiRest("GET", `servidores_usuarios/${this.idservidor}`).subscribe({
       next: (resp: any) => {
         this.func.closeSwal();
-        // console.log("→getServidor", resp)
         if (resp.status) {
+          console.log("↓")
           this.rstServidor = resp.data[0];
+          
           this.lstCfg = resp.data[0].cliente.configuracion;
           this.tiempo_refresco = this.lstCfg.tiempo_refresco;
-          console.log("Abriendo Puerto")
-          this.openWS();
-          
         } else {
           this.func.handleErrors("Servidor", resp.message);
         }
@@ -250,7 +198,6 @@ export class Dashboard {
     this.generalSvc.apiRest("GET", `servidores`).subscribe({
       next: (resp: any) => {
         this.func.closeSwal();
-        // console.log("→1←", resp)
         if (resp.status) {
           resp.data.forEach((e:any) => {
             if (e.estado == 1){
@@ -279,7 +226,12 @@ export class Dashboard {
         this.func.closeSwal();
         // console.log("█", resp)
         if (resp.status) {
-          this.lstServidoresAsignados = resp.data[0].servidores;
+          resp.data[0].servidores.forEach((e:any) => {
+            if (e.estado == 1){
+              this.lstServidoresAsignados.push(e);
+            }
+          });
+          // this.lstServidoresAsignados = resp.data[0].servidores;
           this.idservidor = this.lstServidoresAsignados[0].idservidor;
           this.activaServidor(this.idservidor);
           this.refreshAll()
@@ -308,405 +260,367 @@ export class Dashboard {
     this.refreshAll();
   }
 
-  getAcciones() {
 
-    this.generalSvc.apiRest("GET", `acciones_audit/${this.user.idusuario}`).subscribe({
-      next: (resp: any) => {
-        this.func.closeSwal();
-        // console.log(resp)
-        if (resp.status) {
-          this.lstAcciones = resp.data;
-        } else {
-          this.func.handleErrors('Usuario', resp.message);
-        }
-      },
-      error: (err: any) => {
-        this.func.closeSwal();
-        this.func.handleErrors('Usuario', err);
-      },
-    });
-  }
+  // graphCPU(m1:any="0", m5:any="0", m15:any="0"){
+  //   // let dataset:any = [];
+  //   let labels:any =  ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20"];
+  //   m1 = parseFloat(m1);
+  //   m5 = parseFloat(m5);
+  //   m15 = parseFloat(m15);
 
-  getUltimasAcciones() {
-    this.generalSvc.apiRest("GET", `ultimas_acciones_audit/${this.user.idusuario}`).subscribe({
-      next: (resp: any) => {
-        this.func.closeSwal();
-        if (resp.status) {
-          resp.data.forEach((e:any) => {
-            e["fecha"] = moment(e.created_at).format("YYYY-MM-DD HH:mm:ss");
-            this.lstUltimasAcciones.push(e);
-          });
-        } else {
-          this.func.handleErrors( 'Usuario', resp.message);
-        }
-      },
-      error: (err: any) => {
-        this.func.closeSwal();
-        this.func.handleErrors('Usuario', err);
-      },
-    });
-  }
+  //   this.lstCpuData1.splice(0,1);
+  //   this.lstCpuData1.push(m1);
 
-  graphCPU(m1:any="0", m5:any="0", m15:any="0"){
-    // let dataset:any = [];
-    let labels:any =  ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20"];
-    m1 = parseFloat(m1);
-    m5 = parseFloat(m5);
-    m15 = parseFloat(m15);
+  //   this.dataset1[0].data =  this.lstCpuData1;
+  //   this.cpuChartData  = {
+  //     labels: labels,
+  //     datasets: this.dataset1
+  //   }
+  // }
 
-    this.lstCpuData1.splice(0,1);
-    this.lstCpuData1.push(m1);
+  // startMonitor(){
+  //   console.log("Iniciando")
+  //   this.playMonitor = true;
+  //   this.onSendCommands();
+  //   // this.tmrMonitor = setInterval(() => {
+  //   //   this.onSendCommands();
+  //   // }, this.tiempo_refresco * 1000);
+  // }
 
-    this.dataset1[0].data =  this.lstCpuData1;
-    this.cpuChartData  = {
-      labels: labels,
-      datasets: this.dataset1
-    }
-  }
+  // stopMonitor(){
+  //   console.log("Deteniendo")
+  //   this.agente_status = "Deteniendo ...";
+  //   this.playMonitor = false;
+  //   this.lstDatos.procesos = [];
+  //   this.initial();
+  //   // clearInterval(this.tmrMonitor);
+  //   // this.ws.close(1000)
+  // }
 
-  startMonitor(){
-    console.log("Iniciando")
-    this.playMonitor = true;
-    this.onSendCommands();
-    this.tmrMonitor = setInterval(() => {
-      this.onSendCommands();
-    }, this.tiempo_refresco * 1000);
-  }
+  // openWS() {
+  //   this.agente_status = "Conectando ...";
+  //   const token = this.sessions.get('token');
+  //   let url = `ws://${this.work.host}:${this.work.agente_puerto}/ws?token=${token}`;
+  //   try{
+  //     this.ws = new WebSocket(url);
+  //     this.ws.onopen = (event: any) => this.onOpenListener(event);
+  //     this.ws.onmessage = (event: any) => this.onMessageListener(event);
+  //     this.ws.onclose = (event: any) => this.onCloseListener(event);
+  //     this.ws.onerror = (event: any) => this.onErrorListener(event);
+  //   }catch(ex){}
+  // }
 
-  stopMonitor(){
-    console.log("Deteniendo")
-    this.agente_status = "Deteniendo ...";
-    this.playMonitor = false;
-    this.lstDatos.procesos = [];
-    this.initial();
-    clearInterval(this.tmrMonitor);
-    this.ws.close(1000)
-  }
+  // onOpenListener(event: any) {
+  //   let status = '';
+  //   if (event.type == 'open') {
+  //     console.log(`√ Conectado ${this.work.idservidor}`);
+  //     this.agente_status = "Conectado";
+  //     this.work.healthy_agente = 'OK|Conectado';
+  //     this.playMonitor=true;
+  //     this.startMonitor();
+  //   } else {
+  //     this.agente_status = "No se estableció conexion con Sentinel";
+  //     this.func.closeSwal()
+  //     console.log(`X Desconectado ${this.work.idservidor}`);
+  //     this.work.agente_status = 'FAIL|Desconectado';
+  //     setTimeout(()=>{
+  //       console.log("Reintentando conexion")
+  //       this.initial();
+  //     },10000)
+  //   }
+  // }
 
-  openWS() {
-    this.agente_status = "Conectando ...";
-    const token = this.sessions.get('token');
-    let url = `ws://${this.work.host}:${this.work.agente_puerto}/ws?token=${token}`;
-    try{
-      this.ws = new WebSocket(url);
-      this.ws.onopen = (event: any) => this.onOpenListener(event);
-      this.ws.onmessage = (event: any) => this.onMessageListener(event);
-      this.ws.onclose = (event: any) => this.onCloseListener(event);
-      this.ws.onerror = (event: any) => this.onErrorListener(event);
-    }catch(ex){}
-  }
+  // onCloseListener(event: any) {
+  //   this.func.closeSwal()
+  //   console.log(`X Desconectado ${this.work.idservidor}`);
+  //   if (event.code == 1000){
+  //     this.agente_status = "Desconectado manualmente";
+  //     this.ws_error = 0;
+  //   }else{
+  //     this.work.healthy_agente = 'FAIL|Desconectado';
+  //     this.agente_status = "Desconectado";
+  //     this.loading = false;
+  //     this.playMonitor=false;
+  //     if (this.reconnect && this.ws_error < this.ws_error_limit){
+  //       this.ws_error ++;
+  //       setTimeout(()=>{
+  //         this.initial();
+  //       },1000)
+  //     }
+  //   }
+  // }
 
-  onOpenListener(event: any) {
-    let status = '';
-    if (event.type == 'open') {
-      console.log(`√ Conectado ${this.work.idservidor}`);
-      this.agente_status = "Conectado";
-      this.work.healthy_agente = 'OK|Conectado';
-      this.playMonitor=true;
-      this.startMonitor();
-    } else {
-      this.agente_status = "No se estableció conexion con Sentinel";
-      this.func.closeSwal()
-      console.log(`X Desconectado ${this.work.idservidor}`);
-      this.work.agente_status = 'FAIL|Desconectado';
-      setTimeout(()=>{
-        console.log("Reintentando conexion")
-        this.initial();
-      },10000)
-    }
-  }
+  // onErrorListener(event: any) {}
 
-  onCloseListener(event: any) {
-    this.func.closeSwal()
-    console.log(`X Desconectado ${this.work.idservidor}`);
-    if (event.code == 1000){
-      this.agente_status = "Desconectado manualmente";
-      this.ws_error = 0;
-    }else{
-      this.work.healthy_agente = 'FAIL|Desconectado';
-      this.agente_status = "Desconectado";
-      this.loading = false;
-      this.playMonitor=false;
-      if (this.reconnect && this.ws_error < this.ws_error_limit){
-        this.ws_error ++;
-        setTimeout(()=>{
-          this.initial();
-        },1000)
-      }
-    }
-  }
+  // onMessageListener(e: any) {
+  //   console.log(`√ LlegoMensaje ${this.work.idservidor}`);
+  //   let data = JSON.parse(e.data);
+  //   // console.log(data)
+  //   let r = "";
+  //   let acum:any = [];
+  //   let rd:any = [];
+  //   let aux:any | undefined;
+  //   let drep:any;
+  //   let daux:any;
+  //   data.data.forEach((d:any)=>{
+  //     d.respuesta= atob(d.respuesta);
+  //     switch(d.id){
+  //       case "top":
+  //         this.lstDatos.procesos = [];
+  //         let datatop = d.respuesta.split("\n");
+  //         datatop.forEach((dt:any, idx:any)=>{
+  //           switch(idx){
+  //             case 0: //top
+  //               drep = dt.replace(/,/g,"");
+  //               daux = drep.replace(/-/g,"").split(" ");
+  //               // console.log(daux)
+  //               this.lstDatos.hora = daux[2]; //hora
+  //               this.lstDatos.uptime = daux[4]+ " " + daux[5]; //uptime
+  //               let t1;
+  //               let t5;
+  //               let t15;
+  //               if (daux[10].indexOf("average")>-1){
+  //                 t1 =  daux[11];
+  //                 t5 =  daux[12];
+  //                 t15 =  daux[13];
+  //               }else if (daux[11].indexOf("average")>-1){
+  //                 t1 =  daux[12];
+  //                 t5 =  daux[13];
+  //                 t15 =  daux[14];
+  //               }
+  //               this.lstDatos.cpu.t1 = t1;
+  //               this.lstDatos.cpu.t5 = t5;
+  //               this.lstDatos.cpu.t15 = t15;
+  //               this.graphCPU(t1, t5, t15);
+  //               break;
+  //             case 1: // Tasks
+  //               drep = dt.replace(/,/g,"");
+  //               daux = drep.replace(/-/g,"").split(" ");
+  //               // console.log(daux)
+  //               this.lstDatos.tasks.total = daux[2];
+  //               this.lstDatos.tasks.running = daux[6];
+  //               this.lstDatos.tasks.sleeping = daux[9];
+  //               this.lstDatos.tasks.stopped = daux[13];
+  //               this.lstDatos.tasks.zombie = daux[17];
+  //               break;
+  //             case 2: // %CPU
+  //               daux = dt.split(",")[3].replace(" id", "");
+  //               this.lstDatos.cpu.porcentaje = this.func.numberFormat(100 - parseFloat(daux),2); 
+  //               break;
+  //             case 3: //MIB MEM
+  //                daux = dt.replace("MiB Mem :  ", "");
+  //                daux = daux.replace("total", "");
+  //                daux = daux.replace("free", "");
+  //                daux = daux.replace("used", "");
+  //                daux = daux.replace("buff/cache", "");
+  //                daux = daux.replace(/\ /g, "");
+  //                drep = daux.split(",");
+  //                this.lstDatos.memoria.total = drep[0]; 
+  //                this.lstDatos.memoria.usado = drep[2]; 
+  //                this.lstDatos.memoria.libre = drep[1]; 
+  //                this.lstDatos.memoria.porcentaje = this.func.numberFormat( (   (parseFloat(drep[2]) / parseFloat(drep[0]))*100  ),2); 
+  //               //  console.log(drep);
+  //               break;
+  //             case 4: // Swap
+  //               break;
+  //             case 5: //vacio
+  //               break;
+  //             case 6: //Tituloprocesos
+  //               break;
+  //             default: //Procesos
+  //               daux = dt.split(" ");
+  //               drep = [];
+  //               daux.forEach((d:any)=>{
+  //                 if (d.trim() != ""){
+  //                   drep.push(d)
+  //                 }
+  //               })
+  //               if (drep.length>0){
+  //                 let command = drep.slice(11, 15).join(" ");
+  //                 this.lstDatos.procesos.push({
+  //                   "PID" : drep[0],
+  //                   "USER" : drep[1],
+  //                   "PR" : drep[2],
+  //                   "NI" : drep[3],
+  //                   "VIRT" : drep[4],
+  //                   "RES" : drep[5],
+  //                   "SHR" : drep[6],
+  //                   "S" : drep[7],
+  //                   "CPU" : parseFloat(drep[8]),
+  //                   "MEM" : parseFloat(drep[9]),
+  //                   "TIME" : drep[10],
+  //                   "COMMAND" : command
+  //                 })
+  //               }
+  //               this.refreshAllProc();
+  //               break;
 
-  onErrorListener(event: any) {}
+  //           }
+  //         })
+  //         break;
+  //       case "disco":
+  //         r = d.respuesta.split(" ")
+  //         this.lstDatos.disco.total = r[0];
+  //         this.lstDatos.disco.usado = r[1];
+  //         this.lstDatos.disco.libre = r[2];
+  //         this.lstDatos.disco.porcentaje = r[3]
+  //         break;
+  //       case "memoria":
+  //         r = d.respuesta.split(" ")
+  //         this.lstDatos.memoria.total = r[0];
+  //         this.lstDatos.memoria.usado = r[1];
+  //         this.lstDatos.memoria.libre = r[2];
+  //         let used = parseFloat(r[1].replace("Gi",""));
+  //         let total = parseFloat(r[0].replace("Gi",""));
+  //         // console.log(used, total)
+  //         let a3 = (used / total) * 100;
+  //         this.lstDatos.memoria.porcentaje = this.func.numberFormat(a3,2).toString();
+  //         break;
+  //       case "cpu":
+  //         r = d.respuesta.split(" ")
+  //         this.lstDatos.cpu.t1 = r[0];
+  //         this.lstDatos.cpu.t5 = r[1];
+  //         this.lstDatos.cpu.t15 = r[2];
+  //         // console.log(this.lstDatos)
+  //         this.graphCPU(r[0], r[1], r[2]);
+  //         break;
+  //       case "cpu_usado":
+  //         this.lstDatos.cpu.porcentaje = (this.func.numberFormat(parseFloat(d.respuesta.replace("\n","")),2)).toString()
+  //         break;
+  //       case "uptime":
+  //         this.lstDatos.uptime = d.respuesta;
+  //         break;
+  //       case "release":
+  //         aux = (d.respuesta.split("\n"));
+  //         acum = [];
+  //         aux.forEach((rs:any)=>{
+  //           if (rs!=""){
+  //             let rss = rs.replace(/"/g,"");
+  //             rss = rss.split("=");
+  //             acum.push(rss)
+  //           }
+  //         })
+  //         this.lstDatos.release = acum;
+  //         break;
+  //       case "infocpu":
+  //         aux = (d.respuesta.split("\n"));
+  //         acum = [];
+  //         aux.forEach((rs:any)=>{
+  //           if (rs != ""){
+  //             let rss = rs.replace(/"/g,"");
+  //             rss = rss.split(":");
+  //             acum.push(rss)
+  //           }
+  //         })
+  //         this.lstDatos.infocpu = acum;
+  //         break;
+  //       case "servicios":
+  //         rd = (d.respuesta.split("\n"));
+  //         acum = [];
+  //         rd.forEach((rs:any)=>{
+  //           if (rs.substring(0,1)!="●"){
+  //             let rss = rs.split(",");
+  //             if (rss[0]!="") acum.push(rss)
+  //           }
+  //         })
+  //         this.lstDatos.servicios = acum;
+  //         break;
+  //       case "procesos":
+  //         rd = (d.respuesta.split("\n"));
+  //         acum = [];
+  //         rd.forEach((rs:any)=>{
+  //           let rss = rs.split(",");
+  //           if (rss[0]!="" && rss[0]!="PID") acum.push({
+  //             "PID" : rss[0],
+  //             "USER" : rss[1],
+  //             "PR" : rss[2],
+  //             "NI" : rss[3],
+  //             "VIRT" : rss[4],
+  //             "RES" : rss[5],
+  //             "SHR" : rss[6],
+  //             "S" : rss[7],
+  //             "CPU" : parseFloat(rss[8]),
+  //             "MEM" : parseFloat(rss[9]),
+  //             "TIME" : rss[10],
+  //             "COMMAND" : rss[11],
+  //           })
+  //         })
+  //       // console.log(acum)
+  //         this.lstDatos.procesos = acum;
+  //         this.refreshAllProc();
+  //         break;
+  //       case "ip":
+  //         daux = d.respuesta.split("\n");
+  //         drep = daux[1].split(",")[8];
+  //         this.lstDatos.ip = drep;
+  //         break;
+  //     }
+  //   });
+  // }
 
-  onMessageListener(e: any) {
-    console.log(`√ LlegoMensaje ${this.work.idservidor}`);
-    let data = JSON.parse(e.data);
-    // console.log(data)
-    let r = "";
-    let acum:any = [];
-    let rd:any = [];
-    let aux:any | undefined;
-    let drep:any;
-    let daux:any;
-    data.data.forEach((d:any)=>{
-      d.respuesta= atob(d.respuesta);
-      switch(d.id){
-        case "top":
-          this.lstDatos.procesos = [];
-          let datatop = d.respuesta.split("\n");
-          datatop.forEach((dt:any, idx:any)=>{
-            switch(idx){
-              case 0: //top
-                drep = dt.replace(/,/g,"");
-                daux = drep.replace(/-/g,"").split(" ");
-                // console.log(daux)
-                this.lstDatos.hora = daux[2]; //hora
-                this.lstDatos.uptime = daux[4]+ " " + daux[5]; //uptime
-                let t1;
-                let t5;
-                let t15;
-                if (daux[10].indexOf("average")>-1){
-                  t1 =  daux[11];
-                  t5 =  daux[12];
-                  t15 =  daux[13];
-                }else if (daux[11].indexOf("average")>-1){
-                  t1 =  daux[12];
-                  t5 =  daux[13];
-                  t15 =  daux[14];
-                }
-                this.lstDatos.cpu.t1 = t1;
-                this.lstDatos.cpu.t5 = t5;
-                this.lstDatos.cpu.t15 = t15;
-                this.graphCPU(t1, t5, t15);
-                break;
-              case 1: // Tasks
-                drep = dt.replace(/,/g,"");
-                daux = drep.replace(/-/g,"").split(" ");
-                // console.log(daux)
-                this.lstDatos.tasks.total = daux[2];
-                this.lstDatos.tasks.running = daux[6];
-                this.lstDatos.tasks.sleeping = daux[9];
-                this.lstDatos.tasks.stopped = daux[13];
-                this.lstDatos.tasks.zombie = daux[17];
-                break;
-              case 2: // %CPU
-                daux = dt.split(",")[3].replace(" id", "");
-                this.lstDatos.cpu.porcentaje = this.func.numberFormat(100 - parseFloat(daux),2); 
-                break;
-              case 3: //MIB MEM
-                 daux = dt.replace("MiB Mem :  ", "");
-                 daux = daux.replace("total", "");
-                 daux = daux.replace("free", "");
-                 daux = daux.replace("used", "");
-                 daux = daux.replace("buff/cache", "");
-                 daux = daux.replace(/\ /g, "");
-                 drep = daux.split(",");
-                 this.lstDatos.memoria.total = drep[0]; 
-                 this.lstDatos.memoria.usado = drep[2]; 
-                 this.lstDatos.memoria.libre = drep[1]; 
-                 this.lstDatos.memoria.porcentaje = this.func.numberFormat( (   (parseFloat(drep[2]) / parseFloat(drep[0]))*100  ),2); 
-                //  console.log(drep);
-                break;
-              case 4: // Swap
-                break;
-              case 5: //vacio
-                break;
-              case 6: //Tituloprocesos
-                break;
-              default: //Procesos
-                daux = dt.split(" ");
-                drep = [];
-                daux.forEach((d:any)=>{
-                  if (d.trim() != ""){
-                    drep.push(d)
-                  }
-                })
-                if (drep.length>0){
-                  let command = drep.slice(11, 15).join(" ");
-                  this.lstDatos.procesos.push({
-                    "PID" : drep[0],
-                    "USER" : drep[1],
-                    "PR" : drep[2],
-                    "NI" : drep[3],
-                    "VIRT" : drep[4],
-                    "RES" : drep[5],
-                    "SHR" : drep[6],
-                    "S" : drep[7],
-                    "CPU" : parseFloat(drep[8]),
-                    "MEM" : parseFloat(drep[9]),
-                    "TIME" : drep[10],
-                    "COMMAND" : command
-                  })
-                }
-                this.refreshAllProc();
-                break;
+  // onSendCommands(){
+  //   let params = {
+  //     action: "comando",
+  //     identificador: {
+  //       idcliente: this.user.idcliente,
+  //       idusuario: this.user.idusuario,
+  //       idservidor: this.work.idservidor,
+  //       usuario: this.user.usuario,
+  //       id: Math.floor(Math.random() * (9999999999999999 - 1000000000000000 + 1)) + 1000000000000000
+  //     },
+  //     data: [
+  //       {"id": "top", "cmd":"top -b -n1 -em"},
+  //       {"id": "disco", "cmd":" df -hT | grep -E 'ext4|xfs|btrfs' | awk '{print $3, $4, $5, $6}'"},
+  //       // {"id": "cpu", "cmd":"cat /proc/loadavg | awk '{print $1, $2, $3}'"},
+  //       // {"id": "cpu_usado", "cmd":`sar -u | grep '^[0-9]' | awk '{sum+=$3; count++} END {if(count>0) print sum/count}'`},
+  //       // {"id": "memoria", "cmd":"free -h | grep -E 'Mem' | awk '{print $2, $3, $4}'"},
+  //       // {"id": "uptime", "cmd":'sec=$(( $(date +%s) - $(date -d "$(ps -p 1 -o lstart=)" +%s) )); d=$((sec/86400)); h=$(( (sec%86400)/3600 )); m=$(( (sec%3600)/60 )); s=$((sec%60)); printf "%02d:%02d:%02d:%02d\n" $d $h $m $s'},
+  //       // {"id": "procesos", "cmd":`top -b -n1 -em | grep -E "^( *PID| *[0-9]+)" | sed 's/  */ /g' | sed 's/^ *//' | tr ' ' ',' | sed 's/^,*//' | sed 's/,$//'`},
+  //       {"id": "ip", "cmd":`ip route | column -t | awk '{print $1","$2","$3","$4","$5","$6","$7","$8","$9}'`},
+  //       {"id": "release", "cmd":`cat /etc/os-release`},
+  //       // {"id": "procesos", "cmd":`top -b -n1 -em | grep -E "^( *PID| *[0-9]+)" | sed 's/  */ /g' | sed 's/^ *//' | sort -t' ' -k5 -nr | tr ' ' ',' | sed 's/^,*//' | sed 's/,$//'`},
+  //     ]
 
-            }
-          })
-          break;
-        case "disco":
-          r = d.respuesta.split(" ")
-          this.lstDatos.disco.total = r[0];
-          this.lstDatos.disco.usado = r[1];
-          this.lstDatos.disco.libre = r[2];
-          this.lstDatos.disco.porcentaje = r[3]
-          break;
-        case "memoria":
-          r = d.respuesta.split(" ")
-          this.lstDatos.memoria.total = r[0];
-          this.lstDatos.memoria.usado = r[1];
-          this.lstDatos.memoria.libre = r[2];
-          let used = parseFloat(r[1].replace("Gi",""));
-          let total = parseFloat(r[0].replace("Gi",""));
-          // console.log(used, total)
-          let a3 = (used / total) * 100;
-          this.lstDatos.memoria.porcentaje = this.func.numberFormat(a3,2).toString();
-          break;
-        case "cpu":
-          r = d.respuesta.split(" ")
-          this.lstDatos.cpu.t1 = r[0];
-          this.lstDatos.cpu.t5 = r[1];
-          this.lstDatos.cpu.t15 = r[2];
-          // console.log(this.lstDatos)
-          this.graphCPU(r[0], r[1], r[2]);
-          break;
-        case "cpu_usado":
-          this.lstDatos.cpu.porcentaje = (this.func.numberFormat(parseFloat(d.respuesta.replace("\n","")),2)).toString()
-          break;
-        case "uptime":
-          this.lstDatos.uptime = d.respuesta;
-          break;
-        case "release":
-          aux = (d.respuesta.split("\n"));
-          acum = [];
-          aux.forEach((rs:any)=>{
-            if (rs!=""){
-              let rss = rs.replace(/"/g,"");
-              rss = rss.split("=");
-              acum.push(rss)
-            }
-          })
-          this.lstDatos.release = acum;
-          break;
-        case "infocpu":
-          aux = (d.respuesta.split("\n"));
-          acum = [];
-          aux.forEach((rs:any)=>{
-            if (rs != ""){
-              let rss = rs.replace(/"/g,"");
-              rss = rss.split(":");
-              acum.push(rss)
-            }
-          })
-          this.lstDatos.infocpu = acum;
-          break;
-        case "servicios":
-          rd = (d.respuesta.split("\n"));
-          acum = [];
-          rd.forEach((rs:any)=>{
-            if (rs.substring(0,1)!="●"){
-              let rss = rs.split(",");
-              if (rss[0]!="") acum.push(rss)
-            }
-          })
-          this.lstDatos.servicios = acum;
-          break;
-        case "procesos":
-          rd = (d.respuesta.split("\n"));
-          acum = [];
-          rd.forEach((rs:any)=>{
-            let rss = rs.split(",");
-            if (rss[0]!="" && rss[0]!="PID") acum.push({
-              "PID" : rss[0],
-              "USER" : rss[1],
-              "PR" : rss[2],
-              "NI" : rss[3],
-              "VIRT" : rss[4],
-              "RES" : rss[5],
-              "SHR" : rss[6],
-              "S" : rss[7],
-              "CPU" : parseFloat(rss[8]),
-              "MEM" : parseFloat(rss[9]),
-              "TIME" : rss[10],
-              "COMMAND" : rss[11],
-            })
-          })
-        // console.log(acum)
-          this.lstDatos.procesos = acum;
-          this.refreshAllProc();
-          break;
-        case "ip":
-          daux = d.respuesta.split("\n");
-          drep = daux[1].split(",")[8];
-          this.lstDatos.ip = drep;
-          break;
-      }
-    });
-  }
+  //   };
+  //   if (this.connState()){
+  //     console.log("↑ Enviando")
+  //     this.ws.send(JSON.stringify(params));
+  //   }
+  // }
 
-  onSendCommands(){
-    let params = {
-      action: "comando",
-      identificador: {
-        idcliente: this.user.idcliente,
-        idusuario: this.user.idusuario,
-        idservidor: this.work.idservidor,
-        usuario: this.user.usuario,
-        id: Math.floor(Math.random() * (9999999999999999 - 1000000000000000 + 1)) + 1000000000000000
-      },
-      data: [
-        {"id": "top", "cmd":"top -b -n1 -em"},
-        {"id": "disco", "cmd":" df -hT | grep -E 'ext4|xfs|btrfs' | awk '{print $3, $4, $5, $6}'"},
-        // {"id": "cpu", "cmd":"cat /proc/loadavg | awk '{print $1, $2, $3}'"},
-        // {"id": "cpu_usado", "cmd":`sar -u | grep '^[0-9]' | awk '{sum+=$3; count++} END {if(count>0) print sum/count}'`},
-        // {"id": "memoria", "cmd":"free -h | grep -E 'Mem' | awk '{print $2, $3, $4}'"},
-        // {"id": "uptime", "cmd":'sec=$(( $(date +%s) - $(date -d "$(ps -p 1 -o lstart=)" +%s) )); d=$((sec/86400)); h=$(( (sec%86400)/3600 )); m=$(( (sec%3600)/60 )); s=$((sec%60)); printf "%02d:%02d:%02d:%02d\n" $d $h $m $s'},
-        // {"id": "procesos", "cmd":`top -b -n1 -em | grep -E "^( *PID| *[0-9]+)" | sed 's/  */ /g' | sed 's/^ *//' | tr ' ' ',' | sed 's/^,*//' | sed 's/,$//'`},
-        {"id": "ip", "cmd":`ip route | column -t | awk '{print $1","$2","$3","$4","$5","$6","$7","$8","$9}'`},
-        {"id": "release", "cmd":`cat /etc/os-release`},
-        // {"id": "procesos", "cmd":`top -b -n1 -em | grep -E "^( *PID| *[0-9]+)" | sed 's/  */ /g' | sed 's/^ *//' | sort -t' ' -k5 -nr | tr ' ' ',' | sed 's/^,*//' | sed 's/,$//'`},
-      ]
+  // connState = () => {
+  //   let m = false;
 
-    };
-    if (this.connState()){
-      console.log("↑ Enviando")
-      this.ws.send(JSON.stringify(params));
-    }
-  }
+  //   if (this.ws === undefined){
+  //      m = false;
+  //   }else{
+  //     try{
+  //       switch (this.ws.readyState){
+  //         case 0:
+  //           //m = "Pepper has been created. The connection is not yet open.";
+  //           m = false;
+  //           break;
+  //         case 1:
+  //           //m = "The connection is open and ready to communicate.";
+  //           m = true;
+  //           break;
+  //         case 2:
+  //           //m = "The connection is in the process of closing.";
+  //           m = false;
+  //           break;
+  //         case 3:
+  //           //m = "The connection is closed or couldn't be opened.";
+  //           m = false;
+  //           break;
+  //       }
+  //     }catch(err){
+  //       m = false;
+  //     }
+  //   }
 
-  connState = () => {
-    let m = false;
-
-    if (this.ws === undefined){
-       m = false;
-    }else{
-      try{
-        switch (this.ws.readyState){
-          case 0:
-            //m = "Pepper has been created. The connection is not yet open.";
-            m = false;
-            break;
-          case 1:
-            //m = "The connection is open and ready to communicate.";
-            m = true;
-            break;
-          case 2:
-            //m = "The connection is in the process of closing.";
-            m = false;
-            break;
-          case 3:
-            //m = "The connection is closed or couldn't be opened.";
-            m = false;
-            break;
-        }
-      }catch(err){
-        m = false;
-      }
-    }
-
-    this.light_ws = m;
-    return m;
-  }
+  //   this.light_ws = m;
+  //   return m;
+  // }
 
 
   dataGridStruct() {
@@ -792,14 +706,13 @@ export class Dashboard {
     this.gridApi!.refreshCells(params);
   }
 
-
   renderAccion(params: ICellRendererParams) {
     if (params.data.idservidor != this.idservidor){
       const button = document.createElement('button');
       button.className = 'btn btn-link text-primary';
       button.innerHTML = '<i role="img" class="fas fa-plus-circle t30"></i>';
       button.addEventListener('click', () => {
-        this.stopMonitor();
+        // this.stopMonitor();
             
         setTimeout(()=>{
           this.activaServidor(params.data.idservidor);
@@ -812,133 +725,133 @@ export class Dashboard {
   }
 
 
-  dataGridStructProc() {
-    let that = this;
-    this.gridOptionsProc = {
-      rowData: [],
-      pagination: true,
-      paginationPageSize: this.paginacion,
-      paginationPageSizeSelector: [5, 10, 50, 100, 200, 300, 1000],
-      // rowSelection: 'single',
-      rowHeight: 40,
-      defaultColDef: {
-        flex: 1,
-        minWidth: 50,
-        filter: false,
-        headerClass: 'bold',
-        floatingFilter: false,
-        resizable: false,
-        sortable: false,
-        wrapText: true,
-        wrapHeaderText: true,
-        suppressAutoSize: true,
-        autoHeaderHeight: true,
-        suppressSizeToFit: true,
-      },
-      onRowClicked: (event: any) => {
-        this.id_selected = event.data.PID;
-      },
-      columnDefs: [
-        {
-          headerName: 'PID',
-          headerClass: ["th-center", "th-normal"],
-          field: 'PID',
-          filter: false,
-        },
-        {
-          headerName: 'USER',
-          headerClass: ["th-center", "th-normal"],
-          field: 'USER',
-          cellClass: 'text-start',
-          filter: true,
-        },
-        {
-          headerName: 'PR',
-          headerClass: ["th-center", "th-normal"],
-          field: 'PR',
-          cellClass: 'text-start',
-          filter: true,
-        },
-        {
-          headerName: 'NI',
-          headerClass: ["th-center", "th-normal"],
-          field: 'NI',
-          cellClass: 'text-start',
-          filter: true,
-        },
-        {
-          headerName: 'VIRT',
-          headerClass: ["th-center", "th-normal"],
-          field: 'VIRT',
-          cellClass: 'text-start',
-          filter: true,
-        },
-        {
-          headerName: 'RES',
-          headerClass: ["th-center", "th-normal"],
-          field: 'RES',
-          cellClass: 'text-start',
-          filter: true,
-        },
-        {
-          headerName: 'SHR',
-          headerClass: ["th-center", "th-normal"],
-          field: 'SHR',
-          cellClass: 'text-start',
-          filter: true,
-        },
-        {
-          headerName: 'S',
-          headerClass: ["th-center", "th-normal"],
-          field: 'S',
-          cellClass: 'text-start',
-          filter: true,
-        },
-        {
-          headerName: '%CPU',
-          headerClass: ["th-center", "th-normal"],
-          field: 'CPU',
-          cellClass: 'text-start',
-          filter: true,
-          sortable: true
-        },
-        {
-          headerName: '%MEM',
-          headerClass: ["th-center", "th-normal"],
-          field: 'MEM',
-          cellClass: 'text-start',
-          filter: true,
-          sortable: true
-        },
-        {
-          headerName: 'TIME+',
-          headerClass: ["th-center", "th-normal"],
-          field: 'TIME',
-          cellClass: 'text-start',
-          filter: true,
-          sortable: true
-        },
-        {
-          headerName: 'COMMAND',
-          headerClass: ["th-center", "th-normal"],
-          field: 'COMMAND',
-          cellClass: 'text-start',
-          filter: true,
-        },
-      ],
-    };
+  // dataGridStructProc() {
+  //   let that = this;
+  //   this.gridOptionsProc = {
+  //     rowData: [],
+  //     pagination: true,
+  //     paginationPageSize: this.paginacion,
+  //     paginationPageSizeSelector: [5, 10, 50, 100, 200, 300, 1000],
+  //     // rowSelection: 'single',
+  //     rowHeight: 40,
+  //     defaultColDef: {
+  //       flex: 1,
+  //       minWidth: 50,
+  //       filter: false,
+  //       headerClass: 'bold',
+  //       floatingFilter: false,
+  //       resizable: false,
+  //       sortable: false,
+  //       wrapText: true,
+  //       wrapHeaderText: true,
+  //       suppressAutoSize: true,
+  //       autoHeaderHeight: true,
+  //       suppressSizeToFit: true,
+  //     },
+  //     onRowClicked: (event: any) => {
+  //       this.id_selected = event.data.PID;
+  //     },
+  //     columnDefs: [
+  //       {
+  //         headerName: 'PID',
+  //         headerClass: ["th-center", "th-normal"],
+  //         field: 'PID',
+  //         filter: false,
+  //       },
+  //       {
+  //         headerName: 'USER',
+  //         headerClass: ["th-center", "th-normal"],
+  //         field: 'USER',
+  //         cellClass: 'text-start',
+  //         filter: true,
+  //       },
+  //       {
+  //         headerName: 'PR',
+  //         headerClass: ["th-center", "th-normal"],
+  //         field: 'PR',
+  //         cellClass: 'text-start',
+  //         filter: true,
+  //       },
+  //       {
+  //         headerName: 'NI',
+  //         headerClass: ["th-center", "th-normal"],
+  //         field: 'NI',
+  //         cellClass: 'text-start',
+  //         filter: true,
+  //       },
+  //       {
+  //         headerName: 'VIRT',
+  //         headerClass: ["th-center", "th-normal"],
+  //         field: 'VIRT',
+  //         cellClass: 'text-start',
+  //         filter: true,
+  //       },
+  //       {
+  //         headerName: 'RES',
+  //         headerClass: ["th-center", "th-normal"],
+  //         field: 'RES',
+  //         cellClass: 'text-start',
+  //         filter: true,
+  //       },
+  //       {
+  //         headerName: 'SHR',
+  //         headerClass: ["th-center", "th-normal"],
+  //         field: 'SHR',
+  //         cellClass: 'text-start',
+  //         filter: true,
+  //       },
+  //       {
+  //         headerName: 'S',
+  //         headerClass: ["th-center", "th-normal"],
+  //         field: 'S',
+  //         cellClass: 'text-start',
+  //         filter: true,
+  //       },
+  //       {
+  //         headerName: '%CPU',
+  //         headerClass: ["th-center", "th-normal"],
+  //         field: 'CPU',
+  //         cellClass: 'text-start',
+  //         filter: true,
+  //         sortable: true
+  //       },
+  //       {
+  //         headerName: '%MEM',
+  //         headerClass: ["th-center", "th-normal"],
+  //         field: 'MEM',
+  //         cellClass: 'text-start',
+  //         filter: true,
+  //         sortable: true
+  //       },
+  //       {
+  //         headerName: 'TIME+',
+  //         headerClass: ["th-center", "th-normal"],
+  //         field: 'TIME',
+  //         cellClass: 'text-start',
+  //         filter: true,
+  //         sortable: true
+  //       },
+  //       {
+  //         headerName: 'COMMAND',
+  //         headerClass: ["th-center", "th-normal"],
+  //         field: 'COMMAND',
+  //         cellClass: 'text-start',
+  //         filter: true,
+  //       },
+  //     ],
+  //   };
 
-    that.gridApiProc = createGrid(document.querySelector<HTMLElement>('#myGridProc')!,this.gridOptionsProc);
-  }
+  //   that.gridApiProc = createGrid(document.querySelector<HTMLElement>('#myGridProc')!,this.gridOptionsProc);
+  // }
   
-  refreshAllProc() {
-    var params = {
-      force: true,
-      suppressFlash: true,
-    };
-    this.gridApiProc!.refreshCells(params);
-    this.gridApiProc!.setGridOption('rowData', this.lstDatos.procesos);
-  }
+  // refreshAllProc() {
+  //   var params = {
+  //     force: true,
+  //     suppressFlash: true,
+  //   };
+  //   this.gridApiProc!.refreshCells(params);
+  //   this.gridApiProc!.setGridOption('rowData', this.lstDatos.procesos);
+  // }
 
   
 }

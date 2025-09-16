@@ -1,7 +1,7 @@
-
 <app-path [lstRutas]="path" />
 <div class="content">
   <app-titulo [lstHeader]="titulo" />
+
   <section class="row barra-menu">
     <div class="col d-flex justify-content-between">
       <div class="d-flex justify-content-start">
@@ -12,13 +12,14 @@
       </div>
       <div>
         <div class="btn-group mr-1" role="group" aria-label="Basic example">
-          <!-- <button role="button" [disabled]="playMonitor"  class="btn btn-primary " (click)="openWS()"  title="Iniciar Monitoreo"><i role="img" class="fas fa-play"></i> </button>
-          <button role="button" [disabled]="!playMonitor" class="btn btn-primary " (click)="stopMonitor()"  title="Detener Monitoreo"><i role="img" class="fas fa-stop"></i> </button> -->
         </div>
       </div>
     </div>
   </section>
 
+  <app-shareddashboard [server]="rstServidor"></app-shareddashboard>
+
+<!-- 
   <section class="row">
     <div class="col col-sm-12 col-md-6 col-lg-4 col-xl-4 content-stats">
       <div class="stats" style="width: 50%">
@@ -154,50 +155,7 @@
     <h5>Procesos <small class="t12 text-secondary">(limit=10)</small>  </h5> 
     <div #myGridProc id="myGridProc" class="ag-theme-quartz" style="height: {{alto}}px; min-height: {{alto}}px"></div>
   </div>
-<!--
-  <section class="row">
-    <div class="col-12 h300">
-     <span class="bold"><i>Procesos activos</i></span>
-      <table class="table striped-rows table-bordered ">
-        <thead>
-          <tr>
-            <th class="th-normal text-white">PID</th>
-            <th class="th-normal text-white">USER</th>
-            <th class="th-normal text-white text-end">PR</th>
-            <th class="th-normal text-white text-end">NI</th>
-            <th class="th-normal text-white text-end">VIRT</th>
-            <th class="th-normal text-white text-end">RES</th>
-            <th class="th-normal text-white text-end">SHR</th>
-            <th class="th-normal text-white text-end">S</th>
-            <th class="th-normal text-white text-end">%CPU</th>
-            <th class="th-normal text-white text-end">%MEM</th>
-            <th class="th-normal text-white text-end">TIME+</th>
-            <th class="th-normal text-white">COMMAND</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>  
-        @for (item of lstDatos.procesos; track $index) {
-          <tr>
-            <td class="t14 h50 td2">{{item["PID"]}}</td>
-            <td class="t14 h50 td2">{{item["USER"]}}</td>
-            <td class="t14 h50 td2 text-end">{{item["PR"]}}</td>
-            <td class="t14 h50 td2 text-end">{{item["NI"]}}</td>
-            <td class="t14 h50 td2 text-end">{{item["VIRT"]}}</td>
-            <td class="t14 h50 td2 text-end">{{item["RES"]}}</td>
-            <td class="t14 h50 td2 text-end">{{item["SHR"]}}</td>
-            <td class="t14 h50 td2 text-end">{{item["S"]}}</td>
-            <td class="t14 h50 td2 text-end">{{item["CPU"] | number:'1.2-2' }}</td>
-            <td class="t14 h50 td2 text-end">{{item["MEM"] | number:'1.2-2' }}</td>
-            <td class="t14 h50 td2 text-end">{{item["TIME"]}}</td>
-            <td class="t14 h50 td2">{{item["COMMAND"]}}</td>
-          </tr>
-        }
-      </table>
-    </div>
-  </section>
-   -->
-</div>
+</div> -->
 
 
 <div #modal class="modal modal-xl" id="ventanaModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">

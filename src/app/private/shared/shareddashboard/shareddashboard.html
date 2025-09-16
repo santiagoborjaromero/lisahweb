@@ -1,0 +1,182 @@
+<section class="row stat-div">
+  <div class="col-3 col-md-2 d-flex flex-column stat-cell" >
+    <span class="stat-title">Host</span>
+    <span class="stat-body">{{lstDatos.ip}}</span>
+  </div>
+  <div class="col-3 col-md-2 d-flex flex-column stat-cell" >
+    <span class="stat-title">Tiempo Activo</span>
+    <span class="stat-body">{{lstDatos.uptime}}</span>
+  </div>
+  <div class="col-3 col-md-1 d-flex flex-column stat-cell" >
+    <span class="stat-title">Hora Actual</span>
+    <span class="stat-body">{{lstDatos.hora}}</span>
+  </div>
+  <div class="col-3 col-md-1 d-flex flex-column stat-cell" >
+    <span class="stat-title">Usuarios Asignados</span>
+    <span class="stat-body">{{this.work!.usuarios.length}}</span>
+  </div>
+  <div class="col-12 col-md-6 d-flex flex-column stat-cell" >
+    <span class="stat-body">
+      <canvas
+        baseChart
+        width="800"
+        height="150"
+        [type]="'line'"
+        [data]="cpuChartData"
+        [options]="cpuChartOptions"
+        [legend]="chartLegend"
+      >
+      </canvas>
+    </span>
+  </div>
+</section>
+
+<section class="row stat-div">
+  <div class="col-6 col-md-2 d-flex flex-column stat-cell" >
+    <span class="stat-title">Nombre</span>
+    <span class="stat-body">{{this.lstDatos.release && this.lstDatos.release[0][1]}} {{this.lstDatos.release && this.lstDatos!.release[1][1]}}</span>
+  </div>
+  <div class="col-6 col-md-3 d-flex flex-column stat-cell" >
+    <span class="stat-title">Procesador</span>
+    <span class="stat-body">{{this.lstDatos.infocpu && this.lstDatos!.infocpu[6][1]}} {{this.lstDatos.infocpu && this.lstDatos!.infocpu[7][1]}}</span>
+  </div>
+  <div class="col-6 col-md-1 d-flex flex-column stat-cell" >
+    <span class="stat-title">Arquitectura</span>
+    <span class="stat-body">{{this.lstDatos.infocpu && this.lstDatos!.infocpu[0][1]}}</span>
+  </div>
+  <div class="col-6 col-md-1 d-flex flex-column stat-cell" >
+    <span class="stat-title">CPU(s)</span>
+    <span class="stat-body">{{this.lstDatos.infocpu && this.lstDatos!.infocpu[4][1]}}</span>
+  </div>
+  <div class="col-6 col-md-1 d-flex flex-column stat-cell" >
+    <span class="stat-title">CPU Family</span>
+    <span class="stat-body">{{this.lstDatos.infocpu && this.lstDatos!.infocpu[8][1]}}</span>
+  </div>
+  <div class="col-6 col-md-1 d-flex flex-column stat-cell" >
+    <span class="stat-title">Soporte Limite</span>
+    <span class="stat-body">{{this.lstDatos.release && this.lstDatos!.release[17][1]}}</span>
+  </div>
+  <div class="col-6 col-md-3 d-flex flex-column stat-cell" >
+    <span class="stat-title">Puertos Abiertos</span>
+    <span class="stat-body">
+      @for (item of lstDatos.puertos; track $index) {
+        <span class="badge bg-danger mr-1" >
+          {{item}}
+        </span >
+      }
+    </span>
+  </div>
+</section>
+
+
+<section class="row stat-div">
+  <div class="col-4 col-md-2 d-flex flex-column stat-cell" >
+    <span class="stat-title">Uso RAM</span>
+    <span class="stat-body">
+      <div class="porcentajes"
+        style="--porcentaje: {{lstDatos.memoria.porcentaje}}%; --color: {{lstDatos.memoria.porcentaje < 60 ? 'green' : (lstDatos.memoria.porcentaje < 90 ? 'orange' : 'red')}}">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="150"
+          height="150"
+          viewbox="0 0 150 150">
+          <circle r="65" cx="50%" cy="50%" pathLength="928.32"></circle>
+          <circle r="65" cx="50%" cy="50%" pathLength="928.32"></circle>
+        </svg>
+        <span>{{lstDatos.memoria.porcentaje}}%</span>
+        
+      </div>
+    </span>
+    {{lstDatos.memoria.usado}} / {{lstDatos.memoria.total}}
+  </div>
+
+
+  <div class="col-4 col-md-2 d-flex flex-column stat-cell" >
+    <span class="stat-title">Uso CPU</span>
+    <span class="stat-body">
+      <div class="porcentajes"
+        style="--porcentaje: {{lstDatos.cpu.porcentaje}}%; --color: {{lstDatos.cpu.porcentaje < 60 ? 'green' : (lstDatos.cpu.porcentaje < 90 ? 'orange' : 'red')}}">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="150"
+          height="150"
+          viewbox="0 0 150 150">
+          <circle r="65" cx="50%" cy="50%" pathLength="928.32"></circle>
+          <circle r="65" cx="50%" cy="50%" pathLength="928.32"></circle>
+        </svg>
+        <span>{{lstDatos.cpu.porcentaje}}%</span>
+      </div>
+    </span>
+    <div class="row">
+      <div class="col text-center bold text-primary">
+        {{lstDatos.cpu.t1}}
+      </div>
+      <div class="col text-center bold text-primary">
+        {{lstDatos.cpu.t5}}
+      </div>
+      <div class="col text-center bold text-primary">
+        {{lstDatos.cpu.t15}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col t10 text-danger bold text-center">1m</div>
+      <div class="col t10 text-danger bold text-center">5m</div>
+      <div class="col t10 text-danger bold text-center">15m</div>
+    </div>
+  </div>
+
+
+  <div class="col-4 col-md-2 d-flex flex-column stat-cell" >
+    <span class="stat-title">Uso Disco</span>
+    <span class="stat-body">
+      <div class="porcentajes"
+        style="--porcentaje: {{lstDatos.disco.porcentaje}}%; --color: {{lstDatos.disco.porcentaje < 60 ? 'green' : (lstDatos.disco.porcentaje < 90 ? 'orange' : 'red')}}">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="150"
+          height="150"
+          viewbox="0 0 150 150">
+          <circle r="65" cx="50%" cy="50%" pathLength="928.32"></circle>
+          <circle r="65" cx="50%" cy="50%" pathLength="928.32"></circle>
+        </svg>
+        <span>{{lstDatos.disco.porcentaje}}%</span>
+      </div>
+    </span>
+    {{lstDatos.disco.usado}} / {{lstDatos.disco.total}}
+  </div>
+
+
+  <div class="col-12 col-md-6 d-flex flex-column stat-cell" >
+    <span class="stat-title">Procesos</span>
+    <span class="stat-body-table h200">
+      <table class="table table-striped table-hover ">
+        <thead>
+          <th class="">PID</th>
+          <th class="">Usuario</th>
+          <th class="txt-num">%CPU</th>
+          <th class="txt-num">%MEM</th>
+          <th class="">%TIME</th>
+          <th class="">COMMAND</th>
+        </thead>
+        <tbody>
+          @for (item of this.lstDatos.procesos; track $index) {
+            <tr>
+              <td class="">{{item.PID}}</td>
+              <td class="">{{item.USER}}</td>
+              <td class="txt-num">{{item.CPU  | number:'1.2-2'}}</td>
+              <td class="txt-num">{{item.MEM  | number:'1.2-2'}}</td>
+              <td class="">{{item.TIME}}</td>
+              <td width="40%" class="">{{item.COMMAND}}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </span>
+  </div>
+
+</section>
+
+
+<br>
+<br>
+

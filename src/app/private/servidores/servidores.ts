@@ -228,6 +228,7 @@ export class Servidores {
           field: 'familia.familia',
           cellClass: 'text-start',
           filter: true,
+          minWidth:100
         },
         {
           headerName: 'Puertos',
@@ -316,6 +317,7 @@ export class Servidores {
           headerClass: ['th-center', 'th-normal'],
           field: 'usuarios.length',
           cellClass: 'text-start',
+          minWidth:100,
           cellRenderer: (params: ICellRendererParams) => {
             let data = params.value;
             return `<i role="img" class="fa fa-users t20"></i> <span class="t16">${data}</span>`;
@@ -345,7 +347,7 @@ export class Servidores {
           cellClass: 'text-end',
           sortIndex: 0,
           sort: 'asc',
-          maxWidth: 120,
+          minWidth: 100,
           cellRenderer: (params: ICellRendererParams) => {
             let data = params.data;
             let fecha = data.deleted_at;
@@ -357,23 +359,27 @@ export class Servidores {
           },
         },
         {
-          headerName: 'Eliminar',
-          headerClass: ['th-center', 'th-normal'],
-          cellClass: 'text-start',
-          filter: true,
-          flex: 3,
-          maxWidth: 100,
-          cellRenderer: this.renderAcciones.bind(this),
-        },
-        {
-          headerName: 'Test',
-          headerClass: ['th-center', 'th-normal'],
-          cellClass: 'text-start',
-          filter: true,
-          flex: 3,
-          maxWidth: 100,
-          cellRenderer: this.renderTest.bind(this),
-        },
+          headerName: 'Acciones',
+          headerClass: ['th-center', 'th-normal2'],
+          children:[
+            {
+              headerName: 'Eliminar',
+              headerClass: ['th-center', 'th-normal'],
+              cellClass: 'text-start',
+              filter: false,
+              maxWidth: 100,
+              cellRenderer: this.renderAcciones.bind(this),
+            },
+            {
+              headerName: 'Test',
+              headerClass: ['th-center', 'th-normal'],
+              cellClass: 'text-start',
+              filter: false,
+              maxWidth: 100,
+              cellRenderer: this.renderTest.bind(this),
+            },
+          ]
+        }
       ],
     };
 
@@ -403,14 +409,19 @@ export class Servidores {
   }
 
   renderTest(params: ICellRendererParams) {
-    const button = document.createElement('button');
-    button.className = 'btn btn-white';
-    button.innerHTML = `<i role="img" class="fas fa-flask text-success" title='Test'></i>`;
-    button.addEventListener('click', () => {
-      // this.funcEdit(params.data.idservidor);
-      this.openWS(params.data);
-    });
-    return button;
+    if (params.data.estado == 1){
+      const button = document.createElement('button');
+      button.className = 'btn btn-white';
+      button.innerHTML = `<i role="img" class="fas fa-flask text-success" title='Test'></i>`;
+      button.addEventListener('click', () => {
+        // this.funcEdit(params.data.idservidor);
+        this.openWS(params.data);
+      });
+      return button;
+    }else{
+      return "";
+    }
+
   }
 
   renderAcciones(params: ICellRendererParams) {

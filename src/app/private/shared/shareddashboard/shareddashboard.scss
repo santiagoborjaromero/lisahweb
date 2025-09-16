@@ -1,0 +1,52 @@
+.stat-div{
+    display: flex;
+    align-content: center;
+    
+    .stat-cell{
+        display: flex;
+        align-content: center;
+        background-color: #ececec;
+        border-radius: 10px;
+        min-height: 150px;
+        text-align: center;
+        // margin: 1px;
+        border: 1px solid #fff;
+        
+        .stat-title{
+            margin-top: 10px;
+            font-size: 14px;
+            text-transform: capitalize;
+            min-height: 40px;
+            font-weight: 600;
+        }
+        .stat-body{
+            font-size: 25px;
+            min-height: 80px;
+            align-items: center;
+            align-content: center;
+            text-align: center;
+            font-weight: 500;
+            justify-content: center;
+            color: rgb(27, 99, 117);
+        }
+
+        .stat-body-table{
+            font-size: 12px;
+            
+            .txt-num{
+                text-align: end !important;
+            }
+
+            thead>th{
+                background-color: SteelBlue;
+                color: #fff;
+
+            }
+        }
+    }
+}
+
+
+.table-striped tbody tr:nth-child(even) { /* or odd, depending on the desired stripe pattern */
+  background-color: #fff; /* Explicitly set non-striped rows to white */
+}

@@ -94,23 +94,28 @@ export class Usuarios {
 
     this.userSvc.getAllFilters(this.accion).subscribe({
       next: (resp: any) => {
-        console.log(resp);
         this.func.closeSwal();
         if (resp.status) {
           if (this.user.grupo && this.user.cliente){
-            //Si tiene cliente y grupo es usuario
+            /**
+             * Si tiene cliente y grupo es usuario
+             */
             resp.data.forEach((u:any)=>{
-              if (this.user.grupo && this.user.cliente){
+              if (u.grupo && u.cliente){
                 this.lstData.push(u)
               }
             })
           }else if (!this.user.grupo && this.user.cliente){
-            //Si tiene cliente y pero no grupo es super usuario
+            /**
+             * Si tiene cliente y pero no grupo es super usuario
+             */ 
             this.lstData = resp.data;
           }else{
-            //Si no tiene cliente y  no grupo es owner
+            /**
+             *  Si no tiene cliente y  no grupo es owner
+             */
             resp.data.forEach((u:any)=>{
-              if (!this.user.grupo){
+              if (!u.grupo){
                 this.lstData.push(u)
               }
             })
