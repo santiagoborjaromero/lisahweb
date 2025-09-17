@@ -305,10 +305,10 @@ export class Usuarios implements OnInit {
           maxWidth:80,
           cellRenderer: (params: ICellRendererParams) => {
             let data = params.data;
-            let status = data.deleted_at;
+            let status = data.estado == 1 && data.deleted_at === null ? 1 : 0;
             let icono = 'far fa-times-circle';
             let color = 'text-danger';
-            if (status == null) {
+            if (status == 1) {
               color = 'text-success';
               icono = 'far fa-check-circle';
             }
