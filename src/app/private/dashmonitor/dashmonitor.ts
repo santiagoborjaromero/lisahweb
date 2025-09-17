@@ -18,6 +18,7 @@ import { Path } from '../shared/path/path';
 import { GeneralService } from '../../core/services/general.service';
 import { SentinelService } from '../../core/services/sentinel.service';
 import moment from 'moment';
+import { filter } from 'rxjs';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -143,7 +144,7 @@ export class Dashmonitor {
               this.lstServidores.push(e);
             }
           });
-          this.seteaGrdiStructure();
+          this.seteaGridStructure();
         } else {
           this.func.showMessage('error', 'Usuario', resp.message);
         }
@@ -171,7 +172,7 @@ export class Dashmonitor {
               this.lstServidores.push(e);
             }
           });
-          this.seteaGrdiStructure();
+          this.seteaGridStructure();
         } else {
           this.func.handleErrors("Servidor", resp.message);
         }
@@ -183,7 +184,7 @@ export class Dashmonitor {
     });
   }
 
-  seteaGrdiStructure(){
+  seteaGridStructure(){
     this.lstServidores.forEach((s: any) => {
       if (s.estado == 1){
         s['check'] = true;
@@ -205,22 +206,32 @@ export class Dashmonitor {
       }
     });
     
-    // this.dataGridStruct();
     const currentColumnDefs:any = this.gridApi?.getGridOption('columnDefs');
     let newColumn:any;
     this.arrServicios.forEach((ss:any)=>{
-      newColumn = {
-        headerName: this.func.capital(ss) + " Servicio" ,
-        field: `servicio_${ss}`, 
-        headerClass: ['th-center', 'th-normal'],
-        maxWidth: 100,
-        cellRenderer: this.renderServicios
-      };
-      currentColumnDefs.push(newColumn)
+      let found = false;
+      currentColumnDefs[9].children.forEach((c:any) => {
+          if (c.field == `servicio_${ss}`){
+            found = true;
+          }
+      });
+
+      if (!found){
+        newColumn = {
+          headerName: this.func.capital(ss) ,
+          field: `servicio_${ss}`, 
+          headerClass: ['th-center', 'th-normal'],
+          maxWidth: 100,
+          filter:false, 
+          suppressSizeToFit: true,
+          cellRenderer: this.renderServicios
+        };
+        currentColumnDefs[9].children.push(newColumn)
+      }
     })
     this.gridApi?.setGridOption('columnDefs', currentColumnDefs);
     this.gridApi!.autoSizeAllColumns();
-
+    
     this.refreshAll();
     this.startMonitor();
   }
@@ -487,36 +498,70 @@ export class Dashmonitor {
           },
         },
         {
-          headerName: 'Terminal Servicio',
-          headerClass: ['th-center', 'th-normal'],
-          field: 'servicio_terminal',
-          cellClass: 'text-start',
-          minWidth: 100,
-          cellRenderer: this.renderServicios
+          headerName: 'Servicios',
+          headerClass: ['th-center', 'th-normal2'],
+          children:[
+            {
+              headerName: 'Terminal',
+              headerClass: ['th-center', 'th-normal'],
+              field: 'servicio_terminal',
+              cellClass: 'text-start',
+              minWidth: 100,
+              filter: false,
+              cellRenderer: this.renderServicios
+            },
+            {
+              headerName: 'Sentinel',
+              headerClass: ['th-center', 'th-normal'],
+              field: 'servicio_sentinel',
+              cellClass: 'text-start',
+              minWidth: 100,
+              filter: false,
+              cellRenderer: this.renderServicios
+            },
+          ]
         },
-        {
-          headerName: 'Sentinel Servicio',
-          headerClass: ['th-center', 'th-normal'],
-          field: 'servicio_sentinel',
-          cellClass: 'text-start',
-          minWidth: 100,
-          cellRenderer: this.renderServicios
-        },
-        
       ],
     };
 
-    this.lstServidores.forEach(s=>{
-      s.servicios.spli(",").forEach((ss:any)=>{
-        this.gridOptions.columnDefs?.push({
-          headerName: this.func.capital(ss),
-          headerClass: ['th-center', 'th-normal'],
-          field: `servicio_${ss}`,
-          cellClass: 'text-start',
-          minWidth: 100,
-        })
-      })
-    })
+    // let arr:any = {
+    //     headerName: 'Servicios',
+    //     headerClass: ['th-center', 'th-normal2'],
+    //     children:[
+    //       {
+    //         headerName: 'Terminal',
+    //         headerClass: ['th-center', 'th-normal'],
+    //         field: 'servicio_terminal',
+    //         cellClass: 'text-start',
+    //         minWidth: 100,
+    //         cellRenderer: this.renderServicios
+    //       },
+    //       {
+    //         headerName: 'Sentinel',
+    //         headerClass: ['th-center', 'th-normal'],
+    //         field: 'servicio_sentinel',
+    //         cellClass: 'text-start',
+    //         minWidth: 100,
+    //         cellRenderer: this.renderServicios
+    //       },
+    //     ]
+    // };
+
+    // this.lstServidores.forEach(s=>{
+    //   s.servicios.spli(",").forEach((ss:any)=>{
+    //     arr.children.push({
+    //       headerName: this.func.capital(ss),
+    //       headerClass: ['th-center', 'th-normal'],
+    //       field: `servicio_${ss}`,
+    //       cellClass: 'text-start',
+    //       minWidth: 100,
+    //     })
+    //   })
+    // })
+
+    // console.log(JSON.stringify(arr))
+
+    // this.gridOptions.columnDefs?.push(arr);
 
     that.gridApi = createGrid(
       document.querySelector<HTMLElement>('#myGrid')!,
@@ -556,44 +601,21 @@ export class Dashmonitor {
     let icono = '';
     let color = 'text-dark';
 
-    // console.log(`→${dato}←`)
-
     if (dato == 'active') {
-      color = 'text-success';
+      color = 'bg-success text-white';
       icono = 'far fa-check-circle t16';
     }else if (dato == 'inactive') {
-      color = 'text-danger';
+      color = 'bg-danger text-white';
       icono = 'far fa-times-circle t16';
     }else{
       // icono = 'far fa-times-circle t16';
       // color = 'text-danger';
     }
-    // if (!['', '-', '1', 'x', undefined].includes(dato)) {
-    //   let d = dato.split('|');
-    //   if (d[0] == 'OK') {
-    //     if (d[1].trim() == 'active') {
-    //       color = 'text-success';
-    //       icono = 'far fa-check-circle t16';
-    //     }else{
-    //       icono = 'far fa-times-circle t16';
-    //       color = 'text-danger';
-    //     }
-    //   } else {
-    //     icono = 'far fa-times-circle t16';
-    //     color = 'text-danger';
-    //   }
-    //   text = d[1];
-    // } else if (dato == '1') {
-    //   icono = 'fas fa-spinner fa-spin';
-    //   text = 'Revisando';
-    //   color = 'text-primary';
-    // } else if (dato == '-' || dato !== undefined) {
-    //   icono = 'fas fa-minus-circle t16';
-    //   text = '';
-    //   color = 'text-secondary';
-    // }
-    
-    return `<span class="${color}"><i role="img" class='${icono}'></i> ${dato}</span>`;
+    if(dato == ""){
+      return "";
+    }else{
+      return `<kbd class="${color} p-2"><i role="img" class='${icono}'></i></kbd>`;
+    }
   }
 
   timerGeneral() {

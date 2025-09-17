@@ -107,7 +107,7 @@ export class Servidores {
 
     this.serverSvc.getAllFilters(this.accion).subscribe({
       next: (resp: any) => {
-        // console.log(resp);
+        
         this.func.closeSwal();
         if (resp.status) {
           this.lstData = [];
@@ -119,6 +119,7 @@ export class Servidores {
               this.lstData.push(s);
             });
           }
+          // console.log(this.lstData)
           this.refreshAll();
         } else {
           this.func.handleErrors('Servidor', resp.message);
@@ -136,7 +137,7 @@ export class Servidores {
     this.gridOptions = {
       rowData: [],
       pagination: true,
-      paginationPageSize: 5,
+      paginationPageSize: 50,
       paginationPageSizeSelector: [5, 10, 50, 100, 200, 300, 1000],
       // rowSelection: 'single',
       rowHeight: 40,

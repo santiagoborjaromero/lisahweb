@@ -174,7 +174,6 @@ export class Dashboard {
       next: (resp: any) => {
         this.func.closeSwal();
         if (resp.status) {
-          console.log("↓")
           this.rstServidor = resp.data[0];
           
           this.lstCfg = resp.data[0].cliente.configuracion;

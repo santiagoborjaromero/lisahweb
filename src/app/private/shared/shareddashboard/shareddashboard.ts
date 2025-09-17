@@ -74,10 +74,15 @@ export class Shareddashboard {
   idservidor:any ;
 
   dataset1:any = [];
+  dataset2:any = [];
 
-  lstCpuData1:any = [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-  lstCpuData5:any = [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+  lstCpuData1:any = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+  lstCpuData5:any = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
   lstCpuData15:any = [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+  labelsCpu: any =  ["","","","","","","","","","","","","","","","","","","",""];
+  labelsPro: any =  ["","","","","","","","","","","","","","","","","","","",""];
+  lstProData1:any = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+  lstProData2:any = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 
   agente_status:string =  "Desconectado";
   /**
@@ -102,7 +107,31 @@ export class Shareddashboard {
       },
       title:{
         display: true,
-        text: `Rendimiento CPU (Minuto 1)`
+        text: `Rendimiento CPU %`
+      }
+    },
+    indexAxis: 'x',
+    scales: {
+      y: {
+          beginAtZero: true
+      }
+    }
+  };
+
+  public proChartData: ChartConfiguration['data'] = {
+    labels: [],
+    datasets: [],
+  }
+
+  public proChartOptions: ChartOptions = {
+    responsive: true,
+    plugins:{
+      legend:{
+        position: 'bottom'
+      },
+      title:{
+        display: true,
+        text: `Procesos %`
       }
     },
     indexAxis: 'x',
@@ -194,19 +223,41 @@ export class Shareddashboard {
 
     this.dataset1.push({
       data: [],
-      label: "minuto 1",
+      label: "CPU%",
       fill: true,
       tension: 0.1,
       borderColor: 'black',
       borderWidth: 0,
-      backgroundColor: 'rgba(41, 219, 204, 0.79)'
+      backgroundColor: 'rgba(6, 147, 241, 0.4)'
     });
+
+    this.dataset2.push({
+      data: [],
+      label: "CPU%",
+      fill: true,
+      tension: 0.1,
+      borderColor: 'black',
+      borderWidth: 0,
+      backgroundColor: 'rgba(18, 161, 94, 0.72)'
+    },
+    {
+      data: [],
+      label: "Mem%",
+      fill: true,
+      tension: 0.1,
+      borderColor: 'black',
+      borderWidth: 0,
+      backgroundColor: 'rgba(250, 96, 7, 0.59)'
+    }
+    );
 
   }
 
   graphCPU(m1:any="0", m5:any="0", m15:any="0"){
     // let dataset:any = [];
-    let labels:any =  ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20"];
+    this.labelsCpu.splice(0,1);
+    this.labelsCpu.push(moment().format("HH:mm:ss"))
+    let labels:any = this.labelsCpu;
     m1 = parseFloat(m1);
     m5 = parseFloat(m5);
     m15 = parseFloat(m15);
@@ -222,7 +273,34 @@ export class Shareddashboard {
   }
 
 
-   startMonitor(){
+  graphProcesos(){
+    let cpu = 0;
+    let mem = 0;
+
+    this.labelsPro.splice(0,1);
+    this.labelsPro.push(moment().format("HH:mm:ss"))
+    let labels:any = this.labelsPro;
+
+    this.lstDatos.procesos.forEach((p:any)=>{
+      cpu += p.CPU;
+      mem += p.MEM;
+    })
+
+    this.lstProData1.splice(0,1);
+    this.lstProData1.push(cpu);
+
+    this.lstProData2.splice(0,1);
+    this.lstProData2.push(mem);
+
+    this.dataset2[0].data =  this.lstProData1;
+    this.dataset2[1].data =  this.lstProData2;
+    this.proChartData  = {
+      labels: labels,
+      datasets: this.dataset2
+    }
+  }
+
+  startMonitor(){
     console.log("Iniciando")
     this.playMonitor = true;
     this.onSendCommands();
@@ -336,7 +414,7 @@ export class Shareddashboard {
                 this.lstDatos.cpu.t1 = t1;
                 this.lstDatos.cpu.t5 = t5;
                 this.lstDatos.cpu.t15 = t15;
-                this.graphCPU(t1, t5, t15);
+                // this.graphCPU(t1, t5, t15);
                 break;
               case 1: // Tasks
                 drep = dt.replace(/,/g,"");
@@ -347,10 +425,13 @@ export class Shareddashboard {
                 this.lstDatos.tasks.sleeping = daux[9];
                 this.lstDatos.tasks.stopped = daux[13];
                 this.lstDatos.tasks.zombie = daux[17];
+                // console.log(this.lstDatos.tasks)
                 break;
               case 2: // %CPU
                 daux = dt.split(",")[3].replace(" id", "");
-                this.lstDatos.cpu.porcentaje = this.func.numberFormat(100 - parseFloat(daux),2);
+                let v = 100 - parseFloat(daux);
+                this.lstDatos.cpu.porcentaje = this.func.numberFormat(v,2);
+                this.graphCPU(v, 0, 0);
                 break;
               case 3: //MIB MEM
                  daux = dt.replace("MiB Mem :  ", "");
@@ -396,12 +477,13 @@ export class Shareddashboard {
                     "TIME" : drep[10],
                     "COMMAND" : command
                   })
+                  
                 }
-                // this.refreshAllProc();
                 break;
 
             }
           })
+          this.graphProcesos();
           break;
         case "disco":
           r = d.respuesta.split(" ")
@@ -523,6 +605,7 @@ export class Shareddashboard {
           this.lstDatos.ip = drep;
           break;
       }
+      
     });
   }
 
@@ -541,8 +624,8 @@ export class Shareddashboard {
         {"id": "disco", "cmd":" df -hT | grep -E 'ext4|xfs|btrfs' | awk '{print $3, $4, $5, $6}'"},
         {"id": "ip", "cmd":`ip route | column -t | awk '{print $1","$2","$3","$4","$5","$6","$7","$8","$9}'`},
         {"id": "release", "cmd":`cat /etc/os-release`},
-        // {"id": "infocpu", "cmd":`cat /proc/cpuinfo`},
-        {"id": "infocpu", "cmd":`lscpu`},
+        {"id": "infocpu", "cmd":`cat /proc/cpuinfo`},
+        // {"id": "infocpu", "cmd":`lscpu`},
         {"id": "puertos", "cmd":`ss -tuln | grep LISTEN | head -10 | awk '{print $1","$2","$3","$4","$5","$6}'`},
       ]
 
