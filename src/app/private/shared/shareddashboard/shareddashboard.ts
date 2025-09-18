@@ -306,8 +306,6 @@ export class Shareddashboard {
 
   graphRed(rx:any, tx:any){
 
-    console.log(rx, tx)
-
     this.labelsPro.splice(0,1);
     this.labelsPro.push(moment().format("HH:mm:ss"))
     let labels:any = this.labelsPro;
@@ -327,11 +325,9 @@ export class Shareddashboard {
   }
 
   startMonitor(){
-    console.log("Iniciando")
     this.playMonitor = true;
     this.onSendCommands();
     this.tmrMonitor = setInterval(() => {
-      console.log("Tiempo")
       this.onSendCommands();
     }, this.tiempo_refresco * 1000);
   }

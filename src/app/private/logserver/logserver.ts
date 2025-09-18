@@ -12,10 +12,8 @@ import moment from 'moment';
 import { Titulo } from '../shared/titulo/titulo';
 import { Path } from '../shared/path/path';
 import { AllCommunityModule, createGrid, GridApi, GridOptions, ModuleRegistry } from 'ag-grid-community';
-import { MongoService } from '../../core/services/mongo.service';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { SafeResourceUrl } from '@angular/platform-browser';
 import { Chart, ChartConfiguration, ChartOptions, Colors, registerables } from 'chart.js';
-import { BaseChartDirective } from 'ng2-charts';
 
 Chart.register(...registerables, Colors);
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -176,10 +174,9 @@ export class Logserver {
     this.fecha_hasta= moment().format("YYYY-MM-DD");
 
     if (this.user.grupo){
-      this.getUsuario();
-      this.getUsuarios()
+      this.getListaServidoresPorUsuario();
     }else{
-      this.getServidores();
+      this.getListaTodosServidores();
     }
     this.dataGridStruct();
 
@@ -197,7 +194,7 @@ export class Logserver {
   ngOnDestroy(): void {
   }
 
-  getUsuario() {
+  getListaServidoresPorUsuario() {
     this.lstServidores = [];
     this.generalSvc.apiRest("GET", `usuarios/${this.user.idusuario}`).subscribe({
       next: (resp: any) => {
@@ -208,13 +205,10 @@ export class Logserver {
               if (s.estado == 1){
                 this.lstServidores.push(s)
                 this.idservidor_select = this.lstServidores[0].idservidor;
-                // this.lstUsuarios = this.lstServidores[0].usuarios
-                // this.server.set(s.idservidor, s);
+                this.getServidor();
               }
             })
           }
-
-          // this.lstServidores_Original = Array.from(this.lstServidores);
         } else {
           this.func.handleErrors("Hardening", resp.message);
         }
@@ -226,25 +220,29 @@ export class Logserver {
     });
   }
 
-  getUsuarios() {
-    this.lstUsuarios = [];
-    this.generalSvc.apiRest("GET", `usuarios`).subscribe({
+  getServidor() {
+    /**
+     * Servidor y lista de usuarios asignados
+     */    
+    this.func.showLoading('Cargando Usuarios');
+    this.generalSvc.apiRest("GET", `servidores_usuarios/${this.idservidor_select}`).subscribe({
       next: (resp: any) => {
         this.func.closeSwal();
         if (resp.status) {
-          this.lstUsuarios = resp.data;
+          this.lstUsuarios = resp.data[0].usuarios;
         } else {
-          this.func.handleErrors("Hardening", resp.message);
+          this.func.handleErrors("Servidor", resp.message);
         }
       },
       error: (err: any) => {
         this.func.closeSwal();
-        this.func.handleErrors("Hardening", err);
+        this.func.handleErrors("Servidor", err);
       },
     });
   }
 
-  getServidores() {
+
+  getListaTodosServidores() {
     this.lstServidores = [];
     this.func.showLoading('Cargando');
 
@@ -257,6 +255,7 @@ export class Logserver {
             if (s.estado == 1){
               this.lstServidores = resp.data;
               this.idservidor_select = this.lstServidores[0].idservidor;
+              this.getServidor();
             }
           });
         } else {
@@ -277,17 +276,12 @@ export class Logserver {
       }
      })
      this.idusuario_select = "0";
+     this.getServidor();
   }
-
-  // initial(){
-  //   this.openWS();
-  // }
 
   funcBack(){
     this.func.irRuta(`admin/logs`);
   }
-
-  
 
   openWS() {
     this.lstServidores.forEach(s=>{
@@ -647,6 +641,11 @@ export class Logserver {
       labels: labels,
       datasets: this.dataset1
     }
+  }
+
+  clean(){
+    this.lstData = [];
+    this.refreshAll();
   }
 
 
