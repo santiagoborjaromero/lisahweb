@@ -168,7 +168,8 @@ export class Dashboard {
   getServidor() {
     /**
      * Servidor y lista de usuarios asignados
-     */    
+     */   
+    this.rstServidor = {usuarios: []};
     this.func.showLoading('Cargando');
     this.generalSvc.apiRest("GET", `servidores_usuarios/${this.idservidor}`).subscribe({
       next: (resp: any) => {

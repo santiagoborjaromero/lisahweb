@@ -156,6 +156,7 @@ export class Shareddashboard {
   constructor(){
     effect(()=>{
       if (this.server()!==undefined){
+        this.initial();
         this.work = this.server();
         this.openWS();
       }
@@ -338,8 +339,8 @@ export class Shareddashboard {
     this.playMonitor = false;
     this.lstDatos.procesos = [];
     this.initial();
-    // clearInterval(this.tmrMonitor);
-    // this.ws.close(1000)
+    clearInterval(this.tmrMonitor);
+    this.ws.close(1000)
   }
 
 
@@ -365,14 +366,16 @@ export class Shareddashboard {
       this.playMonitor=true;
       this.startMonitor();
     } else {
+      
       this.agente_status = "No se estableció conexion con Sentinel";
       this.func.closeSwal()
       console.log(`X Desconectado ${this.work.idservidor}`);
       this.work.agente_status = 'FAIL|Desconectado';
-      setTimeout(()=>{
-        console.log("Reintentando conexion")
-        this.initial();
-      },10000)
+      // this.initial();
+      // setTimeout(()=>{
+      //   console.log("Reintentando conexion")
+      //   this.initial();
+      // },10000)
     }
   }
 
@@ -383,16 +386,18 @@ export class Shareddashboard {
       this.agente_status = "Desconectado manualmente";
       this.ws_error = 0;
     }else{
+      this.stopMonitor();
+      this.func.showMessage("error", "Dashboard", "Servidor Desconectado");
       this.work.healthy_agente = 'FAIL|Desconectado';
       this.agente_status = "Desconectado";
       this.loading = false;
       this.playMonitor=false;
-      if (this.reconnect && this.ws_error < this.ws_error_limit){
-        this.ws_error ++;
-        setTimeout(()=>{
-          this.initial();
-        },1000)
-      }
+      // if (this.reconnect && this.ws_error < this.ws_error_limit){
+      //   this.ws_error ++;
+      //   setTimeout(()=>{
+      //     this.initial();
+      //   },1000)
+      // }
     }
   }
 
