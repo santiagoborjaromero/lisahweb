@@ -59,7 +59,6 @@ export class Shareddashboard {
 
   alto:string =  ((screen.height / 2)-225).toString();
 
-
   lstCfg: any;
   lstAcciones: Array<any> = [];
   lstUltimasAcciones: Array<any> = [];
@@ -75,14 +74,18 @@ export class Shareddashboard {
 
   dataset1:any = [];
   dataset2:any = [];
+  dataset3:any = [];
 
   lstCpuData1:any = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
   lstCpuData5:any = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
   lstCpuData15:any = [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
   labelsCpu: any =  ["","","","","","","","","","","","","","","","","","","",""];
   labelsPro: any =  ["","","","","","","","","","","","","","","","","","","",""];
+  labelsRed: any =  ["","","","","","","","","","","","","","","","","","","",""];
   lstProData1:any = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
   lstProData2:any = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+  lstRedData1:any = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+  lstRedData2:any = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 
   agente_status:string =  "Desconectado";
   /**
@@ -131,7 +134,7 @@ export class Shareddashboard {
       },
       title:{
         display: true,
-        text: `Procesos %`
+        text: `Transmisión (RX/TX)`
       }
     },
     indexAxis: 'x',
@@ -141,7 +144,6 @@ export class Shareddashboard {
       }
     }
   };
-
 
   path:any = [];
   titulo:any = {icono: "",nombre:""}
@@ -218,7 +220,8 @@ export class Shareddashboard {
       servicios: [],
       infocpu: null,
       procesos: [],
-      puertos: []
+      puertos: [],
+      red: []
     }
 
     this.dataset1.push({
@@ -226,31 +229,31 @@ export class Shareddashboard {
       label: "CPU%",
       fill: true,
       tension: 0.1,
-      borderColor: 'black',
-      borderWidth: 0,
-      backgroundColor: 'rgba(6, 147, 241, 0.4)'
+      borderColor: 'rgba(6, 147, 241, 0.4)',
+      borderWidth: 3,
+      backgroundColor: 'rgba(6, 147, 241, 0.2)'
     });
 
     this.dataset2.push({
-      data: [],
-      label: "CPU%",
-      fill: true,
-      tension: 0.1,
-      borderColor: 'black',
-      borderWidth: 0,
-      backgroundColor: 'rgba(18, 161, 94, 0.72)'
-    },
-    {
-      data: [],
-      label: "Mem%",
-      fill: true,
-      tension: 0.1,
-      borderColor: 'black',
-      borderWidth: 0,
-      backgroundColor: 'rgba(250, 96, 7, 0.59)'
-    }
+        data: [],
+        label: "RX",
+        fill: true,
+        tension: 0.1,
+        borderColor: 'rgba(252, 152, 1, 0.69)',
+        borderWidth: 2,
+        backgroundColor: 'rgba(252, 235, 1, 0.05)'
+      },
+      {
+        data: [],
+        label: "TX",
+        fill: true,
+        tension: 0.1,
+        borderColor: 'rgba(19, 97, 170, 1)',
+        borderWidth: 2,
+        // backgroundColor: 'rgba(7, 130, 245, 1)'
+        backgroundColor: 'rgba(7, 130, 245, 0.07)'
+      }
     );
-
   }
 
   graphCPU(m1:any="0", m5:any="0", m15:any="0"){
@@ -274,23 +277,46 @@ export class Shareddashboard {
 
 
   graphProcesos(){
-    let cpu = 0;
-    let mem = 0;
+    // let cpu = 0;
+    // let mem = 0;
+
+    // this.labelsPro.splice(0,1);
+    // this.labelsPro.push(moment().format("HH:mm:ss"))
+    // let labels:any = this.labelsPro;
+
+    // this.lstDatos.procesos.forEach((p:any)=>{
+    //   cpu += p.CPU;
+    //   mem += p.MEM;
+    // })
+
+    // this.lstProData1.splice(0,1);
+    // this.lstProData1.push(cpu);
+
+    // this.lstProData2.splice(0,1);
+    // this.lstProData2.push(mem);
+
+    // this.dataset2[0].data =  this.lstProData1;
+    // this.dataset2[1].data =  this.lstProData2;
+    // this.proChartData  = {
+    //   labels: labels,
+    //   datasets: this.dataset2
+    // }
+  }
+
+
+  graphRed(rx:any, tx:any){
+
+    console.log(rx, tx)
 
     this.labelsPro.splice(0,1);
     this.labelsPro.push(moment().format("HH:mm:ss"))
     let labels:any = this.labelsPro;
 
-    this.lstDatos.procesos.forEach((p:any)=>{
-      cpu += p.CPU;
-      mem += p.MEM;
-    })
-
     this.lstProData1.splice(0,1);
-    this.lstProData1.push(cpu);
+    this.lstProData1.push(rx);
 
     this.lstProData2.splice(0,1);
-    this.lstProData2.push(mem);
+    this.lstProData2.push(tx);
 
     this.dataset2[0].data =  this.lstProData1;
     this.dataset2[1].data =  this.lstProData2;
@@ -305,6 +331,7 @@ export class Shareddashboard {
     this.playMonitor = true;
     this.onSendCommands();
     this.tmrMonitor = setInterval(() => {
+      console.log("Tiempo")
       this.onSendCommands();
     }, this.tiempo_refresco * 1000);
   }
@@ -417,14 +444,18 @@ export class Shareddashboard {
                 // this.graphCPU(t1, t5, t15);
                 break;
               case 1: // Tasks
-                drep = dt.replace(/,/g,"");
-                daux = drep.replace(/-/g,"").split(" ");
-                // console.log(daux)
-                this.lstDatos.tasks.total = daux[2];
-                this.lstDatos.tasks.running = daux[6];
-                this.lstDatos.tasks.sleeping = daux[9];
-                this.lstDatos.tasks.stopped = daux[13];
-                this.lstDatos.tasks.zombie = daux[17];
+                let txt = "";
+                dt.split("").forEach((e:any) => {
+                  if (["1","2","3","4","5","6","7","8","9","0",","].includes(e)){
+                    txt += e;
+                  }
+                });
+                drep = txt.split(",")
+                this.lstDatos.tasks.total = drep[0];
+                this.lstDatos.tasks.running = drep[1];
+                this.lstDatos.tasks.sleeping = drep[2];
+                this.lstDatos.tasks.stopped = drep[3];
+                this.lstDatos.tasks.zombie = drep[4];
                 // console.log(this.lstDatos.tasks)
                 break;
               case 2: // %CPU
@@ -462,7 +493,7 @@ export class Shareddashboard {
                   }
                 })
                 if (drep.length>0){
-                  let command = drep.slice(11, 15).join(" ");
+                  let command = drep.slice(11, 20).join(" ");
                   this.lstDatos.procesos.push({
                     "PID" : drep[0],
                     "USER" : drep[1],
@@ -483,14 +514,15 @@ export class Shareddashboard {
 
             }
           })
-          this.graphProcesos();
+          // this.graphProcesos();
           break;
         case "disco":
-          r = d.respuesta.split(" ")
-          this.lstDatos.disco.total = r[0];
-          this.lstDatos.disco.usado = r[1];
-          this.lstDatos.disco.libre = r[2];
-          this.lstDatos.disco.porcentaje = r[3].replace("\n", "").replace("%", "");
+          let res:any = d.respuesta.split("\n")
+          let fila1 = res[0].split(" ");
+          this.lstDatos.disco.total = fila1[0];
+          this.lstDatos.disco.usado = fila1[1];
+          this.lstDatos.disco.libre = fila1[2];
+          this.lstDatos.disco.porcentaje = fila1[3].replace("\n", "").replace("%", "");
           break;
         case "memoria":
           r = d.respuesta.split(" ")
@@ -604,6 +636,12 @@ export class Shareddashboard {
           drep = daux[1].split(",")[8];
           this.lstDatos.ip = drep;
           break;
+        case "red":
+          //Iface MTU RX-OK RX-ERR  RX-DRP  RX-OVR  TX-OK TX-ERR  TX-DRP  TX-OVR  Flg
+          daux = d.respuesta.split("\n");
+          drep = daux[2].split(",");
+          this.graphRed(drep[2], drep[6]);
+          break;
       }
       
     });
@@ -620,13 +658,14 @@ export class Shareddashboard {
         id: Math.floor(Math.random() * (9999999999999999 - 1000000000000000 + 1)) + 1000000000000000
       },
       data: [
-        {"id": "top", "cmd":"top -b -n1 -em"},
+        {"id": "top", "cmd":"top -b -n1 -em -o %MEM"},
         {"id": "disco", "cmd":" df -hT | grep -E 'ext4|xfs|btrfs' | awk '{print $3, $4, $5, $6}'"},
         {"id": "ip", "cmd":`ip route | column -t | awk '{print $1","$2","$3","$4","$5","$6","$7","$8","$9}'`},
         {"id": "release", "cmd":`cat /etc/os-release`},
         {"id": "infocpu", "cmd":`cat /proc/cpuinfo`},
         // {"id": "infocpu", "cmd":`lscpu`},
         {"id": "puertos", "cmd":`ss -tuln | grep LISTEN | head -10 | awk '{print $1","$2","$3","$4","$5","$6}'`},
+        {"id": "red", "cmd":`netstat -i | column -t | awk '{print $1","$2","$3","$4","$5","$6","$7","$8","$9","$10","$11}'`},
       ]
 
     };

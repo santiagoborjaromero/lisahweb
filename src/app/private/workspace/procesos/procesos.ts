@@ -54,10 +54,13 @@ export class Procesos {
   global = Global;
   lstUsuarios: Array<any> = [];
   lstComandos: Array<any> = [];
+  lstComandos_Original: Array<any> = [];
   lstLogs: Array<any> = [];
   noti: any = null;
 
   lstProcesos: Array<any> = [];
+
+  buscar: string = "";
 
 /**
    * Sentinel
@@ -112,6 +115,8 @@ export class Procesos {
                 this.lstComandos.push(c)
               }
             })
+
+            this.lstComandos_Original = Array.from(this.lstComandos);
           }
           // this.rstScriptCreacionUsuario = resp.data[0].cliente.configuracion.script.cmds;
           // console.log(this.lstComandos)
@@ -277,6 +282,24 @@ export class Procesos {
       };
       this.lstLogs.push(cmd)
       this.onSendCommands(params);
+    }
+  }
+
+
+  buscarProcesos(evento:any){
+    this.lstComandos = [];
+    if (this.buscar == '') {
+      this.lstComandos = Array.from(this.lstComandos_Original);
+    } else {
+      this.lstComandos_Original.forEach((e:any) => {
+        if (
+          e.titulo.toLowerCase().indexOf(this.buscar.toLowerCase()) > -1 ||
+          e.descripcion.toLowerCase().indexOf(this.buscar.toLowerCase()) > -1 ||
+          e.area.toLowerCase().indexOf(this.buscar.toLowerCase()) > -1 
+        ) {
+          this.lstComandos.push(e);
+        }
+      });
     }
   }
 }

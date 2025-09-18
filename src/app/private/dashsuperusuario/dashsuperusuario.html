@@ -16,12 +16,12 @@
         @for (item of lstServidoresAsignados; track $index) {
           <div class="mr-2 border p-2 text-end" style="min-width:200px; border-radius: 10px; background-color: #ffffff;">
             <span class="t30 bold text-black">{{item.conteo_actual  ?? 0 }}</span> <br>
-            @if (item.conteo_actual > item.conteo_anterior) {
+            @if (item.conteo_actual > item.conteo_anterior || item.conteo_anterior === undefined) {
               <span class="text-success t18"><i class="fas fa-caret-up"></i></span> &nbsp;
               <span class="text-success t16">{{item.conteo_anterior  ?? 0 }}</span> <br>
             }@else {
               <span class="text-danger t18"><i class="fas fa-caret-down"></i></span> &nbsp;
-              <span class="text-danger t16">{{item.conteo_anterior  ?? 0 }}</span> <br>
+              <span class="text-danger t16">{{item.conteo_anterior ??999999 }}</span> <br>
             }
             <span class="bold t16">{{item.nombre}} </span> <br>
           </div>

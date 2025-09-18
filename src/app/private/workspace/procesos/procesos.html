@@ -14,7 +14,7 @@
     <div class="row">
       <label for="" class="col-4 col-md-1 ">Buscar</label>
       <div class="col-4 col-md-5">
-        <input type="text" class="form-control" >
+        <input type="text" class="form-control" [(ngModel)]="buscar" (keyup)="buscarProcesos($event)" >
       </div>
     </div>
     <div class="row mt-2">
